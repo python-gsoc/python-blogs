@@ -16,6 +16,8 @@ pip install -r requirements.txt
 python manage.py runserver 0.0.0.0:8000
 ```
 
+Default user/pass is 'admin'
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
