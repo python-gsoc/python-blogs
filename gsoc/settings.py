@@ -99,6 +99,7 @@ TEMPLATES = [
 
 
 MIDDLEWARE = (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'cms.middleware.utils.ApphookReloadMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -146,7 +147,8 @@ INSTALLED_APPS = (
     'djangocms_snippet',
     'djangocms_googlemap',
     'djangocms_video',
-    'gsoc'
+    'gsoc',
+    'debug_toolbar'
 )
 
 LANGUAGES = (
@@ -233,9 +235,10 @@ THUMBNAIL_PROCESSORS = (
 META_SITE_PROTOCOL = 'http'
 META_USE_SITES = True
 
-BLOG_MULTISITE = True
-
 LOGIN_REDIRECT_URL = '/'
 
 #AUTH_USER_MODEL = 'gsoc.User'
 
+BLOG_MULTISITE = True
+
+INTERNAL_IPS = ('127.0.0.1',)

@@ -35,6 +35,12 @@ urlpatterns += i18n_patterns(
 
 # This is only needed when using runserver.
 if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        # For django versions before 2.0:
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+
+    ] + urlpatterns
     urlpatterns = [
         url(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
