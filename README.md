@@ -16,6 +16,8 @@ pip install -r requirements.txt
 python manage.py runserver 0.0.0.0:8000
 ```
 
+You can then access the site with the login bar with http://127.0.0.1:8000/en/?edit
+
 Default user/pass is 'admin'
 
 ## Contributing
