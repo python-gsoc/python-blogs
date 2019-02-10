@@ -5,6 +5,7 @@
         <title>{% block title %}This is my new project home page{% endblock title %}</title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link rel="stylesheet" href="/static/css/main.css">
         {% render_block "css" %}
     </head>
@@ -12,11 +13,14 @@
         {% cms_toolbar %}
         <div class="sidebar">
             <div class="pure-menu nav">
+                <span class="pure-menu-heading brand">PYTHON-GSOC</span>
                 {% show_menu 0 100 100 100 "partials/menu.html" %}
             </div>
         </div>
         <div class="content">
-            {% block content %}{% endblock content %}
+            <div class="container">
+                {% block content %}{% endblock content %}
+            </div>
             <div class="footer">
 
             </div>
