@@ -14,26 +14,45 @@
                 padding-right: 20px;
             }
             .container {
-                width: 940px;
+                /* width: 940px; */
                 margin: 0 auto
             }
             .content {
-                float: left;
-                width: 80%;
+                margin-left: 15%; /* Same as the width of the sidebar */
+                padding: 0px 20px;
             }
             .sidebar {
-                float: left;
-                width: 20%;
+                height: 100%;
+                width: 15%;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                background-color: #111;
+                overflow-x: hidden;
+                padding-top: 20px;
+            }
+            .sidebar .nav a {
+                padding: 6px 8px 6px 16px;
+                text-decoration: none;
+                font-size: 20px;
+                color: #818181;
+                display: block;
+            }
+            .sidebar .nav .selected {
+                background-color: #444;
             }
         </style>
         {% render_block "css" %}
     </head>
     <body>
         {% cms_toolbar %}
-        <div class="container">
-            <ul class="nav">
-                {% show_menu 0 100 100 100 %}
-            </ul>
+        <div class="sidebar">
+            <div class="nav">
+                {% show_menu 0 100 100 100 "partials/menu.html" %}
+            </div>
+        </div>
+        <div class="content">
             {% block content %}{% endblock content %}
         </div>
         {% render_block "js" %}
