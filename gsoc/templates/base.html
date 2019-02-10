@@ -4,64 +4,14 @@
     <head>
         <title>{% block title %}This is my new project home page{% endblock title %}</title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
-        <style type="text/css">
-            body {
-                font-family: 'Source Sans Pro', sans-serif;
-            }
-            .nav {
-                padding-left: 0;
-            }
-            .container {
-                /* width: 940px; */
-                margin: 0 auto
-            }
-            .content {
-                margin-left: 150px; /* Same as the width of the sidebar */
-                padding: 0px 20px;
-            }
-            .sidebar {
-                height: 100%;
-                width: 150px;
-                position: fixed;
-                z-index: 1;
-                top: 0;
-                left: 0;
-                background-color: #111;
-                overflow-x: hidden;
-            }
-            .sidebar .nav a {
-                padding: 6px 8px 6px 16px;
-                text-decoration: none;
-                font-size: 18px;
-                color: #818181;
-                display: block;
-            }
-            .sidebar .nav a:hover {
-                background-color: #333;
-            }
-            .sidebar .nav .selected {
-                background-color: #444;
-            }
-            .sidebar .nav .selected a:hover {
-                background-color: #444 !important;
-            }
-            .brand {
-                color: white;
-                background-color: #2b536c;
-                padding: 10px 8px 10px 16px;
-                font-size: 20px;
-            }
-            .footer {
-                padding-top: 20px;
-            }
-        </style>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/css/main.css">
         {% render_block "css" %}
     </head>
     <body>
         {% cms_toolbar %}
         <div class="sidebar">
-            <div class="nav">
+            <div class="pure-menu nav">
                 {% show_menu 0 100 100 100 "partials/menu.html" %}
             </div>
         </div>

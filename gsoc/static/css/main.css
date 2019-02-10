@@ -1,0 +1,49 @@
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.nav {
+    padding-left: 0;
+}
+.container {
+    /* width: 940px; */
+    margin: 0 auto
+}
+.content {
+    margin-left: 200px;
+    padding: 0px 20px;
+}
+.sidebar {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+}
+.sidebar .nav a {
+    padding: 12px 8px 12px 16px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #818181;
+    display: block;
+}
+.sidebar .nav a:hover {
+    background-color: #333;
+}
+.sidebar .nav .selected {
+    background-color: #444;
+}
+.sidebar .nav .selected a:hover {
+    background-color: #444 !important;
+}
+.brand {
+    color: white;
+    background-color: #2b536c;
+    padding: 15px 8px 15px 16px;
+    font-size: 18px;
+}
+.footer {
+    padding-top: 20px;
+}
