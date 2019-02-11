@@ -44,3 +44,12 @@ class DatabaseAppsRouter(object):
         elif model._meta.app_label in settings.DATABASE_APPS_MAPPING:
             return False
         return None
+
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        """Make sure that apps only appear in the related database."""
+
+        if db in list(settings.DATABASE_APPS_MAPPING.values()):
+            return settings.DATABASE_APPS_MAPPING.get(app_label) == db
+        elif app_label in settings.DATABASE_APPS_MAPPING:
+            return False
+        return None
