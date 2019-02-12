@@ -5,10 +5,10 @@ from django.db import models
 
 class SubOrg(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    suborg_full_name = models.CharField(name='suborg_full_name', max_length=80)
+    suborg_name = models.CharField(name='suborg_name', max_length=80)
 
     def __str__(self):
-        return self.suborg_full_name
+        return self.suborg_name
 
 
 class GsocYear(models.Model):

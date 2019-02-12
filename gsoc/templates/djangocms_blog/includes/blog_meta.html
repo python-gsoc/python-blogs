@@ -9,7 +9,7 @@
     <li>
       {% trans "SubOrg" %}
       {% if post.author.suborg_full_name %}{{ post.author.suborg_full_name }}{% else %}None{% endif %}
-      {% if post.author.gsoc_year %}{{ post.author.gsoc_year }}{% else %}None{% endif %}
+      {% if post.author.gsoc_year %}{{ post.author.gsoc_year }}{% else %}{% endif %}
     </li>
   {% endif %}
   <li>
