@@ -1,20 +1,18 @@
-# from django.contrib.auth.models import User
-# from django.contrib import admin
-# from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-# from .models import GsocYear, SubOrg
-#
-#
-# class GsocYearInline(admin.TabularInline):
-#     model = GsocYear
-#
-#
-# class SuborgInline(admin.TabularInline):
-#     model = SubOrg
-#
-#
-# class UserAdmin(DjangoUserAdmin):
-#     inlines = [GsocYearInline, SuborgInline]
-#
-#
-# admin.site.unregister(User)
-# admin.site.register(User, UserAdmin)
+from django.contrib.auth.models import User
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
+from .models import UserProfile
+from .forms import UserProfileForm
+
+
+class UserProfileInline(admin.TabularInline):
+    model = UserProfile
+    form = UserProfileForm
+
+
+class UserAdmin(DjangoUserAdmin):
+    inlines = [UserProfileInline]
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)

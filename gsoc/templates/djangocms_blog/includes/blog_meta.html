@@ -7,9 +7,20 @@
       {% if post.author.get_full_name %}{{ post.author.get_full_name }}{% else %}{{ post.author }}{% endif %}</a>
     </li>
     <li>
-      {% trans "SubOrg" %}
-      {% if post.author.suborg_full_name %}{{ post.author.suborg_full_name }}{% else %}None{% endif %}
-      {% if post.author.gsoc_year %}{{ post.author.gsoc_year }}{% else %}{% endif %}
+      {% trans "SubOrg:" %}
+      {% if post.author.suborg_full_name %}
+        {% for suborg in post.author.suborg_full_name %}
+          {{ suborg }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      {% else %}None{% endif %}
+    </li>
+    <li>
+      {% trans "Year:" %}
+      {% if post.author.gsoc_year %}
+        {% for year in post.author.gsoc_year %}
+          {{ year }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      {% else %}None{% endif %}
     </li>
   {% endif %}
   <li>

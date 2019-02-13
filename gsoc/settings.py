@@ -119,12 +119,12 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'gsoc',
     'django.contrib.admin',
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
+    'gsoc',
     'cms',
     'menus',
     'sekizai',
@@ -238,7 +238,7 @@ META_USE_SITES = True
 
 LOGIN_REDIRECT_URL = '/'
 
-AUTH_USER_MODEL = 'gsoc.User'
+# AUTH_USER_MODEL = 'gsoc.User'
 
 BLOG_MULTISITE = True
 
