@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
+    'gsoc',
     'cms',
     'menus',
     'sekizai',
@@ -147,7 +148,6 @@ INSTALLED_APPS = (
     'djangocms_snippet',
     'djangocms_googlemap',
     'djangocms_video',
-    'gsoc',
     'debug_toolbar'
 )
 
@@ -214,6 +214,7 @@ DATABASES = {
 }
 
 DATABASE_APPS_MAPPING = {
+    'gsoc': 'default',
     'auth': 'auth_db',
     'admin': 'auth_db',
     'sessions': 'auth_db'
@@ -222,7 +223,7 @@ DATABASE_APPS_MAPPING = {
 DATABASE_ROUTERS = ['gsoc.router.DatabaseAppsRouter']
 
 MIGRATION_MODULES = {
-    
+
 }
 
 THUMBNAIL_PROCESSORS = (
@@ -237,7 +238,7 @@ META_USE_SITES = True
 
 LOGIN_REDIRECT_URL = '/'
 
-#AUTH_USER_MODEL = 'gsoc.User'
+# AUTH_USER_MODEL = 'gsoc.User'
 
 BLOG_MULTISITE = True
 
