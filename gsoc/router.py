@@ -1,4 +1,6 @@
 from django.conf import settings
+from cms.models import PageUser
+
 
 class DatabaseAppsRouter(object):
     """
@@ -15,13 +17,17 @@ class DatabaseAppsRouter(object):
 
     def db_for_read(self, model, **hints):
         """Point all read operations to the specific database."""
-        if model._meta.app_label in settings.DATABASE_APPS_MAPPING:
+        if model == PageUser:
+            return 'auth_db'
+        elif model._meta.app_label in settings.DATABASE_APPS_MAPPING:
             return settings.DATABASE_APPS_MAPPING[model._meta.app_label]
         return None
 
     def db_for_write(self, model, **hints):
         """Point all write operations to the specific database."""
-        if model._meta.app_label in settings.DATABASE_APPS_MAPPING:
+        if model == PageUser:
+            return 'auth_db'
+        elif model._meta.app_label in settings.DATABASE_APPS_MAPPING:
             return settings.DATABASE_APPS_MAPPING[model._meta.app_label]
         return None
 
@@ -38,8 +44,9 @@ class DatabaseAppsRouter(object):
 
     def allow_syncdb(self, db, model):
         """Make sure that apps only appear in the related database."""
-
-        if db in list(settings.DATABASE_APPS_MAPPING.values()):
+        if model == PageUser:
+            return 'auth_db'
+        elif db in list(settings.DATABASE_APPS_MAPPING.values()):
             return settings.DATABASE_APPS_MAPPING.get(model._meta.app_label) == db
         elif model._meta.app_label in settings.DATABASE_APPS_MAPPING:
             return False
@@ -47,8 +54,9 @@ class DatabaseAppsRouter(object):
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """Make sure that apps only appear in the related database."""
-
-        if db in list(settings.DATABASE_APPS_MAPPING.values()):
+        if app_label == 'cms' and model_name == 'pageuser':
+            return 'auth_db' == db
+        elif db in list(settings.DATABASE_APPS_MAPPING.values()):
             return settings.DATABASE_APPS_MAPPING.get(app_label) == db
         elif app_label in settings.DATABASE_APPS_MAPPING:
             return False

@@ -214,10 +214,11 @@ DATABASES = {
 }
 
 DATABASE_APPS_MAPPING = {
-    'gsoc': 'default',
+    'gsoc': 'auth_db',
     'auth': 'auth_db',
     'admin': 'auth_db',
-    'sessions': 'auth_db'
+    'sessions': 'auth_db',
+    'contenttypes': 'auth_db'
 }
 
 DATABASE_ROUTERS = ['gsoc.router.DatabaseAppsRouter']
