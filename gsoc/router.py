@@ -56,6 +56,8 @@ class DatabaseAppsRouter(object):
         """Make sure that apps only appear in the related database."""
         if app_label == 'cms' and model_name == 'pageuser':
             return 'auth_db' == db
+        elif app_label == 'contenttypes':
+            return True
         elif db in list(settings.DATABASE_APPS_MAPPING.values()):
             return settings.DATABASE_APPS_MAPPING.get(app_label) == db
         elif app_label in settings.DATABASE_APPS_MAPPING:
