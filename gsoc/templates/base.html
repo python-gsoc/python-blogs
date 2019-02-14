@@ -38,6 +38,6 @@
         </div>
         <!-- menu -->
         {% block content %}{% endblock %}
-        <script src="/static/js/ui.js"></script>
+        {% render_block 'js' %}
     </body>
 </html>
