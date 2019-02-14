@@ -1,96 +1,123 @@
 {% extends "base.html" %}
+
+{% block title %}
+Getting Started
+{% endblock %}
+
 {% block content %}
-<div class="header"><h1>Getting Started</h1></div>
-
-<p> Here's 7 things you can do to get started in free and open source
-software:
-
-</p><ol type="1">
-   <li><strong>Choose an organization to work with.</strong>
-   <br>There's hundreds of thousands of projects that use Python, and you
-need to narrow
-down the list before you can get help or do much that's useful.  See <a href="faq.html#choosing">How do I choose a project or sub-org?</a> for ideas
-on how to do that.
-   <ul>
-		<li>Hint: If you're a beginner, look for a project with lots of mentors
-available and projects marked as suitable for beginners.  (Core Python development
-is not usually beginner suitable.)</li>
-
-		<li><em>Any</em> open source experience will help you prepare for GSoC,
-so don't worry too much about what project you try first and don't be afraid
-to change your mind!</li>
-
-		<li>For GSoC applications, you'll need to choose from <a href="http://python-gsoc.org/#ideas">the list of accepted sub-orgs</a> (Or
-google's list of big orgs!).  If your favourite group isn't on the list,
-contact them to see if they're interested in participating.  Applications not
-associated with a known sub-org are usually rejected because we don't have
-mentors available.
-
-   </li></ul>
-
-   </li><li><strong>Set up your own development environment.</strong>
-	<br>Document what you do so you can remember it later, and so you can
-help others if they get stuck! And if you get stuck, don't be afraid to ask
-for help.
-
-   </li><li><strong>Start communicating with the developers.</strong>
-	<br>Join the mailing list, IRC channel, or any other communication
-channels the developers use. Listen, get to know the people involved, and ask
-questions.
-
-   <ul>
-		<li>In almost all cases, you should <strong>communicate in
-public</strong> rather than in private. GSoC is a busy time for many
-developers and many beginner questions get asked repeatedly. Help keep your
-devs less stressed out by reading what they've written already and making it
-easier for them to have a record of the things they've answered. You can use
-a pseudonym/nickname if you want. Also, search those archives to make sure
-you're not asking something that's just been asked by someone else!
-
-      </li><li>If you want to make the best first impressions, <a href="faq.html#dearsir">DO NOT start
-with "Dear Sir."</a> and <a href="faq.html#ask2ask">DO NOT ask to ask</a>.
-
-   </li></ul>
-
-   </li><li><strong>Find some beginner-friendly bugs and try to fix them.</strong>
-	<br>Many projects have these tagged as "easy" "bite-size" or
-"beginner-friendly" so try searching for those terms or looking at the tags
-to figure out which bugs might be good for you.
-
-   <ul>
-	 <li>Note that if you apply as a student with the PSF you will be asked to
-submit a code sample, generally code related to your project. A few fixed
-bugs with code accepted upstream will make your application look great!
-
-	</li><li>Remember, competition for easy bugs is very high during GSoC so it can
-be hard to find one that's tagged. If you don't see anything from your
-search, read through the bugs and choose a few that sound like something you
-can fix.  Remember to ask for help if you get stuck for too long, "I'm a new
-contributor and was trying to work on bug#123456. I have a question about how
-to..." -- if people can't help, sometimes they will be able to suggest
-another bug which would be more beginner-suitable.
-
-	</li><li>Other "easy" bug ideas: find typos and fix them.  Set up new tests --
-even if the project doesn't need the first one you write, practice writing
-test cases is useful for later.  Try using a tool like pylint to find issues
-(but remember not everyone cares about the same things!).
-</li></ul>
-
-   </li><li><strong>Find bugs and report them.</strong>
-   <br>Hopefully you won't encounter too many, but it's always a good
-idea to get familiar with your project's bug reporting process.
-
-   </li><li><strong>Help with documentation.</strong>
-	<br>As a beginner in your project, you're going to see things that are
-confusing that more experienced developers may not notice. Take advantage of
-your beginner mindset and make sure to document anything you think is
-missing!
-
-   </li><li><strong>Help others.</strong>
-	<br>This is a great idea for a lot of reasons: explaining things can
-help you learn them better, demonstrating your skills as a good community
-member can make you more memorable when your mentors have to choose
-candidates, and being helpful makes your community a better place!
-
-</li></ol>
+   <a name="gettingstarted"></a>
+   <div class="content">
+      <h2 class="content-head is-center">How do I get started?</h2>
+      <div class="pure-g">
+         <div class="l-box pure-u-1 pure-u-md-1-1 pure-u-lg-1-1">
+            <h3 class="content-subhead">
+               <i class="fa fa-rocket"></i>
+               Choose an organization.
+            </h3>
+            <p>
+               There's hundreds of thousands of projects that use Python, and you
+               need to narrow
+               down the list before you can get help or do much that's useful.
+               See <a href="students.html#choosing">How
+               do I choose a project or sub-org?</a> for ideas
+               on how to do that.
+            <p><em>Any</em> open source experience will help you prepare for GSoC,
+               so don't worry too much about what project you try first and don't be afraid
+               to change your mind! When we know which sub-orgs will be participating,
+               they'll be listed <a href="#ideas">with the project ideas</a>.
+            </p>
+         </div>
+         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <div class="padded-cell">
+               <h3 class="content-subhead">
+                  <i class="fa fa-laptop"></i>
+                  Set up your own development environment.
+               </h3>
+               <p>
+                  Document what you do so you can remember it later, and so you can
+                  help others if they get stuck! And if you get stuck, don't be afraid to ask
+                  for help.
+               </p>
+            </div>
+         </div>
+         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <div class="padded-cell">
+               <h3 class="content-subhead">
+                  <i class="fa fa-comments"></i>
+                  Start communicating with the developers.
+               </h3>
+               <p>
+                  Join the mailing list, IRC channel, or any other communication
+                  channels the developers use. Listen, get to know the people involved, and ask
+                  questions.
+               <ul>
+                  <li>Read first to see if your question has already been answered.
+                     We get a lot of repeat questions!
+                  </li>
+                  <li>Communicate in public (not in private). Most open source work is done in the open,
+                     so
+                     demonstrate that you can do that!
+                  </li>
+               </ul>
+               </p>
+            </div>
+         </div>
+         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <h3 class="content-subhead">
+               <i class="fa fa-bug"></i>
+               Try to fix a bug.
+            </h3>
+            <p>
+               Many projects have these tagged as "easy" "bite-size" or
+               "beginner-friendly" -- do a search to see what comes up. Competition for the easiest
+               ones can be fierce, so don't be afraid to try something harder if you think
+               you might know what to do.
+            </p>
+            <p>
+               Can't find a bug? Other ideas: find typos and fix them. Improve test coverage by
+               writing new tests. Improve documentation. Use a tool like Pylint or Bandit to see
+               if you can find new issues.
+            </p>
+         </div>
+         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <div class="padded-cell">
+               <h3 class="content-subhead">
+                  <i class="fa fa-flag"></i>
+                  Find bugs and report them.
+               </h3>
+               <p>
+                  Hopefully you won't encounter too many, but it's always a good idea to get familiar with
+                  your
+                  project's bug reporting process.
+               </p>
+            </div>
+         </div>
+         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <div class="padded-cell">
+               <h3 class="content-subhead">
+                  <i class="fa fa-file"></i>
+                  Help with documentation.
+               </h3>
+               <p>
+                  As a beginner in your project, you're going to see things that are confusing that more
+                  experienced developers may not notice. Take advantage of your beginner mindset and make
+                  sure to
+                  document anything you think is missing!
+               </p>
+            </div>
+         </div>
+         <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-3">
+            <h3 class="content-subhead">
+               <i class="fa fa-heart"></i>
+               Help others.
+            </h3>
+            <p>
+               Most projects are looking for not just coders, but good community members who people like to
+               work with. Show your community skills by helping others and make a great impression come
+               selection time!
+            </p>
+         </div>
+      </div>
+   </div>
+<!-- getting started -->
 {% endblock %}
