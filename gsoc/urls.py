@@ -11,6 +11,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.urls import path
+from gsoc import views
 
 admin.autodiscover()
 
@@ -25,6 +26,7 @@ urlpatterns = [
 #Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [
     url('accounts/', include('django.contrib.auth.urls')),
+    url('irc_test/', views.irc_test),
 ]
 
 urlpatterns += i18n_patterns(
