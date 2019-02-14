@@ -214,7 +214,6 @@ DATABASES = {
 }
 
 DATABASE_APPS_MAPPING = {
-    'gsoc': 'default',
     'auth': 'auth_db',
     'admin': 'auth_db',
     'sessions': 'auth_db',

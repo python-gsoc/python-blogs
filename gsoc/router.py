@@ -58,6 +58,8 @@ class DatabaseAppsRouter(object):
             return 'auth_db' == db
         elif app_label == 'contenttypes':
             return True
+        elif app_label == 'auth' and model_name == 'permission':
+            return 'default'
         elif db in list(settings.DATABASE_APPS_MAPPING.values()):
             return settings.DATABASE_APPS_MAPPING.get(app_label) == db
         elif app_label in settings.DATABASE_APPS_MAPPING:
