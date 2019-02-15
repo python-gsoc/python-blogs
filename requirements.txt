@@ -12,4 +12,6 @@ djangocms-snippet>=2.1
 djangocms-googlemap>=1.2
 djangocms-video>=2.1.1
 
+djangocms_history>=1
+
 aldryn-newsblog>=2.2.1
