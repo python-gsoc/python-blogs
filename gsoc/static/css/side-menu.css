@@ -201,6 +201,9 @@ small screens.
             margin-top: 0.6em;
         }
 
+.sub-menu {
+    margin-left: 20px;
+}
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 
