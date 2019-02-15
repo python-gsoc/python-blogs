@@ -91,7 +91,6 @@ TEMPLATES = [
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-                'django.template.loaders.eggs.Loader'
             ],
         },
     },
@@ -124,30 +123,17 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django.contrib.messages',
-    'gsoc',
     'cms',
     'menus',
-    'sekizai',
     'treebeard',
-    'djangocms_text_ckeditor',
-    'filer',
+    'sekizai',
     'easy_thumbnails',
-    'aldryn_apphooks_config',
-    'cmsplugin_filer_image',
-    'parler',
-    'taggit',
-    'taggit_autosuggest',
-    'meta',
-    'sortedm2m',
-    'djangocms_blog',
+    'djangocms_text_ckeditor',
     'djangocms_column',
-    'djangocms_file',
     'djangocms_link',
-    'djangocms_picture',
     'djangocms_style',
     'djangocms_snippet',
-    'djangocms_googlemap',
-    'djangocms_video',
+    'gsoc',
     'debug_toolbar'
 )
 
@@ -225,20 +211,28 @@ MIGRATION_MODULES = {
 
 }
 
-THUMBNAIL_PROCESSORS = (
-    'easy_thumbnails.processors.colorspace',
-    'easy_thumbnails.processors.autocrop',
-    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
-    'easy_thumbnails.processors.filters'
-)
+# Password validation
+# https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-META_SITE_PROTOCOL = 'http'
-META_USE_SITES = True
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 LOGIN_REDIRECT_URL = '/'
 
 # AUTH_USER_MODEL = 'gsoc.User'
 
-BLOG_MULTISITE = True
+
 
 INTERNAL_IPS = ('127.0.0.1',)
