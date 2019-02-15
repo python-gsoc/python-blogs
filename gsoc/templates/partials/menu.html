@@ -2,12 +2,9 @@
 
 {% for child in children %}
 <li class="pure-menu-item{% if child.selected %} selected{% endif %}"><a href="{{ child.attr.redirect_url|default:child.get_absolute_url }}" class="pure-menu-link">{{ child.get_menu_title }}</a></li>
-<!-- <div class="pure-menu-item child{% if child.selected %} selected{% endif %}{% if child.ancestor %} ancestor{% endif %}{% if child.sibling %} sibling{% endif %}{% if child.descendant %} descendant{% endif %}">
-    <a class="pure-menu-link" href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">{{ child.get_menu_title }}</a>
     {% if child.children %}
-    <div style="margin-left: 20px;">
+    <div class="sub-menu">
         {% show_menu from_level to_level extra_inactive extra_active template "" "" child %}
     </div>
     {% endif %}
-</div> -->
 {% endfor %}
