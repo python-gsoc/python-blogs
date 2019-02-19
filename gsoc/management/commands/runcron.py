@@ -1,5 +1,9 @@
-import gsoc.settings as config
+from multiprocessing.dummy import Pool as ThreadPool
 from django.core.management.base import BaseCommand, CommandError
+
+import gsoc.settings as config
+from gsoc.models import Scheduler
+from gsoc.common.utils import commands
 
 class Command(BaseCommand):
     help = 'Run the cron command to process items such as sending scheduled emails etc.'
@@ -33,8 +37,25 @@ class Command(BaseCommand):
     def build_items(self, options):
         self.stdout.write(self.style.SUCCESS('Build Items'), ending='\n')
 
+    def handle_process(self, scheduler):
+        self.stdout.write('Running command {}'.format(scheduler.command), ending='\n')
+        if getattr(commands, scheduler.command)(scheduler):
+            scheduler.success = True
+            scheduler.save()
+
     def process_items(self, options):
-        self.stdout.write(self.style.SUCCESS('Process Items'), ending='\n')
+        try:
+            schedulers = Scheduler.objects.filter(success=False)
+            if len(schedulers) is not 0:
+                pool = ThreadPool(options['num_workers'])
+                pool.map(self.handle_process, schedulers)
+                pool.close()
+                pool.join()
+            else:
+                self.stdout.write('No scheduled tasks', ending='\n')
+
+        except Exception as e:
+            self.stdout.write(e, ending='\n')
 
     def handle(self, *args, **options):
         if options['subcommand']:
