@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
     def build_items(self, options):
         # build tasks
-        self.stdout.write(self.style.SUCCESS('Build Items'), ending='\n')
+        self.stdout.write(self.style.SUCCESS('Build items'), ending='\n')
         # process items
         self.process_items(options)
 
@@ -56,9 +56,12 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.ERROR('Command {}:{} failed with error: {}'
                 .format(scheduler.command, scheduler.id, err)), ending='\n')
+            scheduler.success = False
+            scheduler.last_error = err
+            scheduler.save()
 
     def process_items(self, options):
-            schedulers = Scheduler.objects.filter(success=False)
+            schedulers = Scheduler.objects.exclude(success=True)
             if len(schedulers) is not 0:
                 try:
                     pool = ThreadPool(options['num_workers'])
