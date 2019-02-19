@@ -1,5 +1,9 @@
+import time
+
 def send_email(scheduler):
-    return True
+    time.sleep(10)
+    return None
 
 def send_irc_msg(scheduler):
-    return True
+    time.sleep(5)
+    return None
