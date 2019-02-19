@@ -15,7 +15,6 @@ class Command(BaseCommand):
         parser.add_argument(
             'task',
             nargs='?',
-            default=self.tasks[0],
             choices=self.tasks,
             type=str,
             help='The task which will be started'
@@ -40,8 +39,6 @@ class Command(BaseCommand):
     def build_items(self, options):
         # build tasks
         self.stdout.write(self.style.SUCCESS('Build items'), ending='\n')
-        # process items
-        self.process_items(options)
 
     def handle_process(self, scheduler):
         self.stdout.write('Running command {}:{}'
@@ -61,7 +58,7 @@ class Command(BaseCommand):
             scheduler.save()
 
     def process_items(self, options):
-            schedulers = Scheduler.objects.exclude(success=True)
+            schedulers = Scheduler.objects.filter(success=None)
             if len(schedulers) is not 0:
                 try:
                     pool = ThreadPool(options['num_workers'])
@@ -80,3 +77,4 @@ class Command(BaseCommand):
             getattr(self, options['task'])(options)
         else:
             self.build_items(options)
+            self.process_items(options)
