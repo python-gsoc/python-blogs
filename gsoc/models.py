@@ -13,7 +13,7 @@ class Scheduler(models.Model):
     command = models.CharField(name='command', max_length=20, choices=commands)
     data = models.TextField(name='data')
     success = models.BooleanField(name='success', null=True, default=None)
-    last_error = models.CharField(name='last_error', max_length=100, null=True, default=None)
+    last_error = models.TextField(name='last_error', null=True, default=None)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
