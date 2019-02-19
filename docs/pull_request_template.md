@@ -23,6 +23,7 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 # Checklist:
 
 - [ ] My code follows the style guidelines of this project
+- [ ] I have not added a commit to any .db files as part of my pull request
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] My changes generate no new warnings
