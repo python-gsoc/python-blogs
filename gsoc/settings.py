@@ -131,6 +131,10 @@ INSTALLED_APPS = (
     'djangocms_history',
     'easy_thumbnails',
     'filer',
+    'djangocms_audio',
+    'djangocms_video',
+    'djangocms_file',
+    'djangocms_picture',
     'djangocms_column',
     'djangocms_link',
     'djangocms_style',
@@ -261,3 +265,6 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 RUNCRON_NUM_WORKERS = 5
 RUNCRON_TIMEOUT = 10
+
+DJANGOCMS_AUDIO_ALLOWED_EXTENSIONS = ['mp3', 'ogg', 'wav']
+DJANGOCMS_VIDEO_ALLOWED_EXTENSIONS = ['mp4', 'webm', 'ogv']
