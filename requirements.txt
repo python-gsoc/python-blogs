@@ -11,7 +11,7 @@ djangocms-style>=2.1
 djangocms-snippet>=2.1
 djangocms-googlemap>=1.2
 djangocms-video>=2.1.1
-djangocms-audio==1.1.0
+djangocms-audio>=1.1.0
 
 djangocms_history>=1
 
