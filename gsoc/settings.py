@@ -268,3 +268,32 @@ RUNCRON_TIMEOUT = 10
 
 DJANGOCMS_AUDIO_ALLOWED_EXTENSIONS = ['mp3', 'ogg', 'wav']
 DJANGOCMS_VIDEO_ALLOWED_EXTENSIONS = ['mp4', 'webm', 'ogv']
+
+# Ckeditor settings
+
+CKEDITOR_SETTINGS = {
+    'disableNativeSpellChecker': False,
+    'language': '{{ language }}',
+    'extraPlugins': 'button,clipboard,dialog,dialogui,image2,lineutils,notification,toolbar,widget,widgetselection,youtube',
+    'toolbar': [
+        {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+        {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']},
+        # ['cmsplugins', 'cmswidget'],
+        {'name': 'settings', 'items': ['Source', 'ShowBlocks', 'Maximize']},
+        '/',
+        {'name': 'basicstyles',
+         'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting',
+                   'RemoveFormat']},
+        {'name': 'paragraph',
+         'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
+                   'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+        {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
+        {'name': 'insert', 'items': ['Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Image', 'Youtube']},
+        '/',
+        {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+        {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+    ],
+    'toolbarCanCollapse': False,
+}
+
+TEXT_ADDITIONAL_TAGS = ('iframe',)
