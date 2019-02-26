@@ -1,6 +1,3 @@
-import os  # isort:skip
-gettext = lambda s: s
-DATA_DIR = os.path.dirname(os.path.dirname(__file__))
 """
 Django settings for gsoc project.
 
@@ -13,8 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+import logging.config
 import os
 
+
+gettext = lambda s: s
+DATA_DIR = os.path.dirname(os.path.dirname(__file__))
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -29,18 +30,31 @@ SECRET_KEY = '0ngo5cy%zk_8g_sw%%7vc3(xn4pjm(zuu1!nvff!iri1cwa2)@'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ('127.0.0.1',)
+
+# EMAIL CONFIGURATION
+# ------------------------------------------------------------------------------
+# See: https://docs.djangoproject.com/en/2.1/ref/settings/#email
+# TODO: Update it with real settings
+ADMINS = [('Admin 1', 'placeholder@python-gsoc.org')]
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+DEFAULT_FROM_EMAIL = 'placeholder@python-gsoc.org'
+EMAIL_SUBJECT_PREFIX = '[Python-GSoC]'
+EMAIL_USE_TLS = True
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "realemail@realdomain.tld"
+EMAIL_HOST_PASSWORD = "supersecretpassword"
 
 
 # Application definition
-
-
-
-
-
 ROOT_URLCONF = 'gsoc.urls'
-
-
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -55,7 +69,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
@@ -68,7 +81,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'gsoc', 'static'),
 )
 SITE_ID = 1
-
 
 TEMPLATES = [
     {
@@ -95,7 +107,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 MIDDLEWARE = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -257,9 +268,95 @@ LOGIN_REDIRECT_URL = '/'
 
 # AUTH_USER_MODEL = 'gsoc.User'
 
+# LOGGING CONFIGURATION
+# ------------------------------------------------------------------------------
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
+# See: http://docs.djangoproject.com/en/dev/topics/logging
+# See: https://docs.djangoproject.com/en/2.1/topics/logging/#disabling-logging-configuration
+LOGGING_CONFIG = None
 
+if DEBUG:
+    ERROR_LEVEL = 'DEBUG'
+else:
+    ERROR_LEVEL = 'INFO'
 
-INTERNAL_IPS = ('127.0.0.1',)
+ERROR_HANDLERS = ['file', 'mail_admins']
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(levelname)s %(asctime)s %(process)d '
+                       '%(thread)d %(filename)s %(module)s %(funcName)s '
+                       '%(lineno)d %(message)s')
+        },
+        'simple': {
+            'format': '%(levelname)s: %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/pygsoc.log'),
+            'formatter': 'verbose',
+            'when': 'midnight',
+            'backupCount': 60,
+            'encoding': 'utf-8',
+        },
+        'access_logs': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/access.log'),
+            'formatter': 'simple',
+            'when': 'midnight',
+            'backupCount': 7,
+            'encoding': 'utf-8',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.db': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.security.DisallowedHost': {
+            'handlers': ['file'],
+            'propagate': False,
+        },
+        # Catch All Logger -- Captures any other logging
+        '': {
+            'handlers': ERROR_HANDLERS,
+            'level': ERROR_LEVEL,
+        }
+    }
+}
+logging.config.dictConfig(LOGGING)
 
 # Runcron settings
 
