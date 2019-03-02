@@ -11,6 +11,9 @@ from django.contrib.sitemaps.views import sitemap
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.urls import path
+from django.urls import path
+
+from . import views
 
 admin.autodiscover()
 
@@ -31,7 +34,7 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     url(r'^', include('cms.urls')),
 )
-
+urlpatterns += [path('calendar/', views.calender)]
 # This is only needed when using runserver.
 if settings.DEBUG:
     import debug_toolbar
