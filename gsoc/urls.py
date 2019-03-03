@@ -12,8 +12,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.urls import path
 
-from . import views
-
 admin.autodiscover()
 
 urlpatterns = [
