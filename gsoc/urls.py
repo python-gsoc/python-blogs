@@ -33,7 +33,6 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     url(r'^', include('cms.urls')),
 )
-urlpatterns += [path('calendar/', views.calender)]
 # This is only needed when using runserver.
 if settings.DEBUG:
     import debug_toolbar
