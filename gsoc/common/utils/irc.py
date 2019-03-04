@@ -31,6 +31,11 @@ class CommandBot(BaseIRCHandler):
             self.client.register(nick = new_nick)
 
 def parse_data(data):
+    """
+    parses the message data and returns corresponding commands for the message
+
+    `data` should be in the form of a json: `'{"command": "<command>", "message": "<message>"}'`
+    """
     data = json.loads(data)
     chunk_size = 150
     chunks = [data['message'][i:i+chunk_size] for i in range(0, len(data['message']), chunk_size)]
@@ -49,6 +54,9 @@ def parse_data(data):
     return commands
 
 def send_message(messages):
+    """
+    sends a set of messages to the receiver on irc after parsing them
+    """
     client = ModIRCClient(CommandBot(), config.BOT_NICK, config.IRC_SERVER, messages)
     client.set_log_level(5)
     client.run()

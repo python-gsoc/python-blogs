@@ -7,6 +7,10 @@ def send_email(scheduler):
     return 'Test Error'
 
 def send_irc_msgs(schedulers):
+    """
+    sends the irc messages from `send_irc_msg` `Scheduler` objects
+    and returns any error encountered
+    """
     send_message([_.data for _ in schedulers])
     for s in schedulers:
         s.success=True
