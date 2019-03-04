@@ -31,7 +31,8 @@ def convert_pdf_to_txt(f):
     return text
 
 def is_user_accepted_student(user):
-    return user.userprofile.is_student and user.userprofile.is_student_accepted
+    return user.userprofile.is_student \
+           and user.userprofile.suborg_full_name() is not None
 
 def scan_proposal(file):
     try:

@@ -37,7 +37,6 @@ class UserProfile(models.Model):
     gsoc_year = models.ManyToManyField(GsocYear, blank=True)
     suborg_full_name = models.ManyToManyField(SubOrg, blank=True)
     is_student = models.BooleanField(default=True)
-    is_student_accepted = models.BooleanField(default=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
 def suborg_full_name(self):
     try:

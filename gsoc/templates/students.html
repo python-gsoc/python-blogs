@@ -5,42 +5,6 @@ Students
 {% endblock %}
 
 {% block content %}
-  	<!-- Begin Upload Accepted Proposal -->
-
-  {% if user and user.userprofile.is_student %}
-    <h1>Welcome {{ user.username }}!</h1>
-    {% if user.userprofile.is_student_accepted %}
-    <button name="upload-proposal" onclick="document.querySelector('#upload-proposal').style.display='block'">
-    {% if user.userprofile.accepted_proposal_pdf %}
-      Re-upload Your Accepted Proposal
-    {% else %}
-      Upload Your Accepted Proposal
-     {% endif %}
-    </button>
-      <div id='upload-proposal' style="display: none">
-      <form id='upload-proposal-form'
-            enctype="multipart/form-data"
-            action="{% url 'upload-proposal' %}"
-            method="post">
-        {% csrf_token %}
-        <input type="file" name="accepted_proposal_pdf">
-      </form>
-      <button onclick="confirmUpload()">Confirm</button>
-      <button onclick="document.querySelector('#upload-proposal').style.display='none'">
-        Quit
-      </button>
-      </div>
-      <script>
-      function confirmUpload() {
-        if(confirm("Please remove all private data before uploading! Confirm?")) {
-          document.querySelector("#upload-proposal-form").submit()
-        }
-      }
-      </script>
-      {% endif %}
-  {% endif %}
-
-  	<!-- End Upload Accepted Proposal -->
     <a name="apply"></a>
     <div class="content">
         <div class="pure-u-1 pure-u-md-1-1 pure-u-lg-1-1">
