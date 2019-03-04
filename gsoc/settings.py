@@ -397,4 +397,4 @@ TEXT_ADDITIONAL_TAGS = ('iframe',)
 
 BOT_NICK = "CommandBot"
 IRC_SERVER = "irc.freenode.org"
-RECEIVER = "PyGSOCBot"
+RECEIVER = "limnoria"
