@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 
 {% block title %}
- My Profile
+My Profile
 {% endblock %}
 
 {% block content %}
+  <h1>Welcome {% if not user.is_anonymous %}{{ user.username }} {% endif %}!</h1>
+  {% if user.is_anonymous %}
+    <div>Please login <a href="{% url 'login' %}">here</a>.</div>
+  {% endif %}
   	<!-- Begin Upload Accepted Proposal -->
   {% if user %}
-    <h1>Welcome {{ user.username }}!</h1>
-    {% if user.userprofile.is_student and user.userprofile.suborg_full_name %}
+
+    {% if user.userprofile.is_student and user.suborg_full_name %}
     <button name="upload-proposal" onclick="document.querySelector('#upload-proposal').style.display='block'">
     {% if user.userprofile.accepted_proposal_pdf %}
       Re-upload Your Accepted Proposal
@@ -37,8 +41,6 @@
       }
       </script>
       {% endif %}
-  {% else %}
-    <div>Please login <a href="{% url 'login' %}">here</a>.</div>
   {% endif %}
 
   	<!-- End Upload Accepted Proposal -->

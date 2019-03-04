@@ -32,7 +32,7 @@ def convert_pdf_to_txt(f):
 
 def is_user_accepted_student(user):
     return user.userprofile.is_student \
-           and user.userprofile.suborg_full_name() is not None
+           and user.suborg_full_name() is not None
 
 def scan_proposal(file):
     try:
@@ -53,10 +53,10 @@ def upload_proposal_view(request):
             form.save()
             if not scan_proposal(request.FILES['accepted_proposal_pdf']):
                 return shortcuts.render(request, 'proposal_upload/on_find_private_data.html')
-    return shortcuts.redirect('/students')
+    return shortcuts.redirect('/myprofile')
 
 @decorators.login_required
 @decorators.user_passes_test(is_user_accepted_student)
 def clear_proposal_view(request):
     request.user.userprofile.accepted_proposal_pdf.delete()
-    return shortcuts.redirect('/students')
+    return shortcuts.redirect('/myprofile')
