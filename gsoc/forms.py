@@ -1,4 +1,4 @@
-from django.forms import ModelForm, CheckboxSelectMultiple, Form, FileField
+from django.forms import ModelForm, CheckboxSelectMultiple
 
 from .models import UserProfile
 
