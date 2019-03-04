@@ -2,7 +2,6 @@ from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class Scheduler(models.Model):
     commands = (
         ('send_email', 'send_email'),
@@ -33,13 +32,13 @@ class GsocYear(models.Model):
     def __str__(self):
         return str(self.gsoc_year)
 
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gsoc_year = models.ManyToManyField(GsocYear, blank=True)
     suborg_full_name = models.ManyToManyField(SubOrg, blank=True)
-
-
+    is_student = models.BooleanField(default=True)
+    is_student_accepted = models.BooleanField(default=False)
+    accepted_proposal_pdf = models.FileField(blank=True, null=True)
 def suborg_full_name(self):
     try:
         user_profile = UserProfile.objects.get(user=self.id)
