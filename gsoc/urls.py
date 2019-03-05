@@ -37,7 +37,7 @@ urlpatterns += i18n_patterns(
 # Add upload proposal page
 urlpatterns += [
     url('upload-proposal/', gsoc.views.upload_proposal_view, name='upload-proposal'),
-    url('clear_accepted_proposal_pdf/', gsoc.views.clear_proposal_view, name='clear-proposal'),
+    url('cancel_proposal_upload/', gsoc.views.cancel_proposal_upload_view, name='cancel-proposal-upload'),
 ]
 
 

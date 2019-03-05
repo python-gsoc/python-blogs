@@ -1,5 +1,4 @@
 from django.forms import ModelForm, CheckboxSelectMultiple
-
 from .models import UserProfile
 
 

@@ -11,9 +11,10 @@ My Profile
   {% endif %}
   	<!-- Begin Upload Accepted Proposal -->
   {% if user %}
-
     {% if user.userprofile.is_student and user.suborg_full_name %}
-    <button name="upload-proposal" onclick="document.querySelector('#upload-proposal').style.display='block'">
+    <button name="upload-proposal"
+            id='begin-upload-proposal-button'
+            onclick="document.querySelector('#upload-proposal').style.display='block'">
     {% if user.userprofile.accepted_proposal_pdf %}
       Re-upload Your Accepted Proposal
     {% else %}
@@ -22,24 +23,62 @@ My Profile
     </button>
       <div id='upload-proposal' style="display: none">
       <form id='upload-proposal-form'
-            enctype="multipart/form-data"
-            action="{% url 'upload-proposal' %}"
-            method="post">
+            enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="accepted_proposal_pdf">
       </form>
-      <button onclick="confirmUpload()">Confirm</button>
+      <button onclick="uploadProposal()" id="upload-proposal-button">Confirm</button>
       <button onclick="document.querySelector('#upload-proposal').style.display='none'">
         Quit
       </button>
       </div>
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
       <script>
-      function confirmUpload() {
-        if(confirm("Please remove all private data before uploading! Confirm?")) {
-          document.querySelector("#upload-proposal-form").submit()
+      function cancelProposalUpload() {
+        axios.get('{% url 'cancel-proposal-upload' %}').then(
+          function(resp) {
+              alert("Proposal upload canceled.")
+          }
+        )
+      }
+      function setProposalUploadingStatus(status) {
+        const button = document.querySelector("#upload-proposal-button");
+        if(status) {
+          button.innerHTML = 'Uploading...Please wait.';
+          button.onclick = null;
+        } else {
+          button.innerHTML = 'Confirm';
+          button.onclick = uploadProposal;
         }
       }
+      function uploadProposal() {
+        setProposalUploadingStatus(true);
+        const uploadForm = document.querySelector('#upload-proposal-form');
+        axios.post(
+          '{% url 'upload-proposal' %}',
+          new FormData(uploadForm),
+        )
+          .then(function(resp) {
+            setProposalUploadingStatus(false);
+            if(!resp.data['file_type_valid']) {
+              console.log(resp.data['file_type_valid']);
+              alert("Your file doesn't seem to be a pdf file. Please check again!");
+              return
+            }
+            if(!resp.data['no_private_data'] &&
+              confirm('We seemed to have found some private data in your pdf file. Are you sure to proceed?') !== true) {
+              cancelProposalUpload();
+              return
+            }
+            alert('Proposal upload succeeded!');
+          })
+          .catch(function(err) {
+            setProposalUploadingStatus(false);
+            console.log(err);
+          })
+      }
       </script>
+
       {% endif %}
   {% endif %}
 
