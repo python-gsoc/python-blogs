@@ -33,14 +33,6 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     url(r'^', include('cms.urls')),
 )
-
-# Add upload proposal page
-urlpatterns += [
-    url('upload-proposal/', gsoc.views.upload_proposal_view, name='upload-proposal'),
-    url('cancel_proposal_upload/', gsoc.views.cancel_proposal_upload_view, name='cancel-proposal-upload'),
-]
-
-
 # This is only needed when using runserver.
 if settings.DEBUG:
     import debug_toolbar
@@ -53,3 +45,8 @@ if settings.DEBUG:
         url(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
         ] + staticfiles_urlpatterns() + urlpatterns
+# Add upload proposal page
+urlpatterns += [
+    url('upload-proposal/', gsoc.views.upload_proposal_view, name='upload-proposal'),
+    url('cancel_proposal_upload/', gsoc.views.cancel_proposal_upload_view, name='cancel-proposal-upload'),
+]
