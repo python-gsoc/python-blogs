@@ -19,3 +19,4 @@ aldryn-newsblog>=2.2.1
 
 pdfminer2==20151206
 six==1.12.0
+chardet==3.0.4
