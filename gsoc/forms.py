@@ -1,7 +1,6 @@
 from django.forms import ModelForm, CheckboxSelectMultiple
 from .models import UserProfile
 
-
 class UserProfileForm(ModelForm):
     class Meta:
         fields = ('suborg_full_name', 'gsoc_year', 'is_student', 'accepted_proposal_pdf')
