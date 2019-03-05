@@ -35,26 +35,14 @@ class GsocYear(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    gsoc_year = models.ManyToManyField(GsocYear, blank=True)
-    suborg_full_name = models.ManyToManyField(SubOrg, blank=True)
+    ROLES = (
+        (0, 'Others'),
+        (1, 'Suborg Admin'),
+        (2, 'Mentor'),
+        (3, 'Student')
+    )
 
-
-def suborg_full_name(self):
-    try:
-        user_profile = UserProfile.objects.get(user=self.id)
-        return user_profile.suborg_full_name.all()
-    except SubOrg.DoesNotExist:
-        return None
-
-
-def gsoc_year(self):
-    try:
-        user_profile = UserProfile.objects.get(user=self.id)
-        return user_profile.gsoc_year.all()
-    except GsocYear.DoesNotExist:
-        return None
-
-
-auth.models.User.add_to_class('suborg_full_name', suborg_full_name)
-auth.models.User.add_to_class('gsoc_year', gsoc_year)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    role = models.IntegerField(name='role', choices=ROLES, default=0)
+    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
+    suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
