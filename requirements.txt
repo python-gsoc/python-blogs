@@ -17,7 +17,5 @@ djangocms_history>=1
 
 aldryn-newsblog>=2.2.1
 
-fredirc==0.3.0
-
 pdfminer2==20151206
 six==1.12.0
