@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import logging.config
+import django.utils.timezone as tz
 import os
-
+import datetime
 
 gettext = lambda s: s
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -61,13 +62,13 @@ ROOT_URLCONF = 'gsoc.urls'
 
 LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'America/Los_Angeles'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -162,7 +163,6 @@ INSTALLED_APPS = (
     'gsoc',
     'debug_toolbar'
 )
-
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
     'easy_thumbnails.processors.autocrop',
@@ -395,3 +395,9 @@ CKEDITOR_SETTINGS = {
 }
 
 TEXT_ADDITIONAL_TAGS = ('iframe',)
+
+# IRC CommandBot settings
+
+BOT_NICK = "CommandBot"
+IRC_SERVER = "irc.freenode.org"
+RECEIVER = "limnoria"
