@@ -9,7 +9,7 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def time_zone(context,flag=0):
-    global gmtTime
+    gmtTime = "+00:00"
     localTime = tz.now()
     utcTimeZone = pytz.timezone('UTC')
     utcTime = datetime.datetime.now(tz=utcTimeZone)
@@ -37,8 +37,9 @@ def time_zone(context,flag=0):
             if(time.hour == localTime.hour):
                 if(abs(time.minute-localTime.minute) <= 1 ):
                     TIME_ZONE = i
+                    gmtTime = timeFromUTC
                     break
-    gmtTime = timeFromUTC
+            
     if flag:
         return gmtTime
     else:
