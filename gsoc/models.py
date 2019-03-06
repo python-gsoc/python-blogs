@@ -38,6 +38,12 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gsoc_year = models.ManyToManyField(GsocYear, blank=True)
     suborg_full_name = models.ManyToManyField(SubOrg, blank=True)
+    #Added for issue #40.
+    email_id=models.CharField(max_length=100)
+
+    #Returning the email_id only
+    def __str__(self):
+        return str(self.email_id)
 
 
 def suborg_full_name(self):
