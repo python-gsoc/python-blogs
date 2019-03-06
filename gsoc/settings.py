@@ -161,7 +161,12 @@ INSTALLED_APPS = (
     'sortedm2m',
     'taggit',
     'gsoc',
-    'debug_toolbar'
+    'debug_toolbar',
+    'absolute',
+    'aldryn_forms',
+    'aldryn_forms.contrib.email_notifications',
+    'captcha',
+    'emailit',
 )
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -207,6 +212,7 @@ CMS_TEMPLATES = (
     ('schedule.html', 'Schedule'),
     ('students.html', 'Students'),
     ('contact.html', 'Contact'),
+    ('suborgform.html','SubOrg Form')
 )
 
 CMS_PERMISSION = True
