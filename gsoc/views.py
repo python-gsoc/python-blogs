@@ -34,8 +34,7 @@ def convert_pdf_to_txt(f):
     return text
 
 def is_user_accepted_student(user):
-    return user.userprofile.role == 3 \
-           and user.suborg_full_name() is not None
+    return user.is_student()
 def has_private_data(text):
     if not text:
         return False
@@ -71,7 +70,8 @@ def upload_proposal_view(request):
         file = request.FILES.get('accepted_proposal_pdf')
         resp['file_type_valid'] = file and file.name.endswith('.pdf')
         if resp['file_type_valid']:
-            form = ProposalUploadForm(request.POST, request.FILES, instance=request.user.userprofile)
+            profile = request.user.student_profile()
+            form = ProposalUploadForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
                 form.save()
                 resp['no_private_data'] = scan_proposal(file)
@@ -80,5 +80,6 @@ def upload_proposal_view(request):
 @decorators.login_required
 @decorators.user_passes_test(is_user_accepted_student)
 def cancel_proposal_upload_view(request):
-    request.user.userprofile.accepted_proposal_pdf.delete()
+    profile = request.user.student_profile()
+    profile.accepted_proposal_pdf.delete()
     return shortcuts.HttpResponse()

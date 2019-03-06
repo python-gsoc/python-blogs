@@ -22,6 +22,21 @@ class Scheduler(models.Model):
         return self.command
 
 
+def is_student(self):
+    try:
+        self.userprofile_set.get(role=3)
+        return True
+    except UserProfile.DoesNotExist:
+        return False
+auth.models.User.add_to_class('is_student', is_student)
+
+def student_profile(self):
+    try:
+        return self.userprofile_set.get(role=3)
+    except UserProfile.DoesNotExist:
+        return None
+auth.models.User.add_to_class('student_profile', student_profile)
+
 class SubOrg(models.Model):
     suborg_name = models.CharField(name='suborg_name', max_length=80)
 

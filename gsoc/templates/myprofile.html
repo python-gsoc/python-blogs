@@ -6,16 +6,17 @@ My Profile
 
 {% block content %}
   <h1>Welcome {% if not user.is_anonymous %}{{ user.username }} {% endif %}!</h1>
+  <h2>{{ user.is_student }}</h2>
   {% if user.is_anonymous %}
     <div>Please login <a href="{% url 'login' %}">here</a>.</div>
   {% endif %}
   	<!-- Begin Upload Accepted Proposal -->
   {% if user %}
-    {% if user.userprofile.role == 3 and user.suborg_full_name %}
+    {% if user.is_student %}
     <button name="upload-proposal"
             id='begin-upload-proposal-button'
             onclick="document.querySelector('#upload-proposal').style.display='block'">
-    {% if user.userprofile.accepted_proposal_pdf %}
+    {% if user.student_profile.accepted_proposal_pdf %}
       Re-upload Your Accepted Proposal
     {% else %}
       Upload Your Accepted Proposal
