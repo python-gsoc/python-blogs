@@ -19,7 +19,7 @@ register = template.Library()
 	timezone of the user.
 """
 @register.simple_tag(takes_context=True)
-def time_zone(context, flag=0):
+def time_zone(context,flag=0):
     gmtTime = "+00:00"
     localTime = tz.now()
     utcTimeZone = pytz.timezone('UTC')
