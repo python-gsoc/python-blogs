@@ -11,7 +11,7 @@ My Profile
   {% endif %}
   	<!-- Begin Upload Accepted Proposal -->
   {% if user %}
-    {% if user.userprofile.is_student and user.suborg_full_name %}
+    {% if user.userprofile.role == 3 and user.suborg_full_name %}
     <button name="upload-proposal"
             id='begin-upload-proposal-button'
             onclick="document.querySelector('#upload-proposal').style.display='block'">

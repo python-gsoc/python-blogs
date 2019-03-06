@@ -34,7 +34,7 @@ def convert_pdf_to_txt(f):
     return text
 
 def is_user_accepted_student(user):
-    return user.userprofile.is_student \
+    return user.userprofile.role == 3 \
            and user.suborg_full_name() is not None
 def has_private_data(text):
     if not text:

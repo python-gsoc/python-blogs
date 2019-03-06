@@ -47,7 +47,6 @@ class UserProfile(models.Model):
     role = models.IntegerField(name='role', choices=ROLES, default=0)
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
-    is_student = models.BooleanField(default=True)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
 
 
