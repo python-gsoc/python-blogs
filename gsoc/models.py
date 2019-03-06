@@ -59,14 +59,14 @@ class SubOrgForm(models.Model):
     def __str__(self):
         return self.user
 
-class SubOrg(models.Model):
+class SubOrg(models.Model):# SubOrg name
     suborg_name = models.CharField(name='suborg_name', max_length=80)
 
     def __str__(self):
         return self.suborg_name
 
 
-class GsocYear(models.Model):
+class GsocYear(models.Model):# Gsoc Year
     gsoc_year = models.IntegerField(name='gsoc_year')
 
     def __str__(self):
@@ -76,8 +76,7 @@ class GsocYear(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gsoc_year = models.ManyToManyField(GsocYear, blank=True)
-    suborg_full_name = models.ManyToManyField(SubOrg, blank=True)
-
+     
 
 def suborg_full_name(self):
     try:
@@ -93,7 +92,7 @@ def gsoc_year(self):
         return user_profile.gsoc_year.all()
     except GsocYear.DoesNotExist:
         return None
-
-
+        
+            
 auth.models.User.add_to_class('suborg_full_name', suborg_full_name)
 auth.models.User.add_to_class('gsoc_year', gsoc_year)
