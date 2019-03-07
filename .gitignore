@@ -17,3 +17,4 @@ logs/*
 
 #to avoid conflict
 project.db
+users.db
