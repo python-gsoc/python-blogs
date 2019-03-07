@@ -54,6 +54,11 @@ My Profile
       }
       function uploadProposal() {
         setProposalUploadingStatus(true);
+        if (confirm("Please confirm you don't have any private data in your file!") !== true) {
+          alert("Upload canceled.")
+          setProposalUploadingStatus(false)
+          return
+        }
         const uploadForm = document.querySelector('#upload-proposal-form');
         axios.post(
           '{% url 'upload-proposal' %}',
@@ -66,10 +71,21 @@ My Profile
               alert("Your file doesn't seem to be a pdf file. Please check again!");
               return
             }
-            if(!resp.data['no_private_data'] &&
-              confirm('We seemed to have found some private data in your pdf file. Are you sure to proceed?') !== true) {
-              cancelProposalUpload();
-              return
+            const privateData = resp.data['private_data'];
+            if(privateData["emails"].length > 0 || 
+            privateData["possible_phone_numbers"].length > 0 || 
+            privateData["locations"].length > 0) {
+              let confirmText = "We seemed to have found these private data in your pdf file. Are you sure to proceed?";
+              if (privateData['emails'].length > 0)
+              confirmText += `\r\n Email addresses: ${privateData['emails'].toString()}`
+              if(privateData['possible_phone_numbers'].length > 0)
+              confirmText += `\r\n Possible phone numbers: ${privateData['possible_phone_numbers'].toString()}`
+              if(privateData['locations'].length > 0)
+              confirmText += `\r\n Locations: ${privateData['locations'].toString()}`
+              if(confirm(confirmText) !== true) {
+                cancelProposalUpload();
+                return
+              }
             }
             alert('Proposal upload succeeded!');
           })

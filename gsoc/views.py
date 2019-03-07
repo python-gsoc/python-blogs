@@ -3,6 +3,7 @@ import io
 
 from django.contrib.auth import decorators
 from .forms import ProposalUploadForm
+from .models import validate_proposal_text
 from django import shortcuts
 from django.http import JsonResponse
 from django.core.validators import RegexValidator
@@ -35,21 +36,6 @@ def convert_pdf_to_txt(f):
 
 def is_user_accepted_student(user):
     return user.is_student()
-def has_private_data(text):
-    if not text:
-        return False
-    quick_email_pattern = '[^@]+@[^@]+\.[^@]+'
-    quick_email_finder = RegexValidator(regex=quick_email_pattern)
-    us_phone_number_pattern = r'(\d{3}[-\.\s]??\d{3}[-\.\s]??\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]??\d{4}|\d{3}[-\.\s]??\d{4})'
-    us_phone_number_finder = RegexValidator(regex=us_phone_number_pattern)
-    finders = [quick_email_finder, us_phone_number_finder]
-    for finder in finders:
-        try:
-            finder(text)
-            return True
-        except ValidationError:
-            pass
-    return False
 def scan_proposal(file):
     """
     NOTE: returns True if not found private data.
@@ -58,12 +44,21 @@ def scan_proposal(file):
         text = convert_pdf_to_txt(file)
     except:
         text = ''
-    return not has_private_data(text)
+    try:
+        validate_proposal_text(text)
+        return None
+    except ValidationError as err:
+        return err
+
 @decorators.login_required
 @decorators.user_passes_test(is_user_accepted_student)
 def upload_proposal_view(request):
     resp = {
-        'no_private_data': False,
+        'private_data': {
+            "emails": [],
+            "possible_phone_numbers": [],
+            "locations": [],
+        },
         'file_type_valid': False,
     }
     if request.method == 'POST':
@@ -74,7 +69,9 @@ def upload_proposal_view(request):
             form = ProposalUploadForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
                 form.save()
-                resp['no_private_data'] = scan_proposal(file)
+                scan_result = scan_proposal(file)
+                if scan_result:
+                    resp['private_data'] = scan_result.message_dict 
     return JsonResponse(resp)
 
 @decorators.login_required

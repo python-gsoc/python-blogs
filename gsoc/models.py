@@ -1,9 +1,15 @@
 import os
+import re
 
 from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
+from django.core.validators import validate_email
+
+import phonenumbers
 
 class Scheduler(models.Model):
     commands = (
@@ -98,3 +104,61 @@ def auto_delete_proposal_on_change(sender, instance, **kwargs):
     if not old_file == new_file:
         if os.path.isfile(old_file_path):
             os.remove(old_file_path)
+
+
+
+class ProposalTextValidator:
+    def find_all_emails(self, text):
+        """
+        Returns all emails in the text in a list.
+        """
+        quick_email_pattern = re.compile("""
+        [a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@
+        (?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?
+        """, re.X)
+        emails = re.findall(quick_email_pattern, text)
+        real_emails = []
+        for email in emails:
+            try:
+                validate_email(email)
+                real_emails.append(email)
+            except:
+                pass
+        return real_emails
+    def find_all_possible_phone_numbers(self, text):
+        """
+        Returns all possible phone numbers in a list.
+        """
+        quick_phone_pattern = re.compile(r'\+?(?:[0-9]?){6,14}[0-9]')
+        phone_numbers = re.findall(quick_phone_pattern, text)
+        phone_numbers = [''.join(x) for x in phone_numbers]
+        possible_phone_numbers = []
+        for phone_number in phone_numbers:
+            added = False
+            try:
+                phone_number_parsed = phonenumbers.parse(phone_number, None)
+                if phone_number and phone_number_parsed and phonenumbers.is_possible_number(phone_number_parsed):
+                    added = True
+                    possible_phone_numbers.append(phone_number)
+            except:
+                if not added and 10 <= len(phone_number) <= 11:
+                    possible_phone_numbers.append(phone_number)
+        return possible_phone_numbers
+    def find_all_locations(self, text):
+        return []
+    def validate(self, text):
+        emails = self.find_all_emails(text)
+        possible_phone_numbers = self.find_all_possible_phone_numbers(text)
+        locations = self.find_all_locations(text)
+        if any((emails, possible_phone_numbers, locations)):
+            message = {
+                    "emails": emails,
+                    "possible_phone_numbers": possible_phone_numbers,
+                    "locations": locations,
+                }
+            raise ValidationError(message=message)
+    def __call__(self, text):
+        self.validate(text)
+    def get_help_text(self):
+        return _("The text in a proposal should not contain any private data.")
+validate_proposal_text = ProposalTextValidator()
