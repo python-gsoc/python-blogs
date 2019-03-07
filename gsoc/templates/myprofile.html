@@ -6,7 +6,6 @@ My Profile
 
 {% block content %}
   <h1>Welcome {% if not user.is_anonymous %}{{ user.username }} {% endif %}!</h1>
-  <h2>{{ user.is_student }}</h2>
   {% if user.is_anonymous %}
     <div>Please login <a href="{% url 'login' %}">here</a>.</div>
   {% endif %}
