@@ -15,9 +15,14 @@
   {% endif %}
 {% endif %}
 
+{% if user.is_authenticated %}
+<p>You are already logged in!</p>
+<a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+
+{% else %}
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
-
+<h1>Login</h1>
 <div>
   <td>{{ form.username.label_tag }}</td>
   <td>{{ form.username }}</td>
@@ -28,12 +33,14 @@
 </div>
 
 <div>
-  <input type="submit" value="login" />
+  <input type="submit" value="Login" />
   <input type="hidden" name="next" value="{{ next }}" />
 </div>
 </form>
 
 {# Assumes you setup the password_reset view in your URLconf #}
 <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+
+{% endif %}
 
 {% endblock %}
