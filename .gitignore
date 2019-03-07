@@ -15,6 +15,3 @@ logs/*
 # Pyenv
 .python-version
 
-#to avoid conflict
-project.db
-users.db
