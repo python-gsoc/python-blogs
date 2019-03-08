@@ -16,14 +16,53 @@
         <!--<![endif]-->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
             crossorigin="anonymous">
+
+            <!-- updated -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <!-- till here -->
+
         <link rel="stylesheet" href="/static/css/python-gsoc.css">
         <link rel="stylesheet" href="/static/css/side-menu.css">
         {% render_block "css" %}
+
+        <!-- styling for login bar at top right --> 
+        <style>
+        
+        .topnav {
+          overflow: hidden;
+          background-color: #333;
+        }
+
+        .topnav a {
+          float: right;
+          color: #f2f2f2;
+          text-align: right;
+          padding: 14px 16px;
+          text-decoration: none;
+          font-size: 17px;
+        }
+
+        .topnav a:hover {
+          background-color: #ddd;
+          color: black;
+        }
+
+        .topnav a.active {
+          background-color: #4CAF50;
+          color: white;
+        }
+        </style>
+
     </head>
     <body>
 
         {% cms_toolbar %}
 
+        
         <!-- Menu toggle -->
         <a href="#menu" id="menuLink" class="menu-link">
             <!-- Hamburger icon -->
@@ -37,16 +76,19 @@
                 <ul class="pure-menu-list">
                     {% show_menu 0 100 100 100 "partials/menu.html" %}
                 </ul>
-                <div  >
-                    {% if user.is_authenticated %}
-                    <a style="text-decoration:none " class="pure-menu-list" href="{% url 'logout' %}">Logout</a>
-                    {% else %}
-                    <a style="text-decoration:none " class="pure-menu-list"  href="{% url 'login' %}">Login</a>
-                    {% endif %}
-                </div>
+                
 
             </div>
         </div>
+        
+       <div class="topnav">
+            {% if user.is_authenticated %}
+            <a class="nav-item nav-link"  href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a  class="nav-item nav-link"   href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+
          
         
         <!-- menu -->
