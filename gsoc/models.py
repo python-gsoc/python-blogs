@@ -132,6 +132,17 @@ class ProposalTextValidator:
         matcher = PhoneNumberMatcher(text, 'US')
         all_numbers = list(iter(matcher))
         all_number_strings = [x.raw_string for x in all_numbers]
+        ptn = re.compile(r'\+?[0-9][0-9\(\)\-\ ]{3,}[0-9]', re.A| re.M)
+        maybe_numbers = re.findall(ptn, text)
+        for maybe_number in maybe_numbers:
+            if maybe_number in all_number_strings:
+                continue
+            try:
+                maybe_number_parsed = phonenumbers.parse(maybe_number)
+                if phonenumbers.is_possible_number(maybe_number_parsed):
+                    all_number_strings.append(maybe_number)
+            except:
+                pass
         return all_number_strings
     def find_all_locations(self, text):
         return []
