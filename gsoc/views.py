@@ -19,3 +19,5 @@ def article(request, article_id):
             break
     context = {"data" : data}
     return render(request, 'student-blogs.html', context)
+
+	
