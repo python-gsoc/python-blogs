@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student-Blogs
+{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Python's Google Summer of Code Page">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+   <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
+</head>
+<body>
+
+
+<div id="layout" class="pure-g" width="100px">
+        <div class="header">
+            <h1 class="brand-title" width="200px">Your Blog</h1>
+         </div>
+        
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div>
+		{% for key,item in data.items %}
+            <!-- A wrapper for all the blog posts -->
+            <div class="pure-g">
+
+                <!-- A single blog post -->
+				<div class = "pure-u-1">
+                <section class="post">
+                    <header class="post-header">
+                       
+                        <h2 class="post-title">{{ key }}</h2>
+
+                        <p class="post-meta">
+						
+                        </p>
+                    </header>
+                    <div class="post-description">
+                        <p>
+                            {{ item }}
+							</p>
+                    </div>
+                </section>
+				</div>
+            </div>
+		{% endfor %}
+
+           
+
+            
+        </div>
+    </div>
+</div>
+</body>
+<!--
+<ul>
+    {% for key,item in data.items %}
+        <li> {{ item }}  {{ key }}  </li>
+    {% endfor %}
+</ul>-->
+{% endblock %}
