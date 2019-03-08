@@ -58,19 +58,31 @@ class Command(BaseCommand):
             scheduler.save()
 
     def process_items(self, options):
-            schedulers = Scheduler.objects.filter(success=None)
-            if len(schedulers) is not 0:
-                try:
-                    pool = ThreadPool(options['num_workers'])
-                    res = pool.map_async(self.handle_process, schedulers)
-                    res.get(timeout=options['timeout'])
-                    pool.close()
-                    pool.join()
-                except TimeoutError as e:
-                    self.stdout.write(self.style.ERROR('Time limit exceeded'), ending='\n')
+        # custom handlers
+        irc_schedulers = Scheduler.objects.filter(success=None).filter(command='send_irc_msg')
+        if len(irc_schedulers) is 0:
+            self.stdout.write(self.style.SUCCESS('No scheduled send_irc_msg tasks'), ending='\n')
+        else:
+            self.stdout.write(self.style.SUCCESS('Sending {} scheduled irc message(s)'
+                .format(len(irc_schedulers))), ending='\n')
+            commands.send_irc_msgs(irc_schedulers)
+            self.stdout.write(self.style.SUCCESS('Sent {} irc message(s)'
+                .format(len(irc_schedulers))), ending='\n')
 
-            else:
-                self.stdout.write(self.style.SUCCESS('No scheduled tasks'), ending='\n')
+        # generic handlers
+        schedulers = Scheduler.objects.filter(success=None)
+        if len(schedulers) is not 0:
+            try:
+                pool = ThreadPool(options['num_workers'])
+                res = pool.map_async(self.handle_process, schedulers)
+                res.get(timeout=options['timeout'])
+                pool.close()
+                pool.join()
+            except TimeoutError as e:
+                self.stdout.write(self.style.ERROR('Time limit exceeded'), ending='\n')
+
+        else:
+            self.stdout.write(self.style.SUCCESS('No more scheduled tasks'), ending='\n')
 
     def handle(self, *args, **options):
         if options['task']:

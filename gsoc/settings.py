@@ -394,3 +394,9 @@ CKEDITOR_SETTINGS = {
 }
 
 TEXT_ADDITIONAL_TAGS = ('iframe',)
+
+# IRC CommandBot settings
+
+BOT_NICK = "CommandBot"
+IRC_SERVER = "irc.freenode.org"
+RECEIVER = "limnoria"
