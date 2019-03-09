@@ -12,6 +12,32 @@ My Profile
   	<!-- Begin Upload Accepted Proposal -->
   {% if user %}
     {% if user.is_student %}
+    <style>
+      .alert {
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        }
+      .info {
+        padding: 20px;
+        background-color: #00ff00;
+        color: white;
+      }
+      .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        }
+      .closebtn:hover {
+        color: black;
+        }
+    </style>
+    <div id='info' style="display:none"></div>
     <button name="upload-proposal"
             id='begin-upload-proposal-button'
             onclick="document.querySelector('#upload-proposal').style.display='block'">
@@ -71,8 +97,8 @@ My Profile
               return
             }
             const privateData = resp.data['private_data'];
-            if(privateData["emails"].length > 0 || 
-            privateData["possible_phone_numbers"].length > 0 || 
+            if(privateData["emails"].length > 0 ||
+            privateData["possible_phone_numbers"].length > 0 ||
             privateData["locations"].length > 0) {
               let confirmText = "We seemed to have found these private data in your pdf file. Are you sure to proceed?";
               if (privateData['emails'].length > 0)
@@ -93,6 +119,26 @@ My Profile
             console.log(err);
           })
       }
+        function informInPage(isAlert=true, infoText='', shouldConfirm=false, confirmCallback=null, cancelCallback=null) {
+          let tag = document.querySelector('#info');
+          tag.innerHTML = infoText;
+          if (shouldConfirm) {
+            innerHTMLAppend = '<br>'
+            innerHTMLAppend +=
+              `
+            <button id='informInPageConfirmBtn' style='color:#000'>Confirm</button>
+            <br>
+            <button id='informInPageCancelBtn' style='color:#000'>Cancel</button>
+            `;
+            tag.innerHTML += innerHTMLAppend
+            const confrimBtn = document.querySelector("informInPageConfirmBtn");
+            confrimBtn.onclick = confirmCallback;
+            const cancelBtn = document.querySelector('informInPageCancelBtn');
+            cancelBtn = cancelCallback;
+          }
+
+          tag.style.display = 'block';
+        }
       </script>
 
       {% endif %}
