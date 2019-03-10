@@ -1,7 +1,7 @@
 import io
 
 
-from django.contrib.auth import decorators
+from django.contrib.auth import decorators, authenticate, login
 from .forms import ProposalUploadForm
 from .models import validate_proposal_text
 from django import shortcuts
@@ -35,7 +35,7 @@ def convert_pdf_to_txt(f):
     return text
 
 def is_user_accepted_student(user):
-    return user.is_student()
+    return user.is_current_year_student()
 def scan_proposal(file):
     """
     NOTE: returns True if not found private data.
@@ -49,6 +49,12 @@ def scan_proposal(file):
         return None
     except ValidationError as err:
         return err
+@decorators.login_required
+def after_login_view(request):
+    user = request.user
+    if user.is_current_year_student() and not user.has_proposal():
+        return shortcuts.redirect('/myprofile')
+    return shortcuts.redirect('/')
 
 @decorators.login_required
 @decorators.user_passes_test(is_user_accepted_student)
@@ -71,7 +77,7 @@ def upload_proposal_view(request):
                 form.save()
                 scan_result = scan_proposal(file)
                 if scan_result:
-                    resp['private_data'] = scan_result.message_dict 
+                    resp['private_data'] = scan_result.message_dict
     return JsonResponse(resp)
 
 @decorators.login_required

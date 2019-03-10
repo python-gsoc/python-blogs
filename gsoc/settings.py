@@ -265,7 +265,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/after-login/'
 
 # AUTH_USER_MODEL = 'gsoc.User'
 

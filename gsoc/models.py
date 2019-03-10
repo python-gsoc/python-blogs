@@ -1,5 +1,6 @@
 import os
 import re
+import datetime
 
 from django.contrib import auth
 from django.db import models
@@ -27,14 +28,22 @@ class Scheduler(models.Model):
     def __str__(self):
         return self.command
 
-
-def is_student(self):
+def has_proposal(self):
     try:
-        self.userprofile_set.get(role=3)
+        proposal_path = self.userprofile_set.get(role=3).accepted_proposal_pdf.path
         return True
+    except:
+        return False
+auth.models.User.add_to_class('has_proposal', has_proposal)
+def is_current_year_student(self):
+    try:
+        profile = self.userprofile_set.get(role=3)
+        year = profile.gsoc_year.gsoc_year
+        current_year = datetime.datetime.now().year
+        return current_year == year
     except UserProfile.DoesNotExist:
         return False
-auth.models.User.add_to_class('is_student', is_student)
+auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
 
 def student_profile(self):
     try:
@@ -42,6 +51,7 @@ def student_profile(self):
     except UserProfile.DoesNotExist:
         return None
 auth.models.User.add_to_class('student_profile', student_profile)
+
 
 class SubOrg(models.Model):
     suborg_name = models.CharField(name='suborg_name', max_length=80)
