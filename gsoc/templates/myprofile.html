@@ -17,10 +17,16 @@ My Profile
         padding: 20px;
         background-color: #f44336;
         color: white;
+        width: 50vw;
         }
       .info {
         padding: 20px;
         background-color: #00ff00;
+        color: white;
+        width: 50vw;
+      }
+      .info-btn {
+        background: black;
         color: white;
       }
       .closebtn {
@@ -37,7 +43,44 @@ My Profile
         color: black;
         }
     </style>
-    <div id='info' style="display:none"></div>
+    <div id='infoBox' style="display:none">
+        <span
+        class="closebtn"
+        onclick="this.parentElement.style.display='none';"
+        >
+          &times;
+        </span>
+        <div id='infoBoxText'></div>
+        <div id='beforeUploadBtns'>
+          <button
+          class='info-btn'
+          style='display: none'
+          >
+            confirm
+          </button>
+          <button
+          class='info-btn'
+          style='display: none'
+          >
+            cancel
+          </button>
+        </div>
+        <div id="handlePrivateDataBtns">
+          <button
+          class='info-btn'
+          style='display: none'
+          id='handlePrivateDataBtn1'>
+            confirm
+          </button>
+          <button
+          class="info-btn"
+          style='display: none'
+          id='handlePrivateDataBtn2'>
+            cancel
+          </button>
+        </div>
+    </div>
+    <br>
     <button name="upload-proposal"
             id='begin-upload-proposal-button'
             onclick="document.querySelector('#upload-proposal').style.display='block'">
@@ -63,7 +106,7 @@ My Profile
       function cancelProposalUpload() {
         axios.get('{% url 'cancel-proposal-upload' %}').then(
           function(resp) {
-              alert("Proposal upload canceled.")
+              inPageInfo("Proposal upload canceled.")
           }
         )
       }
@@ -77,10 +120,19 @@ My Profile
           button.onclick = uploadProposal;
         }
       }
+      function inPageInfo(text, isAlert=true) {
+        const boxTag = document.querySelector('#infoBox');
+        const boxText = document.querySelector('#infoBoxText');
+        boxText.innerHTML = text;
+        if(isAlert)boxTag.className = 'alert';
+        else boxTag.className = 'info';
+
+        boxTag.style.display = 'inline-block';
+      }
       function uploadProposal() {
         setProposalUploadingStatus(true);
         if (confirm("Please confirm you don't have any private data in your file!") !== true) {
-          alert("Upload canceled.")
+          inPageInfo("Upload canceled.")
           setProposalUploadingStatus(false)
           return
         }
@@ -93,7 +145,7 @@ My Profile
             setProposalUploadingStatus(false);
             if(!resp.data['file_type_valid']) {
               console.log(resp.data['file_type_valid']);
-              alert("Your file doesn't seem to be a pdf file. Please check again!");
+              inPageInfo("Your file doesn't seem to be a pdf file. Please check again!");
               return
             }
             const privateData = resp.data['private_data'];
@@ -112,33 +164,14 @@ My Profile
                 return
               }
             }
-            alert('Proposal upload succeeded!');
+            inPageInfo('Proposal upload succeeded!', false);
           })
           .catch(function(err) {
             setProposalUploadingStatus(false);
             console.log(err);
           })
       }
-        function informInPage(isAlert=true, infoText='', shouldConfirm=false, confirmCallback=null, cancelCallback=null) {
-          let tag = document.querySelector('#info');
-          tag.innerHTML = infoText;
-          if (shouldConfirm) {
-            innerHTMLAppend = '<br>'
-            innerHTMLAppend +=
-              `
-            <button id='informInPageConfirmBtn' style='color:#000'>Confirm</button>
-            <br>
-            <button id='informInPageCancelBtn' style='color:#000'>Cancel</button>
-            `;
-            tag.innerHTML += innerHTMLAppend
-            const confrimBtn = document.querySelector("informInPageConfirmBtn");
-            confrimBtn.onclick = confirmCallback;
-            const cancelBtn = document.querySelector('informInPageCancelBtn');
-            cancelBtn = cancelCallback;
-          }
 
-          tag.style.display = 'block';
-        }
       </script>
 
       {% endif %}
