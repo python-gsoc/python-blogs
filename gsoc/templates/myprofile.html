@@ -21,7 +21,7 @@ My Profile
         }
       .info {
         padding: 20px;
-        background-color: #00ff00;
+        background-color: #000000;
         color: white;
         width: 50vw;
       }
@@ -29,53 +29,22 @@ My Profile
         background: black;
         color: white;
       }
-      .closebtn {
-        margin-left: 15px;
-        color: white;
-        font-weight: bold;
-        float: right;
-        font-size: 22px;
-        line-height: 20px;
-        cursor: pointer;
-        transition: 0.3s;
-        }
-      .closebtn:hover {
-        color: black;
-        }
     </style>
     <div id='infoBox' style="display:none">
-        <span
-        class="closebtn"
-        onclick="this.parentElement.style.display='none';"
-        >
-          &times;
-        </span>
         <div id='infoBoxText'></div>
-        <div id='beforeUploadBtns'>
+        <div id='infoBtns'>
           <button
           class='info-btn'
           style='display: none'
+          id='infoBtn1'
           >
             confirm
           </button>
           <button
           class='info-btn'
           style='display: none'
+          id='infoBtn2'
           >
-            cancel
-          </button>
-        </div>
-        <div id="handlePrivateDataBtns">
-          <button
-          class='info-btn'
-          style='display: none'
-          id='handlePrivateDataBtn1'>
-            confirm
-          </button>
-          <button
-          class="info-btn"
-          style='display: none'
-          id='handlePrivateDataBtn2'>
             cancel
           </button>
         </div>
@@ -96,7 +65,7 @@ My Profile
         {% csrf_token %}
         <input type="file" name="accepted_proposal_pdf">
       </form>
-      <button onclick="uploadProposal()" id="upload-proposal-button">Confirm</button>
+      <button onclick="beforeUpload()" id="upload-proposal-button">Confirm</button>
       <button onclick="document.querySelector('#upload-proposal').style.display='none'">
         Quit
       </button>
@@ -106,7 +75,8 @@ My Profile
       function cancelProposalUpload() {
         axios.get('{% url 'cancel-proposal-upload' %}').then(
           function(resp) {
-              inPageInfo("Proposal upload canceled.")
+              inPageInfo("Proposal upload canceled.");
+              setProposalUploadingStatus(false);
           }
         )
       }
@@ -117,7 +87,7 @@ My Profile
           button.onclick = null;
         } else {
           button.innerHTML = 'Confirm';
-          button.onclick = uploadProposal;
+          button.onclick = beforeUpload;
         }
       }
       function inPageInfo(text, isAlert=true) {
@@ -129,23 +99,55 @@ My Profile
 
         boxTag.style.display = 'inline-block';
       }
-      function uploadProposal() {
-        setProposalUploadingStatus(true);
-        if (confirm("Please confirm you don't have any private data in your file!") !== true) {
-          inPageInfo("Upload canceled.")
-          setProposalUploadingStatus(false)
-          return
+      function hideInfoBox() {
+        const boxTag = document.querySelector('#infoBox');
+        boxTag.style.display = 'none';
+      }
+      function beforeUpload() {
+        const offlineCancel = function(){
+          inPageInfo("Proposal upload canceled.")
+          }
+        const infoText = 'Please make sure there is no private data in your pdf file. Confirm?'
+        inPageInfo(infoText, false);
+        showInfoBoxBtns(uploadProposal, offlineCancel)
+      }
+      function hideInfoBoxBtns() {
+        const btn1 = document.querySelector('#infoBtn1');
+        const btn2 = document.querySelector('#infoBtn2');
+        btn1.onclick = null;
+        btn2.onclick = null;
+        btn1.style.display = 'none';
+        btn2.style.display = 'none';
+      }
+      function showInfoBoxBtns(callback1, callback2) {
+        const btn1 = document.querySelector('#infoBtn1');
+        const btn2 = document.querySelector('#infoBtn2');
+        btn1.onclick = function(){hideInfoBoxBtns(); hideInfoBox(); callback1()};
+        btn2.onclick = function(){hideInfoBoxBtns(); hideInfoBox(); callback2()};
+        btn1.style.display = 'inline';
+        btn2.style.display = 'inline';
+      }
+      function onFindPrivateData(text) {
+        const successCallback = function() {
+          inPageInfo("Upload succeeded!",false);
+          setProposalUploadingStatus(false);
         }
+        showInfoBoxBtns(successCallback, cancelProposalUpload)
+        inPageInfo(text, true);
+      }
+      function uploadProposal() {
+        hideInfoBoxBtns();
+        setProposalUploadingStatus(true);
         const uploadForm = document.querySelector('#upload-proposal-form');
         axios.post(
           '{% url 'upload-proposal' %}',
           new FormData(uploadForm),
         )
           .then(function(resp) {
-            setProposalUploadingStatus(false);
             if(!resp.data['file_type_valid']) {
               console.log(resp.data['file_type_valid']);
               inPageInfo("Your file doesn't seem to be a pdf file. Please check again!");
+              setProposalUploadingStatus(false);
               return
             }
             const privateData = resp.data['private_data'];
@@ -154,16 +156,15 @@ My Profile
             privateData["locations"].length > 0) {
               let confirmText = "We seemed to have found these private data in your pdf file. Are you sure to proceed?";
               if (privateData['emails'].length > 0)
-              confirmText += `\r\n Email addresses: ${privateData['emails'].toString()}`
+              confirmText += `<br> Email addresses: ${privateData['emails'].toString()}`
               if(privateData['possible_phone_numbers'].length > 0)
-              confirmText += `\r\n Possible phone numbers: ${privateData['possible_phone_numbers'].toString()}`
+              confirmText += `<br> Possible phone numbers: ${privateData['possible_phone_numbers'].toString()}`
               if(privateData['locations'].length > 0)
-              confirmText += `\r\n Locations: ${privateData['locations'].toString()}`
-              if(confirm(confirmText) !== true) {
-                cancelProposalUpload();
-                return
-              }
+              confirmText += `<br> Locations: ${privateData['locations'].toString()}`
+              onFindPrivateData(confirmText);
+              return
             }
+            setProposalUploadingStatus(false);
             inPageInfo('Proposal upload succeeded!', false);
           })
           .catch(function(err) {
