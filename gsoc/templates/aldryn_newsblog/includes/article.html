@@ -100,7 +100,7 @@
         {% endif %}
     </h2>
 		<p class="post-meta">
-			By {{ article.author }} on {{ article.publishing_date|date }}
+			By {{ article.owner }} on {{ article.publishing_date|date }}
 		</p>
 
     {% include "aldryn_newsblog/includes/author.html" with author=article.author %}
