@@ -36,7 +36,7 @@
         
                         .topnav {
                   overflow: hidden;
-                  background-color: #e9e9e9;
+                  background-color: #16536e;
                 }
 
                 .topnav a {
@@ -130,7 +130,7 @@
         </div>
            <div class="topnav">
             {% if user.is_authenticated %}
-            <a  class="nav-item nav-link"  href="{% url 'logout' %}">Logout</a>
+              {% include 'cms_toolbar.html'%}
             
             {% else %}
             <div class="login-container">
@@ -139,6 +139,7 @@
                 <input type="text" placeholder="Username" name="username">
                 <input type="text" placeholder="Password" name="password">
                 <button type="submit">Login</button>
+                <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
                 </form>
             {% endif %}
             
