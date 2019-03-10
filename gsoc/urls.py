@@ -11,7 +11,6 @@ from django.contrib.sitemaps.views import sitemap
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.urls import path
-from . import views
 
 admin.autodiscover()
 
@@ -30,8 +29,6 @@ urlpatterns += [
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    path(r'student-blogs/', views.blog),
-    url(r'student-blogs/([-\w]+)/$', views.article, name="article"),
     url(r'^', include('cms.urls'))
 )
 # This is only needed when using runserver.
