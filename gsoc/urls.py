@@ -29,7 +29,7 @@ urlpatterns += [
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    url(r'^', include('cms.urls')),
+    url(r'^', include('cms.urls'))
 )
 # This is only needed when using runserver.
 if settings.DEBUG:
