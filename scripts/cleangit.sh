@@ -1,4 +1,3 @@
-cd ..
 git checkout master
 git clean -fxd && git reset --hard
 git checkout master
