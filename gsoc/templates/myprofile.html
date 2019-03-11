@@ -129,7 +129,7 @@ My Profile
       }
       function onFindPrivateData(text) {
         const successCallback = function() {
-          inPageInfo("Upload succeeded!",false);
+          inPageInfo("Upload succeeded! Please refresh to get rid of the GIANT banner!",false);
           setProposalUploadingStatus(false);
         }
         showInfoBoxBtns(successCallback, cancelProposalUpload)
@@ -165,7 +165,7 @@ My Profile
               return
             }
             setProposalUploadingStatus(false);
-            inPageInfo('Proposal upload succeeded!', false);
+            inPageInfo('Proposal upload succeeded! Please refresh to get rid of the GIANT banner!', false);
           })
           .catch(function(err) {
             setProposalUploadingStatus(false);
