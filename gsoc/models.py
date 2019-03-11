@@ -46,9 +46,7 @@ class UserProfile(models.Model):
     role = models.IntegerField(name='role', choices=ROLES, default=0)
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
-    #Added for issue #40.
-    email_id=models.CharField(max_length=100)
 
-    #Returning the email_id only
+    #Returning the user only
     def __str__(self):
-        return str(self.email_id)
+        return str(self.user)
