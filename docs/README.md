@@ -25,3 +25,10 @@ You can then access the site with the login bar with http://127.0.0.1:8000/en/?e
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+## Git
+
+To see diff's on the database you will need to run
+
+>git config --local include.path ../.gitconfig
+
+also make sure sqlite3 is aviable
