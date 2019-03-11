@@ -21,6 +21,11 @@
         {% render_block "css" %}
     </head>
     <body>
+      {% if request.current_page %}
+        {% if not request.current_page.get_title_obj.published and request.user.is_authenticated %}
+          <div style="background-color: red; height: 40px; width: 200px; float: right;"></div>
+        {% endif %}
+      {% endif %}
         {% cms_toolbar %}
         <!-- Menu toggle -->
         <a href="#menu" id="menuLink" class="menu-link">
