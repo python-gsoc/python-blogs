@@ -1,6 +1,7 @@
 from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import TimeoutError
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.sessions.models import Session
 
 import gsoc.settings as config
 from gsoc.models import Scheduler
@@ -10,6 +11,9 @@ class Command(BaseCommand):
     help = 'Run the cron command to process items such as sending scheduled emails etc.'
     tasks = ['build_items', 'process_items']
     requires_system_checks = False   # for debugging
+    
+    #cleanup sessions
+    Session.objects.all().delete()
 
     def add_arguments(self, parser):
         parser.add_argument(
