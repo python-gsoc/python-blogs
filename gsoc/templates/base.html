@@ -31,6 +31,15 @@
         {% render_block "css" %}
     </head>
     <body>
+      {% if request.current_page %}
+        {% if request.user.is_authenticated %}
+          {% if not request.current_page.get_title_obj.published or request.current_page.get_title_obj.publisher_state %}
+            <div style="color: white; background-color: red; text-align: center; padding: 20px; border-radius: 5px;">
+              Alert ! The page has not been published yet.
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endif %}
         {% cms_toolbar %}
         <!-- Menu toggle -->
         <a href="#menu" id="menuLink" class="menu-link">
