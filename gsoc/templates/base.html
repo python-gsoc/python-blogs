@@ -24,7 +24,9 @@
       {% if request.current_page %}
         {% if request.user.is_authenticated %}
           {% if not request.current_page.get_title_obj.published or request.current_page.get_title_obj.publisher_state %}
-            <div style="background-color: red; height: 40px; width: 200px; float: right;"></div>
+            <div style="color: white; background-color: red; text-align: center; padding: 20px; border-radius: 5px;">
+              Alert ! The page has not been published yet.
+            </div>
           {% endif %}
         {% endif %}
       {% endif %}
