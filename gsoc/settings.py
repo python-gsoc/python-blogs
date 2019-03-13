@@ -207,6 +207,7 @@ CMS_TEMPLATES = (
     ('schedule.html', 'Schedule'),
     ('students.html', 'Students'),
     ('contact.html', 'Contact'),
+    ('myprofile.html', 'My Profile'),
 )
 
 CMS_PERMISSION = True
@@ -264,7 +265,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/after-login/'
 
 # AUTH_USER_MODEL = 'gsoc.User'
 

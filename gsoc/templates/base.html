@@ -7,6 +7,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Python's Google Summer of Code Page">
         <title>Python GSoC &ndash; Splash</title>
+        <style>
+          #upload-proposal-notification {
+            font-size: 2.5em;
+            color: white;
+            background: red;
+            text-decoration-line: none;
+            position: relative;
+            top: 0;
+          }
+        </style>
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
         <!--[if lte IE 8]>
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
@@ -36,6 +46,16 @@
                 </ul>
             </div>
         </div>
+        {% if user and user.is_current_year_student and not user.has_proposal %}
+        <div id='upload-proposal-notification'>
+          You haven't uploaded your proposal yet. Please click
+          <a href="/myprofile">
+            here
+          </a>
+          to upload!
+        </div>
+        <br>
+        {% endif %}
         <!-- menu -->
         {% block content %}{% endblock %}
         {% render_block 'js' %}
