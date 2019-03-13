@@ -12,6 +12,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.urls import path,include
 
+import gsoc.views
+
 admin.autodiscover()
 
 urlpatterns = [
@@ -29,7 +31,7 @@ urlpatterns += [
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    url(r'^', include('cms.urls')),
+    url(r'^', include('cms.urls'))
 )
 # This is only needed when using runserver.
 if settings.DEBUG:
@@ -43,3 +45,9 @@ if settings.DEBUG:
         url(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
         ] + staticfiles_urlpatterns() + urlpatterns
+# Add upload proposal page and after-login check
+urlpatterns += [
+    url('after-login/', gsoc.views.after_login_view, name='after-login'),
+    url('upload-proposal/', gsoc.views.upload_proposal_view, name='upload-proposal'),
+    url('cancel_proposal_upload/', gsoc.views.cancel_proposal_upload_view, name='cancel-proposal-upload'),
+]
