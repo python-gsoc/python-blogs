@@ -25,30 +25,50 @@ def article_get_form():
     """
     ori_get_form = ArticleAdmin.get_form
     ori_readonly_fields = None
-    ori_field_sets = None
     def return_func(self, request, obj=None, **kwargs):
-        nonlocal ori_readonly_fields, ori_field_sets
+        nonlocal ori_readonly_fields
         is_request_by_student = request.user.student_profile() is not None
         if ori_readonly_fields is None:
-            ori_readonly_fields = self.readonly_fields
-        if ori_field_sets is None:
-            ori_field_sets = self.__class__.fieldsets
+            ori_readonly_fields = getattr(self, 'readonly_fields', ()) or ()
         self.readonly_fields = ori_readonly_fields
-        self.__class__.field_sets = ori_field_sets
-        if is_request_by_student:
-            self.__class__.field_sets = self.__class__.field_sets[0]
-            print(self.__class__.field_sets)
         form = ori_get_form(self, request, obj, **kwargs)
         if is_request_by_student:
-            self.readonly_fields = [
+            self.readonly_fields = (
                 'author',
                 'publishing_date',
                 'is_featured',
                 'featured_image',
-            ]
+                'slug',
+                'meta_title',
+                'meta_description',
+                'meta_keywords',
+                'tags',
+                'categories',
+                'related',
+                'owner',
+            )
+
         return form
     return return_func
-ArticleAdmin.get_form = article_get_form()
-
+# ArticleAdmin.get_form = article_get_form()
+def article_get_readonly_fields(self, request, obj=None):
+    if request.user.student_profile() is not None:
+        return self.readonly_fields + (
+                'author',
+                'publishing_date',
+                'is_featured',
+                'featured_image',
+                'slug',
+                'meta_title',
+                'meta_description',
+                'meta_keywords',
+                'tags',
+                'categories',
+                'related',
+                'owner',
+        )
+    else:
+        return self.readonly_fields
+ArticleAdmin.get_readonly_fields = article_get_readonly_fields
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
