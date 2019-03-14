@@ -7,6 +7,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Python's Google Summer of Code Page">
         <title>Python GSoC &ndash; Splash</title>
+        <style>
+          #upload-proposal-notification {
+            font-size: 2.5em;
+            color: white;
+            background: red;
+            text-decoration-line: none;
+            position: relative;
+            top: 0;
+          }
+        </style>
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
         <!--[if lte IE 8]>
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
@@ -21,6 +31,15 @@
         {% render_block "css" %}
     </head>
     <body>
+      {% if request.current_page %}
+        {% if request.user.is_authenticated %}
+          {% if not request.current_page.get_title_obj.published or request.current_page.get_title_obj.publisher_state %}
+            <div style="color: white; background-color: red; text-align: center; padding: 20px; border-radius: 5px;">
+              Alert ! The page has not been published yet.
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endif %}
         {% cms_toolbar %}
         <!-- Menu toggle -->
         <a href="#menu" id="menuLink" class="menu-link">
@@ -36,6 +55,16 @@
                 </ul>
             </div>
         </div>
+        {% if user and user.is_current_year_student and not user.has_proposal %}
+        <div id='upload-proposal-notification'>
+          You haven't uploaded your proposal yet. Please click
+          <a href="/myprofile">
+            here
+          </a>
+          to upload!
+        </div>
+        <br>
+        {% endif %}
         <!-- menu -->
         {% block content %}{% endblock %}
         {% render_block 'js' %}
