@@ -88,8 +88,8 @@ def cancel_proposal_upload_view(request):
     return shortcuts.HttpResponse()
 
 def mail(request):
-    return (request, 'task.html')
+    return render(request, 'task.html')
 
 def output(request):
     #run python script
-    return (request, 'task.html')
+    return render(request, 'task.html')

@@ -38,8 +38,8 @@ urlpatterns += i18n_patterns(
 #issue 40
 
 urlpatterns += [
-    url(r'^runtask',views.mail),
-    url(r'^runtaskoutput',views.output, name="task"),
+    path('runtask/',views.mail),
+    path('runtaskoutput/',views.output, name="task"),
 ]
 
 # This is only needed when using runserver.
