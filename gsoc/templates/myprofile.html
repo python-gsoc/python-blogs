@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block content %}
+  <h1>Welcome {% if not user.is_anonymous %}{{ user.username }} {% endif %}!</h1>
+  {% if user.is_anonymous %}
+    <div>Please login <a href="{% url 'login' %}">here</a>.</div>
+  {% endif %}
+  	<!-- Begin Upload Accepted Proposal -->
+  {% if user %}
+    {% if user.is_current_year_student %}
+    <style>
+      .alert {
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        width: 50vw;
+        }
+      .info {
+        padding: 20px;
+        background-color: #000000;
+        color: white;
+        width: 50vw;
+      }
+      .info-btn {
+        background: black;
+        color: white;
+      }
+    </style>
+    <div id='infoBox' style="display:none">
+        <div id='infoBoxText'></div>
+        <div id='infoBtns'>
+          <button
+          class='info-btn'
+          style='display: none'
+          id='infoBtn1'
+          >
+            confirm
+          </button>
+          <button
+          class='info-btn'
+          style='display: none'
+          id='infoBtn2'
+          >
+            cancel
+          </button>
+        </div>
+    </div>
+    <br>
+    <button name="upload-proposal"
+            id='begin-upload-proposal-button'
+            onclick="document.querySelector('#upload-proposal').style.display='block'">
+    {% if user.student_profile.accepted_proposal_pdf %}
+      Re-upload Your Accepted Proposal
+    {% else %}
+      Upload Your Accepted Proposal
+     {% endif %}
+    </button>
+      <div id='upload-proposal' style="display: none">
+      <form id='upload-proposal-form'
+            enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="accepted_proposal_pdf">
+      </form>
+      <button onclick="beforeUpload()" id="upload-proposal-button">Confirm</button>
+      <button onclick="document.querySelector('#upload-proposal').style.display='none'">
+        Quit
+      </button>
+      </div>
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script>
+      function cancelProposalUpload() {
+        axios.get('{% url 'cancel-proposal-upload' %}').then(
+          function(resp) {
+              inPageInfo("Proposal upload canceled.");
+              setProposalUploadingStatus(false);
+          }
+        )
+      }
+      function setProposalUploadingStatus(status) {
+        const button = document.querySelector("#upload-proposal-button");
+        if(status) {
+          button.innerHTML = 'Uploading...Please wait.';
+          button.onclick = null;
+        } else {
+          button.innerHTML = 'Confirm';
+          button.onclick = beforeUpload;
+        }
+      }
+      function inPageInfo(text, isAlert=true) {
+        const boxTag = document.querySelector('#infoBox');
+        const boxText = document.querySelector('#infoBoxText');
+        boxText.innerHTML = text;
+        if(isAlert)boxTag.className = 'alert';
+        else boxTag.className = 'info';
+
+        boxTag.style.display = 'inline-block';
+      }
+      function hideInfoBox() {
+        const boxTag = document.querySelector('#infoBox');
+        boxTag.style.display = 'none';
+      }
+      function beforeUpload() {
+        const offlineCancel = function(){
+          inPageInfo("Proposal upload canceled.")
+          }
+        const infoText = 'Please make sure there is no private data in your pdf file. Confirm?'
+        inPageInfo(infoText, false);
+        showInfoBoxBtns(uploadProposal, offlineCancel)
+      }
+      function hideInfoBoxBtns() {
+        const btn1 = document.querySelector('#infoBtn1');
+        const btn2 = document.querySelector('#infoBtn2');
+        btn1.onclick = null;
+        btn2.onclick = null;
+        btn1.style.display = 'none';
+        btn2.style.display = 'none';
+      }
+      function showInfoBoxBtns(callback1, callback2) {
+        const btn1 = document.querySelector('#infoBtn1');
+        const btn2 = document.querySelector('#infoBtn2');
+        btn1.onclick = function(){hideInfoBoxBtns(); hideInfoBox(); callback1()};
+        btn2.onclick = function(){hideInfoBoxBtns(); hideInfoBox(); callback2()};
+        btn1.style.display = 'inline';
+        btn2.style.display = 'inline';
+      }
+      function onFindPrivateData(text) {
+        const successCallback = function() {
+          inPageInfo("Upload succeeded! Please refresh to get rid of the GIANT banner!",false);
+          setProposalUploadingStatus(false);
+        }
+        showInfoBoxBtns(successCallback, cancelProposalUpload)
+        inPageInfo(text, true);
+      }
+      function uploadProposal() {
+        hideInfoBoxBtns();
+        setProposalUploadingStatus(true);
+        const uploadForm = document.querySelector('#upload-proposal-form');
+        axios.post(
+          '{% url 'upload-proposal' %}',
+          new FormData(uploadForm),
+        )
+          .then(function(resp) {
+            if(!resp.data['file_type_valid']) {
+              console.log(resp.data['file_type_valid']);
+              inPageInfo("Your file doesn't seem to be a pdf file. Please check again!");
+              setProposalUploadingStatus(false);
+              return
+            }
+            const privateData = resp.data['private_data'];
+            if(privateData["emails"].length > 0 ||
+            privateData["possible_phone_numbers"].length > 0 ||
+            privateData["locations"].length > 0) {
+              let confirmText = "We seemed to have found these private data in your pdf file. Are you sure to proceed?";
+              if (privateData['emails'].length > 0)
+              confirmText += `<br> Email addresses: ${privateData['emails'].toString()}`
+              if(privateData['possible_phone_numbers'].length > 0)
+              confirmText += `<br> Possible phone numbers: ${privateData['possible_phone_numbers'].toString()}`
+              if(privateData['locations'].length > 0)
+              confirmText += `<br> Locations: ${privateData['locations'].toString()}`
+              onFindPrivateData(confirmText);
+              return
+            }
+            setProposalUploadingStatus(false);
+            inPageInfo('Proposal upload succeeded! Please refresh to get rid of the GIANT banner!', false);
+          })
+          .catch(function(err) {
+            setProposalUploadingStatus(false);
+            console.log(err);
+          })
+      }
+
+      </script>
+
+      {% endif %}
+  {% endif %}
+
+  	<!-- End Upload Accepted Proposal -->
+{% endblock %}
