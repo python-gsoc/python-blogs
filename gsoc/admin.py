@@ -9,7 +9,8 @@ from aldryn_people.models import Person
 from aldryn_newsblog.admin import ArticleAdmin
 from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
-class UserProfileInline(admin.TabularInline):
+
+class UserProfileInline(admin.StackedInline):
     model = UserProfile
     form = UserProfileForm
 
