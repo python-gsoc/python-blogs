@@ -15,11 +15,13 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 class Scheduler(models.Model):
     commands = (
         ('send_email', 'send_email'),
-        ('send_irc_msg', 'send_irc_msg')
+        ('send_irc_msg', 'send_irc_msg'),
+        ('deactivate_user', 'deactivate_user'),
     )
 
     id = models.AutoField(primary_key=True)
     command = models.CharField(name='command', max_length=20, choices=commands)
+    activation_date = models.DateTimeField(name='activation_date', null=True, blank=True)
     data = models.TextField(name='data')
     success = models.BooleanField(name='success', null=True)
     last_error = models.TextField(name='last_error', null=True, default=None)
@@ -79,6 +81,15 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
+    deactivation_date = models.DateTimeField(name='deactivation_date', blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.deactivation_date:
+            s = Scheduler(command='deactivate_user', data=self.user.pk,
+                            activation_date=self.deactivation_date)
+            s.save()
+
+        super(UserProfile, self).save(*args, **kwargs)
 
 
 # Auto Delete Redundant Proposal
