@@ -53,9 +53,9 @@ def article_get_form():
                 (_('Meta Options'),
                  {'classes': ('collapse',),
                   'fields':()}),
-                (_('Advanced Settings'), {'classes': ('collapse',), 'fields': (
-                    'app_config',
-                )}),
+                (_('Advanced Settings'),
+                 {'classes': ('collapse',),
+                  'fields': ()}),
             )
             self.readonly_fields = (
                 'author',
@@ -90,6 +90,8 @@ def Article_add_view(self, request, *args, **kwargs):
             post_data['author'] = person.pk
         try:
             data['app_config'] = str(NewsBlogConfig.objects.first().pk)
+            post_data['app_config'] = str(NewsBlogConfig.objects.first().pk)
+            print(data['app_config'])
         except NewsBlogConfig.DoesNotExist:
             pass
         post_data['publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
