@@ -12,6 +12,9 @@
 <br>
  <button type="button" onclick="location.href='{% url 'task' %}'">Run</button> 
 <br>
+{% if works %}
+{{works}}
+{% endif %}
 </body>
 
 </html> 
