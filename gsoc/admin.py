@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 from .models import UserDetails
 from .forms import UserDetailsForm
+=======
+from .models import UserProfile, UserDetails, Scheduler
+from .forms import UserProfileForm, UserDetailsForm
+
+>>>>>>> Add admin page for Scheduler model
 from django.contrib.auth.models import User
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
@@ -158,3 +164,22 @@ class RegLinkAdmin(admin.ModelAdmin):
 
 
 admin.site.register(RegLink, RegLinkAdmin)
+
+
+class SchedulerAdmin(admin.ModelAdmin):
+    fields = ('command', 'data')
+    list_display = ('command', 'data', 'success', 'last_error', 'created')
+    list_filter = ('command', 'success')
+    sortable_by = ('created', 'last_error')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(Scheduler, SchedulerAdmin)
