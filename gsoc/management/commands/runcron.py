@@ -1,7 +1,7 @@
 from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import TimeoutError
-from datetime import datetime
 
+from django.utils import timezone
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.sessions.models import Session
 
@@ -47,7 +47,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Build items'), ending='\n')
 
     def handle_process(self, scheduler):
-        if scheduler.activation_date and datetime.now() > scheduler.activation_date:
+        if scheduler.activation_date and timezone.now() > scheduler.activation_date:
             self.stdout.write('Running command {}:{}'
                 .format(scheduler.command, scheduler.id), ending='\n')
             err = getattr(commands, scheduler.command)(scheduler)
