@@ -3,20 +3,23 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
-from .models import UserProfile
-from .forms import UserProfileForm
+from .models import UserProfile, UserDetails
+from .forms import UserProfileForm, UserDetailsForm
 from aldryn_people.models import Person
 from aldryn_newsblog.admin import ArticleAdmin
 from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 
-class UserProfileInline(admin.StackedInline):
+class UserProfileInline(admin.TabularInline):
     model = UserProfile
     form = UserProfileForm
 
+class UserDetailsInline(admin.TabularInline):
+    model = UserDetails
+    form = UserDetailsForm
 
 class UserAdmin(DjangoUserAdmin):
-    inlines = [UserProfileInline]
+    inlines = [UserDetailsInline, UserProfileInline]
 
 
 admin.site.unregister(User)

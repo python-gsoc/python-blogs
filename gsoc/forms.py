@@ -1,13 +1,17 @@
 from django.forms import ModelForm, CheckboxSelectMultiple
-from .models import UserProfile
+from .models import UserProfile, UserDetails
 
 class UserProfileForm(ModelForm):
     class Meta:
-        fields = ('role', 'suborg_full_name', 'gsoc_year', 'accepted_proposal_pdf',
-                    'deactivation_date')
         model = UserProfile
+        fields = ('role', 'suborg_full_name', 'gsoc_year', 'accepted_proposal_pdf')
 
 class ProposalUploadForm(ModelForm):
     class Meta:
         model = UserProfile
         fields = ['accepted_proposal_pdf']
+
+class UserDetailsForm(ModelForm):
+    class Meta:
+        model = UserDetails
+        fields = ('deactivation_date',)

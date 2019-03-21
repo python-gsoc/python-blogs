@@ -81,7 +81,14 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
+
+
+class UserDetails(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     deactivation_date = models.DateTimeField(name='deactivation_date', blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = 'User details'
 
     def save(self, *args, **kwargs):
         if self.deactivation_date:
@@ -89,8 +96,7 @@ class UserProfile(models.Model):
                             activation_date=self.deactivation_date)
             s.save()
 
-        super(UserProfile, self).save(*args, **kwargs)
-
+        super(UserDetails, self).save(*args, **kwargs)
 
 # Auto Delete Redundant Proposal
 @receiver(models.signals.post_delete, sender=UserProfile)
