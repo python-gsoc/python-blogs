@@ -1,9 +1,10 @@
 import io
 
 
-from django.contrib.auth import decorators, authenticate, login
+from django.contrib.auth import decorators
+from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
-from .models import validate_proposal_text
+from .models import validate_proposal_text, RegLink, UserProfile
 from django import shortcuts
 from django.http import JsonResponse
 from django.core.validators import RegexValidator
@@ -86,3 +87,32 @@ def cancel_proposal_upload_view(request):
     profile = request.user.student_profile()
     profile.accepted_proposal_pdf.delete()
     return shortcuts.HttpResponse()
+
+
+def register_view(request):
+    reglink_id = request.GET.get('reglink_id', '')
+    try:
+        reglink = RegLink.objects.get(reglink_id=reglink_id)
+        reglink_usable = reglink.is_usable()
+    except RegLink.DoesNotExist:
+        reglink_usable = False
+        reglink = None
+    context = {'reglink_usable': reglink_usable}
+    if reglink_usable is False or request.method == 'GET':
+        return shortcuts.render(request, 'registration/register.html', context)
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        email = request.POST.get('email', '')
+        user = User.objects.create(username=username, password=password, email=email)
+        try:
+            profile = UserProfile.objects.get(user=user)
+        except UserProfile.DoesNotExist:
+            profile = None
+        if user is not None:
+            reglink.is_used = True
+            reglink.save()
+            if profile is None:
+                UserProfile.objects.create(user=user)
+
+    return shortcuts.redirect('/')

@@ -1,6 +1,7 @@
 import os
 import re
 import datetime
+import uuid
 
 from django.contrib import auth
 from django.db import models
@@ -9,6 +10,8 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.core.validators import validate_email
+from django.utils import timezone
+from django.shortcuts import reverse
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
@@ -172,3 +175,19 @@ class ProposalTextValidator:
     def get_help_text(self):
         return _("The text in a proposal should not contain any private data.")
 validate_proposal_text = ProposalTextValidator()
+
+
+def gen_uuid_str():
+    return str(uuid.uuid4())
+
+
+class RegLink(models.Model):
+    is_used = models.BooleanField(default=False)
+    reglink_id = models.CharField(max_length=36, default=gen_uuid_str, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    @property
+    def url(self):
+        return f'{reverse("register")}?reglink_id={self.reglink_id}'
+    def is_usable(self):
+        timenow = timezone.now()
+        return (not self.is_used) and self.created_at < timenow

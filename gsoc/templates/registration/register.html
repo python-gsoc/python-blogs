@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if reglink_usable %}
+
+  {% else %}
+    <h2 style="color:white; background:red">Your register link is invalid! Please check again!</h2>
+  {% endif %}
+{% endblock %}
