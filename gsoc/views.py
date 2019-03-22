@@ -1,13 +1,13 @@
 import io
 
 
-from django.contrib.auth import decorators
+from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
 from .models import validate_proposal_text, RegLink, UserProfile
 from django import shortcuts
 from django.http import JsonResponse
-from django.core.validators import RegexValidator
+from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
@@ -90,29 +90,78 @@ def cancel_proposal_upload_view(request):
 
 
 def register_view(request):
-    reglink_id = request.GET.get('reglink_id', '')
+    reglink_id = request.GET.get('reglink_id', request.POST.get('reglink_id', ''))
     try:
         reglink = RegLink.objects.get(reglink_id=reglink_id)
         reglink_usable = reglink.is_usable()
     except RegLink.DoesNotExist:
         reglink_usable = False
         reglink = None
-    context = {'reglink_usable': reglink_usable}
+    context = {
+        'can_register': True,
+        'done_registeration': False,
+        'warning': '',
+        'reglink_id': reglink_id,
+    }
     if reglink_usable is False or request.method == 'GET':
+        if reglink_usable is False:
+            context['can_register'] = False
+            context['warning'] = 'Your registeration link is invalid! Please check again!'
         return shortcuts.render(request, 'registration/register.html', context)
     if request.method == 'POST':
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
+        password2 = request.POST.get('password2', '')
         email = request.POST.get('email', '')
-        user = User.objects.create(username=username, password=password, email=email)
+        email = email.strip()
+        info_valid = True
+        registeration_success = True
         try:
-            profile = UserProfile.objects.get(user=user)
-        except UserProfile.DoesNotExist:
-            profile = None
-        if user is not None:
+            validate_email(email)
+        except ValidationError:
+            context['warning'] += 'Invalid Email! <BR>'
+            info_valid = False
+        if password != password2:
+            context['warning'] += 'Your password didn\'t match! <BR>'
+            info_valid = False
+        try:
+            User.objects.get(username=username)
+            info_valid = False
+            context['warning'] += 'Your username has been used!<br>'
+        except User.DoesNotExist:
+            pass
+        try:
+            User.objects.get(email=email)
+            info_valid = False
+            context['warning'] += 'Your email has been used!<br>'
+        except User.DoesNotExist:
+            pass
+        try:
+            password_validation.validate_password(password)
+        except ValidationError as e:
+            context['warning'] += f'{"<br>".join(e.messages)}<BR>'
+            info_valid = False
+        try:
+            validators.UnicodeUsernameValidator()(username)
+        except ValidationError as e:
+            context['warning'] += f'{"<br>".join(e.messages)}<BR>'
+            info_valid = False
+
+        if info_valid:
+            user = User.objects.create(username=username, email=email)
+            user.set_password(password)
+            user.save()
+        else:
+            user = None
+
+        if user is None:
+            registeration_success = False
+        if registeration_success:
             reglink.is_used = True
             reglink.save()
-            if profile is None:
-                UserProfile.objects.create(user=user)
-
-    return shortcuts.redirect('/')
+            context['done_registeration'] = True
+            context['warning'] = ''
+            return shortcuts.render(request, 'registration/register.html', context)
+        else:
+            context['done_registeration'] = False
+            return shortcuts.render(request, 'registration/register.html', context)

@@ -1,9 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% if reglink_usable %}
-
-  {% else %}
-    <h2 style="color:white; background:red">Your register link is invalid! Please check again!</h2>
+  {% if warning %}
+    <h2 style="color:white; background:red">{{ warning| safe }}</h2>
+  {% endif %}
+  {% if can_register and not done_registeration %}
+    <h2>Welcome to registeration page!</h2><br>
+    <form id='register_form' action="{% url 'register' %}" method="POST">
+    {% csrf_token %}
+      <input type="text" name='reglink_id' value="{{ reglink_id }}" hidden="hidden">
+      <label for="id_username">Please enter your username.</label>
+      <input id='id_username' type="text" name="username"><br>
+      <label for="id_password">Please enter your password.</label>
+      <input id='id_password' type="password" name="password"><br>
+      <label for="id_password2">Please enter your password again.</label>
+      <input id='id_password2' type="password" name="password2"><br>
+      <label for="id_email">Please enter your valid email.</label>
+      <input id='id_email' type="text" name="email"><br>
+      <button type="submit" style="font-size: 1.3em">Submit</button>
+    </form>
+  {% endif %}
+  {% if not can_register %}
+    <h2>Sorry, but you can't register using this link!</h2>
+  {% endif %}
+  {% if done_registeration %}
+    <h2>Thank you for registering! You can <a href="{% url 'login' %}">login</a> now!</h2>
   {% endif %}
 {% endblock %}
