@@ -15,45 +15,6 @@ from django.shortcuts import reverse
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
-class Scheduler(models.Model):
-    commands = (
-        ('send_email', 'send_email'),
-        ('send_irc_msg', 'send_irc_msg')
-    )
-
-    id = models.AutoField(primary_key=True)
-    command = models.CharField(name='command', max_length=20, choices=commands)
-    data = models.TextField(name='data')
-    success = models.BooleanField(name='success', null=True)
-    last_error = models.TextField(name='last_error', null=True, default=None)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.command
-
-def has_proposal(self):
-    try:
-        proposal_path = self.userprofile_set.get(role=3).accepted_proposal_pdf.path
-        return True
-    except:
-        return False
-auth.models.User.add_to_class('has_proposal', has_proposal)
-def is_current_year_student(self):
-    try:
-        profile = self.userprofile_set.get(role=3)
-        year = profile.gsoc_year.gsoc_year
-        current_year = datetime.datetime.now().year
-        return current_year == year
-    except UserProfile.DoesNotExist:
-        return False
-auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
-
-def student_profile(self):
-    try:
-        return self.userprofile_set.get(role=3)
-    except UserProfile.DoesNotExist:
-        return None
-auth.models.User.add_to_class('student_profile', student_profile)
 
 
 class SubOrg(models.Model):
@@ -69,6 +30,7 @@ class GsocYear(models.Model):
     def __str__(self):
         return str(self.gsoc_year)
 
+
 class UserProfile(models.Model):
     ROLES = (
         (0, 'Others'),
@@ -83,6 +45,31 @@ class UserProfile(models.Model):
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
 
+def has_proposal(self):
+    try:
+        self.userprofile_set.get(role=3).accepted_proposal_pdf.path
+        return True
+    except:
+        return False
+
+def is_current_year_student(self):
+    try:
+        profile = self.userprofile_set.get(role=3)
+        year = profile.gsoc_year.gsoc_year
+        current_year = datetime.datetime.now().year
+        return current_year == year
+    except UserProfile.DoesNotExist:
+        return False
+
+def student_profile(self):
+    try:
+        return self.userprofile_set.get(role=3)
+    except UserProfile.DoesNotExist:
+        return None
+
+auth.models.User.add_to_class('has_proposal', has_proposal)
+auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
+auth.models.User.add_to_class('student_profile', student_profile)
 
 # Auto Delete Redundant Proposal
 @receiver(models.signals.post_delete, sender=UserProfile)
@@ -97,7 +84,6 @@ def auto_delete_proposal_on_delete(sender, instance, **kwargs):
             return
         if os.path.isfile(filepath):
             os.remove(filepath)
-
 
 @receiver(models.signals.pre_save, sender=UserProfile)
 def auto_delete_proposal_on_change(sender, instance, **kwargs):
@@ -118,6 +104,40 @@ def auto_delete_proposal_on_change(sender, instance, **kwargs):
         if os.path.isfile(old_file_path):
             os.remove(old_file_path)
 
+
+class UserDetails(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    deactivation_date = models.DateTimeField(name='deactivation_date', blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = 'User details'
+
+    def save(self, *args, **kwargs):
+        if self.deactivation_date:
+            s = Scheduler(command='deactivate_user', data=self.user.pk,
+                            activation_date=self.deactivation_date)
+            s.save()
+
+        super(UserDetails, self).save(*args, **kwargs)
+
+
+class Scheduler(models.Model):
+    commands = (
+        ('send_email', 'send_email'),
+        ('send_irc_msg', 'send_irc_msg'),
+        ('deactivate_user', 'deactivate_user'),
+    )
+
+    id = models.AutoField(primary_key=True)
+    command = models.CharField(name='command', max_length=20, choices=commands)
+    activation_date = models.DateTimeField(name='activation_date', null=True, blank=True)
+    data = models.TextField(name='data')
+    success = models.BooleanField(name='success', null=True)
+    last_error = models.TextField(name='last_error', null=True, default=None)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.command
 
 
 class ProposalTextValidator:
@@ -174,7 +194,10 @@ class ProposalTextValidator:
         self.validate(text)
     def get_help_text(self):
         return _("The text in a proposal should not contain any private data.")
+
+
 validate_proposal_text = ProposalTextValidator()
+
 
 
 def gen_uuid_str():
