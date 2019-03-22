@@ -141,7 +141,7 @@ make_unused.short_description = _(
 
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('url', 'is_used')}),
+        (None, {'fields': ('url',)}),
     )
     readonly_fields = (
         'url',
