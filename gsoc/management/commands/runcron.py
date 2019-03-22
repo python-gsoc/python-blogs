@@ -1,5 +1,7 @@
 from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import TimeoutError
+
+from django.utils import timezone
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.sessions.models import Session
 
@@ -45,21 +47,22 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Build items'), ending='\n')
 
     def handle_process(self, scheduler):
-        self.stdout.write('Running command {}:{}'
-            .format(scheduler.command, scheduler.id), ending='\n')
-        err = getattr(commands, scheduler.command)(scheduler)
-        if not err:
-            self.stdout.write(self.style.SUCCESS('Finished command {}:{}'
-                .format(scheduler.command, scheduler.id)), ending='\n')
-            scheduler.success = True
-            scheduler.save()
+        if scheduler.activation_date and timezone.now() > scheduler.activation_date:
+            self.stdout.write('Running command {}:{}'
+                .format(scheduler.command, scheduler.id), ending='\n')
+            err = getattr(commands, scheduler.command)(scheduler)
+            if not err:
+                self.stdout.write(self.style.SUCCESS('Finished command {}:{}'
+                    .format(scheduler.command, scheduler.id)), ending='\n')
+                scheduler.success = True
+                scheduler.save()
 
-        else:
-            self.stdout.write(self.style.ERROR('Command {}:{} failed with error: {}'
-                .format(scheduler.command, scheduler.id, err)), ending='\n')
-            scheduler.success = False
-            scheduler.last_error = err
-            scheduler.save()
+            else:
+                self.stdout.write(self.style.ERROR('Command {}:{} failed with error: {}'
+                    .format(scheduler.command, scheduler.id, err)), ending='\n')
+                scheduler.success = False
+                scheduler.last_error = err
+                scheduler.save()
 
     def process_items(self, options):
         # custom handlers
