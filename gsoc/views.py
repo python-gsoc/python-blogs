@@ -157,6 +157,10 @@ def register_view(request):
         if user is None:
             registeration_success = False
         if registeration_success:
+            try:
+                UserProfile.objects.get(user=user)
+            except UserProfile.DoesNotExist:
+                UserProfile.objects.create(user=user)
             reglink.is_used = True
             reglink.save()
             context['done_registeration'] = True

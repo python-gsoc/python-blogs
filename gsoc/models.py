@@ -205,7 +205,7 @@ def gen_uuid_str():
 
 
 class RegLink(models.Model):
-    is_used = models.BooleanField(default=False)
+    is_used = models.BooleanField(default=False, editable=False)
     reglink_id = models.CharField(max_length=36, default=gen_uuid_str, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     @property
