@@ -1,6 +1,7 @@
 import os
 import re
 import datetime
+import uuid
 
 from django.contrib import auth
 from django.db import models
@@ -9,6 +10,8 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.core.validators import validate_email
+from django.utils import timezone
+from django.shortcuts import reverse
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
@@ -41,6 +44,65 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
+
+def has_proposal(self):
+    try:
+        self.userprofile_set.get(role=3).accepted_proposal_pdf.path
+        return True
+    except:
+        return False
+
+def is_current_year_student(self):
+    try:
+        profile = self.userprofile_set.get(role=3)
+        year = profile.gsoc_year.gsoc_year
+        current_year = datetime.datetime.now().year
+        return current_year == year
+    except UserProfile.DoesNotExist:
+        return False
+
+def student_profile(self):
+    try:
+        return self.userprofile_set.get(role=3)
+    except UserProfile.DoesNotExist:
+        return None
+
+auth.models.User.add_to_class('has_proposal', has_proposal)
+auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
+auth.models.User.add_to_class('student_profile', student_profile)
+
+# Auto Delete Redundant Proposal
+@receiver(models.signals.post_delete, sender=UserProfile)
+def auto_delete_proposal_on_delete(sender, instance, **kwargs):
+    """
+    Deletes proposal after a UserProfile object is deleted.
+    """
+    if instance.accepted_proposal_pdf:
+        try:
+            filepath = instance.accepted_proposal_pdf.path
+        except ValueError:
+            return
+        if os.path.isfile(filepath):
+            os.remove(filepath)
+
+@receiver(models.signals.pre_save, sender=UserProfile)
+def auto_delete_proposal_on_change(sender, instance, **kwargs):
+    """
+    Deletes old proposal before a new one is uploaded.
+    """
+    if not instance.pk:
+        return
+    try:
+        old_file = UserProfile.objects.get(pk=instance.pk).accepted_proposal_pdf
+        old_file_path = old_file.path
+    except UserProfile.DoesNotExist:
+        return
+    except ValueError:
+        return
+    new_file = instance.accepted_proposal_pdf
+    if not old_file == new_file:
+        if os.path.isfile(old_file_path):
+            os.remove(old_file_path)
 
 
 class UserDetails(models.Model):
@@ -136,61 +198,19 @@ class ProposalTextValidator:
 
 validate_proposal_text = ProposalTextValidator()
 
-def has_proposal(self):
-    try:
-        proposal_path = self.userprofile_set.get(role=3).accepted_proposal_pdf.path
-        return True
-    except:
-        return False
 
-def is_current_year_student(self):
-    try:
-        profile = self.userprofile_set.get(role=3)
-        year = profile.gsoc_year.gsoc_year
-        current_year = datetime.datetime.now().year
-        return current_year == year
-    except UserProfile.DoesNotExist:
-        return False
 
-def student_profile(self):
-    try:
-        return self.userprofile_set.get(role=3)
-    except UserProfile.DoesNotExist:
-        return None
+def gen_uuid_str():
+    return str(uuid.uuid4())
 
-auth.models.User.add_to_class('has_proposal', has_proposal)
-auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
-auth.models.User.add_to_class('student_profile', student_profile)
 
-# Auto Delete Redundant Proposal
-@receiver(models.signals.post_delete, sender=UserProfile)
-def auto_delete_proposal_on_delete(sender, instance, **kwargs):
-    """
-    Deletes proposal after a UserProfile object is deleted.
-    """
-    if instance.accepted_proposal_pdf:
-        try:
-            filepath = instance.accepted_proposal_pdf.path
-        except ValueError:
-            return
-        if os.path.isfile(filepath):
-            os.remove(filepath)
-
-@receiver(models.signals.pre_save, sender=UserProfile)
-def auto_delete_proposal_on_change(sender, instance, **kwargs):
-    """
-    Deletes old proposal before a new one is uploaded.
-    """
-    if not instance.pk:
-        return
-    try:
-        old_file = UserProfile.objects.get(pk=instance.pk).accepted_proposal_pdf
-        old_file_path = old_file.path
-    except UserProfile.DoesNotExist:
-        return
-    except ValueError:
-        return
-    new_file = instance.accepted_proposal_pdf
-    if not old_file == new_file:
-        if os.path.isfile(old_file_path):
-            os.remove(old_file_path)
+class RegLink(models.Model):
+    is_used = models.BooleanField(default=False, editable=False)
+    reglink_id = models.CharField(max_length=36, default=gen_uuid_str, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    @property
+    def url(self):
+        return f'{reverse("register")}?reglink_id={self.reglink_id}'
+    def is_usable(self):
+        timenow = timezone.now()
+        return (not self.is_used) and self.created_at < timenow

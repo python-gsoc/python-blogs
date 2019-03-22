@@ -1,12 +1,12 @@
-from .models import UserProfile, UserDetails
-from .forms import UserProfileForm, UserDetailsForm
-
+from .models import UserDetails
+from .forms import UserDetailsForm
 from django.contrib.auth.models import User
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
-
+from .models import UserProfile, RegLink
+from .forms import UserProfileForm
 from aldryn_people.models import Person
 from aldryn_newsblog.admin import ArticleAdmin
 from aldryn_newsblog.models import Article
@@ -124,3 +124,37 @@ ArticleAdmin.add_view = Article_add_view
 
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
+
+def make_used(modeladmin, request, queryset):
+    queryset.update(is_used=True)
+
+make_used.short_description = _(
+    "Make the RegLink used.")
+
+
+def make_unused(modeladmin, request, queryset):
+    queryset.update(is_used=False)
+
+make_unused.short_description = _(
+    "Make the RegLink link unused.")
+
+
+class RegLinkAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('url',)}),
+    )
+    readonly_fields = (
+        'url',
+    )
+    list_display = ('reglink_id', 'url', 'is_used', 'created_at')
+    list_filter = [
+        'is_used',
+        'created_at',
+    ]
+
+    actions = (
+        make_used, make_unused,
+    )
+
+
+admin.site.register(RegLink, RegLinkAdmin)
