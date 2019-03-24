@@ -208,9 +208,20 @@ class RegLink(models.Model):
     is_used = models.BooleanField(default=False, editable=False)
     reglink_id = models.CharField(max_length=36, default=gen_uuid_str, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    user_role = models.IntegerField(name="user_role",
+                                    choices=UserProfile.ROLES, default=0, null=True, blank=False,
+                                    )
+    user_suborg = models.ForeignKey(SubOrg, name="user_suborg",
+                                       on_delete=models.CASCADE, null=True, blank=False)
+    user_gsoc_year = models.ForeignKey(GsocYear, name="user_gsoc_year",
+                                          on_delete=models.CASCADE,  null=True, blank=False)
     @property
     def url(self):
         return f'{reverse("register")}?reglink_id={self.reglink_id}'
     def is_usable(self):
         timenow = timezone.now()
         return (not self.is_used) and self.created_at < timenow
+    def create_user(self, *args, is_staff=True, **kwargs):
+        user = User.objects.create(*args, is_staff=is_staff, **kwargs)
+        UserProfile.objects.create(user=user, role=self.user_role, gsoc_year=self.user_gsoc_year, suborg_full_name=self.user_suborg)
+        return user
