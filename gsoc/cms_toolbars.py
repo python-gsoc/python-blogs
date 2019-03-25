@@ -1,18 +1,18 @@
-from cms.cms_toolbars import BasicToolbar
+from cms.cms_toolbars import (
+    BasicToolbar,
+    ADMIN_MENU_IDENTIFIER,
+    ADMINISTRATION_BREAK,
+    USER_SETTINGS_BREAK,
+    TOOLBAR_DISABLE_BREAK,
+    SHORTCUTS_BREAK,
+    CLIPBOARD_BREAK
+)
 
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
 from cms.utils.conf import get_cms_setting
 from cms.utils.urlutils import admin_reverse
-
-
-# # Identifiers for search
-ADMIN_MENU_IDENTIFIER = 'admin-menu'
-ADMINISTRATION_BREAK = 'Administration Break'
-USER_SETTINGS_BREAK = 'User Settings Break'
-TOOLBAR_DISABLE_BREAK = 'Toolbar disable Break'
-SHORTCUTS_BREAK = 'Shortcuts Break'
 
 
 def add_admin_menu(self):
