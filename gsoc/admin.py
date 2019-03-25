@@ -121,12 +121,6 @@ def Article_add_view(self, request, *args, **kwargs):
         except Person.DoesNotExist:
             person = Person.objects.create(user=request.user)
             post_data['author'] = person.pk
-        try:
-            data['app_config'] = str(NewsBlogConfig.objects.first().pk)
-            post_data['app_config'] = str(NewsBlogConfig.objects.first().pk)
-            print(data['app_config'])
-        except NewsBlogConfig.DoesNotExist:
-            pass
         post_data['publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
         post_data['initial-publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
         post_data['publishing_date_1'] = f'{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}'
