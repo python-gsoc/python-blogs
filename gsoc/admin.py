@@ -126,23 +126,17 @@ ArticleAdmin.add_view = Article_add_view
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
 
-def make_used(modeladmin, request, queryset):
-    queryset.update(is_used=True)
-
-make_used.short_description = _(
-    "Make the RegLink used.")
-
-
-def make_unused(modeladmin, request, queryset):
-    queryset.update(is_used=False)
-
-make_unused.short_description = _(
-    "Make the RegLink link unused.")
 
 
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('url',)}),
+        ("Configure user to be registered",
+         {'fields': (
+             "user_role",
+             "user_suborg",
+             "user_gsoc_year",
+         )}),
     )
     readonly_fields = (
         'url',
@@ -153,9 +147,15 @@ class RegLinkAdmin(admin.ModelAdmin):
         'created_at',
     ]
 
-    actions = (
-        make_used, make_unused,
-    )
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.is_used:
+            return self.readonly_fields + (
+             "user_role",
+             "user_suborg",
+             "user_gsoc_year",
+         )
+        else:
+            return self.readonly_fields
 
 
 admin.site.register(RegLink, RegLinkAdmin)

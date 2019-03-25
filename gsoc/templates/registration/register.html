@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <div class="content">
   {% if warning %}
     <h2 style="color:white; background:red">{{ warning| safe }}</h2>
   {% endif %}
@@ -25,5 +26,6 @@
   {% endif %}
   {% if done_registeration %}
     <h2>Thank you for registering! You can <a href="{% url 'login' %}">login</a> now!</h2>
+    </div>
   {% endif %}
 {% endblock %}
