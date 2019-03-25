@@ -58,13 +58,14 @@ def article_get_form():
                         'is_featured',
                         'featured_image',
                         'lead_in',
+
                     )}),
                 (_('Meta Options'),
                  {'classes': ('collapse',),
                   'fields':()}),
                 (_('Advanced Settings'),
                  {'classes': ('collapse',),
-                  'fields': ()}),
+                  'fields': ('app_config',)}),
             )
             self.readonly_fields = (
                 'author',
@@ -79,7 +80,30 @@ def article_get_form():
             )
         return form
     return return_func
-
+def Article_change_view(self, request, object_id, *args, **kwargs):
+    is_student_request = request.user.student_profile() is not None
+    data = request.GET.copy()
+    post_data = request.POST.copy()
+    try:
+        original_article = Article.objects.get(pk=object_id)
+    except Article.DoesNotExist:
+        return super(ArticleAdmin, self).change_view(request, object_id, *args, **kwargs)
+    if is_student_request:
+        timenow = original_article.publishing_date
+        try:
+            person = Person.objects.get(user=request.user)
+            post_data['author'] = person.pk
+        except Person.DoesNotExist:
+            person = Person.objects.create(user=request.user)
+            post_data['author'] = person.pk
+        post_data['publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
+        post_data['initial-publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
+        post_data['publishing_date_1'] = f'{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}'
+        post_data['initial-publishing_date_1'] = f'{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}'
+        post_data['owner'] = request.user.pk
+    request.GET = data
+    request.POST = post_data
+    return super(ArticleAdmin, self).change_view(request, object_id, *args, **kwargs)
 def Article_add_view(self, request, *args, **kwargs):
     is_student_request = request.user.student_profile() is not None
     data = request.GET.copy()
@@ -122,6 +146,7 @@ def Article_add_view(self, request, *args, **kwargs):
 
 ArticleAdmin.get_form = article_get_form()
 ArticleAdmin.add_view = Article_add_view
+ArticleAdmin.change_view = Article_change_view
 
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
