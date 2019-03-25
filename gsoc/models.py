@@ -45,6 +45,10 @@ class UserProfile(models.Model):
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
 
+    #Returning the user only
+    def __str__(self):
+        return str(self.user)    
+
 def has_proposal(self):
     try:
         self.userprofile_set.get(role=3).accepted_proposal_pdf.path

@@ -11,6 +11,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.urls import path,include
+from . import views
 
 import gsoc.views
 
@@ -34,6 +35,14 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     url(r'^', include('cms.urls'))
 )
+
+#issue 40
+
+urlpatterns += [
+    path('runtask/',views.mail),
+    path('runtaskoutput/',views.output, name="task"),
+]
+
 # This is only needed when using runserver.
 if settings.DEBUG:
     import debug_toolbar

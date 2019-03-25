@@ -9,6 +9,8 @@ from django import shortcuts
 from django.http import JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.shortcuts import render
+from .common.utils import autoemail
 
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
@@ -88,6 +90,12 @@ def cancel_proposal_upload_view(request):
     profile.accepted_proposal_pdf.delete()
     return shortcuts.HttpResponse()
 
+def mail(request):
+    return render(request, 'task.html')
+
+def output(request):
+    #run python script
+    return render(request, 'task.html', {'works':"It's Done"})
 
 def register_view(request):
     reglink_id = request.GET.get('reglink_id', request.POST.get('reglink_id', ''))
