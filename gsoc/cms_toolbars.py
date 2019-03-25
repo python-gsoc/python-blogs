@@ -13,7 +13,7 @@ ADMINISTRATION_BREAK = 'Administration Break'
 USER_SETTINGS_BREAK = 'User Settings Break'
 TOOLBAR_DISABLE_BREAK = 'Toolbar disable Break'
 SHORTCUTS_BREAK = 'Shortcuts Break'
-
+CLIPBOARD_BREAK = 'Clipboard Break'
 
 def add_admin_menu(self):
     if not self._admin_menu:

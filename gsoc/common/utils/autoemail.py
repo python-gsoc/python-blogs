@@ -11,15 +11,15 @@ from aldryn_newsblog.models import Article
 
 def SentMail():
     email_list_count=len(UserProfile.objects.all())
-    
+
     for i in range(1,email_list_count+1):
         user = User.objects.get(id=i)
-        user_name= user.get_username()
-        user_role=UserProfile.objects.role 
-        article=list(Article.objects.filter(author=user_name))
-        article=article[::-1]
-        duration=article[0].publishing_date - datetime.now()
-        if (user_role == 3) and (duration.days >= 7):
+        user_profile_object=UserProfile.objects.all()
+        user_profile=user_profile_object[i-1]
+        article=Article.objects.filter(owner=user)
+        duration=datetime.now() - article[0].publishing_date
+        print(user.email)
+        if (user_profile.role == 3) and (duration.days >= 7):
             send_mail(
             'It\'s been 7 days',
             'Post something already.',

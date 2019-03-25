@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
-from .common.utils import autoemail
+from .common.utils import autoemail as am
 
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
@@ -94,7 +94,7 @@ def mail(request):
     return render(request, 'task.html')
 
 def output(request):
-    #run python script
+    am.SentMail()
     return render(request, 'task.html', {'works':"It's Done"})
 
 def register_view(request):
