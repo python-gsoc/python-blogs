@@ -105,14 +105,15 @@ def populate(self):
         config_perms = [change_config_perm, add_config_perm]
 
         add_article_perm = False
+        change_article_perm = False
         userprofiles = user.userprofile_set.all()
         for profile in userprofiles:
             if profile.app_config == config:
                 add_article_perm = True
+                change_article_perm = True
                 break
 
         delete_article_perm = user.is_superuser if article else False
-        change_article_perm = user.is_superuser
 
         article_perms = [change_article_perm, add_article_perm,
                             delete_article_perm, ]
