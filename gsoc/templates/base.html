@@ -7,176 +7,77 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Python's Google Summer of Code Page">
         <title>Python GSoC &ndash; Splash</title>
-        <style>
-          #upload-proposal-notification {
-            margin: 2em 0 1em;
-            /* margin-left: 150px;  */
-            font-size: 150%;
-            text-align-last: center;
-            color: white;
-            background: red;
-            text-decoration-line: none;
-            position: relative;
-            top: 0;
-          }
-        </style>
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
-        <!--[if lte IE 8]>
-        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
-        <![endif]-->
         <!--[if gt IE 8]><!-->
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
         <!--<![endif]-->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
             crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="/static/css/python-gsoc.css">
         <link rel="stylesheet" href="/static/css/side-menu.css">
+        <script src="/static/js/menu.js"></script>
+        {% block head %}{% endblock %}
         {% render_block "css" %}
-
-
-
-        <style>
-        
-                .topnav {
-                            margin: 0%;    
-                            overflow: hidden;
-                            background-color: #16536e;
-                            padding: 0.25em;
-                }
-                
-                .topnav a {  
-                    color:  white;
-                    /* text-align: right;*/
-                    /*padding: 14px 16px;*/
-                    text-decoration: none;
-                    /* font-size: 17px; */
-                }
-                
-                .topnav a:hover {
-                    /* background-color: #ddd; */
-                    color:  rgb(198, 207, 245);
-                }
-                .topnav a.active {
-                    /* background-color: #2196F3; */
-                    color: white;
-                }
-                .topnav button {
-                    background-color:  white; 
-                    border: none;
-                    border-radius: 6px;
-                    color: #16536e;
-                    padding: 9px 10px;
-                    text-align: center;
-                    text-decoration: none;
-                    display: inline-block;
-                    font-size: 100%;
-                    margin: 0px 2px;
-                    cursor: pointer;
-                }
-              /*  .topnav .login-container {
-                  float: right;
-                }
-                .topnav input[type=text] {
-                  padding: 6px;
-                  margin-top: 8px;
-                  font-size: 17px;
-                  border: none;
-                  width:120px;
-                }*/
-                /*.topnav .login-container button {
-                  float: right;
-                  padding: 6px 10px;
-                  margin-top: 8px;
-                  margin-right: 16px;
-                  background-color: #555;
-                  color: white;
-                  font-size: 17px;
-                  border: none;
-                  cursor: pointer;
-                }
-                .topnav .login-container button:hover {
-                  background-color: green;
-                }*/
-
-                @media screen and (max-width: 600px) {
-                    .topnav .login-container {
-                      float: none;
-                    }
-                    .topnav a, .topnav input[type=text], .topnav .login-container button {
-                        float: none;
-                        display: block;
-                        text-align: left;
-                        width: 100%;
-                        margin: 0;
-                        padding: 14px;
-                    }
-                
-                    .topnav input[type=text] {
-                        border: 1px solid #ccc;  
-                    }
-                  }
-
-        </style>
-
     </head>
     <body>
-      {% if request.current_page %}
-        {% if request.user.is_authenticated %}
-          {% if not request.current_page.get_title_obj.published or request.current_page.get_title_obj.publisher_state %}
-            <div style="color: white; background-color: red; text-align: center; padding: 20px; border-radius: 5px;">
-              Alert ! The page has not been published yet.
-            </div>
-          {% endif %}
+        {% if user.is_authenticated %}
+            {% include 'cms_toolbar.html'%}
         {% endif %}
-      {% endif %}
-        {% cms_toolbar %}
-        <!-- Menu toggle -->
-       <!--  <a href="#menu" id="menuLink" class="menu-link">
-            Hamburger icon
-            <span></span>
-        </a> -->
+
         <div id="layout">
-        <div id="menu">
-            <div class="pure-menu">
-                <a class="pure-menu-heading" href="/">Python GSoC</a>
-                <ul class="pure-menu-list">
-                    {% show_menu 0 100 100 100 "partials/menu.html" %}
-                </ul>
+            <!-- menu -->
+            <div id="menu" class="Hello">
+                <div class="pure-menu">
+                    <ul class="pure-menu-list">
+                        {% show_menu 0 100 100 100 "partials/menu.html" %}
+                    </ul>
+                </div>
             </div>
-        </div>
+            <!-- menu -->
 
-         <div class="topnav">
-            {% if user.is_authenticated %}
-              {% include 'cms_toolbar.html'%}
-            
-            {% else %}
-            <div class="login-container" style="float: right;">
-                <form class="pure-form" method="post" action="{% url 'cms_login' %}">
-                    {% csrf_token %}
-                <input type="text" placeholder="Username" name="username">
-                <input type="password" placeholder="Password" name="password">
-                <button type="submit">Login</button>
-                <a href="{% url 'password_reset' %}">Lost password?</a>
-                </form>
-
+            {% if not user.is_authenticated %}
+                <div id="topnav">
+                    <div class="menu-toggle small-screen" id="menu-toggle-btn" onclick="toggleMenu();"><i class="fa fa-bars"></i></div>
+                    <div class="branding">
+                        <a href="/">Python GSoC</a>
+                    </div>
+                    <div class="login-container small-screen">
+                        <a href="{% url 'login' %}" class="login-button pure-button">Login</a>
+                    </div>
+                    <div class="login-container large-screen">
+                        <form class="pure-form" method="post" action="{% url 'cms_login' %}">
+                            {% csrf_token %}
+                            <input type="text" placeholder="Username" name="username">
+                            <input type="password" placeholder="Password" name="password">
+                            <button type="submit" class="pure-button">Login</button>
+                            <a href="{% url 'password_reset' %}" class="pure-button">Lost Password?</a>
+                        </form>
+                    </div>
+                </div>
+                <div class="vertical-filler"></div>
             {% endif %}
             
-        </div>
+            <div class="notification content">
+                {% if user and user.is_current_year_student and not user.has_proposal %}
+                <div class="notification-box">
+                    <span>You haven't uploaded your proposal yet. Please click <a href="/myprofile">here</a> to upload!</span>
+                </div>
+                {% endif %}
+                {% if request.current_page %}
+                    {% if request.user.is_authenticated %}
+                        {% if not request.current_page.get_title_obj.published or request.current_page.get_title_obj.publisher_state %}
+                        <div class="notification-box">
+                            Alert! The page has not been published yet.
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            {% block content %}{% endblock %}
         </div>
 
-
-        {% if user and user.is_current_year_student and not user.has_proposal %}
-        <div id='upload-proposal-notification'>
-          You haven't uploaded your proposal yet. Please click
-          <a href="/myprofile">
-            here
-          </a>
-          to upload!
-        </div>
-        <br>
-        {% endif %}
-        <!-- menu -->
-        {% block content %}{% endblock %}
         {% render_block 'js' %}
     </body>
 </html>

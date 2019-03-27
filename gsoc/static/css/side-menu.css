@@ -51,7 +51,7 @@ The content `<div>` is where all your content goes.
      margin: 0;
      color: #333;
      text-align: center;
-     padding: 2.5em 2em 0;
+     padding: 2em 2em;
      border-bottom: 1px solid #eee;
  }
     .header h1 {
@@ -67,7 +67,7 @@ The content `<div>` is where all your content goes.
     }
 
 .content-subhead {
-    margin: 50px 0 20px 0;
+    margin: 30px 0;
     font-weight: 300;
     color: #888;
 }
@@ -83,7 +83,7 @@ appears on the left side of the page.
     margin-left: -150px; /* "#menu" width */
     width: 150px;
     position: fixed;
-    top: 0;
+    top: 46px;
     left: 0;
     bottom: 0;
     z-index: 1000; /* so the menu or its navicon stays above all content */
@@ -94,6 +94,11 @@ appears on the left side of the page.
     /*
     All anchors inside the menu should be styled like this.
     */
+
+    .opened {
+        margin-left: 0 !important;
+    }
+
     #menu a {
         color: #999;
         border: none;
