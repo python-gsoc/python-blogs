@@ -130,12 +130,13 @@ def register_view(request):
             context['warning'] += 'Your username has been used!<br>'
         except User.DoesNotExist:
             pass
-        try:
-            User.objects.get(email=email)
+
+
+        # Check if email's used
+        if email and User.objects.filter(email=email).first() is not None:
             info_valid = False
             context['warning'] += 'Your email has been used!<br>'
-        except User.DoesNotExist:
-            pass
+
         try:
             password_validation.validate_password(password)
         except ValidationError as e:
