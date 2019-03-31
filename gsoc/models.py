@@ -13,9 +13,6 @@ from django.core.validators import validate_email
 from django.utils import timezone
 from django.shortcuts import reverse
 
-from aldryn_apphooks_config.fields import AppHookConfigField
-from aldryn_newsblog.cms_appconfig import NewsBlogConfig
-
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
@@ -47,8 +44,6 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
-    app_config = AppHookConfigField(NewsBlogConfig, verbose_name=_('Section'), blank=True, null=True)
-
 
 def has_proposal(self):
     try:
@@ -202,6 +197,7 @@ class ProposalTextValidator:
 
 
 validate_proposal_text = ProposalTextValidator()
+
 
 
 def gen_uuid_str():
