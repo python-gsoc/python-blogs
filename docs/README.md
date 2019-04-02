@@ -34,7 +34,8 @@ git config --local include.path ../.gitconfig
 Also make sure sqlite3 is available.
 
 ## Usage
-'''' python 
+``` python 
 pip install pipenv 
-it allow you to have a virtual machine on your local machine, to seprate this project package from the package you have on your local machine.
-''''
+```
+It is recommended to set up virtual environment on your local machine, to seprate this project package from the package you have on your local machine.
+More setup information can be found [here](https://docs.python.org/3/tutorial/venv.html)
