@@ -20,7 +20,7 @@ You can then access the site with the login bar with http://127.0.0.1:8000/en/?e
 ```
 Default user/pass is `admin` for the superuser
 
-Default student user is `Test-Student1` pass `^vM7d5*wK2R77V'`
+Default student user is `Test-Student1` pass `^vM7d5*wK2R77V`
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -32,3 +32,9 @@ To see diff's on the database you will need to run the following command :-
 git config --local include.path ../.gitconfig
 ```
 Also make sure sqlite3 is available.
+
+## Usage
+'''' python 
+pip install pipenv 
+it allow you to have a virtual machine on your local machine, to seprate this project package from the package you have on your local machine.
+''''

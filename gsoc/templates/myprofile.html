@@ -5,6 +5,7 @@ My Profile
 {% endblock %}
 
 {% block content %}
+  <div class="content">
   <h1>Welcome {% if not user.is_anonymous %}{{ user.username }} {% endif %}!</h1>
   {% if user.is_anonymous %}
     <div>Please login <a href="{% url 'login' %}">here</a>.</div>
@@ -177,6 +178,6 @@ My Profile
 
       {% endif %}
   {% endif %}
-
+</div>
   	<!-- End Upload Accepted Proposal -->
 {% endblock %}
