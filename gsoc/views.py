@@ -67,11 +67,13 @@ def upload_proposal_view(request):
             "locations": [],
         },
         'file_type_valid': False,
+        'file_not_too_large': False,
     }
     if request.method == 'POST':
         file = request.FILES.get('accepted_proposal_pdf')
         resp['file_type_valid'] = file and file.name.endswith('.pdf')
-        if resp['file_type_valid']:
+        resp['file_not_too_large'] = file.size < 20 * 1024 * 1024
+        if resp['file_type_valid'] and resp['file_not_too_large']:
             profile = request.user.student_profile()
             form = ProposalUploadForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
