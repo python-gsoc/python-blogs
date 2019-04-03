@@ -34,16 +34,33 @@ git config --local include.path ../.gitconfig
 Also make sure sqlite3 is available.
 
 ## Usage
+A virtual environment is a tool that helps to keep dependencies required by different projects separate by creating isolated python virtual environments for them.
+This means that each project can have its own dependencies, regardless of what dependencies every other project has.
+We use a module named virtualenv which is a tool to create isolated Python environments.
+virtualenv creates a folder which contains all the necessary executables to use the packages that a Python project would need.
 
-It is recommended to set up virtual environment on your local machine, to seprate this project package from the package you have on your local machine.
+Installing virtualenv:
 
-#### For virtualenv
-[Installation](https://virtualenv.pypa.io/en/latest/userguide/)  [Setup Guide](https://virtualenv.pypa.io/en/latest/userguide/)
-#### For virtualenvwrapper
-[Installation](https://virtualenvwrapper.readthedocs.io/en/latest/install.html)  [Setup Guide](https://virtualenvwrapper.readthedocs.io/en/latest/command_ref.html)
-#### For pyenv
-[Installation](https://github.com/pyenv/pyenv#installation)  [Setup Guide](https://github.com/pyenv/pyenv#command-reference)
-#### For pipenv
-[Installation](https://pipenv.readthedocs.io/en/latest/#install-pipenv-today)  [Setup Guide](https://pipenv.readthedocs.io/en/latest/#pipenv-usage)
-#### For anaconda
-[Installation](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)  [Setup Guide](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
+$ pip install virtualenv
+
+Test your installation:
+
+$ virtualenv --version
+
+Using virtualenv
+
+You can create a virtualenv using the following command:
+
+$ virtualenv my_name
+
+After running this command, a directory named my_name will be created. This is the directory which contains all the necessary executables to use the packages that a Python project would need. This is where Python packages will be installed.
+Now you can install dependencies related to the project in this virtual environment. For example if you are using Django 1.9 for a project, you can install it like you install other packages.
+
+(virtualenv_name)$ pip install Django==1.9
+Once you are done with the work, you can deactivate the virtual environment by the following command:
+
+(virtualenv_name)$ deactivate
+Now you will be back to system’s default Python installation.
+
+
+
