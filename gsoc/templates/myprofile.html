@@ -64,7 +64,7 @@ My Profile
       <form id='upload-proposal-form'
             enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="file" name="accepted_proposal_pdf">
+        <input type="file" id="proposalFileInput" name="accepted_proposal_pdf">
       </form>
       <button onclick="beforeUpload()" id="upload-proposal-button">Confirm</button>
       <button onclick="document.querySelector('#upload-proposal').style.display='none'">
@@ -100,6 +100,23 @@ My Profile
 
         boxTag.style.display = 'inline-block';
       }
+      document.getElementById('proposalFileInput').onchange = function(){
+        hideInfoBox();
+        const fileInput = document.getElementById('proposalFileInput');
+        const file = fileInput.files[0];
+        const fileSizeTooLarge = file && file.size > 5 * 1024 * 1024;
+        const fileWrongFormat = file && !file.name.endsWith(".pdf");
+        if (fileSizeTooLarge){
+          inPageInfo(`Sorry, your proposal file is too large<br>
+Please keep the file smaller than 5MB.`);
+          fileInput.value = '';
+        }
+        if (fileWrongFormat){
+          inPageInfo(`Sorry, the file you just chose doesn't seem to be a pdf file.`);
+          fileInput.value = '';
+        }
+
+      };
       function hideInfoBox() {
         const boxTag = document.querySelector('#infoBox');
         boxTag.style.display = 'none';
@@ -107,7 +124,7 @@ My Profile
       function beforeUpload() {
         const offlineCancel = function(){
           inPageInfo("Proposal upload canceled.")
-          }
+          };
         const infoText = 'Please make sure there is no private data in your pdf file. Confirm?'
         inPageInfo(infoText, false);
         showInfoBoxBtns(uploadProposal, offlineCancel)
@@ -132,8 +149,8 @@ My Profile
         const successCallback = function() {
           inPageInfo("Upload succeeded! Please refresh to get rid of the GIANT banner!",false);
           setProposalUploadingStatus(false);
-        }
-        showInfoBoxBtns(successCallback, cancelProposalUpload)
+        };
+        showInfoBoxBtns(successCallback, cancelProposalUpload);
         inPageInfo(text, true);
       }
       function uploadProposal() {
@@ -146,8 +163,12 @@ My Profile
         )
           .then(function(resp) {
             if(!resp.data['file_type_valid']) {
-              console.log(resp.data['file_type_valid']);
               inPageInfo("Your file doesn't seem to be a pdf file. Please check again!");
+              setProposalUploadingStatus(false);
+              return
+            }
+            if(!resp.data['file_not_too_large']) {
+              inPageInfo("Your file is larger than 5MB. Please make it smaller!");
               setProposalUploadingStatus(false);
               return
             }
