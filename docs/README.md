@@ -57,9 +57,11 @@ After running this command, a directory named my_name will be created. This is t
 Now you can install dependencies related to the project in this virtual environment. For example if you are using Django 1.9 for a project, you can install it like you install other packages.
 
 (virtualenv_name)$ pip install Django==1.9
+
 Once you are done with the work, you can deactivate the virtual environment by the following command:
 
 (virtualenv_name)$ deactivate
+
 Now you will be back to system’s default Python installation.
 
 
