@@ -104,11 +104,11 @@ My Profile
         hideInfoBox();
         const fileInput = document.getElementById('proposalFileInput');
         const file = fileInput.files[0];
-        const fileSizeTooLarge = file && file.size > 5 * 1024 * 1024;
+        const fileSizeTooLarge = file && file.size > 20 * 1024 * 1024;
         const fileWrongFormat = file && !file.name.endsWith(".pdf");
         if (fileSizeTooLarge){
           inPageInfo(`Sorry, your proposal file is too large<br>
-Please keep the file smaller than 5MB.`);
+Please keep the file smaller than 20MB.`);
           fileInput.value = '';
         }
         if (fileWrongFormat){
@@ -168,7 +168,7 @@ Please keep the file smaller than 5MB.`);
               return
             }
             if(!resp.data['file_not_too_large']) {
-              inPageInfo("Your file is larger than 5MB. Please make it smaller!");
+              inPageInfo("Your file is larger than 20MB. Please make it smaller!");
               setProposalUploadingStatus(false);
               return
             }
