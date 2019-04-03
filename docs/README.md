@@ -32,3 +32,9 @@ To see diff's on the database you will need to run the following command :-
 git config --local include.path ../.gitconfig
 ```
 Also make sure sqlite3 is available.
+
+## Usage
+'''' python 
+pip install pipenv 
+it allow you to have a virtual machine on your local machine, to seprate this project package from the package you have on your local machine.
+''''
