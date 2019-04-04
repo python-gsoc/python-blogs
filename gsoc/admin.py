@@ -1,4 +1,4 @@
-from .models import UserProfile, RegLink, UserDetails, Scheduler
+from .models import UserProfile, RegLink, UserDetails, Scheduler, Comment, Reply
 from .forms import UserProfileForm, UserDetailsForm
 
 from django.contrib.auth.models import User
@@ -201,6 +201,8 @@ ArticleAdmin.change_view = Article_change_view
 
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
+admin.site.register(Comment)
+admin.site.register(Reply)
 
 
 class RegLinkAdmin(admin.ModelAdmin):
