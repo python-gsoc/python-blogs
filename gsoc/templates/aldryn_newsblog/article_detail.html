@@ -29,13 +29,160 @@
     font-weight: 300;
     color: rgb(176, 202, 219);
 }
+.comment{
+  width: 35%;
+  border: 5px #108496;
+  border-bottom-style: solid;
+  box-sizing: border-box;
+  padding-top: 5%;
+}
+.reply{
+  width: 35%;
+  border: 5px #154496;
+  border-bottom-style: solid;
+  box-sizing: border-box;
+  margin-left: 20%;
+  padding-top: 2%
+}
+.date{
+  font-style: oblique;
+  font-variant: small-caps;
+  font-size: 70%
+}
+.author_name{
+font-family: sans-serif;
+ color: #50848a;
+ text-decoration: none;
+}
+
+.author_site{
+ font-family: sans-serif;
+ font-size: 70%;
+ text-decoration: none;
+}
+.comment_text{
+  font-family: sans-serif;
+  ";
+}
+.options{
+ color:#89848a;
+ text-decoration: none;
+ font-size: 50%
+ font-family: sans-serif;
+}
+.replytitle{
+  margin-left:25%;
+  font-family: sans-serif;
+  border: 2px #154496;
+  width: 11%;
+  margin-top: 2px;
+}
+.commentform{
+  background-color: #e4efc7;
+  width: 40%;
+  padding-left: 5%;
+  padding-top: 1%;
+  border-radius: 10px;
+}
+
+.commentformlabel{
+  font-family: sans-serif;
+  font-style: oblique;
+  padding-top: 5px;
+  padding-bottom: 2px;
+
+}
+
+.commentbutton{
+  background-color: #4CAF50;
+  border-radius: 10px;
+  border: none;
+  padding: 15px 32px;
+  margin-top: 4px;
+}
+
+.commentforminput{
+  border-radius: 10px;
+  border: none;
+}
+
+.commentformtext{
+ border-radius: 10px;
+ border: none;
+ width: 200px;
+ height: 150px;
+}
+.replybutton{
+  cursor: pointer;
+  font-size:70%;
+  padding-top: 15px;
+}
 </style>
 <div id="layout" class="pure-g" >
-        
 		<div class="content pure-u-1 pure-u-md-20-24">
     {% include "aldryn_newsblog/includes/article.html" with detail_view="true" %}
-
     {% static_placeholder "newsblog_social" %}
+    <br><br><h5>Comments</h2>
+    <form class="commentform" action="{% url 'add_comment_to_article' pk=article.pk %}?next={{ request.path|urlencode }}" method="post">{% csrf_token %}
+      <div class="commentformlabel">Author:</div>
+      <input name="author" type="text" class="commentforminput"><br>
+      <div class="commentformlabel">E-mail:</div>
+      <input name="mail" type="text" class="commentforminput"><br>
+      <div class="commentformlabel" >Website:</div>
+      <input name="site" type="text" class="commentforminput"><br>
+      <div class="commentformlabel">Comment:</div>
+    <textarea name="text" class="commentformtext">The cat was playing in the garden.</textarea>
+    <input type="hidden" name="next" value="{{ request.path|urlencode }}"><br>
+    <input type="submit" class="commentbutton" value="Add Comment">
+  </form>
+  <script>
+  $("[name='author']").prop("required", true);
+  $("[name='mail']").prop("required", true);
+  $("[name='text']").prop("required", true);
+  </script>
+    {% for comment in article.comments.all %}
+      <div class="comment">
+    <div class="date">{{ comment.created_date }}</div>
+      <a href="mailto:{{ comment.author_mail }}" class="author_name">{{ comment.author_name }}</a>
+      <a href="{{ comment.author_site }}" class="author_site">{{comment.author_site}}</a>
+      <p class="comment_text">{{ comment.text|linebreaks }}</p>
+      <div class="replybutton" id="replyto{{comment.pk}}"><i class="material-icons options">reply</i><div class="options">Reply</div></div>
+    </div>
+    <script>
+    $( "#replyto{{comment.pk}}" ).click(function() {
+      $( "#replyform{{comment.pk}}" ).toggle();
+    });
+    </script>
+    <h5 class="replytitle">{{comment.replies.all.count}} replies</h5>
+        <div id="replyform{{comment.pk}}" style="display: none">
+        <form class="commentform" action="{% url 'add_reply_to_comment' pk=comment.pk %}?next={{ request.path|urlencode }}" method="post">{% csrf_token %}
+          <div class="commentformlabel">Author:</div>
+          <input name="author" type="text" class="commentforminput"><br>
+          <div class="commentformlabel">E-mail:</div>
+          <input name="mail" type="text" class="commentforminput"><br>
+          <div class="commentformlabel" >Website:</div>
+          <input name="site" type="text" class="commentforminput"><br>
+          <div class="commentformlabel">Comment:</div>
+        <textarea name="text" class="commentformtext">The cat was playing in the garden.</textarea>
+        <input type="hidden" name="next" value="{{ request.path|urlencode }}"><br>
+        <input type="submit" class="commentbutton" value="Add Comment">
+      </form></div>
+      <script>
+      $("[name='author']").prop("required", true);
+      $("[name='mail']").prop("required", true);
+      $("[name='text']").prop("required", true);
+      </script>
+        {% for reply in comment.replies.all %}
+            <div class="reply">
+              <div class="date">{{ reply.created_date }}</div>
+                <a href="mailto:{{ reply.author_mail }}" class="author_name">{{ reply.author_name }}</a>
+                <a href="{{ reply.author_site }}" class="author_site">{{reply.author_site}}</a>
+                <p class="comment_text">{{ reply.text|linebreaks }}</p>
+            </div>
+        {% endfor %}
+    {% empty %}
+        <p>No comments</p>
+    {% endfor %}
 
     <ul>
         {% if prev_article %}
