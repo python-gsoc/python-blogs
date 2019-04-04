@@ -1,19 +1,19 @@
 import io
-
-
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
-from .models import validate_proposal_text, RegLink, UserProfile
+from .models import validate_proposal_text, RegLink, UserProfile, Comment, Reply
 from django import shortcuts
 from django.http import JsonResponse
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-
+from django.shortcuts import get_object_or_404, render
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
+from aldryn_newsblog.models import Article
+from ratelimit.decorators import ratelimit
 
 
 # handle proposal upload
@@ -67,13 +67,11 @@ def upload_proposal_view(request):
             "locations": [],
         },
         'file_type_valid': False,
-        'file_not_too_large': False,
     }
     if request.method == 'POST':
         file = request.FILES.get('accepted_proposal_pdf')
         resp['file_type_valid'] = file and file.name.endswith('.pdf')
-        resp['file_not_too_large'] = file.size < 20 * 1024 * 1024
-        if resp['file_type_valid'] and resp['file_not_too_large']:
+        if resp['file_type_valid']:
             profile = request.user.student_profile()
             form = ProposalUploadForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
@@ -168,3 +166,33 @@ def register_view(request):
         else:
             context['done_registeration'] = False
             return shortcuts.render(request, 'registration/register.html', context)
+
+@ratelimit(key='ip', rate='100/h')
+def add_comment_to_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    if request.method == "POST":
+            comment = Comment()
+            comment.author_name = request.POST.get('author')
+            comment.author_mail = request.POST.get('mail')
+            comment.author_site = request.POST.get('site')
+            comment.text = request.POST.get('text')
+            comment.article = article
+            comment.approved_comment = False
+            comment.save()
+            next = request.POST.get('next', '/')
+    return shortcuts.redirect(next)
+
+@ratelimit(key='ip', rate='100/h')
+def add_reply_to_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.method == "POST":
+            reply = Reply()
+            reply.author_name = request.POST.get('author')
+            reply.author_mail = request.POST.get('mail')
+            reply.author_site = request.POST.get('site')
+            reply.text = request.POST.get('text')
+            reply.comment = comment
+            reply.approved_comment = False
+            reply.save()
+            next = request.POST.get('next', '/')
+    return shortcuts.redirect(next)
