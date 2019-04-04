@@ -42,21 +42,27 @@
 
             <div id="main">
                 {% if not user.is_authenticated %}
-                    <div id="topnav">
+                    <!-- <div id="topnav">
                         <div class="branding">
                             <a href="/">Python GSoC</a>
                         </div>
-                        <div class="login-container small-screen">
-                            <a href="{% url 'login' %}" class="login-button pure-button">Login</a>
-                        </div>
-                        <div class="login-container large-screen">
-                            <form class="pure-form" method="post" action="{% url 'cms_login' %}">
-                                {% csrf_token %}
-                                <input type="text" placeholder="Username" name="username">
-                                <input type="password" placeholder="Password" name="password">
-                                <button type="submit" class="pure-button">Login</button>
-                                <a href="{% url 'password_reset' %}" class="pure-button">Lost Password?</a>
-                            </form>
+                        
+                    </div> -->
+                    <div id=topnav>
+                        <div class="pure-menu pure-menu-horizontal">
+                            <a href="/" class="pure-menu-heading pure-menu-link">Python-GSoC</a>
+                            <div class="login-container small-screen">
+                                <a href="{% url 'login' %}" class="login-button pure-button">Login</a>
+                            </div>
+                            <div class="login-container large-screen">
+                                <form class="pure-form" method="post" action="{% url 'cms_login' %}">
+                                    {% csrf_token %}
+                                    <input type="text" placeholder="Username" name="username">
+                                    <input type="password" placeholder="Password" name="password">
+                                    <button type="submit" class="pure-button">Login</button>
+                                    <a href="{% url 'password_reset' %}" class="pure-button">Lost Password?</a>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="vertical-filler"></div>

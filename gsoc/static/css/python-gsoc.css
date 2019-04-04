@@ -133,19 +133,6 @@ div.problem {
     height: 46px;
 }
 
-.branding {
-    display: inline-block;
-    height: 100%;
-    padding: 12.5px 0 12.5px 9.6px;
-}
-
-.branding a {
-    color: white;
-    font-size: 18px;
-    text-decoration: none;
-    text-transform: uppercase;
-}
-
 .login-container {
     display: inline-block;
     float: right; 
@@ -155,18 +142,11 @@ div.problem {
     padding: 5px;
 }
 
-.menu-toggle {
-    display: inline-block;
-    font-size: 20px;
-    color: white;
-    padding: 0 0 0 15px;
-}
-
 .small-screen {
     display: none;
 }
 
-@media screen and (max-width: 48em) {
+@media screen and (max-width: 50em) {
     .large-screen {
         display: none;
     }
@@ -182,4 +162,21 @@ div.problem {
     .small-screen .login-button {
         margin: 5px;
     }
+}
+
+#topnav .pure-menu {
+    height: 100%;
+}
+
+#topnav .pure-menu-list {
+    height: 100%;
+}
+
+#topnav .pure-menu-link.pure-menu-heading {
+    margin-top: 6px;
+    color: #aaa;
+}
+
+#topnav .pure-menu-link.pure-menu-heading:hover {
+    background: #16536e;
 }
