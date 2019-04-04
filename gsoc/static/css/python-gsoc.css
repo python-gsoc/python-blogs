@@ -166,7 +166,7 @@ div.problem {
     display: none;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 48em) {
     .large-screen {
         display: none;
     }

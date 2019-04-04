@@ -16,7 +16,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="/static/css/python-gsoc.css">
         <link rel="stylesheet" href="/static/css/side-menu.css">
-        <script src="/static/js/menu.js"></script>
         {% block head %}{% endblock %}
         {% render_block "css" %}
     </head>
@@ -25,9 +24,14 @@
             {% include 'cms_toolbar.html'%}
         {% endif %}
 
+        <a href="#menu" id="menuLink" class="menu-link">
+            <!-- Hamburger icon -->
+            <span></span>
+        </a>
+
         <div id="layout">
             <!-- menu -->
-            <div id="menu" class="Hello">
+            <div id="menu">
                 <div class="pure-menu">
                     <ul class="pure-menu-list">
                         {% show_menu 0 100 100 100 "partials/menu.html" %}
@@ -36,48 +40,50 @@
             </div>
             <!-- menu -->
 
-            {% if not user.is_authenticated %}
-                <div id="topnav">
-                    <div class="menu-toggle small-screen" id="menu-toggle-btn" onclick="toggleMenu();"><i class="fa fa-bars"></i></div>
-                    <div class="branding">
-                        <a href="/">Python GSoC</a>
-                    </div>
-                    <div class="login-container small-screen">
-                        <a href="{% url 'login' %}" class="login-button pure-button">Login</a>
-                    </div>
-                    <div class="login-container large-screen">
-                        <form class="pure-form" method="post" action="{% url 'cms_login' %}">
-                            {% csrf_token %}
-                            <input type="text" placeholder="Username" name="username">
-                            <input type="password" placeholder="Password" name="password">
-                            <button type="submit" class="pure-button">Login</button>
-                            <a href="{% url 'password_reset' %}" class="pure-button">Lost Password?</a>
-                        </form>
-                    </div>
-                </div>
-                <div class="vertical-filler"></div>
-            {% endif %}
-            
-            <div class="notification content">
-                {% if user and user.is_current_year_student and not user.has_proposal %}
-                <div class="notification-box">
-                    <span>You haven't uploaded your proposal yet. Please click <a href="/myprofile">here</a> to upload!</span>
-                </div>
-                {% endif %}
-                {% if request.current_page %}
-                    {% if request.user.is_authenticated %}
-                        {% if not request.current_page.get_title_obj.published or request.current_page.get_title_obj.publisher_state %}
-                        <div class="notification-box">
-                            Alert! The page has not been published yet.
+            <div id="main">
+                {% if not user.is_authenticated %}
+                    <div id="topnav">
+                        <div class="branding">
+                            <a href="/">Python GSoC</a>
                         </div>
+                        <div class="login-container small-screen">
+                            <a href="{% url 'login' %}" class="login-button pure-button">Login</a>
+                        </div>
+                        <div class="login-container large-screen">
+                            <form class="pure-form" method="post" action="{% url 'cms_login' %}">
+                                {% csrf_token %}
+                                <input type="text" placeholder="Username" name="username">
+                                <input type="password" placeholder="Password" name="password">
+                                <button type="submit" class="pure-button">Login</button>
+                                <a href="{% url 'password_reset' %}" class="pure-button">Lost Password?</a>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="vertical-filler"></div>
+                {% endif %}
+                
+                <div class="notification content">
+                    {% if user and user.is_current_year_student and not user.has_proposal %}
+                    <div class="notification-box">
+                        <span>You haven't uploaded your proposal yet. Please click <a href="/myprofile">here</a> to upload!</span>
+                    </div>
+                    {% endif %}
+                    {% if request.current_page %}
+                        {% if request.user.is_authenticated %}
+                            {% if not request.current_page.get_title_obj.published or request.current_page.get_title_obj.publisher_state %}
+                            <div class="notification-box">
+                                Alert! The page has not been published yet.
+                            </div>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
-                {% endif %}
+                </div>
+                
+                {% block content %}{% endblock %}
             </div>
-            
-            {% block content %}{% endblock %}
         </div>
 
         {% render_block 'js' %}
+        <script src="/static/js/menu.js"></script>
     </body>
 </html>
