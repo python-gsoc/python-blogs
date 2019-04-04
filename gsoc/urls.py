@@ -22,6 +22,8 @@ urlpatterns = [
             'cmspages': CMSSitemap,
         }
     }),
+    path('post/<int:pk>/comment/', gsoc.views.add_comment_to_article, name='add_comment_to_article'),
+    path('reply/<int:pk>/comment/', gsoc.views.add_reply_to_comment, name='add_reply_to_comment'),
 ]
 
 #Add Django site authentication urls (for login, logout, password management)
