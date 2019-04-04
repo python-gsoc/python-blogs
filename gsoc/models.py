@@ -12,9 +12,9 @@ from django.utils.translation import gettext as _
 from django.core.validators import validate_email
 from django.utils import timezone
 from django.shortcuts import reverse
-
 from aldryn_apphooks_config.fields import AppHookConfigField
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
+from aldryn_newsblog.models import Article
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
@@ -229,3 +229,31 @@ class RegLink(models.Model):
         user = User.objects.create(*args, is_staff=is_staff, **kwargs)
         UserProfile.objects.create(user=user, role=self.user_role, gsoc_year=self.user_gsoc_year, suborg_full_name=self.user_suborg)
         return user
+
+class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
+    author_name = models.CharField(max_length=200)
+    author_mail = models.CharField(max_length=50)
+    author_site = models.CharField(max_length=50)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+    approved_comment = models.BooleanField(default=False)
+    def approve(self):
+        self.approved_comment = True
+        self.save()
+    def __str__(self):
+        return self.text
+
+class Reply(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="replies")
+    author_name = models.CharField(max_length=200)
+    author_mail = models.CharField(max_length=50)
+    author_site = models.CharField(max_length=50)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+    approved_comment = models.BooleanField(default=False)
+    def approve(self):
+        self.approved_comment = True
+        self.save()
+    def __str__(self):
+        return self.text
