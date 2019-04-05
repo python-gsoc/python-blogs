@@ -402,5 +402,6 @@ BOT_NICK = "CommandBot"
 IRC_SERVER = "irc.freenode.org"
 RECEIVER = "limnoria"
 
-
+# Disable page cache so that CSRF token can be updated
+CMS_PAGE_CACHE = False
 
