@@ -1,122 +1,71 @@
-{% load i18n staticfiles thumbnail cms_tags apphooks_config_tags %}
-<style>
-.content-subhead {
-    text-transform: uppercase;
-    color: #aaa;
-    border-bottom: 1px solid #eee;
-    padding: 0.4em 0;
-    font-size: 80%;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-}
-.post-meta {
-    color: #999;
-    font-size: 90%;
-    margin: 0;
-}
-.post-description {
-    font-family: Georgia, "Cambria", serif;
-    color: #444;
-    line-height: 1.8em;
-}
-.post {
-    padding-bottom: 2em;
-}
-.post-title {
-    font-size: 2em;
-    color: #222;
-    margin-bottom: 0.2em;
-}
-.post-avatar {
-    border-radius: 50px;
-    float: right;
-    margin-left: 1em;
-}
-.post-description {
-    font-family: Georgia, "Cambria", serif;
-    color: #444;
-    line-height: 1.8em;
-}
+{% load i18n apphooks_config_tags cms_tags sekizai_tags staticfiles thumbnail %}
 
-.post-category {
-    margin: 0 0.1em;
-    padding: 0.3em 1em;
-    color: #fff;
-    background: #999;
-    font-size: 80%;
-}
-    .post-category-design {
-        background: #5aba59;
-    }
-    .post-category-pure {
-        background: #4d85d1;
-    }
-    .post-category-yui {
-        background: #8156a7;
-    }
-    .post-category-js {
-        background: #df2d4f;
-    }
-
-.post-images {
-    margin: 1em 0;
-}
-.post-image-meta {
-    margin-top: -3.5em;
-    margin-left: 1em;
-    color: #fff;
-    text-shadow: 0 1px 1px #333;
-}
-</style>
-<h1 class="content-subhead"></h1>
-<article class="article
-    {% if article.is_featured %} featured{% endif %}
-    {% if not article.published %} unpublished{% endif %}" border="5">
-
-    {# The image is only shown on the detail view by using the condition "and detail_view" #}
-    {% if article.featured_image_id and detail_view %}
-      <div class="post-images">
-	  <p>
-            <img src="{% thumbnail article.featured_image 800x450 crop subject_location=article.featured_image.subject_location %}" alt="{{ article.featured_image.alt }}">
-        </p>
-		</div>
-    {% endif %}
-    {% if article.categories.exists %}
-        <div class="post-category">
-		<p>
-            {% for category in article.categories.all %}
-                <a href="{% namespace_url 'article-list-by-category' category.slug namespace=namespace default='' %}">{{ category.name }}</a>
-                {% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </p>
-		</div>
-    {% endif %}
-
-    <h2>
-        {% if not detail_view %}
-            <a href="{% namespace_url 'article-detail' article.slug namespace=namespace default='' %}">{% render_model article "title" %}</a>
-        {% else %}
-            {% render_model article "title" %}
-        {% endif %}
-    </h2>
-		<p class="post-meta">
-			By {{ article.owner }} on {{ article.publishing_date|date }}
-		</p>
-
-    {% include "aldryn_newsblog/includes/author.html" with author=article.author %}
-
-    {% if article.tags %}
-        <p>
-            {% for tag in article.tags.all %}
-                <a class="post-category post-category-design" href="{% namespace_url 'article-list-by-tag' tag=tag.slug namespace=namespace default='' %}">{{ tag.name }}</a>
-            {% endfor %}
+<article class="aldryn-newsblog-article{% if article.is_featured %} aldryn-newsblog-featured{% endif %}{% if not article.published %} unpublished{% endif %}{% if article.future %} future{% endif %}">
+    {% if article.featured_image_id %}
+        <p class="visual">
+            {% if not detail_view %}
+                <a href="{{ article.get_absolute_url }}">
+            {% endif %}
+            <img src="{% thumbnail article.featured_image 800x450 crop subject_location=article.featured_image.subject_location %}" alt="{{ article.featured_image.alt }}" class="img-responsive">
+            {% if not detail_view %}
+                </a>
+            {% endif %}
         </p>
     {% endif %}
-
-  <div class="post-description">  {% render_model article "lead_in" %}</div>
-
 
     {% if detail_view %}
-        {% render_placeholder article.content language placeholder_language %}
+    <div class="text-center">
+    {% else %}
+    <div>
+    {% endif %}
+        <div class="categories">
+            {% for category in article.categories.all %}
+                
+                <a href="{% namespace_url 'article-list-by-category' category.slug namespace=namespace default='' %}">
+                    <span class="category">{{ category.name }}</span>
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if detail_view %}
+        <h1 class="heading">
+            {% render_model article "title" %}
+        </h1>
+        {% include "aldryn_newsblog/includes/author.html" with author=article.author %}
+        {%  else %}
+        <h2 class="heading">
+            {% render_model article "title" %}
+        </h2>
+        {% endif %}
+    </div>
+
+    {% if not detail_view %}
+        <div class="lead">
+            {% render_model article "lead_in" "" "" "truncatewords_html:'20'" %}
+        </div>
+        <a href="{% namespace_url 'article-detail' article.slug namespace=namespace default='' %}">Read More ...</a>
+    {% endif %}
+
+    {% if article.tags and detail_view %}
+        <p class="tags">
+            {% if article.tags.all %}
+            Tags: 
+            {% endif %}
+            {% for tag in article.tags.all %}
+                <a href="{% namespace_url 'article-list-by-tag' tag=tag.slug namespace=namespace default='' %}">{{ tag.name }}</a>
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    {% if detail_view %}
+        <div class="lead">
+            {% render_model article "lead_in" %}
+        </div>
+    {% endif %}
+
+    {% if detail_view %}
+        <div class="article-content">
+            {% render_placeholder article.content language placeholder_language %}
+        </div>
     {% endif %}
 </article>

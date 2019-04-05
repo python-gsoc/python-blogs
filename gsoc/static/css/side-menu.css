@@ -83,7 +83,7 @@ appears on the left side of the page.
     margin-left: -150px; /* "#menu" width */
     width: 150px;
     position: fixed;
-    top: 0;
+    top: 46px;
     left: 0;
     bottom: 0;
     z-index: 1000; /* so the menu or its navicon stays above all content */
@@ -129,7 +129,7 @@ appears on the left side of the page.
     */
     #menu .pure-menu-selected,
     #menu .pure-menu-heading {
-        background: #16536e;
+        background: #1f8dd6;
     }
         /*
         This styles a link within a selected menu item `<li>`.
@@ -161,7 +161,7 @@ small screens.
 .menu-link {
     position: fixed;
     display: block; /* show this only on small screens */
-    top: 0;
+    top: 46px;
     left: 0; /* "#menu width" */
     background: #000;
     background: rgba(0,0,0,0.7);
@@ -201,16 +201,13 @@ small screens.
             margin-top: 0.6em;
         }
 
-.sub-menu {
-    margin-left: 20px;
-}
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 
 /*
 Hides the menu at `48em`, but modify this based on your app's needs.
 */
-@media (min-width: 48em) {
+@media (min-width: 50em) {
 
     .header,
     .content {

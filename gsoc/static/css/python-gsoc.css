@@ -8,6 +8,10 @@ label {
     color: #489eba;
 }
 
+html.cms-toolbar-expanded > #layout {
+    margin-top: 46px;
+}
+
 .warning {
     background:  wheat;
     color: #16536e;
@@ -56,7 +60,7 @@ label {
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin: 2em 0 1em;
+    margin: 1em 0;
 }
 
 /* This is a modifier class used when the content-head is inside a ribbon */
@@ -88,9 +92,91 @@ label {
 div.ok {
 	border-bottom: 2px solid #8aab00;
 }
+
 div.waiting {
 	border-bottom: 2px solid #fecb01;
 }
+
 div.problem {
 	border-bottom: 2px solid #b44601;
+}
+
+/* Notification */
+.notification {
+    margin-bottom: 0 !important;
+}
+
+.notification-box {
+    background: lightcoral;
+    color: white;
+    margin: 1em 0;
+    padding: 1em 2em;
+}
+
+.notification-box-light {
+    background: wheat;
+    color: #16536e;
+    margin: 1em 0;
+    padding: 1em 2em;
+}
+
+/* Login Bar */
+#topnav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 46px;
+    background: #16536e;
+}
+
+.vertical-filler {
+    height: 46px;
+}
+
+.login-container {
+    display: inline-block;
+    float: right; 
+}
+
+.pure-form {
+    padding: 5px;
+}
+
+.small-screen {
+    display: none;
+}
+
+@media screen and (max-width: 50em) {
+    .large-screen {
+        display: none;
+    }
+
+    .small-screen {
+        display: block;
+    }
+
+    .menu-toggle {
+        display: inline-block !important;
+    }
+
+    .small-screen .login-button {
+        margin: 5px;
+    }
+}
+
+#topnav .pure-menu {
+    height: 100%;
+}
+
+#topnav .pure-menu-list {
+    height: 100%;
+}
+
+#topnav .pure-menu-link.pure-menu-heading {
+    margin-top: 6px;
+    color: #aaa;
+}
+
+#topnav .pure-menu-link.pure-menu-heading:hover {
+    background: #16536e;
 }
