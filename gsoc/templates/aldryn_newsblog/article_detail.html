@@ -1,34 +1,4 @@
-{% extends "aldryn_newsblog/base.html" %}
-{% load i18n cms_tags apphooks_config_tags %}
-
-{% block title %}
-    {{ article.title }} - {{ block.super }}
-{% endblock %}
-
-{% block newsblog_content %}
 <style>
-.header {
-    text-align: center;
-    top: auto;
-    margin: 3em auto;
-}
-
-.sidebar {
-    background: rgb(61, 79, 93);
-    color: #fff;
-}
-
-.brand-title,
-.brand-tagline {
-    margin: 0;
-}
-.brand-title {
-    text-transform: uppercase;
-}
-.brand-tagline {
-    font-weight: 300;
-    color: rgb(176, 202, 219);
-}
 .comment{
   width: 35%;
   border: 5px #108496;
@@ -118,10 +88,33 @@ font-family: sans-serif;
   padding-top: 15px;
 }
 </style>
-<div id="layout" class="pure-g" >
-		<div class="content pure-u-1 pure-u-md-20-24">
-    {% include "aldryn_newsblog/includes/article.html" with detail_view="true" %}
+{% extends "aldryn_newsblog/base.html" %}
+{% load i18n cms_tags apphooks_config_tags %}
+
+{% block title %}{{ article.title }} - {{ block.super }}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+
+{% block newsblog_content %}
+    <div class="aldryn-newsblog-detail">
+        {% include "aldryn_newsblog/includes/article.html" with detail_view="true" %}
+    </div>
     {% static_placeholder "newsblog_social" %}
+
+    <div class="aldryn-newsblog-pager">
+        <ul class="pager">
+            {% if prev_article %}
+                <li class="previous"><a href="{{ prev_article.get_absolute_url }}"><span aria-hidden="true">&larr;</span> {% trans "Previous" %}</a></li>
+            {% else %}
+                <li class="previous"><span class="text-muted"><span aria-hidden="true">&larr;</span> {% trans "Previous" %}</span></li>
+            {% endif %}
+            <li><span class="pager-back"><a href="{% namespace_url "article-list" %}">{% trans "Overview" %}</a></span></li>
+            {% if next_article %}
+                <li class="next"><a href="{{ next_article.get_absolute_url }}">{% trans "Next" %} <span aria-hidden="true">&rarr;</span></a></li>
+            {% else %}
+                <li class="next"><span class="text-muted">{% trans "Next" %} <span aria-hidden="true">&rarr;</span></span></li>
+            {% endif %}
+        </ul>
+    </div>
     <br><br><h5>Comments</h2>
     <form class="commentform" action="{% url 'add_comment_to_article' pk=article.pk %}?next={{ request.path|urlencode }}" method="post">{% csrf_token %}
       <div class="commentformlabel">Author:</div>
@@ -183,16 +176,4 @@ font-family: sans-serif;
     {% empty %}
         <p>No comments</p>
     {% endfor %}
-
-    <ul>
-        {% if prev_article %}
-            <li><a href="{{ prev_article.get_absolute_url }}">{% trans "Previous Article" %}</a></li>
-        {% endif %}
-        <li><a href="{% namespace_url "article-list" %}">{% trans "Back to Overview" %}</a></li>
-        {% if next_article %}
-            <li><a href="{{ next_article.get_absolute_url }}">{% trans "Next Article" %}</a></li>
-        {% endif %}
-    </ul>
-	</div>
-</div>
 {% endblock %}
