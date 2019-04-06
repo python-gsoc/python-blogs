@@ -1,0 +1,26 @@
+{% extends CMS_TEMPLATE %}
+
+{% block content %}
+    {% for blogset in blogsets %}
+        <div class="content">
+            <div class="pure-u-1 pure-u-md-1-1 pure-u-lg-1-1">
+                {% with forloop.counter0 as i %}
+                    <h2 class="content-head content-head">{{ years.i }}</h2>
+                {% endwith %}
+                <div class="pure-g blog-list">
+                    {% for blog in blogset %}
+                        <div class="pure-u-1 pure-u-md-1-3 card-container">
+                            <a href="{{ blog.url }}">
+                                <div class="card">
+                                    <h3 class="title">{{ blog.title }}</h3>
+                                    <div class="student">{{ blog.student }}</div>
+                                    <div class="suborg">{{ blog.suborg }}</div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock content %}

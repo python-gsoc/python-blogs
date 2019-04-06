@@ -180,3 +180,32 @@ div.problem {
 #topnav .pure-menu-link.pure-menu-heading:hover {
     background: #16536e;
 }
+
+.blog-list a {
+    text-decoration: none;
+    color: black;
+}
+
+.blog-list .card-container .card {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #ccc;
+    text-align: center;
+    text-decoration: none !important;
+
+    -webkit-transition: all 0.1s ease-out;
+    -moz-transition: all 0.1s ease-out;
+    -ms-transition: all 0.1s ease-out;
+    -o-transition: all 0.1s ease-out;
+    transition: all 0.1s ease-out;
+}
+
+.blog-list .card-container .card:hover {
+    background: #bbb;
+}
+
+.blog-list .card-container .card .suborg {
+    font-size: 12px;
+    color: #16536e;
+}
