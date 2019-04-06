@@ -1,6 +1,7 @@
 {% extends CMS_TEMPLATE %}
 
 {% block content %}
+<<<<<<< HEAD
     {% for blogset in blogsets %}
         <div class="content">
             <div class="pure-u-1 pure-u-md-1-1 pure-u-lg-1-1">
@@ -20,6 +21,24 @@
                         </div>
                     {% endfor %}
                 </div>
+=======
+    <div class="content">
+        <div class="pure-u-1 pure-u-md-1-1 pure-u-lg-1-1">
+            <h2 class="content-head content-head">{{ title }}</h2>
+            <div class="pure-g blog-list">
+                {% for blog in blogset %}
+                    <div class="pure-u-1 pure-u-md-1-3 card-container">
+                        <a href="{{ blog.url }}">
+                            <div class="card">
+                                <i class="fa fa-quote-left {{ blog.color }}" aria-hidden="true"></i>
+                                <h3 class="title">{{ blog.title }}</h3>
+                                <div class="student">{{ blog.student }}</div>
+                                <div class="suborg">{{ blog.suborg }}</div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+>>>>>>> 26af9e6... Change styling of list view
             </div>
         </div>
     {% endfor %}

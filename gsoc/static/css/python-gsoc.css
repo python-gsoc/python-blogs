@@ -190,7 +190,7 @@ div.problem {
     margin: 10px;
     padding: 10px;
     border-radius: 10px;
-    background: #ccc;
+    background: #eee;
     text-align: center;
     text-decoration: none !important;
 
@@ -202,10 +202,35 @@ div.problem {
 }
 
 .blog-list .card-container .card:hover {
-    background: #bbb;
+    background: #ddd;
+}
+
+.blog-list .card-container .card .title {
+    margin: 0.5em 0;
 }
 
 .blog-list .card-container .card .suborg {
     font-size: 12px;
     color: #16536e;
+}
+
+.blog-list .card-container .card i {
+    margin-top: 10px;
+    font-size: 50px;
+}
+
+.umber {
+    color: #946846;
+}
+
+.khaki {
+    color: #BAAB68;
+}
+
+.wine {
+    color: #6D213C;
+}
+
+.straw {
+    color: #6D213C;
 }
