@@ -8,6 +8,7 @@ from django.contrib.sessions.models import Session
 import gsoc.settings as config
 from gsoc.models import Scheduler
 from gsoc.common.utils import commands
+from gsoc.common.utils import autoemail as am
 
 class Command(BaseCommand):
     help = 'Run the cron command to process items such as sending scheduled emails etc.'
@@ -45,6 +46,15 @@ class Command(BaseCommand):
     def build_items(self, options):
         # build tasks
         self.stdout.write(self.style.SUCCESS('Build items'), ending='\n')
+
+        #issue 40
+        schedulers = Scheduler.objects.filter(success=None).filter(command='send_email')
+        if len(schedulers) > 0:
+            self.stdout.write(self.style.SUCCESS('Sending emails'), ending='\n')
+            am.SentMail()
+        else:
+            self.stdout.write(self.style.SUCCESS('No scheduled send_irc_msg tasks'), ending='\n')
+
 
     def handle_process(self, scheduler):
         if scheduler.activation_date and timezone.now() > scheduler.activation_date:
