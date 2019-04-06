@@ -1,12 +1,7 @@
 {% load i18n %}
-<style>
-#ul_top_hypers li{
-    display: inline;
-	padding: 2px;
-}
-</style>
+
 {% if is_paginated %}
-    <ul id="ul_top_hypers">
+    <ul>
         {% if page_obj.has_previous %}
             <li>
                 <a href="?page={{ page_obj.previous_page_number }}">

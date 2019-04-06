@@ -1,19 +1,24 @@
-from cms.cms_toolbars import BasicToolbar
-
-from django.contrib.sites.models import Site
-from django.utils.translation import ugettext_lazy as _
-
+from cms.cms_toolbars import (
+    BasicToolbar,
+    ADMIN_MENU_IDENTIFIER,
+    ADMINISTRATION_BREAK,
+    USER_SETTINGS_BREAK,
+    TOOLBAR_DISABLE_BREAK,
+    SHORTCUTS_BREAK,
+    CLIPBOARD_BREAK
+)
 from cms.utils.conf import get_cms_setting
 from cms.utils.urlutils import admin_reverse
 
+from django.contrib.sites.models import Site
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import get_language_from_request
 
-# # Identifiers for search
-ADMIN_MENU_IDENTIFIER = 'admin-menu'
-ADMINISTRATION_BREAK = 'Administration Break'
-USER_SETTINGS_BREAK = 'User Settings Break'
-TOOLBAR_DISABLE_BREAK = 'Toolbar disable Break'
-SHORTCUTS_BREAK = 'Shortcuts Break'
-CLIPBOARD_BREAK = 'Clipboard Break'
+from aldryn_translation_tools.utils import (
+    get_admin_url, get_object_from_request,
+)
+from aldryn_newsblog.models import Article
+from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
 def add_admin_menu(self):
     if not self._admin_menu:
@@ -67,3 +72,93 @@ def add_admin_menu(self):
         self.add_logout_button(self._admin_menu)
 
 BasicToolbar.add_admin_menu = add_admin_menu
+
+
+def populate(self):
+    config = self._NewsBlogToolbar__get_newsblog_config()
+    if not config:
+        # Do nothing if there is no NewsBlog app_config to work with
+        return
+
+    user = getattr(self.request, 'user', None)
+    try:
+        view_name = self.request.resolver_match.view_name
+    except AttributeError:
+        view_name = None
+
+    if user and view_name:
+        language = get_language_from_request(self.request, check_path=True)
+
+        # If we're on an Article detail page, then get the article
+        if view_name == '{0}:article-detail'.format(config.namespace):
+            article = get_object_from_request(Article, self.request)
+        else:
+            article = None
+
+        menu = self.toolbar.get_or_create_menu('newsblog-app',
+                                                config.get_app_title())
+
+        change_config_perm = user.has_perm(
+            'aldryn_newsblog.change_newsblogconfig')
+        add_config_perm = user.has_perm(
+            'aldryn_newsblog.add_newsblogconfig')
+        config_perms = [change_config_perm, add_config_perm]
+
+        add_article_perm = False
+        change_article_perm = False
+        userprofiles = user.userprofile_set.all()
+        for profile in userprofiles:
+            if profile.app_config == config:
+                add_article_perm = True
+                change_article_perm = True
+                break
+
+        delete_article_perm = user.is_superuser if article else False
+
+        article_perms = [change_article_perm, add_article_perm,
+                            delete_article_perm, ]
+
+        if change_config_perm:
+            url_args = {}
+            if language:
+                url_args = {'language': language, }
+            url = get_admin_url('aldryn_newsblog_newsblogconfig_change',
+                                [config.pk, ], **url_args)
+            menu.add_modal_item(_('Configure addon'), url=url)
+
+        if any(config_perms) and any(article_perms):
+            menu.add_break()
+
+        if change_article_perm:
+            url_args = {}
+            if config:
+                url_args = {'app_config__id__exact': config.pk}
+            url = get_admin_url('aldryn_newsblog_article_changelist',
+                                **url_args)
+            menu.add_sideframe_item(_('Article list'), url=url)
+
+        if add_article_perm:
+            url_args = {'app_config': config.pk, 'owner': user.pk, }
+            if language:
+                url_args.update({'language': language, })
+            url = get_admin_url('aldryn_newsblog_article_add', **url_args)
+            menu.add_modal_item(_('Add new article'), url=url)
+
+        if change_article_perm and article:
+            url_args = {}
+            if language:
+                url_args = {'language': language, }
+            url = get_admin_url('aldryn_newsblog_article_change',
+                                [article.pk, ], **url_args)
+            menu.add_modal_item(_('Edit this article'), url=url,
+                                active=True)
+
+        if delete_article_perm and article:
+            redirect_url = self.get_on_delete_redirect_url(
+                article, language=language)
+            url = get_admin_url('aldryn_newsblog_article_delete',
+                                [article.pk, ])
+            menu.add_modal_item(_('Delete this article'), url=url,
+                                on_close=redirect_url)
+
+NewsBlogToolbar.populate = populate
