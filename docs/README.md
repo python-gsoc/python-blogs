@@ -10,13 +10,6 @@ To install development dependncies:-
 ```bash
 pip install -r requirements.txt
 ```
-To install pre-commit package manager for linting support using pip:-
-
-$ pip install pre-commit
-
-or
-Run $pre-commit install to install pre-commit into your git hooks.
-pre-commit will now run on every commit. Every time you clone a project using pre-commit running pre-commit install should always be the first thing you do.
 ## Usage
 
 ```python
