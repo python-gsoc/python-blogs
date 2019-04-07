@@ -9,20 +9,22 @@ from gsoc.models import (
 )
 from cms.models import Page
 
+
 def list_blogs(request):
     gsoc_years = GsocYear.objects.all().order_by('-gsoc_year')
-    
+
     blogsets = []
     for year in gsoc_years:
         profiles = UserProfile.objects.filter(gsoc_year=year)
-        flag = False    
+        flag = False
 
         blogset = []
         for profile in profiles:
             if profile.app_config:
                 flag = True
                 ns = profile.app_config.namespace
-                page = Page.objects.filter(application_namespace=ns).filter(publisher_is_draft=False).first()
+                page = Page.objects.filter(application_namespace=ns)
+                page = page.filter(publisher_is_draft=False).first()
                 url = page.get_absolute_url()
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
@@ -34,7 +36,7 @@ def list_blogs(request):
                     'suborg': profile.suborg_full_name.suborg_name,
                     'color': random.choice(['umber', 'khaki', 'wine', 'straw'])
                 })
-        
+
         if flag:
             blogsets.append((year.gsoc_year, blogset))
 
