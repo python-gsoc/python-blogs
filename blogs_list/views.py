@@ -10,10 +10,9 @@ from gsoc.models import (
 from cms.models import Page
 
 def list_blogs(request):
-    gsoc_years = GsocYear.objects.all()
+    gsoc_years = GsocYear.objects.all().order_by('-gsoc_year')
     
-    blogsets = {}
-    all_years = []
+    blogsets = []
     for year in gsoc_years:
         profiles = UserProfile.objects.filter(gsoc_year=year)
         flag = False    
@@ -32,14 +31,13 @@ def list_blogs(request):
                     'title': profile.app_config.app_title,
                     'url': url,
                     'student': student_name if student_name else student_username,
-                    'suborg': profile.suborg_full_name.suborg_name
+                    'suborg': profile.suborg_full_name.suborg_name,
+                    'color': random.choice(['umber', 'khaki', 'wine', 'straw'])
                 })
         
         if flag:
-            all_years.append(year)
-            blogsets.append(blogset)
+            blogsets.append((year.gsoc_year, blogset))
 
     return render(request, 'list_view.html', {
-        'years': all_years,
-        'blogsets': all_blogs
+        'blogsets': blogsets
     })
