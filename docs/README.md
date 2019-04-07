@@ -5,11 +5,11 @@ Blog and management platform for PSF for running GSoC
 ## Installation
 
 Requires python 3.6+
+To install development dependncies:-
 
 ```bash
 pip install -r requirements.txt
 ```
-
 ## Usage
 
 ```python
@@ -54,6 +54,11 @@ You can create a virtualenv using the following command:
 $ virtualenv my_name
 
 After running this command, a directory named my_name will be created. This is the directory which contains all the necessary executables to use the packages that a Python project would need. This is where Python packages will be installed.
+Now after creating virtual environment, you need to activate it. Remember to activate the relevant virtual environment every time you work on the project. This can be done using the following command:-
+
+$ source virtualenv_name/bin/activate
+
+Once the virtual environment is activated, the name of your virtual environment will appear on left side of terminal. This will let you know that the virtual environment is currently active.
 Now you can install dependencies related to the project in this virtual environment. For example if you are using Django 1.9 for a project, you can install it like you install other packages.
 
 (virtualenv_name)$ pip install Django==1.9

@@ -22,3 +22,4 @@ fredirc==0.3.0
 pdfminer.six==20181108
 chardet==3.0.4
 phonenumbers==8.10.6
+pre-commit>=1.14.4
