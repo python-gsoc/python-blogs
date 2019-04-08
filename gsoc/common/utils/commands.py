@@ -1,4 +1,4 @@
-#import time
+# import time
 
 from django.contrib.auth.models import User
 from .irc import send_message
