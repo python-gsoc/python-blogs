@@ -1,6 +1,6 @@
 from .models import UserProfile, UserDetails
 
-from django.forms import ModelForm, CheckboxSelectMultiple, Select
+from django.forms import ModelForm, Select
 
 
 class UserProfileForm(ModelForm):
@@ -10,7 +10,6 @@ class UserProfileForm(ModelForm):
         widgets = {
             'app_config': Select(),
         }
-
 
 
 class ProposalUploadForm(ModelForm):

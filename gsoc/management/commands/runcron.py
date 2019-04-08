@@ -2,12 +2,13 @@ from multiprocessing.dummy import Pool as ThreadPool
 from multiprocessing import TimeoutError
 
 from django.utils import timezone
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.contrib.sessions.models import Session
 
 import gsoc.settings as config
 from gsoc.models import Scheduler
 from gsoc.common.utils import commands
+
 
 class Command(BaseCommand):
     help = 'Run the cron command to process items such as sending scheduled emails etc.'
@@ -85,7 +86,7 @@ class Command(BaseCommand):
                 res.get(timeout=options['timeout'])
                 pool.close()
                 pool.join()
-            except TimeoutError as e:
+            except TimeoutError:
                 self.stdout.write(self.style.ERROR('Time limit exceeded'), ending='\n')
 
         else:

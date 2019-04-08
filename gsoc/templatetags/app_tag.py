@@ -2,8 +2,6 @@ from django import template
 import datetime
 import django.utils.timezone as tz
 import pytz
-from dateutil.relativedelta import *
-from django.shortcuts import render
 
 register = template.Library()
 
@@ -22,11 +20,11 @@ register = template.Library()
 def time_zone(context,flag=0):
     gmtTime = "+00:00"
     localTime = tz.now()
-    utcTimeZone = pytz.timezone('UTC')
-    utcTime = datetime.datetime.now(tz=utcTimeZone)
+#   utcTimeZone = pytz.timezone('UTC')
+#   utcTime = datetime.datetime.now(tz=utcTimeZone)
     all_timezones = pytz.common_timezones
-    localDate = datetime.datetime.strftime(localTime.date(), '%d')
-    utcDate = datetime.datetime.strftime(utcTime.date(), '%d')
+#   localDate = datetime.datetime.strftime(localTime.date(), '%d')
+#   utcDate = datetime.datetime.strftime(utcTime.date(), '%d')
     TIME_ZONE = "UTC"
     for i in all_timezones :
         timeZone = pytz.timezone(i)

@@ -20,6 +20,7 @@ from aldryn_translation_tools.utils import (
 from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
+
 def add_admin_menu(self):
     if not self._admin_menu:
         self._admin_menu = self.toolbar.get_or_create_menu(ADMIN_MENU_IDENTIFIER, self.current_site.name)
@@ -70,6 +71,7 @@ def add_admin_menu(self):
 
         # logout
         self.add_logout_button(self._admin_menu)
+
 
 BasicToolbar.add_admin_menu = add_admin_menu
 

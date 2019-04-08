@@ -1,11 +1,13 @@
-import time
+#import time
 
 from django.contrib.auth.models import User
 from .irc import send_message
 
+
 def send_email(scheduler):
     # time.sleep(10)
     return 'Test Error'
+
 
 def deactivate_user(scheduler):
     """
@@ -17,6 +19,7 @@ def deactivate_user(scheduler):
     scheduler.success = True
     scheduler.save()
     return None
+
 
 def send_irc_msgs(schedulers):
     """

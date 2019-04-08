@@ -33,10 +33,12 @@ def user_has_add_permission(self, user, **kwargs):
     # By default, no permission.
     return False
 
+
 NewsBlogArticleWizard.user_has_add_permission = user_has_add_permission
 
 
 CreateNewsBlogArticleForm.Meta.fields = ['title']
+
 
 def __init__(self, **kwargs):
     super(CreateNewsBlogArticleForm, self).__init__(**kwargs)
@@ -56,6 +58,7 @@ def __init__(self, **kwargs):
         choices=app_config_choices
     )
 
+
 def save(self, commit=True):
     article = super(CreateNewsBlogArticleForm, self).save(commit=False)
     article.owner = self.user
@@ -73,6 +76,7 @@ def save(self, commit=True):
         )
 
     return article
+
 
 CreateNewsBlogArticleForm.__init__ = __init__
 CreateNewsBlogArticleForm.save = save

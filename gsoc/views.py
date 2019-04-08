@@ -4,7 +4,7 @@ import io
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
-from .models import validate_proposal_text, RegLink, UserProfile
+from .models import validate_proposal_text, RegLink
 from django import shortcuts
 from django.http import JsonResponse
 from django.core.validators import validate_email
@@ -35,8 +35,11 @@ def convert_pdf_to_txt(f):
     retstr.close()
     return text
 
+
 def is_user_accepted_student(user):
     return user.is_current_year_student()
+
+
 def scan_proposal(file):
     """
     NOTE: returns True if not found private data.
@@ -82,6 +85,7 @@ def upload_proposal_view(request):
                 if scan_result:
                     resp['private_data'] = scan_result.message_dict
     return JsonResponse(resp)
+
 
 @decorators.login_required
 @decorators.user_passes_test(is_user_accepted_student)
@@ -165,6 +169,6 @@ def register_view(request):
             context['done_registeration'] = True
             context['warning'] = ''
             return shortcuts.render(request, 'registration/register.html', context)
-        else:
-            context['done_registeration'] = False
-            return shortcuts.render(request, 'registration/register.html', context)
+
+        context['done_registeration'] = False
+        return shortcuts.render(request, 'registration/register.html', context)

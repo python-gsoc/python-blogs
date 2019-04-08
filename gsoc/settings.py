@@ -11,9 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import logging.config
-import django.utils.timezone as tz
 import os
-import datetime
 
 gettext = lambda s: s
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))

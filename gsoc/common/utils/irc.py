@@ -7,11 +7,13 @@ from fredirc import IRCClient
 
 import gsoc.settings as config
 
+
 class ModIRCClient(IRCClient):
 
     def __init__(self, handler, nick, server, messages):
         IRCClient.__init__(self, handler, nick, server)
         self.messages = messages
+
 
 class CommandBot(BaseIRCHandler):
 
@@ -29,6 +31,7 @@ class CommandBot(BaseIRCHandler):
         if num == Err.NICKNAMEINUSE:
             new_nick = params['nick'] + str(randint(1, 9))
             self.client.register(nick = new_nick)
+
 
 def parse_data(data):
     """
@@ -52,6 +55,7 @@ def parse_data(data):
         commands.append('@aka remove m{}'.format(i))
 
     return commands
+
 
 def send_message(messages):
     """
