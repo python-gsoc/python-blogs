@@ -67,18 +67,9 @@ def send_email(scheduler: Scheduler):
         scheduler.success = False
         scheduler.save()
         return None
-    if sent_count < recipients_count:
-        failed_count = recipients_count-sent_count
-        scheduler.success = False
-        last_error = json.dumps({
-            "message": str(failed_count) + "emails aren't sent successfully",
-        })
-        scheduler.last_error = last_error
-        scheduler.save()
-    else:
-        scheduler.last_error = None
-        scheduler.success = True
-        scheduler.save()
+    scheduler.last_error = None
+    scheduler.success = True
+    scheduler.save()
     return None
 
 
