@@ -138,7 +138,7 @@ class Scheduler(models.Model):
     activation_date = models.DateTimeField(name='activation_date', null=True, blank=True)
     data = models.TextField(name='data')
     success = models.BooleanField(name='success', null=True)
-    last_error = models.TextField(name='last_error', null=True, default=None)
+    last_error = models.TextField(name='last_error', null=True, default=None, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
