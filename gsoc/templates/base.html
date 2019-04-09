@@ -42,12 +42,6 @@
 
             <div id="main">
                 {% if not user.is_authenticated %}
-                    <!-- <div id="topnav">
-                        <div class="branding">
-                            <a href="/">Python GSoC</a>
-                        </div>
-                        
-                    </div> -->
                     <div id=topnav>
                         <div class="pure-menu pure-menu-horizontal">
                             <a href="/" class="pure-menu-heading pure-menu-link">Python-GSoC</a>
@@ -82,6 +76,11 @@
                             </div>
                             {% endif %}
                         {% endif %}
+                    {% endif %}
+                    {% if request.GET.cms_toolbar_login_error %}
+                        <div class="notification-box">
+                            No such user found! Please verify your credentials and enter again.
+                        </div>
                     {% endif %}
                 </div>
                 
