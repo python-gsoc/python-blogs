@@ -55,6 +55,7 @@ def send_email(scheduler: Scheduler):
         scheduler.save()
     return None
 
+
 def deactivate_user(scheduler: Scheduler):
     """
     makes a user inactive when scheduled
