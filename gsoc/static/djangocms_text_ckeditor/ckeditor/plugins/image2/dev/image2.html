@@ -11,34 +11,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
 	<script src="../../../dev/console/console.js"></script>
 	<script src="../../../dev/console/focusconsole.js"></script>
 	<script src="../../widget/dev/console.js"></script>
-	<script>
-		if ( CKEDITOR.env.ie && CKEDITOR.env.version < 9 )
-			CKEDITOR.tools.enableHtml5Elements( document );
-
-		var editor;
-
-		// The instanceReady event is fired, when an instance of CKEditor has finished
-		// its initialization.
-		CKEDITOR.on( 'instanceReady', function( ev ) {
-			editor = ev.editor;
-
-			// Show this "on" button.
-			document.getElementById( 'readOnlyOn' ).style.display = '';
-
-			// Event fired when the readOnly property changes.
-			editor.on( 'readOnly', function() {
-				document.getElementById( 'readOnlyOn' ).style.display = this.readOnly ? 'none' : '';
-				document.getElementById( 'readOnlyOff' ).style.display = this.readOnly ? '' : 'none';
-			});
-		});
-
-		function toggleReadOnly( isReadOnly ) {
-			// Change the read-only state of the editor.
-			// http://docs.ckeditor.com/#!/api/CKEDITOR.editor-method-setReadOnly
-			editor.setReadOnly( isReadOnly );
-		}
-
-	</script>
+	<script src="states.js"></script>
 	<link href="../../../samples/old/sample.css" rel="stylesheet">
 
 	<style>
@@ -282,48 +255,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
 		<input id="readOnlyOff" onclick="toggleReadOnly( false );" type="button" value="Make it editable again" style="display:none">
 	</p>
 
-	<script>
-
-		CKEDITOR.disableAutoInline = true;
-
-		CKEDITOR.replace( 'editor1', {
-			extraPlugins: 'image2',
-			height: 600,
-			contentsCss: [ '../../../contents.css', 'contents.css' ],
-			extraAllowedContent: 'img[data-foo,data-bar]',
-
-			filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
-			filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
-			filebrowserUploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
-			filebrowserImageUploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
-		} );
-
-		CKEDITOR.inline( 'editor2', {
-			extraPlugins: 'image2,sourcedialog'
-		} );
-
-		CKEDITOR.replace( 'editor3', {
-			extraPlugins: 'image2,divarea',
-			height: 600
-		} );
-
-		CKEDITOR.replace( 'editor4', {
-			extraPlugins: 'image2',
-			image2_alignClasses: [ 'align-left', 'align-center', 'align-right' ],
-			contentsCss: [ '../../../contents.css', 'contents.css' ],
-			height: 600
-		} );
-
-		CKCONSOLE.create( 'widget', { editor: 'editor1' } );
-		CKCONSOLE.create( 'focus', { editor: 'editor1' } );
-		CKCONSOLE.create( 'widget', { editor: 'editor2', folded: true } );
-		CKCONSOLE.create( 'focus', { editor: 'editor2', folded: true } );
-		CKCONSOLE.create( 'widget', { editor: 'editor3' } );
-		CKCONSOLE.create( 'focus', { editor: 'editor3' } );
-		CKCONSOLE.create( 'widget', { editor: 'editor4' } );
-		CKCONSOLE.create( 'focus', { editor: 'editor4' } );
-
-	</script>
+	<script src="creation.js"></script>
 
 	<div id="footer">
 		<hr>

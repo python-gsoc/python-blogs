@@ -106,29 +106,6 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
 		<p>Ut eget ipsum a sapien porta ultrices. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus mi lacus, pharetra eu bibendum blandit, tristique sit amet leo. Integer eu nulla nec magna vulputate blandit. Praesent mattis quis ante eget adipiscing. Nulla vel tempus risus, in placerat velit. Mauris sed nibh at elit posuere laoreet. Morbi non sapien sed nunc fringilla imperdiet.</p>
 	</div>
 
-	<script>
-		if ( CKEDITOR.env.ie && CKEDITOR.env.version < 9 )
-			CKEDITOR.tools.enableHtml5Elements( document );
-
-		CKEDITOR.plugins.addExternal( 'simplebox', 'plugins/widget/dev/assets/simplebox/' );
-
-		CKEDITOR.replace( 'editor1', {
-			extraPlugins: 'simplebox,placeholder,image2',
-			removePlugins: 'forms,bidi',
-			contentsCss: [ '../../../contents.css', 'assets/simplebox/contents.css' ],
-			height: 500
-		} );
-
-		CKEDITOR.inline( 'editor2', {
-			extraPlugins: 'simplebox,placeholder,image2',
-			removePlugins: 'forms,bidi'
-		} );
-
-		CKCONSOLE.create( 'widget', { editor: 'editor1' } );
-		CKCONSOLE.create( 'focus', { editor: 'editor1' } );
-		CKCONSOLE.create( 'widget', { editor: 'editor2', folded: true } );
-		CKCONSOLE.create( 'focus', { editor: 'editor2', folded: true } );
-
-	</script>
+	<script src="nesting.js"></script>
 </body>
 </html>
