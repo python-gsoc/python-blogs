@@ -1,4 +1,4 @@
-import time
+from smtplib import SMTPResponseException, SMTPSenderRefused
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import get_template
@@ -41,16 +41,42 @@ def send_email(scheduler: Scheduler):
             fail_silently=False,
             html_message=content,
         )
+    except SMTPSenderRefused as e:
+        last_error = json.dumps({
+            "message": str(e),
+            "smtp_code": e.smtp_code,
+        })
+        scheduler.last_error = last_error
+        scheduler.success = False
+        scheduler.save()
+        return None
+    except SMTPResponseException as e:
+        last_error = json.dumps({
+            "message": str(e),
+            "smtp_code": e.smtp_code,
+        })
+        scheduler.last_error = last_error
+        scheduler.success = False
+        scheduler.save()
+        return None
     except Exception as e:
-        scheduler.last_error = 'While sending emails: ' + str(e)
+        last_error = json.dumps({
+            "message": str(e),
+        })
+        scheduler.last_error = last_error
         scheduler.success = False
         scheduler.save()
         return None
     if sent_count < recipients_count:
+        failed_count = recipients_count-sent_count
         scheduler.success = False
-        scheduler.last_error = "Some emails aren't sent successfully"
+        last_error = json.dumps({
+            "message": str(failed_count) + "emails aren't sent successfully",
+        })
+        scheduler.last_error = last_error
         scheduler.save()
     else:
+        scheduler.last_error = None
         scheduler.success = True
         scheduler.save()
     return None
