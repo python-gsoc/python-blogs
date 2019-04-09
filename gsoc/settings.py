@@ -86,7 +86,10 @@ SITE_ID = 1
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'gsoc', 'templates'),],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'gsoc', 'templates'),
+            os.path.join(BASE_DIR, 'blogs_list', 'templates'),
+        ],
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
@@ -161,6 +164,7 @@ INSTALLED_APPS = (
     'sortedm2m',
     'taggit',
     'gsoc',
+    'blogs_list',
     'debug_toolbar'
 )
 THUMBNAIL_PROCESSORS = (
@@ -207,7 +211,7 @@ CMS_TEMPLATES = (
     ('schedule.html', 'Schedule'),
     ('students.html', 'Students'),
     ('contact.html', 'Contact'),
-    ('myprofile.html', 'My Profile'),
+    ('myprofile.html', 'My Profile')
 )
 
 CMS_PERMISSION = True
