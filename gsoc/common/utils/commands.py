@@ -31,9 +31,8 @@ def send_email(scheduler: Scheduler):
     content = data['template'].render(context_dict)
     if isinstance(data['send_to'], str):
         data['send_to'] = [data['send_to']]
-    recipients_count = len(data['send_to'])
     try:
-        sent_count = send_mail(
+        send_mail(
             message=content,
             subject=settings.EMAIL_SUBJECT_PREFIX + data['subject'],
             from_email=settings.SERVER_EMAIL,
