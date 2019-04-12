@@ -38,22 +38,23 @@ INTERNAL_IPS = ('127.0.0.1',)
 # See: https://docs.djangoproject.com/en/2.1/ref/settings/#email
 # TODO: Update it with real settings
 ADMINS = [('Admin 1', 'placeholder@python-gsoc.org')]
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_SUBJECT_PREFIX = '[Python-GSoC] '
 if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_USE_TLS = True
+    SERVER_EMAIL = 'psfgsoctestmail@airmail.cc'
+    EMAIL_HOST = 'mail.cock.li'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = "psfgsoctestmail@airmail.cc"
+    EMAIL_HOST_PASSWORD = "psfgsoctestmail"
 else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-DEFAULT_FROM_EMAIL = 'placeholder@python-gsoc.org'
-EMAIL_SUBJECT_PREFIX = '[Python-GSoC]'
-EMAIL_USE_TLS = True
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = "realemail@realdomain.tld"
-EMAIL_HOST_PASSWORD = "supersecretpassword"
-
-
+    DEFAULT_FROM_EMAIL = 'placeholder@python-gsoc.org'
+    EMAIL_USE_TLS = True
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = "realemail@realdomain.tld"
+    EMAIL_HOST_PASSWORD = "supersecretpassword"
 # Application definition
 ROOT_URLCONF = 'gsoc.urls'
 
