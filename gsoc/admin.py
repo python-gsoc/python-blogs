@@ -11,7 +11,6 @@ from django.core.exceptions import PermissionDenied
 from aldryn_people.models import Person
 from aldryn_newsblog.admin import ArticleAdmin
 from aldryn_newsblog.models import Article
-from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 
 
 class UserProfileInline(admin.TabularInline):
@@ -31,6 +30,7 @@ class UserAdmin(DjangoUserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
+
 def article_get_form():
     """
     Makes some admin-only fields readonly or hidden for students.
@@ -38,6 +38,7 @@ def article_get_form():
     ori_get_form = ArticleAdmin.get_form
     ori_fieldsets = None
     ori_readonly_fields = None
+
     def return_func(self, request, obj=None, **kwargs):
         nonlocal ori_readonly_fields, ori_fieldsets
         is_request_by_student = request.user.student_profile() is not None
@@ -58,15 +59,14 @@ def article_get_form():
                         'is_featured',
                         'featured_image',
                         'lead_in',
-
-                    )}),
+                        )}),
                 # (_('Meta Options'),
                 #  {'classes': ('collapse',),
                 #   'fields':()}),
                 (_('Advanced Settings'),
                  {'classes': ('collapse',),
                   'fields': ('app_config',)}),
-            )
+                )
             self.readonly_fields = (
                 'author',
                 'publishing_date',
@@ -77,9 +77,11 @@ def article_get_form():
                 'meta_description',
                 'meta_keywords',
                 'owner',
-            )
+                )
         return form
     return return_func
+
+
 def Article_change_view(self, request, object_id, *args, **kwargs):
     is_student_request = request.user.student_profile() is not None
     data = request.GET.copy()
@@ -104,6 +106,8 @@ def Article_change_view(self, request, object_id, *args, **kwargs):
     request.GET = data
     request.POST = post_data
     return super(ArticleAdmin, self).change_view(request, object_id, *args, **kwargs)
+
+
 def Article_add_view(self, request, *args, **kwargs):
     is_student_request = request.user.student_profile() is not None
     data = request.GET.copy()
@@ -139,6 +143,7 @@ def Article_add_view(self, request, *args, **kwargs):
     request.POST = post_data
     return super(ArticleAdmin, self).add_view(request, *args, **kwargs)
 
+
 def Article_save_model(self, request, obj, form, change):
     # checks whether user has add permission in the current
     # section before adding to the blog
@@ -157,6 +162,7 @@ def Article_save_model(self, request, obj, form, change):
         super(ArticleAdmin, self).save_model(request, obj, form, change)
     else:
         raise PermissionDenied()
+
 
 def Article_delete_model(self, request, obj):
     # checks whether user has delete permission in the current
@@ -177,6 +183,7 @@ def Article_delete_model(self, request, obj):
     else:
         raise PermissionDenied()
 
+
 def Article_get_queryset(self, request):
     user = request.user
     qs = Article.objects.all()
@@ -191,6 +198,7 @@ def Article_get_queryset(self, request):
         qs = qs.filter(app_config__in=app_configs)
         print(qs)
         return qs
+
 
 ArticleAdmin.save_model = Article_save_model
 ArticleAdmin.delete_model = Article_delete_model
@@ -207,30 +215,31 @@ class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('url',)}),
         ("Configure user to be registered",
-         {'fields': (
-             "user_role",
-             "user_suborg",
-             "user_gsoc_year",
-         )}),
-    )
+            {'fields': (
+                "user_role",
+                "user_suborg",
+                "user_gsoc_year",
+                )}),
+        )
     readonly_fields = (
         'url',
-    )
+        )
     list_display = ('reglink_id', 'url', 'is_used', 'created_at')
     list_filter = [
         'is_used',
         'created_at',
-    ]
+        ]
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.is_used:
             return self.readonly_fields + (
-             "user_role",
-             "user_suborg",
-             "user_gsoc_year",
-         )
+                "user_role",
+                "user_suborg",
+                "user_gsoc_year",
+                )
         else:
             return self.readonly_fields
+
 
 admin.site.register(RegLink, RegLinkAdmin)
 
@@ -242,3 +251,23 @@ class SchedulerAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Scheduler, SchedulerAdmin)
+
+
+class HiddenUserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'gsoc_year', 'suborg_full_name', 'hidden')
+    list_filter = ('hidden', )
+    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config')
+    fieldsets = (
+        ('Unhide', {
+            'fields': ('hidden', )
+            }),
+        ('User Profile Details', {
+            'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config')
+            })
+        )
+
+    def get_queryset(self, request):
+        return UserProfile.all_objects.all()
+
+
+admin.site.register(UserProfile, HiddenUserProfileAdmin)

@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.shortcuts import reverse
 
 from aldryn_apphooks_config.fields import AppHookConfigField
+
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 
 import phonenumbers
@@ -34,6 +35,11 @@ class GsocYear(models.Model):
         return str(self.gsoc_year)
 
 
+class UserProfileManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(hidden=False)
+
+
 class UserProfile(models.Model):
     ROLES = (
         (0, 'Others'),
@@ -48,14 +54,20 @@ class UserProfile(models.Model):
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
     app_config = AppHookConfigField(NewsBlogConfig, verbose_name=_('Section'), blank=True, null=True)
+    hidden = models.BooleanField(name='hidden', default=False)
+
+    objects = UserProfileManager()
+    all_objects = models.Manager()
 
 
 def has_proposal(self):
     try:
         self.userprofile_set.get(role=3).accepted_proposal_pdf.path
         return True
+
     except:
         return False
+
 
 def is_current_year_student(self):
     try:
@@ -66,11 +78,13 @@ def is_current_year_student(self):
     except UserProfile.DoesNotExist:
         return False
 
+
 def student_profile(self):
     try:
         return self.userprofile_set.get(role=3)
     except UserProfile.DoesNotExist:
         return None
+
 
 auth.models.User.add_to_class('has_proposal', has_proposal)
 auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
@@ -89,6 +103,7 @@ def auto_delete_proposal_on_delete(sender, instance, **kwargs):
             return
         if os.path.isfile(filepath):
             os.remove(filepath)
+
 
 @receiver(models.signals.pre_save, sender=UserProfile)
 def auto_delete_proposal_on_change(sender, instance, **kwargs):
@@ -120,7 +135,7 @@ class UserDetails(models.Model):
     def save(self, *args, **kwargs):
         if self.deactivation_date:
             s = Scheduler(command='deactivate_user', data=self.user.pk,
-                            activation_date=self.deactivation_date)
+                          activation_date=self.deactivation_date)
             s.save()
 
         super(UserDetails, self).save(*args, **kwargs)
@@ -131,7 +146,7 @@ class Scheduler(models.Model):
         ('send_email', 'send_email'),
         ('send_irc_msg', 'send_irc_msg'),
         ('deactivate_user', 'deactivate_user'),
-    )
+        )
 
     id = models.AutoField(primary_key=True)
     command = models.CharField(name='command', max_length=20, choices=commands)
@@ -163,6 +178,7 @@ class ProposalTextValidator:
             except:
                 pass
         return real_emails
+
     def find_all_possible_phone_numbers(self, text):
         """
         Returns all possible phone numbers in a list.
@@ -182,8 +198,10 @@ class ProposalTextValidator:
             except:
                 pass
         return all_number_strings
+
     def find_all_locations(self, text):
         return []
+
     def validate(self, text):
         emails = self.find_all_emails(text)
         possible_phone_numbers = self.find_all_possible_phone_numbers(text)
@@ -195,8 +213,10 @@ class ProposalTextValidator:
                     "locations": locations,
                 }
             raise ValidationError(message=message)
+
     def __call__(self, text):
         self.validate(text)
+
     def get_help_text(self):
         return _("The text in a proposal should not contain any private data.")
 
@@ -216,15 +236,18 @@ class RegLink(models.Model):
                                     choices=UserProfile.ROLES, default=0, null=True, blank=False,
                                     )
     user_suborg = models.ForeignKey(SubOrg, name="user_suborg",
-                                       on_delete=models.CASCADE, null=True, blank=False)
+                                    on_delete=models.CASCADE, null=True, blank=False)
     user_gsoc_year = models.ForeignKey(GsocYear, name="user_gsoc_year",
-                                          on_delete=models.CASCADE,  null=True, blank=False)
+                                       on_delete=models.CASCADE,  null=True, blank=False)
+
     @property
     def url(self):
         return f'{reverse("register")}?reglink_id={self.reglink_id}'
+
     def is_usable(self):
         timenow = timezone.now()
         return (not self.is_used) and self.created_at < timenow
+
     def create_user(self, *args, is_staff=True, **kwargs):
         user = User.objects.create(*args, is_staff=is_staff, **kwargs)
         UserProfile.objects.create(user=user, role=self.user_role, gsoc_year=self.user_gsoc_year, suborg_full_name=self.user_suborg)
