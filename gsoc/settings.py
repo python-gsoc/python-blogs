@@ -347,7 +347,7 @@ CKEDITOR_SETTINGS = {
                                         'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
         {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']},
         # ['cmsplugins', 'cmswidget'],
-        {'name': 'settings', 'items': ['Source', 'ShowBlocks', 'Maximize']},
+        {'name': 'settings', 'items': ['Source', 'ShowBlocks', 'Maximize', '-']},
         '/',
         {'name': 'basicstyles',
          'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting',
@@ -363,6 +363,7 @@ CKEDITOR_SETTINGS = {
         {'name': 'colors', 'items': ['TextColor', 'BGColor']},
         ],
     'toolbarCanCollapse': False,
+    'fileBrowserUploadUrl': '',
 }
 
 TEXT_ADDITIONAL_TAGS = ('iframe',)
