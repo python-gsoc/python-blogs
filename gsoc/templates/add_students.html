@@ -7,7 +7,7 @@
 <h3>{{ create_message|safe }}</h3>
 {% endif %}
 {% if message %}
-<h2>{{ message }}</h2>
+<h2>{{ message| safe}}</h2>
 {% endif %}
 <form class="pure-form" id="stu_form" method="post" action="{% url 'toolbar-add-students' %}">
   <button onclick="addFields()" type="button" class="pure-button pure-button-primary">+</button>
