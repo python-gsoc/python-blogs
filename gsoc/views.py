@@ -190,6 +190,7 @@ def toolbar_add_students(request):
     if request.method == 'GET':
         return shortcuts.render(request, 'add_students.html', context)
     if request.method == 'POST':
+        created = []
         data = request.POST
         current_user = 1
         while True:
@@ -216,6 +217,8 @@ def toolbar_add_students(request):
                                 "'s data is not complete. Please check again."})
                 return shortcuts.render(request, 'add_students.html', context)
             try:
+                if not password:
+                    raise ValidationError("Empty password")
                 password_validation.validate_password(password)
             except ValidationError as e:
                 context.update({'message': 'Student' + c + "'s password is too simple!"})
@@ -242,6 +245,9 @@ def toolbar_add_students(request):
                                        suborg_full_name=so,
                                        gsoc_year=gsocyear)
             current_user += 1
+            created.append(user)
             context['create_message'] += f'<br>Student {username} is created!<br>'
+        if not created:
+            context['message'] = 'No user created'
 
         return shortcuts.render(request, 'add_students.html', context)
