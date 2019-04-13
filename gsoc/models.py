@@ -17,6 +17,8 @@ from aldryn_apphooks_config.fields import AppHookConfigField
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 
+from cms.models import Page, PagePermission
+
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
@@ -158,6 +160,32 @@ class Scheduler(models.Model):
 
     def __str__(self):
         return self.command
+
+
+class PageNotification(models.Model):
+    message = models.TextField(name='message')
+    user = models.ForeignKey(User, name='user',
+                             on_delete=models.CASCADE)
+    page = models.ForeignKey(Page, name='page', related_name='notifications',
+                             on_delete=models.CASCADE)
+    pubished_page = models.ForeignKey(Page, name='published_page',
+                                      related_name='notifications_for_published',
+                                      on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if self.page and self.page.publisher_is_draft:
+            page = self.page
+            published_page = Page.objects.filter(node_id=page.node_id,
+                                                 publisher_is_draft=False).first()
+            self.published_page = published_page
+            perm = PagePermission.objects.filter(page=page).filter(user=self.user).first()
+
+            if self.user.is_superuser or (perm and perm.can_change):
+                super().save(*args, **kwargs)
+            else:
+                raise ValidationError(message='User does not have permissions on this page')
+        else:
+            raise ValidationError(message='Add notification on unpublished page')
 
 
 class ProposalTextValidator:
