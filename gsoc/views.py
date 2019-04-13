@@ -211,7 +211,9 @@ def toolbar_add_students(request):
                     raise ValidationError
                 validate_email(email)
             except ValidationError:
-                context.update({'message': 'Student' + c + "'s data is not complete. Please check again."})
+                context.update({'message':
+                                'Student' + c +
+                                "'s data is not complete. Please check again."})
                 return shortcuts.render(request, 'add_students.html', context)
             try:
                 password_validation.validate_password(password)

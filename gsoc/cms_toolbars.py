@@ -167,7 +167,9 @@ def populate(self):
             menu.add_modal_item(_('Delete this article'), url=url,
                                 on_close=redirect_url)
 
+
 NewsBlogToolbar.populate = populate
+
 
 @toolbar_pool.register
 class AddUser(CMSToolbar):
