@@ -1,0 +1,67 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Add Students</title>
+</head>
+<body>
+{% if message %}
+<h2>{{ message }}</h2>
+{% endif %}
+<form class="pure-form" id="stu_form" method="post" action="{% url 'toolbar-add-students' %}">
+  <button onclick="addFields()" type="button" class="pure-button pure-button-primary">+</button>
+  <button onclick="removeFields()" type="button" class="pure-button pure-button-primary">-</button>
+  {% csrf_token %}
+
+</form>
+<button class="pure-button pure-button-primary" onclick="submitForm()">Confirm</button>
+
+<script>
+  let fieldSetCount = 1;
+  function constructFields() {
+        const elements = `
+<fieldset>
+        <legend>Adding students</legend>
+        User name<br>
+         <input type="text" name='username${fieldSetCount}' placeholder="username"><br>
+         Password<br>
+         <input type="password" name='password${fieldSetCount}' placeholder="password"><br>
+         Sub-org <br>
+         <select name="suborg${fieldSetCount}">{% for name, pk in suborgs.items %}<option value="{{ pk }}">{{ name }}</option>{% endfor %}</select><br>
+         GSoC Year <br>
+         <input type='text' value='2019' disabled><br>
+         Name<br>
+         <input name='firstname${fieldSetCount}' placeholder='First Name'>
+         <input name='lastname${fieldSetCount}' placeholder='Last Name'><br>
+         Email Address<br>
+         <input name='email${fieldSetCount}' placeholder='Email Address'>
+</fieldset>`;
+        return document.createRange().createContextualFragment(elements);
+  }
+  document.querySelector('#stu_form').appendChild(constructFields());
+  function submitForm() {
+    const stu_form = document.querySelector('#stu_form');
+    const inputs = document.querySelectorAll('input');
+    for (let index in inputs){
+      if (inputs[index].value.replace(/\s+/, '').length <= 0) {
+        alert("Please fill all fields!");
+        return
+      }
+    }
+    stu_form.submit()
+  }
+  function addFields() {
+    ++fieldSetCount;
+    const stu_form = document.querySelector('#stu_form');
+    stu_form.appendChild(constructFields())
+  }
+  function removeFields() {
+    if (fieldSetCount > 0){
+      --fieldSetCount;
+    }
+    const stu_form = document.querySelector('#stu_form');
+    const fields = stu_form.querySelectorAll('fieldset');
+    if (fields.length > 0){
+      stu_form.removeChild(fields[fields.length-1]);
+    }
+  }
+</script>
+</body></html>

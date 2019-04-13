@@ -10,6 +10,7 @@ from cms.cms_toolbars import (
 from cms.utils.conf import get_cms_setting
 from cms.utils.urlutils import admin_reverse
 
+from django.shortcuts import reverse
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language_from_request
@@ -19,6 +20,11 @@ from aldryn_translation_tools.utils import (
 )
 from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
+
+
+from cms.toolbar_base import CMSToolbar
+from cms.toolbar_pool import toolbar_pool
+
 
 def add_admin_menu(self):
     if not self._admin_menu:
@@ -162,3 +168,15 @@ def populate(self):
                                 on_close=redirect_url)
 
 NewsBlogToolbar.populate = populate
+
+@toolbar_pool.register
+class AddUser(CMSToolbar):
+    def populate(self):
+        menu = self.toolbar.get_or_create_menu(
+            key='add_students_or_mentors',
+            verbose_name='Add Users'
+        )
+        menu.add_modal_item(
+            name='Add Students',
+            url=reverse('toolbar-add-students')
+        )

@@ -52,3 +52,9 @@ urlpatterns += [
     url('upload-proposal/', gsoc.views.upload_proposal_view, name='upload-proposal'),
     url('cancel_proposal_upload/', gsoc.views.cancel_proposal_upload_view, name='cancel-proposal-upload'),
 ]
+
+
+# Toolbar add users
+urlpatterns += [
+    url('toolbar_add_students/', gsoc.views.toolbar_add_students, name='toolbar-add-students'),
+]

@@ -4,9 +4,9 @@ import io
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
-from .models import validate_proposal_text, RegLink, UserProfile
+from .models import validate_proposal_text, RegLink, SubOrg
 from django import shortcuts
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -168,3 +168,24 @@ def register_view(request):
         else:
             context['done_registeration'] = False
             return shortcuts.render(request, 'registration/register.html', context)
+
+
+def is_admin(user):
+    return True
+
+
+@decorators.login_required
+def toolbar_add_students(request):
+    if not is_admin(request.user):
+        return HttpResponseForbidden()
+    suborgs = SubOrg.objects.all()
+    suborg_info = {}
+    for suborg in suborgs:
+        suborg_info[suborg.suborg_name] = suborg.pk
+    context = dict()
+    context['suborgs'] = suborg_info
+    context.update({'message': 'Students successfully created'})
+    if request.method == 'GET':
+        return shortcuts.render(request, 'add_students.html', context)
+    if request.method == 'POST':
+        return shortcuts.render(request, 'add_students.html', context)
