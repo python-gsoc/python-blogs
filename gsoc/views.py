@@ -1,10 +1,10 @@
 import io
 
-
+from django.utils import timezone
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
-from .models import validate_proposal_text, RegLink, SubOrg
+from .models import validate_proposal_text, RegLink, SubOrg, UserProfile, GsocYear
 from django import shortcuts
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.validators import validate_email
@@ -171,7 +171,7 @@ def register_view(request):
 
 
 def is_admin(user):
-    return True
+    return user.is_superuser
 
 
 @decorators.login_required
@@ -184,8 +184,62 @@ def toolbar_add_students(request):
         suborg_info[suborg.suborg_name] = suborg.pk
     context = dict()
     context['suborgs'] = suborg_info
-    context.update({'message': 'Students successfully created'})
+    context['year'] = str(timezone.now().year)
+    context['create_message'] = ''
+    context.update({'message': ''})
     if request.method == 'GET':
         return shortcuts.render(request, 'add_students.html', context)
     if request.method == 'POST':
+        data = request.POST
+        current_user = 1
+        while True:
+            c = str(current_user)
+            username = data.get('username' + c, '')
+            password = data.get('password' + c, '')
+            suborg_pk = data.get('suborg' + c, '')
+            firstname = data.get('firstname' + c, '')
+            lastname = data.get('lastname' + c, '')
+            email = data.get('email' + c, '')
+            if not username:
+                break
+            try:
+                validators.UnicodeUsernameValidator()(firstname)
+                validators.UnicodeUsernameValidator()(lastname)
+                validators.UnicodeUsernameValidator()(username)
+                so = SubOrg.objects.filter(pk=suborg_pk).first()
+                if not so:
+                    raise ValidationError
+                validate_email(email)
+            except ValidationError:
+                context.update({'message': 'Student' + c + "'s data is not complete. Please check again."})
+                return shortcuts.render(request, 'add_students.html', context)
+            try:
+                password_validation.validate_password(password)
+            except ValidationError as e:
+                context.update({'message': 'Student' + c + "'s password is too simple!"})
+                context['message'] += '<br>'.join(e.messages)
+                return shortcuts.render(request, 'add_students.html', context)
+            username_used = User.objects.filter(username=username).first() is not None
+            if username_used:
+                context.update({'message': 'Student' + c + "'s username has been used."})
+                return shortcuts.render(request, 'add_students.html', context)
+            email_used = User.objects.filter(email=email).first() is not None
+            if email_used:
+                context.update({'message': 'Student' + c + "'s email has been used."})
+                return shortcuts.render(request, 'add_students.html', context)
+            user = User.objects.create(username=username, email=email,
+                                       first_name=firstname, last_name=lastname,
+                                       is_staff=True
+                                       )
+            user.set_password(password)
+            user.save()
+            role_dict = {k: v for v, k in UserProfile.ROLES}
+            so = SubOrg.objects.filter(pk=suborg_pk).first()
+            gsocyear = GsocYear.objects.filter(gsoc_year=timezone.now().year).first()
+            UserProfile.objects.create(user=user, role=role_dict.get('Student', 0),
+                                       suborg_full_name=so,
+                                       gsoc_year=gsocyear)
+            current_user += 1
+            context['create_message'] += f'<br>Student {username} is created!<br>'
+
         return shortcuts.render(request, 'add_students.html', context)
