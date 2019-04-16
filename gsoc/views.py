@@ -238,6 +238,6 @@ def toolbar_add_students(request):
             created.append(email)
             context['create_message'] += f'<br>Student invite has been sent to {email}<br>'
         if not created:
-            context['message'] = 'No user created'
+            context['message'] = 'No email sent'
 
         return shortcuts.render(request, 'add_students.html', context)

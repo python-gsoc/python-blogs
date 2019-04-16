@@ -53,7 +53,10 @@ def add_admin_menu(self):
         # cms users settings
         self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
-
+        self._admin_menu.add_modal_item(
+            name='Add Students',
+            url=reverse('toolbar-add-students')
+        )
         # clipboard
         if self.toolbar.edit_mode_active:
             # True if the clipboard exists and there's plugins in it.
@@ -171,14 +174,3 @@ def populate(self):
 NewsBlogToolbar.populate = populate
 
 
-@toolbar_pool.register
-class AddUser(CMSToolbar):
-    def populate(self):
-        menu = self.toolbar.get_or_create_menu(
-            key='add_students_or_mentors',
-            verbose_name='Add Users'
-        )
-        menu.add_modal_item(
-            name='Add Students',
-            url=reverse('toolbar-add-students')
-        )
