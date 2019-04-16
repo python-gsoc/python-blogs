@@ -55,6 +55,10 @@ else:
     EMAIL_PORT = 587
     EMAIL_HOST_USER = "realemail@realdomain.tld"
     EMAIL_HOST_PASSWORD = "supersecretpassword"
+if DEBUG:
+    INETLOCATION = 'http://localhost:8000'
+else:
+    INETLOCATION = 'https://python-gsoc.org'
 # Application definition
 ROOT_URLCONF = 'gsoc.urls'
 

@@ -23,17 +23,10 @@
         const elements = `
 <fieldset>
         <legend>Adding students</legend>
-        User name<br>
-         <input type="text" name='username${fieldSetCount}' placeholder="username"><br>
-         Password<br>
-         <input type="password" name='password${fieldSetCount}' placeholder="password"><br>
-         Sub-org <br>
          <select name="suborg${fieldSetCount}">{% for name, pk in suborgs.items %}<option value="{{ pk }}">{{ name }}</option>{% endfor %}</select><br>
          GSoC Year <br>
          <input type='text' value='{{ year }}' disabled><br>
          Name<br>
-         <input name='firstname${fieldSetCount}' placeholder='First Name'>
-         <input name='lastname${fieldSetCount}' placeholder='Last Name'><br>
          Email Address<br>
          <input name='email${fieldSetCount}' placeholder='Email Address'>
 </fieldset>`;

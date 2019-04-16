@@ -1,10 +1,11 @@
 import io
-
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
-from .models import validate_proposal_text, RegLink, SubOrg, UserProfile, GsocYear
+from .models import validate_proposal_text, RegLink, SubOrg, UserProfile, GsocYear, Scheduler
+from gsoc.common.utils.commands import build_send_mail_json
 from django import shortcuts
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.validators import validate_email
@@ -195,18 +196,11 @@ def toolbar_add_students(request):
         current_user = 1
         while True:
             c = str(current_user)
-            username = data.get('username' + c, '')
-            password = data.get('password' + c, '')
             suborg_pk = data.get('suborg' + c, '')
-            firstname = data.get('firstname' + c, '')
-            lastname = data.get('lastname' + c, '')
             email = data.get('email' + c, '')
-            if not username:
+            if not email:
                 break
             try:
-                validators.UnicodeUsernameValidator()(firstname)
-                validators.UnicodeUsernameValidator()(lastname)
-                validators.UnicodeUsernameValidator()(username)
                 so = SubOrg.objects.filter(pk=suborg_pk).first()
                 if not so:
                     raise ValidationError
@@ -216,37 +210,33 @@ def toolbar_add_students(request):
                                 'Student' + c +
                                 "'s data is not complete. Please check again."})
                 return shortcuts.render(request, 'add_students.html', context)
-            try:
-                if not password:
-                    raise ValidationError("Empty password")
-                password_validation.validate_password(password)
-            except ValidationError as e:
-                context.update({'message': 'Student' + c + "'s password is too simple!"})
-                context['message'] += '<br>'.join(e.messages)
-                return shortcuts.render(request, 'add_students.html', context)
-            username_used = User.objects.filter(username=username).first() is not None
-            if username_used:
-                context.update({'message': 'Student' + c + "'s username has been used."})
-                return shortcuts.render(request, 'add_students.html', context)
             email_used = User.objects.filter(email=email).first() is not None
             if email_used:
                 context.update({'message': 'Student' + c + "'s email has been used."})
                 return shortcuts.render(request, 'add_students.html', context)
-            user = User.objects.create(username=username, email=email,
-                                       first_name=firstname, last_name=lastname,
-                                       is_staff=True
-                                       )
-            user.set_password(password)
-            user.save()
             role_dict = {k: v for v, k in UserProfile.ROLES}
             so = SubOrg.objects.filter(pk=suborg_pk).first()
             gsocyear = GsocYear.objects.filter(gsoc_year=timezone.now().year).first()
-            UserProfile.objects.create(user=user, role=role_dict.get('Student', 0),
-                                       suborg_full_name=so,
-                                       gsoc_year=gsocyear)
+            reg_link = RegLink.objects.create(user_role=role_dict.get('Student', ''),
+                                              user_suborg=so,
+                                              user_gsoc_year=gsocyear
+                                              )
+            scheduler_data = build_send_mail_json(email,
+                                                  template='invite.html',
+                                                  subject='Your GSoC 2019 invite',
+                                                  template_data={
+                                                      'register_link':
+                                                          settings.INETLOCATION +
+                                                          reg_link.url
+                                                  }
+                                                  )
+            Scheduler.objects.create(command='send_email',
+                                     activation_date=timezone.now(),
+                                     data=scheduler_data
+                                     )
             current_user += 1
-            created.append(user)
-            context['create_message'] += f'<br>Student {username} is created!<br>'
+            created.append(email)
+            context['create_message'] += f'<br>Student invite has been sent to {email}<br>'
         if not created:
             context['message'] = 'No user created'
 
