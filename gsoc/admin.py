@@ -1,4 +1,4 @@
-from .models import UserProfile, RegLink, UserDetails, Scheduler
+from .models import UserProfile, RegLink, UserDetails, Scheduler, PageNotification
 from .forms import UserProfileForm, UserDetailsForm
 
 from django.contrib.auth.models import User
@@ -11,6 +11,8 @@ from django.core.exceptions import PermissionDenied
 from aldryn_people.models import Person
 from aldryn_newsblog.admin import ArticleAdmin
 from aldryn_newsblog.models import Article
+
+from cms.models import Page, PagePermission
 
 
 class UserProfileInline(admin.TabularInline):
@@ -271,3 +273,29 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserProfile, HiddenUserProfileAdmin)
+
+
+class PageNotificationAdmin(admin.ModelAdmin):
+    list_display = ('message', 'user', 'page')
+    list_filter = ('user', 'page')
+
+    def get_fieldsets(self, request, obj=None):
+        if request.user.is_superuser:
+            return (
+                (None, {
+                    'fields': ('user', 'page', 'message')
+                    }), )
+        else:
+            return ((None, {'fields': ('page', 'message')}), )
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "page":
+            kwargs['queryset'] = Page.objects.filter(publisher_is_draft=True)
+            if not request.user.is_superuser:
+                pp = PagePermission.objects.filter(user=request.user)
+                pages = [_.page.pk for _ in pp]
+                kwargs['queryset'] = kwargs['queryset'].filter(pk__in=pages)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+admin.site.register(PageNotification, PageNotificationAdmin)
