@@ -172,5 +172,3 @@ def populate(self):
 
 
 NewsBlogToolbar.populate = populate
-
-

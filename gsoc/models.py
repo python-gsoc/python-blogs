@@ -262,6 +262,7 @@ def gen_uuid_str():
 class AddUserLog(models.Model):
     log_id = models.CharField(max_length=36,
                               default=gen_uuid_str)
+
     def __str__(self):
         return self.log_id
 
@@ -277,16 +278,20 @@ class RegLink(models.Model):
                                     on_delete=models.CASCADE, null=True, blank=False)
     user_gsoc_year = models.ForeignKey(GsocYear, name="user_gsoc_year",
                                        on_delete=models.CASCADE,  null=True, blank=False)
-    adduserlog = models.ForeignKey(AddUserLog, on_delete=models.CASCADE, null=True, blank=True, related_name='reglinks')
-    email = models.CharField(null=False, blank=False, default='', max_length=300, validators=[validate_email])
+    adduserlog = models.ForeignKey(AddUserLog, on_delete=models.CASCADE,
+                                   null=True, blank=True, related_name='reglinks')
+    email = models.CharField(null=False, blank=False,
+                             default='', max_length=300, validators=[validate_email])
     scheduler = models.ForeignKey(Scheduler, null=True, blank=True, on_delete=models.CASCADE, editable=False)
 
     @property
     def has_scheduler(self):
         return self.scheduler is not None
+
     @property
     def url(self):
         return f'{reverse("register")}?reglink_id={self.reglink_id}'
+
     @property
     def is_sent(self):
         return self.scheduler is not None and self.scheduler.success
@@ -315,14 +320,13 @@ class RegLink(models.Model):
                                               template_data={
                                                   'register_link':
                                                       settings.INETLOCATION +
-                                                      self.url
-                                              }
-                                              )
+                                                      self.url})
         s = Scheduler.objects.create(command='send_email',
                                  activation_date=trigger_time,
                                  data=scheduler_data)
         self.scheduler = s
         self.save()
+
 
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reglink_schedulers(sender, instance, **kwargs):

@@ -30,6 +30,7 @@ class UserDetailsForm(ModelForm):
         model = UserDetails
         fields = ('deactivation_date',)
 
+
 class RegLinkForm(ModelForm):
     class Meta:
         model = RegLink
