@@ -166,4 +166,3 @@ def register_view(request):
         else:
             context['done_registeration'] = False
             return shortcuts.render(request, 'registration/register.html', context)
-

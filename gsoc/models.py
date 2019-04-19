@@ -282,7 +282,8 @@ class RegLink(models.Model):
                                    null=True, blank=True, related_name='reglinks')
     email = models.CharField(null=False, blank=False,
                              default='', max_length=300, validators=[validate_email])
-    scheduler = models.ForeignKey(Scheduler, null=True, blank=True, on_delete=models.CASCADE, editable=False)
+    scheduler = models.ForeignKey(Scheduler, null=True,
+                                  blank=True, on_delete=models.CASCADE, editable=False)
 
     @property
     def has_scheduler(self):
@@ -322,8 +323,8 @@ class RegLink(models.Model):
                                                       settings.INETLOCATION +
                                                       self.url})
         s = Scheduler.objects.create(command='send_email',
-                                 activation_date=trigger_time,
-                                 data=scheduler_data)
+                                     activation_date=trigger_time,
+                                     data=scheduler_data)
         self.scheduler = s
         self.save()
 
