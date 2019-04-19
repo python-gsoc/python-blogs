@@ -1,4 +1,4 @@
-from .models import UserDetails, UserProfile
+from .models import UserDetails, UserProfile, RegLink
 
 from django.forms import ModelForm, Select
 
@@ -29,3 +29,8 @@ class UserDetailsForm(ModelForm):
     class Meta:
         model = UserDetails
         fields = ('deactivation_date',)
+
+class RegLinkForm(ModelForm):
+    class Meta:
+        model = RegLink
+        fields = ('email', 'user_role', 'user_suborg', 'user_gsoc_year')

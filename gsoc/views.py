@@ -5,7 +5,6 @@ from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
 from .models import validate_proposal_text, RegLink, SubOrg, UserProfile, GsocYear, Scheduler
-from gsoc.common.utils.commands import build_send_mail_json
 from django import shortcuts
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.validators import validate_email
@@ -170,74 +169,3 @@ def register_view(request):
             context['done_registeration'] = False
             return shortcuts.render(request, 'registration/register.html', context)
 
-
-def is_admin(user):
-    return user.is_superuser
-
-
-@decorators.login_required
-def toolbar_add_students(request):
-    if not is_admin(request.user):
-        return HttpResponseForbidden()
-    suborgs = SubOrg.objects.all()
-    suborg_info = {}
-    for suborg in suborgs:
-        suborg_info[suborg.suborg_name] = suborg.pk
-    context = dict()
-    context['suborgs'] = suborg_info
-    context['year'] = str(timezone.now().year)
-    context['create_message'] = ''
-    context.update({'message': ''})
-    if request.method == 'GET':
-        return shortcuts.render(request, 'add_students.html', context)
-    if request.method == 'POST':
-        created = []
-        data = request.POST
-        current_user = 1
-        while True:
-            c = str(current_user)
-            suborg_pk = data.get('suborg' + c, '')
-            email = data.get('email' + c, '')
-            if not email:
-                break
-            try:
-                so = SubOrg.objects.filter(pk=suborg_pk).first()
-                if not so:
-                    raise ValidationError
-                validate_email(email)
-            except ValidationError:
-                context.update({'message':
-                                'Student' + c +
-                                "'s data is not complete. Please check again."})
-                return shortcuts.render(request, 'add_students.html', context)
-            email_used = User.objects.filter(email=email).first() is not None
-            if email_used:
-                context.update({'message': 'Student' + c + "'s email has been used."})
-                return shortcuts.render(request, 'add_students.html', context)
-            role_dict = {k: v for v, k in UserProfile.ROLES}
-            so = SubOrg.objects.filter(pk=suborg_pk).first()
-            gsocyear = GsocYear.objects.filter(gsoc_year=timezone.now().year).first()
-            reg_link = RegLink.objects.create(user_role=role_dict.get('Student', ''),
-                                              user_suborg=so,
-                                              user_gsoc_year=gsocyear
-                                              )
-            scheduler_data = build_send_mail_json(email,
-                                                  template='invite.html',
-                                                  subject='Your GSoC 2019 invite',
-                                                  template_data={
-                                                      'register_link':
-                                                          settings.INETLOCATION +
-                                                          reg_link.url
-                                                  }
-                                                  )
-            Scheduler.objects.create(command='send_email',
-                                     activation_date=timezone.now(),
-                                     data=scheduler_data
-                                     )
-            current_user += 1
-            created.append(email)
-            context['create_message'] += f'<br>Student invite has been sent to {email}<br>'
-        if not created:
-            context['message'] = 'No email sent'
-
-        return shortcuts.render(request, 'add_students.html', context)

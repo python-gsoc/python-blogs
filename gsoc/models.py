@@ -12,6 +12,7 @@ from django.utils.translation import gettext as _
 from django.core.validators import validate_email
 from django.utils import timezone
 from django.shortcuts import reverse
+from django.conf import settings
 
 from aldryn_apphooks_config.fields import AppHookConfigField
 
@@ -21,6 +22,8 @@ from cms.models import Page, PagePermission
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
+
+from gsoc.common.utils.tools import build_send_mail_json
 
 
 class SubOrg(models.Model):
@@ -256,6 +259,11 @@ def gen_uuid_str():
     return str(uuid.uuid4())
 
 
+class AddUserLog(models.Model):
+    log_id = models.CharField(max_length=36,
+                              default=gen_uuid_str)
+
+
 class RegLink(models.Model):
     is_used = models.BooleanField(default=False, editable=False)
     reglink_id = models.CharField(max_length=36, default=gen_uuid_str, editable=False)
@@ -267,10 +275,23 @@ class RegLink(models.Model):
                                     on_delete=models.CASCADE, null=True, blank=False)
     user_gsoc_year = models.ForeignKey(GsocYear, name="user_gsoc_year",
                                        on_delete=models.CASCADE,  null=True, blank=False)
+    adduserlog = models.ForeignKey(AddUserLog, on_delete=models.CASCADE, null=True, blank=True, related_name='reglinks')
+    email = models.CharField(null=False, blank=False, default='', max_length=300, validators=[validate_email])
+    scheduler = models.ForeignKey(Scheduler, null=True, blank=True, on_delete=models.CASCADE, editable=False)
 
     @property
     def url(self):
         return f'{reverse("register")}?reglink_id={self.reglink_id}'
+    @property
+    def is_sent(self):
+        return self.scheduler is not None and self.scheduler.success
+    def __str__(self):
+        sent = self.is_sent
+        if sent:
+            sent_str = 'Sent.'
+        else:
+            sent_str = 'Not sent.'
+        return f"Register Link {self.url} for {self.email}. {sent_str}"
 
     def is_usable(self):
         timenow = timezone.now()
@@ -280,3 +301,25 @@ class RegLink(models.Model):
         user = User.objects.create(*args, is_staff=is_staff, **kwargs)
         UserProfile.objects.create(user=user, role=self.user_role, gsoc_year=self.user_gsoc_year, suborg_full_name=self.user_suborg)
         return user
+
+    def create_scheduler(self, trigger_time=timezone.now()):
+        validate_email(self.email)
+        scheduler_data = build_send_mail_json(self.email,
+                                              template='invite.html',
+                                              subject='Your GSoC 2019 invite',
+                                              template_data={
+                                                  'register_link':
+                                                      settings.INETLOCATION +
+                                                      self.url
+                                              }
+                                              )
+        s = Scheduler.objects.create(command='send_email',
+                                 activation_date=trigger_time,
+                                 data=scheduler_data)
+        self.scheduler = s
+        self.save()
+
+@receiver(models.signals.post_save, sender=RegLink)
+def create_send_reglink_schedulers(sender, instance, **kwargs):
+    if instance.adduserlog is not None and instance.scheduler is None:
+        instance.create_scheduler()

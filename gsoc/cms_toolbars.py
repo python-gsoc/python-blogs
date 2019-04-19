@@ -54,8 +54,8 @@ def add_admin_menu(self):
         self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
         self._admin_menu.add_modal_item(
-            name='Add Students',
-            url=reverse('toolbar-add-students')
+            name='Add Users',
+            url=admin_reverse('gsoc_adduserlog_add')
         )
         # clipboard
         if self.toolbar.edit_mode_active:
