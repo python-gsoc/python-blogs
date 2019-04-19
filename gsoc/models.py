@@ -19,12 +19,15 @@ from aldryn_apphooks_config.fields import AppHookConfigField
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 
 from cms.models import Page, PagePermission
+from cms import api
+from cms.utils.conf import get_cms_setting
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 
+NewsBlogConfig.__str__ = lambda self: self.app_title
 
 class SubOrg(models.Model):
     suborg_name = models.CharField(name='suborg_name', max_length=80)
@@ -58,7 +61,9 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
-    app_config = AppHookConfigField(NewsBlogConfig, verbose_name=_('Section'), blank=True, null=True)
+    app_config = AppHookConfigField(NewsBlogConfig,
+                                    verbose_name=_('Section'),
+                                    blank=True, null=True,)
     hidden = models.BooleanField(name='hidden', default=False)
 
     objects = UserProfileManager()
@@ -310,8 +315,24 @@ class RegLink(models.Model):
         return (not self.is_used) and self.created_at < timenow
 
     def create_user(self, *args, is_staff=True, **kwargs):
+        namespace = str(uuid.uuid4())
         user = User.objects.create(*args, is_staff=is_staff, **kwargs)
-        UserProfile.objects.create(user=user, role=self.user_role, gsoc_year=self.user_gsoc_year, suborg_full_name=self.user_suborg)
+        blogname = f"{user.username}'s Blog"
+        app_config = NewsBlogConfig.objects.create(namespace=namespace)
+        app_config.app_title = blogname
+        app_config.save()
+        UserProfile.objects.create(user=user, role=self.user_role,
+                                   gsoc_year=self.user_gsoc_year,
+                                   suborg_full_name=self.user_suborg,
+                                   app_config=app_config)
+        page = api.create_page(f'{blogname} + ({namespace})',
+                               get_cms_setting('TEMPLATES')[0][0],
+                               'en', published=True,
+                               publication_date=timezone.now(),)
+        page.application_namespace = namespace
+        page.save()
+        admin = User.objects.filter(username='admin').first()
+        api.publish_page(page, admin, 'en')
         return user
 
     def create_scheduler(self, trigger_time=timezone.now()):
