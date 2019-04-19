@@ -262,6 +262,8 @@ def gen_uuid_str():
 class AddUserLog(models.Model):
     log_id = models.CharField(max_length=36,
                               default=gen_uuid_str)
+    def __str__(self):
+        return self.log_id
 
 
 class RegLink(models.Model):
@@ -279,6 +281,9 @@ class RegLink(models.Model):
     email = models.CharField(null=False, blank=False, default='', max_length=300, validators=[validate_email])
     scheduler = models.ForeignKey(Scheduler, null=True, blank=True, on_delete=models.CASCADE, editable=False)
 
+    @property
+    def has_scheduler(self):
+        return self.scheduler is not None
     @property
     def url(self):
         return f'{reverse("register")}?reglink_id={self.reglink_id}'

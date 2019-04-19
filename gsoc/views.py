@@ -1,6 +1,4 @@
 import io
-from django.conf import settings
-from django.utils import timezone
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm

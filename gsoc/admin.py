@@ -215,14 +215,14 @@ admin.site.register(Article, ArticleAdmin)
 
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('url', 'is_sent',)}),
+        (None, {'fields': ('url', 'is_sent',
+                           'adduserlog', 'has_scheduler')}),
         ("Configure user to be registered",
             {'fields': (
                 "user_role",
                 "user_suborg",
                 "user_gsoc_year",
                 "email",
-                'adduserlog',
                 )}),
         )
     readonly_fields = (
@@ -230,6 +230,7 @@ class RegLinkAdmin(admin.ModelAdmin):
         'adduserlog',
         'is_sent',
         'adduserlog',
+        'has_scheduler'
         )
     list_display = ('reglink_id', 'url', 'is_used', 'is_sent', 'created_at')
     list_filter = [
