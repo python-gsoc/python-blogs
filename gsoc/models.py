@@ -3,6 +3,7 @@ import re
 import datetime
 import uuid
 
+from django.contrib.auth.models import Group, Permission
 from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
@@ -325,11 +326,21 @@ class RegLink(models.Model):
                                    gsoc_year=self.user_gsoc_year,
                                    suborg_full_name=self.user_suborg,
                                    app_config=app_config)
-        page = api.create_page(f'{blogname} + ({namespace})',
+        page = api.create_page(blogname,
                                get_cms_setting('TEMPLATES')[0][0],
                                'en', published=True,
                                publication_date=timezone.now(),)
         page.application_namespace = namespace
+        page.application_urls = 'NewsBlogApp'
+
+        group = Group.objects.get(name='students')
+        user.groups.add(group)
+        permissions = list()
+        permissions.append(Permission.objects.filter(codename='add_article').first())
+        permissions.append(Permission.objects.filter(codename='change_article').first())
+        permissions.append(Permission.objects.filter(codename='delete_article').first())
+        permissions.append(Permission.objects.filter(codename='view_article').first())
+        user.user_permissions.set(permissions)
         page.save()
         admin = User.objects.filter(username='admin').first()
         api.publish_page(page, admin, 'en')

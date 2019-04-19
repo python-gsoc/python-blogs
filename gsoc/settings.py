@@ -130,7 +130,8 @@ MIDDLEWARE = (
     'cms.middleware.user.CurrentUserMiddleware',
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware'
+    'cms.middleware.language.LanguageCookieMiddleware',
+
 )
 
 INSTALLED_APPS = (
@@ -414,3 +415,4 @@ RECEIVER = "limnoria"
 # Disable page cache so that CSRF token can be updated
 CMS_PAGE_CACHE = False
 
+ALDRYN_NEWSBLOG_DEFAULT_PUBLISHED = True
