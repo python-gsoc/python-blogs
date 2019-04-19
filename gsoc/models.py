@@ -296,6 +296,7 @@ class RegLink(models.Model):
     @property
     def is_sent(self):
         return self.scheduler is not None and self.scheduler.success
+
     def __str__(self):
         sent = self.is_sent
         if sent:
