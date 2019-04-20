@@ -274,7 +274,7 @@ class AddUserLog(models.Model):
         verbose_name = 'Add Users' \
                        '(The invites will be sent to the emails on save)'
         verbose_name_plural = 'Add Users' \
-                       '(The invites will be sent to the emails on save)'
+                              '(The invites will be sent to the emails on save)'
     log_id = models.CharField(max_length=36,
                               default=gen_uuid_str)
 
