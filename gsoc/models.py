@@ -22,6 +22,7 @@ from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from cms.models import Page, PagePermission
 from cms import api
 from cms.utils.conf import get_cms_setting
+from cms.utils.apphook_reload import mark_urlconf_as_changed
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
@@ -29,6 +30,7 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 from gsoc.common.utils.tools import build_send_mail_json
 
 NewsBlogConfig.__str__ = lambda self: self.app_title
+
 
 class SubOrg(models.Model):
     suborg_name = models.CharField(name='suborg_name', max_length=80)
@@ -266,6 +268,11 @@ def gen_uuid_str():
 
 
 class AddUserLog(models.Model):
+    class Meta:
+        verbose_name = 'Add Users' \
+                       '(The invites will be sent to the emails on save)'
+        verbose_name_plural = 'Add Users' \
+                       '(The invites will be sent to the emails on save)'
     log_id = models.CharField(max_length=36,
                               default=gen_uuid_str)
 
@@ -318,10 +325,14 @@ class RegLink(models.Model):
     def create_user(self, *args, is_staff=True, **kwargs):
         namespace = str(uuid.uuid4())
         user = User.objects.create(*args, is_staff=is_staff, **kwargs)
+        role = {k: v for v, k in UserProfile.ROLES}
+        if self.user_role != role.get('Student', 3):
+            return user
         blogname = f"{user.username}'s Blog"
         app_config = NewsBlogConfig.objects.create(namespace=namespace)
         app_config.app_title = blogname
         app_config.save()
+
         UserProfile.objects.create(user=user, role=self.user_role,
                                    gsoc_year=self.user_gsoc_year,
                                    suborg_full_name=self.user_suborg,
@@ -329,9 +340,11 @@ class RegLink(models.Model):
         page = api.create_page(blogname,
                                get_cms_setting('TEMPLATES')[0][0],
                                'en', published=True,
-                               publication_date=timezone.now(),)
-        page.application_namespace = namespace
-        page.application_urls = 'NewsBlogApp'
+                               publication_date=timezone.now(),
+                               apphook=app_config.cmsapp,
+                               apphook_namespace=namespace)
+        admin = User.objects.filter(username='admin').first()
+        api.publish_page(page, admin, 'en')
 
         group = Group.objects.get(name='students')
         user.groups.add(group)
@@ -341,9 +354,8 @@ class RegLink(models.Model):
         permissions.append(Permission.objects.filter(codename='delete_article').first())
         permissions.append(Permission.objects.filter(codename='view_article').first())
         user.user_permissions.set(permissions)
-        page.save()
-        admin = User.objects.filter(username='admin').first()
-        api.publish_page(page, admin, 'en')
+
+        mark_urlconf_as_changed()
         return user
 
     def create_scheduler(self, trigger_time=timezone.now()):
