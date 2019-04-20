@@ -1,24 +1,16 @@
+import json
 from smtplib import SMTPResponseException, SMTPSenderRefused
+
 from django.core.mail import send_mail
 from django.conf import settings
+
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
-from django.template import Template, Context
+from django.template import Template
 from gsoc.models import Scheduler
-import json
-from collections.abc import Sequence
+
 from django.contrib.auth.models import User
 from .irc import send_message
-
-
-def build_send_mail_json(send_to,
-                         template: str,
-                         subject: str,
-                         template_data: dict = None):
-    if not isinstance(send_to, Sequence) and not isinstance(send_to, str):
-        raise TypeError('send_to must be a sequence of email addresses '
-                        'or one email address as str!')
-    return json.dumps(locals())
 
 
 def send_email(scheduler: Scheduler):

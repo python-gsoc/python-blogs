@@ -1,5 +1,5 @@
-from .models import UserProfile, RegLink, UserDetails, Scheduler, PageNotification
-from .forms import UserProfileForm, UserDetailsForm
+from .models import UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog
+from .forms import UserProfileForm, UserDetailsForm, RegLinkForm
 
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -215,18 +215,24 @@ admin.site.register(Article, ArticleAdmin)
 
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('url',)}),
+        (None, {'fields': ('url', 'is_sent',
+                           'adduserlog', 'has_scheduler')}),
         ("Configure user to be registered",
             {'fields': (
                 "user_role",
                 "user_suborg",
                 "user_gsoc_year",
+                "email",
                 )}),
         )
     readonly_fields = (
         'url',
+        'adduserlog',
+        'is_sent',
+        'adduserlog',
+        'has_scheduler'
         )
-    list_display = ('reglink_id', 'url', 'is_used', 'created_at')
+    list_display = ('reglink_id', 'url', 'is_used', 'is_sent', 'created_at')
     list_filter = [
         'is_used',
         'created_at',
@@ -238,6 +244,7 @@ class RegLinkAdmin(admin.ModelAdmin):
                 "user_role",
                 "user_suborg",
                 "user_gsoc_year",
+                'email',
                 )
         else:
             return self.readonly_fields
@@ -299,3 +306,16 @@ class PageNotificationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PageNotification, PageNotificationAdmin)
+
+
+class RegLinkInline(admin.TabularInline):
+    model = RegLink
+    form = RegLinkForm
+
+
+class AddUserLogAdmin(admin.ModelAdmin):
+    readonly_fields = ('log_id', )
+    inlines = (RegLinkInline, )
+
+
+admin.site.register(AddUserLog, AddUserLogAdmin)

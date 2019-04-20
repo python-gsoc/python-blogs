@@ -3,6 +3,7 @@ import re
 import datetime
 import uuid
 
+from django.contrib.auth.models import Group, Permission
 from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
@@ -12,15 +13,23 @@ from django.utils.translation import gettext as _
 from django.core.validators import validate_email
 from django.utils import timezone
 from django.shortcuts import reverse
+from django.conf import settings
 
 from aldryn_apphooks_config.fields import AppHookConfigField
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 
 from cms.models import Page, PagePermission
+from cms import api
+from cms.utils.conf import get_cms_setting
+from cms.utils.apphook_reload import mark_urlconf_as_changed
 
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
+
+from gsoc.common.utils.tools import build_send_mail_json
+
+NewsBlogConfig.__str__ = lambda self: self.app_title
 
 
 class SubOrg(models.Model):
@@ -31,6 +40,8 @@ class SubOrg(models.Model):
 
 
 class GsocYear(models.Model):
+    class Meta:
+        ordering = ['-gsoc_year']
     gsoc_year = models.IntegerField(name='gsoc_year')
 
     def __str__(self):
@@ -55,7 +66,9 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True)
-    app_config = AppHookConfigField(NewsBlogConfig, verbose_name=_('Section'), blank=True, null=True)
+    app_config = AppHookConfigField(NewsBlogConfig,
+                                    verbose_name=_('Section'),
+                                    blank=True, null=True,)
     hidden = models.BooleanField(name='hidden', default=False)
 
     objects = UserProfileManager()
@@ -256,6 +269,19 @@ def gen_uuid_str():
     return str(uuid.uuid4())
 
 
+class AddUserLog(models.Model):
+    class Meta:
+        verbose_name = 'Add Users' \
+                       '(The invites will be sent to the emails on save)'
+        verbose_name_plural = 'Add Users' \
+                              '(The invites will be sent to the emails on save)'
+    log_id = models.CharField(max_length=36,
+                              default=gen_uuid_str)
+
+    def __str__(self):
+        return self.log_id
+
+
 class RegLink(models.Model):
     is_used = models.BooleanField(default=False, editable=False)
     reglink_id = models.CharField(max_length=36, default=gen_uuid_str, editable=False)
@@ -267,16 +293,93 @@ class RegLink(models.Model):
                                     on_delete=models.CASCADE, null=True, blank=False)
     user_gsoc_year = models.ForeignKey(GsocYear, name="user_gsoc_year",
                                        on_delete=models.CASCADE,  null=True, blank=False)
+    adduserlog = models.ForeignKey(AddUserLog, on_delete=models.CASCADE,
+                                   null=True, blank=True, related_name='reglinks')
+    email = models.CharField(null=False, blank=False,
+                             default='', max_length=300, validators=[validate_email])
+    scheduler = models.ForeignKey(Scheduler, null=True,
+                                  blank=True, on_delete=models.CASCADE, editable=False)
+
+    @property
+    def has_scheduler(self):
+        return self.scheduler is not None
 
     @property
     def url(self):
         return f'{reverse("register")}?reglink_id={self.reglink_id}'
+
+    @property
+    def is_sent(self):
+        return self.scheduler is not None and self.scheduler.success
+
+    def __str__(self):
+        sent = self.is_sent
+        if sent:
+            sent_str = 'Sent.'
+        else:
+            sent_str = 'Not sent.'
+        return f"Register Link {self.url} for {self.email}. {sent_str}"
 
     def is_usable(self):
         timenow = timezone.now()
         return (not self.is_used) and self.created_at < timenow
 
     def create_user(self, *args, is_staff=True, **kwargs):
-        user = User.objects.create(*args, is_staff=is_staff, **kwargs)
-        UserProfile.objects.create(user=user, role=self.user_role, gsoc_year=self.user_gsoc_year, suborg_full_name=self.user_suborg)
+        namespace = str(uuid.uuid4())
+        email = kwargs.get('email', self.email)
+        user = User.objects.create(*args, is_staff=is_staff,
+                                   email=email, **kwargs)
+        role = {k: v for v, k in UserProfile.ROLES}
+        profile = UserProfile.objects.create(user=user, role=self.user_role,
+                                             gsoc_year=self.user_gsoc_year,
+                                             suborg_full_name=self.user_suborg)
+        if self.user_role != role.get('Student', 3):
+            return user
+
+        blogname = f"{user.username}'s Blog"
+        app_config = NewsBlogConfig.objects.create(namespace=namespace)
+        app_config.app_title = blogname
+        app_config.save()
+        profile.app_config = app_config
+        profile.save()
+        page = api.create_page(blogname,
+                               get_cms_setting('TEMPLATES')[0][0],
+                               'en', published=True,
+                               publication_date=timezone.now(),
+                               apphook=app_config.cmsapp,
+                               apphook_namespace=namespace)
+        admin = User.objects.filter(username='admin').first()
+        api.publish_page(page, admin, 'en')
+
+        group = Group.objects.get(name='students')
+        user.groups.add(group)
+        permissions = list()
+        permissions.append(Permission.objects.filter(codename='add_article').first())
+        permissions.append(Permission.objects.filter(codename='change_article').first())
+        permissions.append(Permission.objects.filter(codename='delete_article').first())
+        permissions.append(Permission.objects.filter(codename='view_article').first())
+        user.user_permissions.set(permissions)
+
+        mark_urlconf_as_changed()
         return user
+
+    def create_scheduler(self, trigger_time=timezone.now()):
+        validate_email(self.email)
+        scheduler_data = build_send_mail_json(self.email,
+                                              template='invite.html',
+                                              subject='Your GSoC 2019 invite',
+                                              template_data={
+                                                  'register_link':
+                                                      settings.INETLOCATION +
+                                                      self.url})
+        s = Scheduler.objects.create(command='send_email',
+                                     activation_date=trigger_time,
+                                     data=scheduler_data)
+        self.scheduler = s
+        self.save()
+
+
+@receiver(models.signals.post_save, sender=RegLink)
+def create_send_reglink_schedulers(sender, instance, **kwargs):
+    if instance.adduserlog is not None and instance.scheduler is None:
+        instance.create_scheduler()

@@ -10,6 +10,7 @@ from cms.cms_toolbars import (
 from cms.utils.conf import get_cms_setting
 from cms.utils.urlutils import admin_reverse
 
+from django.shortcuts import reverse
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language_from_request
@@ -19,6 +20,10 @@ from aldryn_translation_tools.utils import (
 )
 from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
+
+
+from cms.constants import FOLLOW_REDIRECT
+
 
 def add_admin_menu(self):
     if not self._admin_menu:
@@ -47,7 +52,11 @@ def add_admin_menu(self):
         # cms users settings
         self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
-
+        self._admin_menu.add_modal_item(
+            name='Add Users',
+            url=admin_reverse('gsoc_adduserlog_add'),
+            on_close=None,
+        )
         # clipboard
         if self.toolbar.edit_mode_active:
             # True if the clipboard exists and there's plugins in it.
@@ -160,5 +169,6 @@ def populate(self):
                                 [article.pk, ])
             menu.add_modal_item(_('Delete this article'), url=url,
                                 on_close=redirect_url)
+
 
 NewsBlogToolbar.populate = populate

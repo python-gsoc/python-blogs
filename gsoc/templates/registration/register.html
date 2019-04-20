@@ -16,8 +16,8 @@
       <input id='id_password' type="password" name="password"><br>
       <label for="id_password2">Please enter your password again.</label>
       <input id='id_password2' type="password" name="password2"><br>
-      <label for="id_email">Please enter your valid email.</label>
-      <input id='id_email' type="text" name="email"><br>
+      <label for="id_email">Your email address.</label>
+      <input id='id_email' type="text" value="{{ email }}" readonly="readonly"><br>
       <button type="submit" style="font-size: 1.3em">Submit</button>
     </form>
   {% endif %}
