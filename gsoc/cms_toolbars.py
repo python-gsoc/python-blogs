@@ -22,8 +22,7 @@ from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
 
-from cms.toolbar_base import CMSToolbar
-from cms.toolbar_pool import toolbar_pool
+from cms.constants import FOLLOW_REDIRECT
 
 
 def add_admin_menu(self):
@@ -55,7 +54,8 @@ def add_admin_menu(self):
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
         self._admin_menu.add_modal_item(
             name='Add Users',
-            url=admin_reverse('gsoc_adduserlog_add')
+            url=admin_reverse('gsoc_adduserlog_add'),
+            on_close=None,
         )
         # clipboard
         if self.toolbar.edit_mode_active:

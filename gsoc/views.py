@@ -107,20 +107,15 @@ def register_view(request):
         if reglink_usable is False:
             context['can_register'] = False
             context['warning'] = 'Your registeration link is invalid! Please check again!'
+        else:
+            context['email'] = reglink.email
         return shortcuts.render(request, 'registration/register.html', context)
     if request.method == 'POST':
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         password2 = request.POST.get('password2', '')
-        email = request.POST.get('email', '')
-        email = email.strip()
         info_valid = True
         registeration_success = True
-        try:
-            validate_email(email)
-        except ValidationError:
-            context['warning'] += 'Invalid Email! <BR>'
-            info_valid = False
         if password != password2:
             context['warning'] += 'Your password didn\'t match! <BR>'
             info_valid = False
@@ -130,11 +125,6 @@ def register_view(request):
             context['warning'] += 'Your username has been used!<br>'
         except User.DoesNotExist:
             pass
-
-        # Check if email's used
-        if email and User.objects.filter(email=email).first() is not None:
-            info_valid = False
-            context['warning'] += 'Your email has been used!<br>'
 
         # Check password
         try:
@@ -149,7 +139,7 @@ def register_view(request):
             info_valid = False
 
         if info_valid:
-            user = reglink.create_user(username=username, email=email)
+            user = reglink.create_user(username=username)
             user.set_password(password)
             user.save()
         else:

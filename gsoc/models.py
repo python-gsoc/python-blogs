@@ -40,6 +40,8 @@ class SubOrg(models.Model):
 
 
 class GsocYear(models.Model):
+    class Meta:
+        ordering = ['-gsoc_year']
     gsoc_year = models.IntegerField(name='gsoc_year')
 
     def __str__(self):
@@ -324,19 +326,22 @@ class RegLink(models.Model):
 
     def create_user(self, *args, is_staff=True, **kwargs):
         namespace = str(uuid.uuid4())
-        user = User.objects.create(*args, is_staff=is_staff, **kwargs)
+        email = kwargs.get('email', self.email)
+        user = User.objects.create(*args, is_staff=is_staff,
+                                   email=email, **kwargs)
         role = {k: v for v, k in UserProfile.ROLES}
+        profile = UserProfile.objects.create(user=user, role=self.user_role,
+                                             gsoc_year=self.user_gsoc_year,
+                                             suborg_full_name=self.user_suborg)
         if self.user_role != role.get('Student', 3):
             return user
+
         blogname = f"{user.username}'s Blog"
         app_config = NewsBlogConfig.objects.create(namespace=namespace)
         app_config.app_title = blogname
         app_config.save()
-
-        UserProfile.objects.create(user=user, role=self.user_role,
-                                   gsoc_year=self.user_gsoc_year,
-                                   suborg_full_name=self.user_suborg,
-                                   app_config=app_config)
+        profile.app_config = app_config
+        profile.save()
         page = api.create_page(blogname,
                                get_cms_setting('TEMPLATES')[0][0],
                                'en', published=True,
