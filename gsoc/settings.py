@@ -14,6 +14,11 @@ import logging.config
 import django.utils.timezone as tz
 import os
 import datetime
+try:
+    from settings_local import *
+except ImportError:
+    raise Exception('Missing settings_local.py. Did you create it from the template?')
+
 
 gettext = lambda s: s
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -24,12 +29,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0ngo5cy%zk_8g_sw%%7vc3(xn4pjm(zuu1!nvff!iri1cwa2)@'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ('127.0.0.1',)
 
@@ -37,7 +36,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/2.1/ref/settings/#email
 # TODO: Update it with real settings
-ADMINS = [('Admin 1', 'placeholder@python-gsoc.org')]
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_SUBJECT_PREFIX = '[Python-GSoC] '
 if DEBUG:
@@ -223,27 +222,6 @@ CMS_TEMPLATES = (
 CMS_PERMISSION = True
 
 CMS_PLACEHOLDER_CONF = {}
-
-DATABASES = {
-    'default': {
-        'CONN_MAX_AGE': 0,
-        'ENGINE': 'django.db.backends.sqlite3',
-        'HOST': 'localhost',
-        'NAME': 'project.db',
-        'PASSWORD': '',
-        'PORT': '',
-        'USER': ''
-    },
-    'auth_db': {
-        'CONN_MAX_AGE': 0,
-        'ENGINE': 'django.db.backends.sqlite3',
-        'HOST': 'localhost',
-        'NAME': 'users.db',
-        'PASSWORD': '',
-        'PORT': '',
-        'USER': ''
-    },
-}
 
 DATABASE_APPS_MAPPING = {
     'auth': 'auth_db',
