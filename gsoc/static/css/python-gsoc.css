@@ -234,3 +234,21 @@ div.problem {
 .straw {
     color: #6D213C;
 }
+
+.card .proposal-link {
+    font-size: 12px;
+    color: blue;
+}
+
+.card .proposal-link:hover {
+    text-decoration: underline;
+}
+
+.card .proposal-link:visited {
+    color: purple;
+}
+
+.card .no-proposal {
+    font-size: 12px;
+    color: red;
+}

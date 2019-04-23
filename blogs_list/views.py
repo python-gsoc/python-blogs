@@ -1,3 +1,4 @@
+import os
 import random
 
 from django.shortcuts import render
@@ -7,6 +8,8 @@ from gsoc.models import (
     GsocYear,
     UserProfile
 )
+from gsoc.settings import MEDIA_URL
+
 from cms.models import Page
 
 
@@ -28,13 +31,16 @@ def list_blogs(request):
                 url = page.get_absolute_url()
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
+                proposal_name = profile.accepted_proposal_pdf.name
+                proposal_path = os.path.join(MEDIA_URL, proposal_name)
 
                 blogset.append({
                     'title': profile.app_config.app_title,
                     'url': url,
                     'student': student_name if student_name else student_username,
                     'suborg': profile.suborg_full_name.suborg_name,
-                    'color': random.choice(['umber', 'khaki', 'wine', 'straw'])
+                    'color': random.choice(['umber', 'khaki', 'wine', 'straw']),
+                    'proposal': proposal_path if proposal_name else None,
                 })
 
         if flag:
