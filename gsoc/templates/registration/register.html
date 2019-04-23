@@ -10,11 +10,11 @@
     <form id='register_form' action="{% url 'register' %}" method="POST">
     {% csrf_token %}
       <input type="text" name='reglink_id' value="{{ reglink_id }}" hidden="hidden">
-      <label for="id_username">Please enter your username.</label>
+      <label for="id_username">Please enter a username.</label>
       <input id='id_username' type="text" name="username"><br>
-      <label for="id_password">Please enter your password.</label>
+      <label for="id_password">Please enter a password.</label>
       <input id='id_password' type="password" name="password"><br>
-      <label for="id_password2">Please enter your password again.</label>
+      <label for="id_password2">Please re-enter your password .</label>
       <input id='id_password2' type="password" name="password2"><br>
       <label for="id_email">Your email address.</label>
       <input id='id_email' type="text" value="{{ email }}" readonly="readonly"><br>
