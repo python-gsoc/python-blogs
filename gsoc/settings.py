@@ -35,7 +35,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 if DEBUG:
     INETLOCATION = 'http://localhost:8000'
 else:
-    INETLOCATION = 'https://python-gsoc.org'
+    INETLOCATION = 'https://blogs.python-gsoc.org'
 # Application definition
 ROOT_URLCONF = 'gsoc.urls'
 
