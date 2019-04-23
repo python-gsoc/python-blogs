@@ -1,3 +1,4 @@
+import os
 import random
 
 from django.shortcuts import render
@@ -7,6 +8,8 @@ from gsoc.models import (
     GsocYear,
     UserProfile
 )
+from gsoc.settings import MEDIA_URL
+
 from cms.models import Page
 
 
@@ -29,7 +32,7 @@ def list_blogs(request):
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
                 proposal_name = profile.accepted_proposal_pdf.name
-                proposal_path = '/media/{}'.format(proposal_name)
+                proposal_path = os.path.join(MEDIA_URL, proposal_name)
 
                 blogset.append({
                     'title': profile.app_config.app_title,

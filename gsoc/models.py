@@ -28,6 +28,7 @@ import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
+from gsoc.settings import PROPOSALS_PATH
 
 NewsBlogConfig.__str__ = lambda self: self.app_title
 
@@ -65,7 +66,7 @@ class UserProfile(models.Model):
     role = models.IntegerField(name='role', choices=ROLES, default=0)
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
-    accepted_proposal_pdf = models.FileField(blank=True, null=True)
+    accepted_proposal_pdf = models.FileField(blank=True, null=True, upload_to=PROPOSALS_PATH)
     app_config = AppHookConfigField(NewsBlogConfig,
                                     verbose_name=_('Section'),
                                     blank=True, null=True,)
