@@ -1,7 +1,7 @@
 import json
 from smtplib import SMTPResponseException, SMTPSenderRefused
 
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.conf import settings
 
 from django.template.loader import get_template
@@ -24,15 +24,15 @@ def send_email(scheduler: Scheduler):
     if isinstance(data['send_to'], str):
         data['send_to'] = [data['send_to']]
     try:
-        send_mail(
-            message=content,
+        send_email = EmailMessage(
+            body=content,
             subject=settings.EMAIL_SUBJECT_PREFIX + data['subject'],
             from_email=settings.SERVER_EMAIL,
-            headers = {'Reply-To': settings.REPLY_EMAIL},
-            recipient_list=data['send_to'],
-            fail_silently=False,
-            html_message=content,
+            reply_to = settings.REPLY_EMAIL,
+            to=data['send_to'],
         )
+        send_email.content_subtype = "html"
+        send_email.send()
     except SMTPSenderRefused as e:
         last_error = json.dumps({
             "message": str(e),

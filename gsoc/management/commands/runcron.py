@@ -15,7 +15,7 @@ class Command(BaseCommand):
     requires_system_checks = False   # for debugging
     
     #cleanup sessions
-    Session.objects.all().delete()
+    #Session.objects.all().delete()
 
     def add_arguments(self, parser):
         parser.add_argument(
