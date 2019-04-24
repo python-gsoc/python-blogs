@@ -16,6 +16,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="/static/css/python-gsoc.css">
         <link rel="stylesheet" href="/static/css/side-menu.css">
+        {% load static %}
+        <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
         {% block head %}{% endblock %}
         {% render_block "css" %}
     </head>

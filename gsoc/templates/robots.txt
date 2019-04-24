@@ -1,0 +1,5 @@
+# robots.txt 
+User-agent: *
+Disallow: 
+Crawl-delay: 5
+Sitemap: https://blogs.python-gsoc.org/sitemap.xml

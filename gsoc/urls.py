@@ -11,6 +11,8 @@ from django.contrib.sitemaps.views import sitemap
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from django.urls import path,include
+from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 
 import gsoc.views
 
@@ -22,6 +24,8 @@ urlpatterns = [
             'cmspages': CMSSitemap,
         }
     }),
+    url(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
+    url(r'^favicon.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
 ]
 
 #Add Django site authentication urls (for login, logout, password management)
