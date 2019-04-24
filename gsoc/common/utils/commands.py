@@ -28,6 +28,7 @@ def send_email(scheduler: Scheduler):
             message=content,
             subject=settings.EMAIL_SUBJECT_PREFIX + data['subject'],
             from_email=settings.SERVER_EMAIL,
+            headers = {'Reply-To': settings.REPLY_EMAIL},
             recipient_list=data['send_to'],
             fail_silently=False,
             html_message=content,

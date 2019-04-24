@@ -39,18 +39,11 @@ DATABASES = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_SUBJECT_PREFIX = '[Python-GSoC] '
-if DEBUG:
-    EMAIL_USE_TLS = True
-    SERVER_EMAIL = 'psfgsoctestmail@airmail.cc'
-    EMAIL_HOST = 'mail.cock.li'
-    EMAIL_PORT = 587
-    EMAIL_HOST_USER = "psfgsoctestmail@airmail.cc"
-    EMAIL_HOST_PASSWORD = "psfgsoctestmail"
-else:
-    DEFAULT_FROM_EMAIL = 'placeholder@python-gsoc.org'
-    EMAIL_USE_TLS = True
-    SERVER_EMAIL = DEFAULT_FROM_EMAIL
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_PORT = 587
-    EMAIL_HOST_USER = "realemail@realdomain.tld"
-    EMAIL_HOST_PASSWORD = "supersecretpassword"
+
+EMAIL_USE_TLS = False
+SERVER_EMAIL = 'no-reply@python-gsoc.org'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+#EMAIL_HOST_USER = ""
+#EMAIL_HOST_PASSWORD = ""
+REPLY_EMAIL = 'gsoc-admins@python.org'
