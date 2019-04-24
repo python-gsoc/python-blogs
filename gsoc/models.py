@@ -97,6 +97,8 @@ def is_current_year_student(self):
 
 def student_profile(self):
     try:
+        # TODO: will raise MultipleObjectsReturned when there are more than
+        # one student profiles, fix this
         return self.userprofile_set.get(role=3)
     except UserProfile.DoesNotExist:
         return None
