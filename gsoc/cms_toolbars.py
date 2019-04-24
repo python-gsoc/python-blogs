@@ -21,8 +21,8 @@ from aldryn_translation_tools.utils import (
 from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
-
 from cms.constants import FOLLOW_REDIRECT
+from cms.models import Page
 
 
 def add_admin_menu(self):
@@ -80,7 +80,29 @@ def add_admin_menu(self):
         # logout
         self.add_logout_button(self._admin_menu)
 
+
+def add_goto_blog_button(self):
+    user = getattr(self.request, 'user', None)
+    if user and user.is_current_year_student():
+        profile = user.student_profile()
+        ns = profile.app_config.app_title
+        page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
+        url = page.get_absolute_url()
+        self.toolbar.add_button(_('My Blog'), url, side=self.toolbar.RIGHT)
+
+
+def populate(self):
+    if not self.page:
+        self.init_from_request()
+        self.clipboard = self.request.toolbar.user_settings.clipboard
+        self.add_admin_menu()
+        self.add_language_menu()
+        self.add_goto_blog_button()
+
+
 BasicToolbar.add_admin_menu = add_admin_menu
+BasicToolbar.add_goto_blog_button = add_goto_blog_button
+BasicToolbar.populate = populate
 
 
 def populate(self):
