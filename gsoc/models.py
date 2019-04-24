@@ -352,8 +352,6 @@ class RegLink(models.Model):
         su = User.objects.filter(is_superuser=True).first()
         api.publish_page(page, su, 'en')
 
-        group = Group.objects.get(name='students')
-        user.groups.add(group)
         permissions = list()
         permissions.append(Permission.objects.filter(codename='add_article').first())
         permissions.append(Permission.objects.filter(codename='change_article').first())
