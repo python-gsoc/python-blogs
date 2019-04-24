@@ -11,6 +11,12 @@ To install development dependncies:
 ```
 $ pip install -r requirements.txt
 ```
+
+To setup settings copy settings_local.py.template to the root of the dir
+```
+cp gsoc\settings_local.py.template settings_local.py
+```
+
 ## Usage
 
 ```python
