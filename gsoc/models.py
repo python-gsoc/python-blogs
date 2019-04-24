@@ -349,8 +349,8 @@ class RegLink(models.Model):
                                publication_date=timezone.now(),
                                apphook=app_config.cmsapp,
                                apphook_namespace=namespace)
-        admin = User.objects.filter(username='admin').first()
-        api.publish_page(page, admin, 'en')
+        su = User.objects.filter(is_superuser=True).first()
+        api.publish_page(page, su, 'en')
 
         group = Group.objects.get(name='students')
         user.groups.add(group)
