@@ -41,7 +41,7 @@ def send_email(scheduler: Scheduler):
         scheduler.last_error = last_error
         scheduler.success = False
         scheduler.save()
-        return None
+        return str(e)
     except SMTPResponseException as e:
         last_error = json.dumps({
             "message": str(e),
@@ -50,7 +50,7 @@ def send_email(scheduler: Scheduler):
         scheduler.last_error = last_error
         scheduler.success = False
         scheduler.save()
-        return None
+        return str(e)
     except Exception as e:
         last_error = json.dumps({
             "message": str(e),
@@ -58,7 +58,7 @@ def send_email(scheduler: Scheduler):
         scheduler.last_error = last_error
         scheduler.success = False
         scheduler.save()
-        return None
+        return str(e)
     scheduler.last_error = None
     scheduler.success = True
     scheduler.save()
