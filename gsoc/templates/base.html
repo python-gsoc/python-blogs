@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="/static/css/python-gsoc.css">
         <link rel="stylesheet" href="/static/css/side-menu.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
         {% load static %}
         <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
         {% block head %}{% endblock %}
@@ -105,5 +106,6 @@
 
         {% render_block 'js' %}
         <script src="/static/js/menu.js"></script>
+        <script src="/static/js/gsoc.js"></script>
     </body>
 </html>
