@@ -345,12 +345,16 @@ class RegLink(models.Model):
         app_config.save()
         profile.app_config = app_config
         profile.save()
+        blog_list_page = Page.objects.\
+            filter(application_namespace='blogs_list').\
+            filter(publisher_is_draft=True).first()
         page = api.create_page(blogname,
                                get_cms_setting('TEMPLATES')[0][0],
                                'en', published=True,
                                publication_date=timezone.now(),
                                apphook=app_config.cmsapp,
-                               apphook_namespace=namespace)
+                               apphook_namespace=namespace,
+                               parent=blog_list_page)
         su = User.objects.filter(is_superuser=True).first()
         api.publish_page(page, su, 'en')
 
