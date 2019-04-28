@@ -46,6 +46,9 @@ def list_blogs(request):
         if flag:
             blogsets.append((year.gsoc_year, blogset))
 
+    err = "No blogs currently! Please visit again later." if not blogsets else None
+
     return render(request, 'list_view.html', {
-        'blogsets': blogsets
+        'blogsets': blogsets,
+        'errors': [err]
     })

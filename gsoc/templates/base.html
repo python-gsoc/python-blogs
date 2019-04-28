@@ -85,6 +85,13 @@
                             No such user found! Please verify your credentials and enter again.
                         </div>
                     {% endif %}
+                    {% if errors %}
+                        {% for e in errors %}
+                            <div class="notification-box">
+                                {{ e }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                     {% if request.current_page.publisher_is_draft %}
                         {% for notification in request.current_page.notifications.all %}
                             <div class="notification-box-light">
