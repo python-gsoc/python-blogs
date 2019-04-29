@@ -108,13 +108,12 @@ def register_view(request):
         'done_registeration': False,
         'warning': '',
         'reglink_id': reglink_id,
+        'email': getattr(reglink, 'email', 'EMPTY')
         }
     if reglink_usable is False or request.method == 'GET':
         if reglink_usable is False:
             context['can_register'] = False
             context['warning'] = 'Your registeration link is invalid! Please check again!'
-        else:
-            context['email'] = reglink.email
         return shortcuts.render(request, 'registration/register.html', context)
     if request.method == 'POST':
         username = request.POST.get('username', '')

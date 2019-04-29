@@ -7,7 +7,9 @@
   {% endif %}
   {% if can_register and not done_registeration %}
     <h2>Sign up for a PSF GSoC account!</h2><br>
-    <form class="pure-form pure-form-aligned" id='register_form' action="{% url 'register' %}" method="POST">
+    <form class="pure-form pure-form-aligned" id='register_form'
+          action="{% url 'register' %}?reglink_id={{ reglink_id }}"
+          method="POST">
     {% csrf_token %}
       <input type="text" name='reglink_id' value="{{ reglink_id }}" hidden="hidden">
       <label for="id_username">Please enter a username.</label>
