@@ -5,9 +5,11 @@
   {% if warning %}
     <h2 style="color:white; background:red">{{ warning| safe }}</h2>
   {% endif %}
-  {% if can_register and not done_registeration %}
+  {% if can_register and not done_registration %}
     <h2>Sign up for a PSF GSoC account!</h2><br>
-    <form class="pure-form pure-form-aligned" id='register_form' action="{% url 'register' %}" method="POST">
+    <form class="pure-form pure-form-aligned" id='register_form'
+          action="{% url 'register' %}?reglink_id={{ reglink_id }}"
+          method="POST">
     {% csrf_token %}
       <input type="text" name='reglink_id' value="{{ reglink_id }}" hidden="hidden">
       <label for="id_username">Please enter a username.</label>
@@ -25,7 +27,7 @@
   {% if not can_register %}
     <h2>Sorry, but you can't register using this link!</h2>
   {% endif %}
-  {% if done_registeration %}
+  {% if done_registration %}
     <h2>Thank you for registering! You can <a href="{% url 'login' %}">login</a> now!</h2>
     </div>
   {% endif %}

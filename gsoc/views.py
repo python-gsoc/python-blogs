@@ -105,23 +105,22 @@ def register_view(request):
         reglink = None
     context = {
         'can_register': True,
-        'done_registeration': False,
+        'done_registration': False,
         'warning': '',
         'reglink_id': reglink_id,
+        'email': getattr(reglink, 'email', 'EMPTY')
         }
     if reglink_usable is False or request.method == 'GET':
         if reglink_usable is False:
             context['can_register'] = False
-            context['warning'] = 'Your registeration link is invalid! Please check again!'
-        else:
-            context['email'] = reglink.email
+            context['warning'] = 'Your registration link is invalid! Please check again!'
         return shortcuts.render(request, 'registration/register.html', context)
     if request.method == 'POST':
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         password2 = request.POST.get('password2', '')
         info_valid = True
-        registeration_success = True
+        registration_success = True
         if password != password2:
             context['warning'] += 'Your password didn\'t match! <BR>'
             info_valid = False
@@ -152,13 +151,13 @@ def register_view(request):
             user = None
 
         if user is None:
-            registeration_success = False
-        if registeration_success:
+            registration_success = False
+        if registration_success:
             reglink.is_used = True
             reglink.save()
-            context['done_registeration'] = True
+            context['done_registration'] = True
             context['warning'] = ''
         else:
-            context['done_registeration'] = False
+            context['done_registration'] = False
 
         return shortcuts.render(request, 'registration/register.html', context)
