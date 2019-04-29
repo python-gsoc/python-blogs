@@ -33,28 +33,31 @@ def user_has_add_permission(self, user, **kwargs):
     # By default, no permission.
     return False
 
+
 NewsBlogArticleWizard.user_has_add_permission = user_has_add_permission
 
 
 CreateNewsBlogArticleForm.Meta.fields = ['title']
+
 
 def __init__(self, **kwargs):
     super(CreateNewsBlogArticleForm, self).__init__(**kwargs)
 
     # If there's only 1 (or zero) app_configs, don't bother show the
     # app_config choice field, we'll choose the option for the user.
-    app_configs = get_published_app_configs()
+    get_published_app_configs()
 
     userprofiles = self.user.userprofile_set.all()
     app_config_choices = []
     for profile in userprofiles:
         app_config_choices.append((profile.app_config.pk, profile.app_config.get_app_title()))
-    
+
     self.fields['app_config'] = forms.ChoiceField(
         label=_('Section'),
         required=True,
         choices=app_config_choices
-    )
+        )
+
 
 def save(self, commit=True):
     article = super(CreateNewsBlogArticleForm, self).save(commit=False)
@@ -70,9 +73,10 @@ def save(self, commit=True):
             plugin_type='TextPlugin',
             language=self.language_code,
             body=content,
-        )
+            )
 
     return article
+
 
 CreateNewsBlogArticleForm.__init__ = __init__
 CreateNewsBlogArticleForm.save = save

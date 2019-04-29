@@ -2,10 +2,9 @@ import io
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from .forms import ProposalUploadForm
-from .models import validate_proposal_text, RegLink, SubOrg, UserProfile, GsocYear, Scheduler
+from .models import RegLink, validate_proposal_text
 from django import shortcuts
-from django.http import JsonResponse, HttpResponseForbidden
-from django.core.validators import validate_email
+from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
@@ -33,27 +32,33 @@ def convert_pdf_to_txt(f):
     retstr.close()
     return text
 
+
 def is_user_accepted_student(user):
     return user.is_current_year_student()
+
+
 def scan_proposal(file):
     """
     NOTE: returns True if not found private data.
     """
     try:
         text = convert_pdf_to_txt(file)
-    except:
+    except BaseException:
         text = ''
     try:
         validate_proposal_text(text)
         return None
     except ValidationError as err:
         return err
+
+
 @decorators.login_required
 def after_login_view(request):
     user = request.user
     if user.is_current_year_student() and not user.has_proposal():
         return shortcuts.redirect('/myprofile')
     return shortcuts.redirect('/')
+
 
 @decorators.login_required
 @decorators.user_passes_test(is_user_accepted_student)
@@ -63,10 +68,10 @@ def upload_proposal_view(request):
             "emails": [],
             "possible_phone_numbers": [],
             "locations": [],
-        },
+            },
         'file_type_valid': False,
         'file_not_too_large': False,
-    }
+        }
     if request.method == 'POST':
         file = request.FILES.get('accepted_proposal_pdf')
         resp['file_type_valid'] = file and file.name.endswith('.pdf')
@@ -80,6 +85,7 @@ def upload_proposal_view(request):
                 if scan_result:
                     resp['private_data'] = scan_result.message_dict
     return JsonResponse(resp)
+
 
 @decorators.login_required
 @decorators.user_passes_test(is_user_accepted_student)
@@ -102,7 +108,7 @@ def register_view(request):
         'done_registeration': False,
         'warning': '',
         'reglink_id': reglink_id,
-    }
+        }
     if reglink_usable is False or request.method == 'GET':
         if reglink_usable is False:
             context['can_register'] = False
@@ -152,7 +158,7 @@ def register_view(request):
             reglink.save()
             context['done_registeration'] = True
             context['warning'] = ''
-            return shortcuts.render(request, 'registration/register.html', context)
         else:
             context['done_registeration'] = False
-            return shortcuts.render(request, 'registration/register.html', context)
+        
+        return shortcuts.render(request, 'registration/register.html', context)

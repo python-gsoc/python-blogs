@@ -2,7 +2,6 @@ import os
 import random
 
 from django.shortcuts import render
-from django.http import Http404
 
 from gsoc.models import (
     GsocYear,
@@ -28,7 +27,6 @@ def list_blogs(request):
                 ns = profile.app_config.namespace
                 page = Page.objects.filter(application_namespace=ns)
                 page = page.filter(publisher_is_draft=False).first()
-                url = page.get_absolute_url()
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
                 proposal_name = profile.accepted_proposal_pdf.name
@@ -36,12 +34,12 @@ def list_blogs(request):
 
                 blogset.append({
                     'title': profile.app_config.app_title,
-                    'url': url,
+                    'url': page.get_absolute_url(),
                     'student': student_name if student_name else student_username,
                     'suborg': profile.suborg_full_name.suborg_name,
                     'color': random.choice(['umber', 'khaki', 'wine', 'straw']),
                     'proposal': proposal_path if proposal_name else None,
-                })
+                    })
 
         if flag:
             blogsets.append((year.gsoc_year, blogset))
@@ -51,4 +49,4 @@ def list_blogs(request):
     return render(request, 'list_view.html', {
         'blogsets': blogsets,
         'errors': [err]
-    })
+        })

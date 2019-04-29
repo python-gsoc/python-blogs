@@ -28,16 +28,16 @@ def send_email(scheduler: Scheduler):
             body=content,
             subject=settings.EMAIL_SUBJECT_PREFIX + data['subject'],
             from_email=settings.SERVER_EMAIL,
-            reply_to = settings.REPLY_EMAIL,
+            reply_to=settings.REPLY_EMAIL,
             to=data['send_to'],
-        )
+            )
         send_email.content_subtype = "html"
         send_email.send()
     except SMTPSenderRefused as e:
         last_error = json.dumps({
             "message": str(e),
             "smtp_code": e.smtp_code,
-        })
+            })
         scheduler.last_error = last_error
         scheduler.success = False
         scheduler.save()
@@ -46,7 +46,7 @@ def send_email(scheduler: Scheduler):
         last_error = json.dumps({
             "message": str(e),
             "smtp_code": e.smtp_code,
-        })
+            })
         scheduler.last_error = last_error
         scheduler.success = False
         scheduler.save()
@@ -54,7 +54,7 @@ def send_email(scheduler: Scheduler):
     except Exception as e:
         last_error = json.dumps({
             "message": str(e),
-        })
+            })
         scheduler.last_error = last_error
         scheduler.success = False
         scheduler.save()
@@ -69,12 +69,16 @@ def deactivate_user(scheduler: Scheduler):
     """
     makes a user inactive when scheduled
     """
-    u = User.objects.filter(pk=scheduler.data).first()
-    u.is_active = False
-    u.save()
-    scheduler.success = True
-    scheduler.save()
-    return None
+    try:
+        u = User.objects.filter(pk=scheduler.data).first()
+        u.is_active = False
+        u.save()
+        scheduler.success = True
+        scheduler.save()
+        return None
+    except Exception as e:
+        return str(e)
+
 
 def send_irc_msgs(schedulers):
     """

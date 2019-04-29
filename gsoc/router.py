@@ -1,16 +1,11 @@
-from django.conf import settings
-from cms.models import PageUser
-from cms.models import PageUserGroup
+class DatabaseAppsRouter():
 
-
-class DatabaseAppsRouter(object):
-    
     """
     def db_for_read(self, model, **hints):
         if model == PageUser:
             return 'auth_db'
         if model == PageUserGroup:
-            return 'default'            
+            return 'default'
         elif model._meta.app_label in settings.DATABASE_APPS_MAPPING:
             return settings.DATABASE_APPS_MAPPING[model._meta.app_label]
         return None
