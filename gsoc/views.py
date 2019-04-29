@@ -160,5 +160,5 @@ def register_view(request):
             context['warning'] = ''
         else:
             context['done_registeration'] = False
-        
+
         return shortcuts.render(request, 'registration/register.html', context)

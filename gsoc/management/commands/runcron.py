@@ -51,8 +51,10 @@ class Command(BaseCommand):
                               .format(scheduler.command, scheduler.id), ending='\n')
             err = getattr(commands, scheduler.command)(scheduler)
             if not err:
-                self.stdout.write(self.style.SUCCESS('Finished command {}:{}'
-                                                     .format(scheduler.command, scheduler.id)), ending='\n')
+                self.stdout.write(self.style
+                                  .SUCCESS('Finished command {}:{}'
+                                           .format(scheduler.command, scheduler.id)),
+                                  ending='\n')
                 scheduler.success = True
                 scheduler.save()
 

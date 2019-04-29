@@ -18,7 +18,7 @@ except ImportError:
     raise Exception('Missing settings_local.py. Did you create it from the template?')
 
 
-gettext = lambda s: s
+def gettext(s): return s
 
 
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))

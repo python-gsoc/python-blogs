@@ -6,15 +6,15 @@ import pytz
 register = template.Library()
 
 """
-	This function makes use of the django timezone library to
-	get the user's local time and pytz for getting utc time.
-	Now, we use the common_timezones library in pytz to get
-	timezone of various places across the globe.
+    This function makes use of the django timezone library to
+    get the user's local time and pytz for getting utc time.
+    Now, we use the common_timezones library in pytz to get
+    timezone of various places across the globe.
 
-	We calculate the difference between Utctime and localtime and compare
-	the difference of utctime with those global timezones with
-	previously computed difference and accordingly, set the
-	timezone of the user.
+    We calculate the difference between Utctime and localtime and compare
+    the difference of utctime with those global timezones with
+    previously computed difference and accordingly, set the
+    timezone of the user.
 """
 
 

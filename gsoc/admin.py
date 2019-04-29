@@ -196,7 +196,7 @@ def Article_get_queryset(self, request):
         for profile in userprofiles:
             app_configs.append(profile.app_config)
         qs = qs.filter(app_config__in=app_configs)
-        
+
     return qs
 
 
@@ -245,7 +245,7 @@ class RegLinkAdmin(admin.ModelAdmin):
                 "user_gsoc_year",
                 'email',
                 )
-        
+
         return readonly_fields
 
 
