@@ -6,11 +6,10 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
-from django.urls import path,include
+from django.urls import path
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 
@@ -22,13 +21,13 @@ urlpatterns = [
     url(r'^sitemap\.xml$', sitemap,
         {'sitemaps': {
             'cmspages': CMSSitemap,
-        }
-    }),
+            }
+         }),
     url(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
     url(r'^favicon.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
 ]
 
-#Add Django site authentication urls (for login, logout, password management)
+# Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [
     url('accounts/', include('django.contrib.auth.urls')),
     url('accounts/register', gsoc.views.register_view, name='register')
@@ -45,7 +44,7 @@ if settings.DEBUG:
         # For django versions before 2.0:
         url(r'^__debug__/', include(debug_toolbar.urls)),
 
-    ] + urlpatterns
+        ] + urlpatterns
     urlpatterns = [
         url(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),

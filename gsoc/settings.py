@@ -11,16 +11,16 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import logging.config
-import django.utils.timezone as tz
 import os
-import datetime
 try:
     from settings_local import *
 except ImportError:
     raise Exception('Missing settings_local.py. Did you create it from the template?')
 
 
-gettext = lambda s: s
+def gettext(s): return s
+
+
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -73,7 +73,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'gsoc', 'templates'),
             os.path.join(BASE_DIR, 'blogs_list', 'templates'),
-        ],
+            ],
         'OPTIONS': {
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
@@ -87,13 +87,13 @@ TEMPLATES = [
                 'sekizai.context_processors.sekizai',
                 'django.template.context_processors.static',
                 'cms.context_processors.cms_settings'
-            ],
+                ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-            ],
+                ],
+            },
         },
-    },
 ]
 
 MIDDLEWARE = (
@@ -162,12 +162,12 @@ THUMBNAIL_PROCESSORS = (
 )
 
 LANGUAGES = (
-    ## Customize this
+    # Customize this
     ('en', gettext('en')),
 )
 
 CMS_LANGUAGES = {
-    ## Customize this
+    # Customize this
     1: [
         {
             'code': 'en',
@@ -175,17 +175,17 @@ CMS_LANGUAGES = {
             'redirect_on_fallback': True,
             'public': True,
             'hide_untranslated': False,
-        },
-    ],
+            },
+        ],
     'default': {
         'redirect_on_fallback': True,
         'public': True,
         'hide_untranslated': False,
-    },
+        },
 }
 
 CMS_TEMPLATES = (
-    ## Customize this
+    # Customize this
     ('fullwidth.html', 'Fullwidth'),
     ('sidebar_left.html', 'Sidebar Left'),
     ('sidebar_right.html', 'Sidebar Right'),
@@ -221,16 +221,16 @@ MIGRATION_MODULES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
+        },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
+        },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
+        },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+        },
 ]
 
 LOGIN_REDIRECT_URL = '/after-login/'
@@ -259,22 +259,22 @@ LOGGING = {
             'format': ('%(levelname)s %(asctime)s %(process)d '
                        '%(thread)d %(filename)s %(module)s %(funcName)s '
                        '%(lineno)d %(message)s')
-        },
+            },
         'simple': {
             'format': '%(levelname)s: %(message)s'
+            },
         },
-    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
+            }
+        },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
-        },
+            },
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
@@ -283,7 +283,7 @@ LOGGING = {
             'when': 'midnight',
             'backupCount': 60,
             'encoding': 'utf-8',
-        },
+            },
         'access_logs': {
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
@@ -292,38 +292,38 @@ LOGGING = {
             'when': 'midnight',
             'backupCount': 7,
             'encoding': 'utf-8',
-        },
+            },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
+            },
         },
-    },
     'loggers': {
         'django': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True,
-        },
+            },
         'django.server': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
-        },
+            },
         'django.db': {
             'handlers': ['file'],
             'level': 'WARNING',
             'propagate': False,
-        },
+            },
         'django.security.DisallowedHost': {
             'handlers': ['file'],
             'propagate': False,
-        },
+            },
         # Catch All Logger -- Captures any other logging
         '': {
             'handlers': ERROR_HANDLERS,
             'level': ERROR_LEVEL,
+            }
         }
-    }
 }
 logging.config.dictConfig(LOGGING)
 
@@ -342,7 +342,8 @@ CKEDITOR_SETTINGS = {
     'language': '{{ language }}',
     'extraPlugins': 'button,clipboard,dialog,dialogui,image2,lineutils,notification,toolbar,widget,widgetselection,youtube',
     'toolbar': [
-        {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+        {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste',
+                                        'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
         {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']},
         # ['cmsplugins', 'cmswidget'],
         {'name': 'settings', 'items': ['Source', 'ShowBlocks', 'Maximize']},
@@ -354,11 +355,12 @@ CKEDITOR_SETTINGS = {
          'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
                    'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
         {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
-        {'name': 'insert', 'items': ['Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Image', 'Youtube']},
+        {'name': 'insert', 'items': ['Table', 'HorizontalRule',
+                                     'Smiley', 'SpecialChar', 'PageBreak', 'Image', 'Youtube']},
         '/',
         {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
         {'name': 'colors', 'items': ['TextColor', 'BGColor']},
-    ],
+        ],
     'toolbarCanCollapse': False,
 }
 

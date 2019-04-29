@@ -181,7 +181,7 @@ def Article_delete_model(self, request, obj):
                 break
 
     if has_delete_perm:
-        super(ArticleAdmin, self).delete_model(request, obj, form, change)
+        super(ArticleAdmin, self).delete_model(request, obj)
     else:
         raise PermissionDenied()
 
@@ -190,16 +190,14 @@ def Article_get_queryset(self, request):
     user = request.user
     qs = Article.objects.all()
 
-    if user.is_superuser:
-        return qs
-    else:
+    if not user.is_superuser:
         userprofiles = user.userprofile_set.all()
         app_configs = []
         for profile in userprofiles:
             app_configs.append(profile.app_config)
         qs = qs.filter(app_config__in=app_configs)
-        print(qs)
-        return qs
+
+    return qs
 
 
 ArticleAdmin.save_model = Article_save_model
@@ -239,15 +237,16 @@ class RegLinkAdmin(admin.ModelAdmin):
         ]
 
     def get_readonly_fields(self, request, obj=None):
+        readonly_fields = self.readonly_fields
         if obj and obj.is_used:
-            return self.readonly_fields + (
+            readonly_fields += (
                 "user_role",
                 "user_suborg",
                 "user_gsoc_year",
                 'email',
                 )
-        else:
-            return self.readonly_fields
+
+        return readonly_fields
 
 
 admin.site.register(RegLink, RegLinkAdmin)
@@ -288,12 +287,14 @@ class PageNotificationAdmin(admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:
-            return (
+            fieldsets = (
                 (None, {
                     'fields': ('user', 'page', 'message')
                     }), )
         else:
-            return ((None, {'fields': ('page', 'message')}), )
+            fieldsets = ((None, {'fields': ('page', 'message')}), )
+
+        return fieldsets
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "page":

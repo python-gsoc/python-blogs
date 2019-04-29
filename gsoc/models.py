@@ -3,7 +3,7 @@ import re
 import datetime
 import uuid
 
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Permission
 from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
@@ -60,7 +60,7 @@ class UserProfile(models.Model):
         (1, 'Suborg Admin'),
         (2, 'Mentor'),
         (3, 'Student')
-    )
+        )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     role = models.IntegerField(name='role', choices=ROLES, default=0)
@@ -78,10 +78,10 @@ class UserProfile(models.Model):
 
 def has_proposal(self):
     try:
-        self.userprofile_set.get(role=3).accepted_proposal_pdf.path
-        return True
+        if self.userprofile_set.get(role=3).accepted_proposal_pdf.path:
+            return True
 
-    except:
+    except BaseException:
         return False
 
 
@@ -109,6 +109,8 @@ auth.models.User.add_to_class('is_current_year_student', is_current_year_student
 auth.models.User.add_to_class('student_profile', student_profile)
 
 # Auto Delete Redundant Proposal
+
+
 @receiver(models.signals.post_delete, sender=UserProfile)
 def auto_delete_proposal_on_delete(sender, instance, **kwargs):
     """
@@ -219,7 +221,7 @@ class ProposalTextValidator:
             try:
                 validate_email(email)
                 real_emails.append(email)
-            except:
+            except BaseException:
                 pass
         return real_emails
 
@@ -230,7 +232,7 @@ class ProposalTextValidator:
         matcher = PhoneNumberMatcher(text, 'US')
         all_numbers = list(iter(matcher))
         all_number_strings = [x.raw_string for x in all_numbers]
-        ptn = re.compile(r'\+?[0-9][0-9\(\)\-\ ]{3,}[0-9]', re.A| re.M)
+        ptn = re.compile(r'\+?[0-9][0-9\(\)\-\ ]{3,}[0-9]', re.A | re.M)
         maybe_numbers = re.findall(ptn, text)
         for maybe_number in maybe_numbers:
             if maybe_number in all_number_strings:
@@ -239,7 +241,7 @@ class ProposalTextValidator:
                 maybe_number_parsed = phonenumbers.parse(maybe_number)
                 if phonenumbers.is_possible_number(maybe_number_parsed):
                     all_number_strings.append(maybe_number)
-            except:
+            except BaseException:
                 pass
         return all_number_strings
 
@@ -252,9 +254,9 @@ class ProposalTextValidator:
         locations = self.find_all_locations(text)
         if any((emails, possible_phone_numbers, locations)):
             message = {
-                    "emails": emails,
-                    "possible_phone_numbers": possible_phone_numbers,
-                    "locations": locations,
+                "emails": emails,
+                "possible_phone_numbers": possible_phone_numbers,
+                "locations": locations,
                 }
             raise ValidationError(message=message)
 
@@ -295,7 +297,7 @@ class RegLink(models.Model):
     user_suborg = models.ForeignKey(SubOrg, name="user_suborg",
                                     on_delete=models.CASCADE, null=True, blank=False)
     user_gsoc_year = models.ForeignKey(GsocYear, name="user_gsoc_year",
-                                       on_delete=models.CASCADE,  null=True, blank=False)
+                                       on_delete=models.CASCADE, null=True, blank=False)
     adduserlog = models.ForeignKey(AddUserLog, on_delete=models.CASCADE,
                                    null=True, blank=True, related_name='reglinks')
     email = models.CharField(null=False, blank=False,

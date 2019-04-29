@@ -10,7 +10,6 @@ from cms.cms_toolbars import (
 from cms.utils.conf import get_cms_setting
 from cms.utils.urlutils import admin_reverse
 
-from django.shortcuts import reverse
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language_from_request
@@ -21,7 +20,6 @@ from aldryn_translation_tools.utils import (
 from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
-from cms.constants import FOLLOW_REDIRECT
 from cms.models import Page
 
 
@@ -40,7 +38,7 @@ def add_admin_menu(self):
             sites_menu.add_break(ADMIN_SITES_BREAK)
             for site in sites_queryset:
                 sites_menu.add_link_item(site.name, url='http://%s' % site.domain,
-                                            active=site.pk == self.current_site.pk)
+                                         active=site.pk == self.current_site.pk)
 
         # admin
         self._admin_menu.add_sideframe_item(_('Administration'), url=admin_reverse('index'))
@@ -56,25 +54,27 @@ def add_admin_menu(self):
             name='Add Users',
             url=admin_reverse('gsoc_adduserlog_add'),
             on_close=None,
-        )
+            )
         # clipboard
         if self.toolbar.edit_mode_active:
             # True if the clipboard exists and there's plugins in it.
             clipboard_is_bound = self.toolbar.clipboard_plugin
 
             self._admin_menu.add_link_item(_('Clipboard...'), url='#',
-                    extra_classes=['cms-clipboard-trigger'],
-                    disabled=not clipboard_is_bound)
+                                           extra_classes=['cms-clipboard-trigger'],
+                                           disabled=not clipboard_is_bound)
             self._admin_menu.add_link_item(_('Clear clipboard'), url='#',
-                    extra_classes=['cms-clipboard-empty'],
-                    disabled=not clipboard_is_bound)
+                                           extra_classes=['cms-clipboard-empty'],
+                                           disabled=not clipboard_is_bound)
             self._admin_menu.add_break(CLIPBOARD_BREAK)
 
         # Disable toolbar
-        self._admin_menu.add_link_item(_('Disable toolbar'), url='?%s' % get_cms_setting('CMS_TOOLBAR_URL__DISABLE'))
+        self._admin_menu.add_link_item(
+            _('Disable toolbar'), url='?%s' %
+            get_cms_setting('CMS_TOOLBAR_URL__DISABLE'))
         self._admin_menu.add_break(TOOLBAR_DISABLE_BREAK)
         self._admin_menu.add_link_item(_('Shortcuts...'), url='#',
-                extra_classes=('cms-show-shortcuts',))
+                                       extra_classes=('cms-show-shortcuts',))
         self._admin_menu.add_break(SHORTCUTS_BREAK)
 
         # logout
@@ -127,7 +127,7 @@ def populate(self):
             article = None
 
         menu = self.toolbar.get_or_create_menu('newsblog-app',
-                                                config.get_app_title())
+                                               config.get_app_title())
 
         change_config_perm = user.has_perm(
             'aldryn_newsblog.change_newsblogconfig')
@@ -147,7 +147,7 @@ def populate(self):
         delete_article_perm = user.is_superuser if article else False
 
         article_perms = [change_article_perm, add_article_perm,
-                            delete_article_perm, ]
+                         delete_article_perm, ]
 
         if change_config_perm:
             url_args = {}
