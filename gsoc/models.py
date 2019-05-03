@@ -18,6 +18,7 @@ from django.conf import settings
 from aldryn_apphooks_config.fields import AppHookConfigField
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
+from aldryn_newsblog.models import Article
 
 from cms.models import Page, PagePermission
 from cms import api
@@ -390,3 +391,18 @@ class RegLink(models.Model):
 def create_send_reglink_schedulers(sender, instance, **kwargs):
     if instance.adduserlog is not None and instance.scheduler is None:
         instance.create_scheduler()
+
+
+class Comment(models.Model):
+    username = models.CharField(max_length=50)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    content = models.TextField()
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+
+
+def get_root_comments(self):
+    return self.comment_set.filter(parent=None).all()
+
+
+Article.add_to_class('get_root_comments', get_root_comments)
