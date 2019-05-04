@@ -1,0 +1,51 @@
+{% for comment in comments %}
+    <div class="comment-container">
+        <div class="comment">
+            <div class="c-username">
+                {{ comment.username }}
+            </div>
+            <div class="c-content">
+                {{ comment.content }}
+            </div>
+        </div>
+        <div class="c-actions">
+            <span class="reply">
+                <i class="fa fa-reply"></i>
+                <span onclick="showCommentForm({{ comment.pk }})" id="reply-{{ comment.pk }}">Reply</span>
+            </span>
+        </div>
+    </div>
+    <div class="aldryn-newsblog-subcomments">
+        {% include "aldryn_newsblog/includes/comments.html" with comments=comment.replies.all parent=comment article=article user=user csrf_token=csrf_token only %}
+    </div>
+{% endfor %}
+
+<form id="form-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" class="pure-form" action="{% url 'new_comment' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="redirect" id="redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" value="" />
+    
+    <script>
+        document.getElementById('redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}').value = window.location.pathname;
+    </script>
+    
+    <input type="hidden" name="article" value="{{ article.pk }}" />
+    
+    {% if parent %}
+        <input type="hidden" name="parent" value="{{ parent.pk }}" />
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+        <input type="hidden" name="user" value="{{ user.pk }}" />
+    {% endif %}
+
+    <fieldset class="pure-group">
+        {% if user.is_authenticated %}
+            <input type="text" name="username" value="{{ user.username }}" class="pure-input-1" disabled />
+        {% else %}
+            <input type="text" name="username" placeholder="Username" class="pure-input-1" required />
+        {% endif %}
+        <textarea name="comment" placeholder="Comment" class="pure-input-1" required></textarea>
+    </fieldset>
+    
+    <input class="pure-button pure-button-primary pure-input-1" type="submit" value="Submit"/>
+</form>

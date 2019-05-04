@@ -1,0 +1,41 @@
+.aldryn-newsblog-comments {
+    margin: 16px 0;
+    padding: 16px 24px;
+}
+
+.aldryn-newsblog-comments form {
+    display: none;
+}
+
+.aldryn-newsblog-comments #form-root {
+    display: block;
+}
+
+.aldryn-newsblog-subcomments {
+    padding-left: 24px;
+    border-left: 0.1px solid #eee;
+}
+
+.comment {
+    padding: 5px 10px;
+    margin: 5px 0px;
+    background: #eee;
+}
+
+.comment-container .c-username {
+    color: #489EBA;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.comment-container .c-actions {
+    font-size: 12px;
+}
+
+.comment-container .c-actions .reply {
+    cursor: pointer;
+}
+
+.comment-container .c-content {
+    font-size: 14px;
+}

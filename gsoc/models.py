@@ -398,7 +398,9 @@ class Comment(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     content = models.TextField()
-    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True,
+                               on_delete=models.CASCADE,
+                               related_name='replies')
 
 
 def get_root_comments(self):

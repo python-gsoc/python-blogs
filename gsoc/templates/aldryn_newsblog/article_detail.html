@@ -25,5 +25,8 @@
             {% endif %}
         </ul>
     </div>
-    {% static_placeholder "newsblog_comments" %}
+
+    <div class="aldryn-newsblog-comments">
+        {% include "aldryn_newsblog/includes/comments.html" with comments=article.get_root_comments article=article user=user csrf_token=csrf_token only %}
+    </div>
 {% endblock %}
