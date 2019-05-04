@@ -78,30 +78,26 @@ class UserProfile(models.Model):
 
 def has_proposal(self):
     try:
-        if self.userprofile_set.get(role=3).accepted_proposal_pdf.path:
-            return True
-
+        proposal = self.student_profile().accepted_proposal_pdf
+        return proposal is not None and proposal.path
     except BaseException:
         return False
 
 
 def is_current_year_student(self):
     try:
-        profile = self.userprofile_set.get(role=3)
+        profile = self.student_profile()
+        if not profile:
+            return False
         year = profile.gsoc_year.gsoc_year
-        current_year = datetime.datetime.now().year
+        current_year = timezone.now().year
         return current_year == year
     except UserProfile.DoesNotExist:
         return False
 
 
 def student_profile(self):
-    try:
-        # TODO: will raise MultipleObjectsReturned when there are more than
-        # one student profiles, fix this
-        return self.userprofile_set.get(role=3)
-    except UserProfile.DoesNotExist:
-        return None
+    return self.userprofile_set.filter(role=3).first()
 
 
 auth.models.User.add_to_class('has_proposal', has_proposal)
