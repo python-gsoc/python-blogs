@@ -85,15 +85,12 @@ def has_proposal(self):
 
 
 def is_current_year_student(self):
-    try:
-        profile = self.student_profile()
-        if not profile:
-            return False
-        year = profile.gsoc_year.gsoc_year
-        current_year = timezone.now().year
-        return current_year == year
-    except UserProfile.DoesNotExist:
+    profile = self.student_profile()
+    if not profile:
         return False
+    year = profile.gsoc_year.gsoc_year
+    current_year = timezone.now().year
+    return current_year == year
 
 
 def student_profile(self, year=timezone.now().year):
