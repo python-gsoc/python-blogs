@@ -96,8 +96,12 @@ def is_current_year_student(self):
         return False
 
 
-def student_profile(self):
-    return self.userprofile_set.filter(role=3).first()
+def student_profile(self, year=timezone.now().year):
+    gsoc_year = GsocYear.objects.filter(gsoc_year=year).first()
+    if gsoc_year is None:
+        return None
+    return self.userprofile_set.filter(role=3,
+                                       gsoc_year=gsoc_year).first()
 
 
 auth.models.User.add_to_class('has_proposal', has_proposal)
