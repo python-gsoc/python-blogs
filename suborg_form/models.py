@@ -1,32 +1,43 @@
-from uuid import uuid4
+import string
+import random
 
 from django.db import models
 from django.core.exceptions import ValidationError
 # Create your models here.
 
 
-def gen_uuid_str():
-    return str(uuid4())
+def gen_reference_id():
+    s = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    s = s * 100
+    return ''.join(random.sample(s, 128))
 
 
 class SuborgSubmission(models.Model):
     LICENSES = (
         (0, 'others'),
-        )
+        (1, 'Apache License 2.0'),
+        (2, 'BSD 3-Clause "New" or "Revised" license'),
+        (3, 'BSD 2-Clause "Simplified" or "FreeBSD" license'),
+        (4, 'GNU General Public License (GPL)'),
+        (5, 'GNU Library or "Lesser" General Public License (LGPL)'),
+        (6, 'MIT license'),
+        (7, 'Mozilla Public License 2.0'),
+        (8, 'Common Development and Distribution License'),
+        (9, 'Eclipse Public License')
+    )
     start_time = models.DateTimeField(auto_now_add=True)
     is_finished = models.BooleanField(default=False)
-    reference_id = models.CharField(max_length=36,
-                                    default=gen_uuid_str, editable=False)
+    reference_id = models.TextField(default=gen_reference_id, editable=False)
     is_proved = models.BooleanField(default=False)
 
-    name = models.TextField()
-    website = models.TextField()
-    short_description = models.TextField()
+    name = models.TextField(null=True)
+    website = models.TextField(null=True)
+    short_description = models.TextField(null=True)
     opensource_license = models.IntegerField(choices=LICENSES, default=0)
     potential_mentor_number = models.IntegerField(default=0)
-    admin_email = models.EmailField()
+    admin_email = models.EmailField(null=True)
     is_suborg = models.BooleanField(default=True)
-    logo = models.ImageField(upload_to='suborg_logos/')
+    logo = models.ImageField(upload_to='suborg_logos/', null=True)
 
     def current_answer_dict(self):
         questions = self.suborgtextquestion_set.all()
@@ -97,3 +108,10 @@ class SuborgTextQuestion(models.Model):
     question = models.ForeignKey(TextQuestion,
                                  on_delete=models.CASCADE)
     answer = models.TextField(default='', blank=True)
+
+class SuborgContact(models.Model):
+    suborg = models.ForeignKey(SuborgSubmission,
+                               on_delete=models.CASCADE)
+    METHODS = ()
+    method = models.IntegerField(default=0)
+    link = models.TextField(default='')

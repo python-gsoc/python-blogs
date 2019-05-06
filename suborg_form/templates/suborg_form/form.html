@@ -1,0 +1,75 @@
+{% extends CMS_TEMPLATE %}
+
+{% block content %}
+  <h1>Sub-org Submission Form</h1>
+  <h3>Reference ID:</h3>
+  <div style="word-wrap: break-word;padding: 1em">
+   {{ reference_id }}
+  </div>
+  <hr>
+  <form class="pure-form pure-form-stacked"
+        method="post"
+        action="{% url 'suborg_form:suborg-submit-form' %}">
+   {% csrf_token %}
+    <input type="submit" class="pure-button pure-button-primary" value="Save">
+    <input type="submit" class="pure-button pure-button-primary" value="Finish">
+    <hr>
+    <input type="hidden" name='reference_id' value="{{ reference_id }}">
+      <fieldset>
+      <legend>Public Profile</legend>
+      <label for="organization_name">Organization Name*</label>
+      <input id="organization_name" name="organization_name"
+             type="text" placeholder="Organization Name">
+      <label for="website">Website URL*</label>
+      <input id="website" type="text" name='website' placeholder="Website URL">
+      <label for="short_description">A very short description of your organization.*</label>
+      <input id="short_description"
+             name="short_description"
+             type="text" placeholder="">
+      <label for="license">Primary Open Source License*</label>
+      <select id="license" name="license">
+        {% for k, v in licenses.items %}
+            <option value="{{ k }}">{{ v }}</option>
+        {% endfor %}
+      </select>
+       <label for="idea_list">Link to the idea list*</label>
+      <input id="idea_list" name='idea_list' type="text" placeholder="Idea List URL">
+      <hr>
+      <h4>You must complete at least one of the following three contact options: *</h4>
+      <label for="chat_url">Chat<br>
+        (Link to a web page that describes how to get on your IRC channel or other realtime communication system.)
+      </label>
+      <input id="chat_url" name='chat_url' type="text" placeholder="">
+      <label for="mailing_list_url">Mailing List<br>
+        (Link to a page describing how to join your organization's mailing list.)
+      </label>
+      <input id="mailing_list_url" type="text" name="mailing_list_url" placeholder="">
+       <h5>Other Links</h5>
+      <label for="twitter_url">Twitter Link(Optional)</label>
+      <input id="twitter_url" name='twitter_url' type="text" placeholder="Twitter">
+      <label for="blog_url">Blog Link(Optional) </label>
+      <input id="blog_url" name="blog_url" type="text" placeholder="Blog">
+    </fieldset>
+    <fieldset>
+      <legend>Details</legend>
+      <label for="admin_email">Admin Email*</label>
+      <input id="admin_email" name='admin_email' type="text" placeholder="Admin Email">
+      <label for="mentor_emails">Mentor Emails* <br>
+      (Separated with "," or ", ", e.g. "xxx@airmail.cc, ccc@firemail.cc,asd@libre.one")</label>
+      <textarea id='mentor_emails'
+                name="mentor_emails" cols="40" rows="6" style="resize: none"></textarea>
+    </fieldset>
+    <fieldset>
+      <legend>Other Details</legend>
+      {% for q in text_questions %}
+      <label for="question_{{ q.pk }}">{{ q.question }}
+      {% if q.optional %}(optional){% else %} * {% endif %}</label>
+      <textarea id='question_{{ q.pk }}' name="question_{{ q.pk }}"
+                cols="40" rows="6" style="resize: none"></textarea>
+      {% endfor %}
+    </fieldset>
+    <hr>
+    <input type="submit" class="pure-button pure-button-primary" value="Save">
+    <input type="submit" class="pure-button pure-button-primary" value="Finish">
+</form>
+{% endblock content %}

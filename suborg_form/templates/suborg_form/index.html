@@ -1,0 +1,22 @@
+{% extends CMS_TEMPLATE %}
+
+{% block content %}
+  <h1>Sub-org Submission</h1>
+  <h2>Already have a reference id?</h2>
+  <form class="pure-form pure-form-stacked"
+        method="post"
+        action="{% url 'suborg_form:suborg-submit-form' %}">
+   {% csrf_token %}
+
+    <fieldset>
+      {% if msg %}
+      <span style="color:#ff0000">Message: {{ msg|safe }}</span>
+      {% endif %}
+        <label for="rid">Reference ID</label>
+        <textarea id="rid" name='reference_id' style="resize:none" ></textarea>
+        <button type="submit" class="pure-button pure-button-primary">Confirm</button>
+    </fieldset>
+</form>
+  <h2>Start a new submission form</h2>
+  <a class="pure-button pure-button-primary" href="{% url 'suborg_form:suborg-submit-form' %}">New submission</a>
+{% endblock content %}
