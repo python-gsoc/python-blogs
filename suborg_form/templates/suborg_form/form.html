@@ -62,10 +62,11 @@
     <fieldset>
       <legend>Other Details</legend>
       {% for q in text_questions %}
-      <label for="question_{{ q.pk }}">{{ q.question }}
-      {% if q.optional %}(optional){% else %} * {% endif %}</label>
-      <textarea id='question_{{ q.pk }}' name="question_{{ q.pk }}"
-                cols="40" rows="6" style="resize: none"></textarea>
+      <label for="question_{{ q.qusetion.pk }}">{{ q.question.question }}
+      {% if q.question.optional %}(optional){% else %} * {% endif %}</label>
+      <textarea id='question_{{ q.question.pk }}' name="question_{{ q.question.pk }}"
+                cols="40" rows="6" style="resize: none"
+                >{% if q.answer %}{{ q.answer }}{% endif %}</textarea>
       {% endfor %}
     </fieldset>
     <hr>

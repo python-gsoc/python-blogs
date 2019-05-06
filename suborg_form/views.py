@@ -14,10 +14,12 @@ def form(request):
     post_data = request.POST.copy()
     reference_id = get_data.get('reference_id', post_data.get('reference_id', '')).strip()
     licenses = {x[0]: x[1] for x in SuborgSubmission.LICENSES}
+    submission_questions = SuborgSubmission.suborgtextquestion_set.all()
     context = {
         'msg': '',
         'reference_id': '',
-        'text_questions': TextQuestion.objects.all(),
+        'text_questions': submission_questions,
+        'submission': None,
         'licenses': licenses
     }
     if reference_id:
@@ -32,6 +34,7 @@ def form(request):
             return render(request, 'suborg_form/index.html', context)
         submission = SuborgSubmission.objects.create()
         context['reference_id'] = submission.reference_id
+    context['submission'] = submission
     return render(request, 'suborg_form/form.html', context)
 
 def handle_submit(request):
