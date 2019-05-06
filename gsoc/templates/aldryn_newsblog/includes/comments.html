@@ -1,6 +1,7 @@
 {% for comment in comments %}
     <div class="comment-container">
-        <div class="comment">
+        <div class="comment" id="comment-{{ comment.pk }}">
+            <a href="#comment-{{ comment.pk }}">copy</a>
             <div class="c-username">
                 {{ comment.username }}
             </div>
@@ -9,9 +10,16 @@
             </div>
         </div>
         <div class="c-actions">
+            <span class="datetime">
+                {{ comment.created_at }}
+            </span>
             <span class="reply">
                 <i class="fa fa-reply"></i>
                 <span onclick="showCommentForm({{ comment.pk }})" id="reply-{{ comment.pk }}">Reply</span>
+            </span>
+            <span class="share">
+                <i class="fa fa-share"></i>
+                <span onclick="copyCommentUrl({{ comment.pk }})" id="share-{{ comment.pk }}">Share</span>
             </span>
         </div>
     </div>

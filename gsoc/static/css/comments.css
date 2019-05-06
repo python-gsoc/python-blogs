@@ -22,6 +22,10 @@
     background: #eee;
 }
 
+.comment.selected {
+    background: #ccc;
+}
+
 .comment-container .c-username {
     color: #489EBA;
     font-size: 12px;
@@ -32,7 +36,15 @@
     font-size: 12px;
 }
 
+.comment-container .c-actions span {
+    margin-right: 10px;
+}
+
 .comment-container .c-actions .reply {
+    cursor: pointer;
+}
+
+.comment-container .c-actions .share {
     cursor: pointer;
 }
 

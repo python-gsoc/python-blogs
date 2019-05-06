@@ -401,6 +401,7 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', null=True,
                                on_delete=models.CASCADE,
                                related_name='replies')
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 def get_root_comments(self):
