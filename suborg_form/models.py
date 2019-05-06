@@ -27,9 +27,11 @@ class SuborgSubmission(models.Model):
     admin_email = models.EmailField()
     is_suborg = models.BooleanField(default=True)
     logo = models.ImageField(upload_to='suborg_logos/')
+
     def current_answer_dict(self):
         questions = self.suborgtextquestion_set.all()
         return {q.pk: q.answer for q in questions}
+
     def validate_answers(self, answer_dict: dict):
         questions = TextQuestion.objects.all()
         for q in questions:
