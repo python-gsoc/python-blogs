@@ -1,5 +1,6 @@
 import string
 import random
+from collections import namedtuple
 
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -38,7 +39,35 @@ class SuborgSubmission(models.Model):
     admin_email = models.EmailField(null=True)
     is_suborg = models.BooleanField(default=True)
     logo = models.ImageField(upload_to='suborg_logos/', null=True)
-
+    def form_page_dict(self):
+        licenses = {x[0]: x[1] for x in SuborgSubmission.LICENSES}
+        return {
+            'reference_id': self.reference_id,
+            'text_questions': self.text_questions(),
+            'submission': self,
+            'licenses': licenses,}
+    def validate(self):
+        return True
+    def mentor_emails_string(self):
+        mentor_emails = []
+        mentors = self.mentor_set.all()
+        for mentor in mentors:
+            mentor_emails.append(mentor.email)
+        return ', '.join(mentor_emails)
+    def text_questions(self):
+        questions = TextQuestion.objects.all()
+        question = namedtuple('question', 'pk text answer optional')
+        tups = []
+        for q in questions:
+            stq = SuborgTextQuestion.objects.\
+                filter(suborg=self, question=q).first()
+            if stq:
+                ans = stq.answer
+            else:
+                ans = ''
+            tups.append(question(pk=q.pk, text=q.question,
+                                 answer=ans, optional=q.optional))
+        return tups
     def current_answer_dict(self):
         questions = self.suborgtextquestion_set.all()
         return {q.pk: q.answer for q in questions}
@@ -55,10 +84,7 @@ class SuborgSubmission(models.Model):
 
     def update_questions(self, answer_dict: dict, validate=True):
         if validate:
-            try:
-                self.validate_answers(answer_dict)
-            except ValidationError:
-                return None
+            self.validate_answers(answer_dict)
         return_list = []
         questions = TextQuestion.objects.all()
         question_dict = {q.pk: q for q in questions}
@@ -102,6 +128,7 @@ class TextQuestion(models.Model):
     optional = models.BooleanField(default=False)
 
 
+
 class SuborgTextQuestion(models.Model):
     suborg = models.ForeignKey(SuborgSubmission,
                                on_delete=models.CASCADE)
@@ -113,5 +140,5 @@ class SuborgContact(models.Model):
     suborg = models.ForeignKey(SuborgSubmission,
                                on_delete=models.CASCADE)
     METHODS = ()
-    method = models.IntegerField(default=0)
+    method = models.IntegerField(choices=METHODS, default=0)
     link = models.TextField(default='')

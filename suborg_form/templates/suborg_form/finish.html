@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends CMS_TEMPLATE %}
 
-</body>
-</html>
+{% block content %}
+  <h1>Sub-org Submission Complete</h1>
+  <h2>Thanks for submitting to be a sub-org of us! </h2>
+  <h2>You can check the submission status at any time with the reference ID.</h2>
+  <h3>Reference ID:</h3>
+  <div style="word-wrap: break-word;padding: 1em">
+   {{ reference_id }}
+  </div>
+{% endblock content %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseForbidden
-from .models import SuborgSubmission, TextQuestion
+from .models import SuborgSubmission, Mentor
 
 # Create your views here.
 
@@ -13,14 +14,8 @@ def form(request):
     get_data = request.GET.copy()
     post_data = request.POST.copy()
     reference_id = get_data.get('reference_id', post_data.get('reference_id', '')).strip()
-    licenses = {x[0]: x[1] for x in SuborgSubmission.LICENSES}
-    submission_questions = SuborgSubmission.suborgtextquestion_set.all()
     context = {
         'msg': '',
-        'reference_id': '',
-        'text_questions': submission_questions,
-        'submission': None,
-        'licenses': licenses
     }
     if reference_id:
         submission = SuborgSubmission.objects.filter(reference_id=reference_id).first()
@@ -34,17 +29,23 @@ def form(request):
             return render(request, 'suborg_form/index.html', context)
         submission = SuborgSubmission.objects.create()
         context['reference_id'] = submission.reference_id
-    context['submission'] = submission
+    if 'submit_type' in post_data.keys():
+        context.update(handle_submit(request))
+    else:
+        context.update(submission.form_page_dict())
     return render(request, 'suborg_form/form.html', context)
 
 def handle_submit(request):
+    context = {
+        'msg': '',
+    }
     data = request.POST.copy()
     reference_id = data.get('reference_id', '')
     submission = SuborgSubmission.objects. \
         filter(reference_id=reference_id).first()
     if submission is None:
         return HttpResponseForbidden()
-    is_finished = data.get('submit_type', 'finish') == 'Finish'
+    is_finished = data.get('submit_type', 'Finish') == 'Finish'
     questions = [q for q in data.keys() if q.startswith('question_')]
     current_dict = submission.current_answer_dict()
     for q in questions:
@@ -54,9 +55,37 @@ def handle_submit(request):
             except ValueError:
                 continue
             current_dict[pk] = data[q].strip()
-    updated_questions = submission.update_questions(current_dict, validate=is_finished)
-    if not updated_questions:
-        return
+
+    license_id = int(data.get('license', 0))
+    submission.opensource_license = license_id
+    submission.name = data.get('organization_name', '')
+    submission.website = data.get('website', '')
+    submission.short_description = data.get('short_description', '')
+    submission.admin_email = data.get('admin_email', '')
+    mentor_emails = data.get('mentor_emails', '')
+    mentor_emails_cleaned = ''.join(list(filter(
+        lambda x: x not in ' \r\n',
+        mentor_emails)))
+    mentor_emails_list = set(mentor_emails_cleaned.split(','))
+    current_mentor_emails = set([m.email for m in submission.mentor_set.all()])
+    mentor_emails_list = list(mentor_emails_list & current_mentor_emails)
+    Mentor.objects.filter(suborg=submission).all().delete()
+    for email in mentor_emails_list:
+        Mentor.objects.create(suborg=submission, email=email)
+    submission.save()
+    context.update(submission.form_page_dict())
     if is_finished:
-        submission.is_finished = True
-        submission.save()
+        try:
+            submission.update_questions(current_dict, validate=True)
+            submission.validate()
+            submission.is_finished = True
+            submission.save()
+            return context
+        except ValidationError:
+            context['msg'] = 'Information error! Not finished.'
+            return context
+    else:
+        submission.update_questions(current_dict, validate=False)
+        context['msg'] = 'Saved.'
+        return context
+
