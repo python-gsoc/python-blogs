@@ -20,6 +20,7 @@
 	<a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
 
 {% else %}
+
 	<section class="center">
 		<form class="pure-form pure-form-aligned" method="post" action="{% url 'login' %}">
 			{% csrf_token %}
