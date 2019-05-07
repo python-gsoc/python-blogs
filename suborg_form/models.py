@@ -46,7 +46,13 @@ class SuborgSubmission(models.Model):
             return None
         else:
             return contact.link
+    def init_text_questions(self):
+        questions = TextQuestion.objects.all()
+        for q in questions:
+            if self.suborgtextquestion_set.filter(question=q).first() is None:
+                SuborgTextQuestion.objects.create(question=q, suborg=self)
     def form_page_dict(self):
+        self.init_text_questions()
         licenses = {x[0]: x[1] for x in SuborgSubmission.LICENSES}
         return {
             'reference_id': self.reference_id,
