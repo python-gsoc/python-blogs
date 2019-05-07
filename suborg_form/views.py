@@ -1,7 +1,9 @@
+from collections.abc import Sequence
+
 from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseForbidden
-from .models import SuborgSubmission, Mentor
+from .models import SuborgSubmission, Mentor, SuborgContact
 
 # Create your views here.
 
@@ -62,16 +64,20 @@ def handle_submit(request):
     submission.website = data.get('website', '')
     submission.short_description = data.get('short_description', '')
     submission.admin_email = data.get('admin_email', '')
+
     mentor_emails = data.get('mentor_emails', '')
     mentor_emails_cleaned = ''.join(list(filter(
         lambda x: x not in ' \r\n',
         mentor_emails)))
     mentor_emails_list = set(mentor_emails_cleaned.split(','))
-    current_mentor_emails = set([m.email for m in submission.mentor_set.all()])
-    mentor_emails_list = list(mentor_emails_list & current_mentor_emails)
+    mentor_emails_list = list(mentor_emails_list)
     Mentor.objects.filter(suborg=submission).all().delete()
     for email in mentor_emails_list:
         Mentor.objects.create(suborg=submission, email=email)
+    contact_methods = {k[8:]: data[k] for k in data.keys() if k.startswith('contact_')}
+    submission.suborgcontact_set.all().delete()
+    for m, c in contact_methods.items():
+        SuborgContact.objects.create(method=m, link=c, suborg=submission)
     submission.save()
     context.update(submission.form_page_dict())
     if is_finished:
@@ -81,8 +87,10 @@ def handle_submit(request):
             submission.is_finished = True
             submission.save()
             return context
-        except ValidationError:
-            context['msg'] = 'Information error! Not finished.'
+        except ValidationError as e:
+            submission.update_questions(current_dict, validate=False)
+            messages = '<br>'.join(e.messages)
+            context['msg'] = "Error:" + messages
             return context
     else:
         submission.update_questions(current_dict, validate=False)

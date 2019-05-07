@@ -52,16 +52,20 @@
       <label for="chat_url">Chat<br>
         (Link to a web page that describes how to get on your IRC channel or other realtime communication system.)
       </label>
-      <input id="chat_url" name='chat_url' type="text" placeholder="">
+      <input id="chat_url" name='contact_chat_url' type="text" placeholder=""
+             value="{{ chat_url|default_if_none:"" }}">
       <label for="mailing_list_url">Mailing List<br>
         (Link to a page describing how to join your organization's mailing list.)
       </label>
-      <input id="mailing_list_url" type="text" name="mailing_list_url" placeholder="">
+      <input id="mailing_list_url" type="text" name="contact_mailing_list_url" placeholder=""
+             value="{{ twitter_url|default_if_none:"" }}">
        <h5>Other Links</h5>
       <label for="twitter_url">Twitter Link(Optional)</label>
-      <input id="twitter_url" name='twitter_url' type="text" placeholder="Twitter">
+      <input id="twitter_url" name='contact_twitter_url' type="text" placeholder="Twitter"
+      value="{{ twitter_url|default_if_none:"" }}">
       <label for="blog_url">Blog Link(Optional) </label>
-      <input id="blog_url" name="blog_url" type="text" placeholder="Blog">
+      <input id="blog_url" name="contact_blog_url" type="text" placeholder="Blog"
+             value="{{ blog_url|default_if_none:"" }}">
     </fieldset>
     <fieldset>
       <legend>Details</legend>
@@ -69,7 +73,7 @@
       <input id="admin_email" name='admin_email'
              type="text"
              placeholder="Admin Email"
-             value="{{ submission.admin_email }}">
+             value="{{ submission.admin_email|default_if_none:"" }}">
       <label for="mentor_emails">Mentor Emails* <br>
       (Separated with "," or ", ", e.g. "xxx@airmail.cc, ccc@firemail.cc,asd@libre.one")</label>
       <textarea id='mentor_emails'
@@ -79,9 +83,9 @@
     <fieldset>
       <legend>Other Details</legend>
       {% for q in text_questions %}
-      <label for="question_{{ q.pk }}">{{ q.text }}
+      <label for="question_{{ q.question.pk }}">{{ q.question.question }}
       {% if q.optional %}(optional){% else %} * {% endif %}</label>
-      <textarea id='question_{{ q.pk }}' name="question_{{ q.pk }}"
+      <textarea id='question_{{ q.question.pk }}' name="question_{{ q.question.pk }}"
                 cols="40" rows="6" style="resize: none"
                 >{% if q.answer %}{{ q.answer }}{% endif %}</textarea>
       {% endfor %}

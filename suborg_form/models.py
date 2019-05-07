@@ -1,9 +1,10 @@
 import string
 import random
-from collections import namedtuple
 
 from django.db import models
+from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
 # Create your models here.
 
 
@@ -39,44 +40,65 @@ class SuborgSubmission(models.Model):
     admin_email = models.EmailField(null=True)
     is_suborg = models.BooleanField(default=True)
     logo = models.ImageField(upload_to='suborg_logos/', null=True)
+    def contact_link(self, method):
+        contact = self.suborgcontact_set.filter(method=method).first()
+        if not contact:
+            return None
+        else:
+            return contact.link
     def form_page_dict(self):
         licenses = {x[0]: x[1] for x in SuborgSubmission.LICENSES}
         return {
             'reference_id': self.reference_id,
-            'text_questions': self.text_questions(),
+            'text_questions': self.suborgtextquestion_set.all(),
             'submission': self,
-            'licenses': licenses,}
+            'licenses': licenses,
+            'blog_url': self.contact_link('blog_url'),
+            'twitter_url': self.contact_link('twitter_url'),
+            'mailing_list_url': self.contact_link('mailing_list_url'),
+            'chat_url': self.contact_link('chat_url')
+        }
     def validate(self):
-        return True
+        has_vals = all([self.name,
+                        self.website,
+                        self.short_description,
+                        self.opensource_license,
+                        #self.potential_mentor_number,
+                        self.admin_email,
+                        #self.logo
+                        ])
+        if has_vals is False:
+            raise ValidationError('Fields with "*" can\'t be empty!')
+        emails = [self.admin_email]
+        mentors = self.mentor_set.all()
+        emails += [mentor.email for mentor in mentors]
+        for email in emails:
+            validate_email(email)
+        contact_methods = self.suborgcontact_set.all()
+        contact_method_names = ['blog_url',
+                                'twitter_url',
+                                'mailing_list_url',
+                                'chat_url']
+        contact_links = [c.link for c in contact_methods
+                         if c.method in contact_method_names]
+        if not any(contact_links):
+            raise ValidationError("No contact method!")
+
     def mentor_emails_string(self):
         mentor_emails = []
         mentors = self.mentor_set.all()
         for mentor in mentors:
             mentor_emails.append(mentor.email)
         return ', '.join(mentor_emails)
-    def text_questions(self):
-        questions = TextQuestion.objects.all()
-        question = namedtuple('question', 'pk text answer optional')
-        tups = []
-        for q in questions:
-            stq = SuborgTextQuestion.objects.\
-                filter(suborg=self, question=q).first()
-            if stq:
-                ans = stq.answer
-            else:
-                ans = ''
-            tups.append(question(pk=q.pk, text=q.question,
-                                 answer=ans, optional=q.optional))
-        return tups
     def current_answer_dict(self):
         questions = self.suborgtextquestion_set.all()
-        return {q.pk: q.answer for q in questions}
+        return {q.question.pk: q.answer for q in questions}
 
     def validate_answers(self, answer_dict: dict):
         questions = TextQuestion.objects.all()
         for q in questions:
             if q.optional is False and not answer_dict.get(q.pk):
-                raise ValidationError("Key not found: " +
+                raise ValidationError("Question not answered: " +
                                       str(q.pk) + " " + q.question)
             if not isinstance(answer_dict.get(q.pk), str):
                 raise ValidationError("Wrong answer type on " +
@@ -92,12 +114,15 @@ class SuborgSubmission(models.Model):
             if k not in question_dict.keys():
                 continue
             suborg_question = SuborgTextQuestion.objects.\
-                filter(question=question_dict[k]).first()
+                filter(question=question_dict[k], suborg=self).first()
             if suborg_question is None:
                 suborg_question = SuborgTextQuestion.objects.\
                     create(suborg=self,
                            question=question_dict[k],
                            answer=answer_dict[k])
+            else:
+                suborg_question.answer = answer_dict[k]
+                suborg_question.save()
             return_list.append(suborg_question)
         return return_list
 
@@ -117,6 +142,12 @@ class SuborgSubmission(models.Model):
             return None
 
 
+@receiver(models.signals.post_save, sender=SuborgSubmission)
+def create_send_reglink_schedulers(sender, instance, **kwargs):
+    if instance.is_proved:
+        instance.create_suborg()
+
+
 class Mentor(models.Model):
     suborg = models.ForeignKey(SuborgSubmission,
                                on_delete=models.CASCADE)
@@ -128,7 +159,6 @@ class TextQuestion(models.Model):
     optional = models.BooleanField(default=False)
 
 
-
 class SuborgTextQuestion(models.Model):
     suborg = models.ForeignKey(SuborgSubmission,
                                on_delete=models.CASCADE)
@@ -136,9 +166,9 @@ class SuborgTextQuestion(models.Model):
                                  on_delete=models.CASCADE)
     answer = models.TextField(default='', blank=True)
 
+
 class SuborgContact(models.Model):
     suborg = models.ForeignKey(SuborgSubmission,
                                on_delete=models.CASCADE)
-    METHODS = ()
-    method = models.IntegerField(choices=METHODS, default=0)
+    method = models.TextField()
     link = models.TextField(default='')
