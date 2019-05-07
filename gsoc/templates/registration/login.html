@@ -3,43 +3,47 @@
 {% block content %}
 
 {% if form.errors %}
-  <p>Your username and password didn't match. Please try again.</p>
+	<p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
 {% if next %}
-  {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-  {% else %}
-    <p>Please login to see this page.</p>
-  {% endif %}
+	{% if user.is_authenticated %}
+		<p>Your account doesn't have access to this page. To proceed,
+		please login with an account that has access.</p>
+	{% else %}
+		<p>Please login to see this page.</p>
+	{% endif %}
 {% endif %}
 
 {% if user.is_authenticated %}
-<p>You are already logged in!</p>
-<a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+	<p>You are already logged in!</p>
+	<a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
 
 {% else %}
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<h1>Login</h1>
-<div>
-  <td>{{ form.username.label_tag }}</td>
-  <td>{{ form.username }}</td>
-</div>
-<div>
-  <td>{{ form.password.label_tag }}</td>
-  <td>{{ form.password }}</td>
-</div>
+	<section class="center">
+		<form class="pure-form pure-form-aligned" method="post" action="{% url 'login' %}">
+			{% csrf_token %}
+			<fieldset>
+				<legend><h2>Login</h2></legend>
+				<div class="pure-control-group">
+					{{ form.username.label_tag }}
+					{{ form.username }}
+				</div>
 
-<div>
-  <input type="submit" value="Login" />
-  <input type="hidden" name="next" value="{{ next }}" />
-</div>
-</form>
+				<div class="pure-control-group">
+					{{ form.password.label_tag }}
+					{{ form.password }} 
+				</div>
 
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+				<div class="pure-controls">
+					<input class="pure-button pure-button-primary" style="background: #16536e;" type="submit" value="Login" />
+					<input type="hidden" name="next" value="{{ next }}" />
+					{# Assumes you setup the password_reset view in your URLconf #}          
+					<a class="pure-button pure-button-primary" href="{% url 'password_reset' %}" style="background: #16536e;">Lost password?</a>
+				</div>
+			</fieldset>
+		</form>
+	</section>
 
 {% endif %}
 
