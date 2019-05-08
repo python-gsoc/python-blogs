@@ -1,3 +1,5 @@
+from gsoc import settings
+
 from .forms import ProposalUploadForm
 from .models import RegLink, validate_proposal_text, Comment
 
@@ -20,7 +22,8 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
-from gsoc import settings
+from profanityfilter import ProfanityFilter
+
 
 # handle proposal upload
 
@@ -207,10 +210,16 @@ def new_comment(request):
                 user = None
                 username = request.POST.get('username')
 
-            c = Comment(username=username, content=comment,
-                        user=user, article=article,
-                        parent=parent)
-            c.save()
+            pf = ProfanityFilter()
+            if pf.is_clean(comment) and pf.is_clean(username):
+                c = Comment(username=username, content=comment,
+                            user=user, article=article,
+                            parent=parent)
+                c.save()
+            else:
+                messages.add_message(request, messages.ERROR,
+                                     'Abusive content detected! Please refrain\
+                                      from using any indecent words while commenting.')
         else:
             messages.add_message(request, messages.ERROR,
                                  'reCAPTCHA verification failed')
