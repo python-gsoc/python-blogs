@@ -5,6 +5,7 @@ import io
 import urllib
 import json
 
+from django.contrib import messages
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
 from django import shortcuts
@@ -210,9 +211,13 @@ def new_comment(request):
                         user=user, article=article,
                         parent=parent)
             c.save()
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'reCAPTCHA verification failed')
 
-            redirect_path = request.POST.get('redirect')
-            if redirect_path:
-                return redirect(redirect_path)
-            else:
-                return redirect('/')
+        redirect_path = request.POST.get('redirect')
+
+        if redirect_path:
+            return redirect(redirect_path)
+        else:
+            return redirect('/')

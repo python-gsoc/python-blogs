@@ -95,6 +95,13 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="notification-box">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                     {% if request.current_page.publisher_is_draft %}
                         {% for notification in request.current_page.notifications.all %}
                             <div class="notification-box-light">
