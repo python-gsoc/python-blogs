@@ -151,7 +151,6 @@ INSTALLED_APPS = (
     'gsoc',
     'blogs_list',
     'debug_toolbar',
-    'snowpenguin.django.recaptcha3',
 )
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
