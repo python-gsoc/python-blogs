@@ -86,21 +86,14 @@
                             No such user found! Please verify your credentials and enter again.
                         </div>
                     {% endif %}
-                    {% if errors %}
-                        {% for e in errors %}
-                            {% if e %}
+                    {% if not request.user.is_authenticated %}
+                        {% if messages %}
+                            {% for message in messages %}
                                 <div class="notification-box">
-                                    {{ e }}
+                                    {{ message }}
                                 </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="notification-box">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        {% endif %}
                     {% endif %}
                     {% if request.current_page.publisher_is_draft %}
                         {% for notification in request.current_page.notifications.all %}

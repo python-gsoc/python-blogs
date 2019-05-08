@@ -222,7 +222,7 @@ def new_comment(request):
                                       from using any indecent words while commenting.')
         else:
             messages.add_message(request, messages.ERROR,
-                                 'reCAPTCHA verification failed')
+                                 'reCAPTCHA verification failed.')
 
         redirect_path = request.POST.get('redirect')
 

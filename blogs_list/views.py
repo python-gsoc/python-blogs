@@ -2,6 +2,7 @@ import os
 import random
 
 from django.shortcuts import render
+from django.contrib import messages
 
 from gsoc.models import (
     GsocYear,
@@ -44,9 +45,10 @@ def list_blogs(request):
         if flag:
             blogsets.append((year.gsoc_year, blogset))
 
-    err = "No blogs currently! Please visit again later." if not blogsets else None
+    if not blogsets:
+        messages.add_message(request, messages.ERROR,
+                             'No blogs currently! Please visit again later.')
 
     return render(request, 'list_view.html', {
         'blogsets': blogsets,
-        'errors': [err]
         })
