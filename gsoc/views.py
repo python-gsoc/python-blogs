@@ -173,8 +173,6 @@ def register_view(request):
 
 def new_comment(request):
     if request.method == 'POST':
-        print('POST method for adding comment')
-
         recaptcha_response = request.POST.get('g-recaptcha-response')
         url = 'https://www.google.com/recaptcha/api/siteverify'
         payload = {
@@ -184,15 +182,12 @@ def new_comment(request):
         data = urllib.parse.urlencode(payload).encode()
         req = urllib.request.Request(url, data=data)
 
-        print('Connecting to google')
         response = urllib.request.urlopen(req)
         result = json.loads(response.read().decode())
 
         if (result['success'] and
             result['action'] == 'comment' and
             result['score'] >= settings.RECAPTCHA_THRESHOLD):
-            print('recaptcha_score', result['score'])
-
             comment = request.POST.get('comment')
             article_pk = request.POST.get('article')
             article = Article.objects.get(pk=article_pk)
