@@ -185,9 +185,9 @@ def new_comment(request):
         response = urllib.request.urlopen(req)
         result = json.loads(response.read().decode())
 
-        if (result['success'] and
-            result['action'] == 'comment' and
-            result['score'] >= settings.RECAPTCHA_THRESHOLD):
+        if (result['success'] and result['action'] == 'comment'
+                and result['score'] >= settings.RECAPTCHA_THRESHOLD):
+            # if score greater than threshold allow to add
             comment = request.POST.get('comment')
             article_pk = request.POST.get('article')
             article = Article.objects.get(pk=article_pk)
@@ -205,7 +205,7 @@ def new_comment(request):
             else:
                 user = None
                 username = request.POST.get('username')
-            
+
             c = Comment(username=username, content=comment,
                         user=user, article=article,
                         parent=parent)
