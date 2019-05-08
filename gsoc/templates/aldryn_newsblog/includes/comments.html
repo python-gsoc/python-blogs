@@ -1,7 +1,6 @@
 {% for comment in comments %}
     <div class="comment-container">
         <div class="comment" id="comment-{{ comment.pk }}">
-            <a href="#comment-{{ comment.pk }}">copy</a>
             <div class="c-username">
                 {{ comment.username }}
             </div>
@@ -28,7 +27,7 @@
     </div>
 {% endfor %}
 
-<form id="form-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" class="pure-form" action="{% url 'new_comment' %}" method="POST">
+<form id="form-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" class="pure-form comment-form" action="{% url 'new_comment' %}" method="POST">
     {% csrf_token %}
     <input type="hidden" name="redirect" id="redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" value="" />
     

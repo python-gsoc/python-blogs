@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="/static/css/python-gsoc.css">
         <link rel="stylesheet" href="/static/css/side-menu.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+        <script src='https://www.google.com/recaptcha/api.js?render=6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj'></script>
         {% load static %}
         <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
         {% block head %}{% endblock %}
@@ -116,6 +117,7 @@
         {% render_block 'js' %}
         <script src="/static/js/menu.js"></script>
         <script src="/static/js/gsoc.js"></script>
+        <script src="/static/js/recaptcha.js"></script>
         {% block js %}{% endblock %}
     </body>
 </html>

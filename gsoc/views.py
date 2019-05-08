@@ -2,6 +2,8 @@ from .forms import ProposalUploadForm
 from .models import RegLink, validate_proposal_text, Comment
 
 import io
+import urllib
+import json
 
 from django.contrib.auth import decorators, password_validation, validators
 from django.contrib.auth.models import User
@@ -17,6 +19,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
+from gsoc import settings
 
 # handle proposal upload
 
@@ -170,31 +173,51 @@ def register_view(request):
 
 def new_comment(request):
     if request.method == 'POST':
-        comment = request.POST.get('comment')
-        article_pk = request.POST.get('article')
-        article = Article.objects.get(pk=article_pk)
-        user_pk = request.POST.get('user', None)
-        parent_pk = request.POST.get('parent', None)
+        print('POST method for adding comment')
 
-        if parent_pk:
-            parent = Comment.objects.get(pk=parent_pk)
-        else:
-            parent = None
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        url = 'https://www.google.com/recaptcha/api/siteverify'
+        payload = {
+            'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            'response': recaptcha_response
+        }
+        data = urllib.parse.urlencode(payload).encode()
+        req = urllib.request.Request(url, data=data)
 
-        if user_pk:
-            user = User.objects.get(pk=user_pk)
-            username = user.username
-        else:
-            user = None
-            username = request.POST.get('username')
-        
-        c = Comment(username=username, content=comment,
-                    user=user, article=article,
-                    parent=parent)
-        c.save()
+        print('Connecting to google')
+        response = urllib.request.urlopen(req)
+        result = json.loads(response.read().decode())
 
-        redirect_path = request.POST.get('redirect')
-        if redirect_path:
-            return redirect(redirect_path)
-        else:
-            return redirect('/')
+        if (result['success'] and
+            result['action'] == 'comment' and
+            result['score'] >= settings.RECAPTCHA_THRESHOLD):
+            print('recaptcha_score', result['score'])
+
+            comment = request.POST.get('comment')
+            article_pk = request.POST.get('article')
+            article = Article.objects.get(pk=article_pk)
+            user_pk = request.POST.get('user', None)
+            parent_pk = request.POST.get('parent', None)
+
+            if parent_pk:
+                parent = Comment.objects.get(pk=parent_pk)
+            else:
+                parent = None
+
+            if user_pk:
+                user = User.objects.get(pk=user_pk)
+                username = user.username
+            else:
+                user = None
+                username = request.POST.get('username')
+            
+            c = Comment(username=username, content=comment,
+                        user=user, article=article,
+                        parent=parent)
+            c.save()
+
+            redirect_path = request.POST.get('redirect')
+            if redirect_path:
+                return redirect(redirect_path)
+            else:
+                return redirect('/')
