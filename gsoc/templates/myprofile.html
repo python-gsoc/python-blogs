@@ -35,14 +35,14 @@ My Profile
         <div id='infoBoxText'></div>
         <div id='infoBtns'>
           <button
-          class='info-btn'
+          class='pure-button'
           style='display: none'
           id='infoBtn1'
           >
             confirm
           </button>
           <button
-          class='info-btn'
+          class='pure-button'
           style='display: none'
           id='infoBtn2'
           >
@@ -52,8 +52,11 @@ My Profile
     </div>
     <br>
     <button name="upload-proposal"
+            class="pure-button pure-button-primary"
             id='begin-upload-proposal-button'
-            onclick="document.querySelector('#upload-proposal').style.display='block'">
+            onclick="document.querySelector('#upload-proposal').style.display='block';
+                     document.querySelector('#begin-upload-proposal-button').classList.remove('pure-button-primary');
+                     document.querySelector('#begin-upload-proposal-button').classList.add('pure-button-disabled')">
     {% if user.student_profile.accepted_proposal_pdf %}
       Re-upload Your Accepted Proposal
     {% else %}
@@ -61,13 +64,13 @@ My Profile
      {% endif %}
     </button>
       <div id='upload-proposal' style="display: none">
-      <form id='upload-proposal-form'
+      <form class="pure-form" id='upload-proposal-form'
             enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" id="proposalFileInput" name="accepted_proposal_pdf">
       </form>
-      <button onclick="beforeUpload()" id="upload-proposal-button">Confirm</button>
-      <button onclick="document.querySelector('#upload-proposal').style.display='none'">
+      <button onclick="beforeUpload()" class="pure-button pure-button-primary" id="upload-proposal-button">Confirm</button>
+      <button onclick="document.querySelector('#upload-proposal').style.display='none'" class="pure-button">
         Quit
       </button>
       </div>
