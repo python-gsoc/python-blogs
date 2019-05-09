@@ -16,7 +16,8 @@
   <hr>
   <form class="pure-form pure-form-stacked"
         method="post"
-        action="{% url 'suborg_form:suborg-submit-form' %}">
+        action="{% url 'suborg_form:suborg-submit-form' %}"
+	enctype="multipart/form-data">
    {% csrf_token %}
     <input type="submit" class="pure-button pure-button-primary" name="submit_type"
            value="Save">
@@ -47,6 +48,9 @@
               {% endif %}>{{ v }}</option>
         {% endfor %}
       </select>
+      <label for="logo_img">Upload Your LOGO. Must be a 24-bit PNG, minimum height 256 pixels.</label>
+      <input id="logo_img" name="logo" type="file">
+
       <hr>
       <h4>You must complete at least one of the following three contact options: *</h4>
       <label for="chat_url">Chat<br>

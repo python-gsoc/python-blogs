@@ -41,6 +41,8 @@ def handle_submit(request):
     context = {
         'msg': '',
     }
+    files = request.FILES.copy()
+    
     data = request.POST.copy()
     reference_id = data.get('reference_id', '')
     submission = SuborgSubmission.objects. \
@@ -50,6 +52,7 @@ def handle_submit(request):
     is_finished = data.get('submit_type', 'Finish') == 'Finish'
     questions = [q for q in data.keys() if q.startswith('question_')]
     current_dict = submission.current_answer_dict()
+    
     for q in questions:
         if data[q].strip():
             try:
@@ -78,10 +81,14 @@ def handle_submit(request):
     submission.suborgcontact_set.all().delete()
     for m, c in contact_methods.items():
         SuborgContact.objects.create(method=m, link=c, suborg=submission)
+    
     submission.save()
     context.update(submission.form_page_dict())
+    
     if is_finished:
         try:
+            if not submission.logo:
+                raise ValidationError("Logo not uploaded.")
             submission.update_questions(current_dict, validate=True)
             submission.validate()
             submission.is_finished = True
