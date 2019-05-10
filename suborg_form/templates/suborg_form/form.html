@@ -77,6 +77,8 @@
       <textarea id='mentor_emails'
                 name="mentor_emails" cols="40" rows="6" style="resize: none"
       >{{ submission.mentor_emails_string }}</textarea>
+      <label for="potential_mentor_cnt">Potential Mentors</label>
+      <input id="potential_mentor_cnt" name="potential_mentor_cnt" value="{% if submission.potential_mentor_number %}{{ submission.potential_mentor_number  }}{% else %}0{% endif %}" type="number">
     </fieldset>
     <fieldset>
       <legend>Other Details</legend>

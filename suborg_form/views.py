@@ -56,7 +56,14 @@ def handle_submit(request, submission):
     submission.website = data.get('website', '')
     submission.short_description = data.get('short_description', '')
     submission.admin_email = data.get('admin_email', '')
-
+    potential_mentor_cnt = data.get('potential_mentor_cnt', 0)
+    try:
+        potential_mentor_cnt = int(potential_mentor_cnt)
+        if potential_mentor_cnt < 0:
+            potential_mentor_cnt = 0
+    except ValueError:
+        potential_mentor_cnt = 0
+    submission.potential_mentor_number = potential_mentor_cnt
     mentor_emails = data.get('mentor_emails', '')
     mentor_emails_cleaned = ''.join(list(filter(
         lambda x: x not in ' \r\n',
