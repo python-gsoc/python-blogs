@@ -1,5 +1,5 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification,
-                     AddUserLog, Timeline)
+                     AddUserLog, Event)
 from .forms import UserProfileForm, UserDetailsForm, RegLinkForm
 
 from django.contrib.auth.models import User
@@ -323,41 +323,9 @@ class AddUserLogAdmin(admin.ModelAdmin):
 admin.site.register(AddUserLog, AddUserLogAdmin)
 
 
-class TimelineAdmin(admin.ModelAdmin):
-    list_display = ('gsoc_year', )
-    fieldsets = (
-        ('GSOC Year', {
-            'fields': ('gsoc_year',)
-        }),
-        ('PSF Dates', {
-            'fields': (('suborg_registration_open',
-                        'suborg_registration_close',
-                        'suborg_announcement'),)
-        }),
-        ('Google Dates', {
-            'fields': (('org_applications_open',
-                        'org_applications_close',
-                        'orgs_announcement'),
-                       ('student_application_open',
-                        'student_application_close'),
-                       ('application_review_open',
-                        'application_review_close'),
-                       ('student_project_announcement',),
-                       ('community_bonding_open',
-                        'community_bonding_close'),
-                       ('coding_open',
-                        'coding_close'),
-                       ('eval_1_open',
-                        'eval_1_close'),
-                       ('eval_2_open',
-                        'eval_2_close'),
-                       ('final_submission_open',
-                        'final_submission_close'),
-                       ('final_eval_open',
-                        'final_eval_close',
-                        'final_result_announcement'))
-        })
-    )
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'start_date', 'end_date', 'gsoc_year')
+    list_filter = ('gsoc_year', )
 
 
-admin.site.register(Timeline, TimelineAdmin)
+admin.site.register(Event, EventAdmin)
