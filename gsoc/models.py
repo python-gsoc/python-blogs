@@ -421,11 +421,11 @@ class Timeline(models.Model):
 
     eval_2_open = models.DateField(verbose_name='second evaluation starts')
     eval_2_close = models.DateField(verbose_name='second evaluation ends')
-    
+
     final_submission_open = models.DateField(verbose_name='final code submission starts')
     final_submission_close = models.DateField(verbose_name='final code submission ends')
-    
+
     final_eval_open = models.DateField(verbose_name='final evaluation starts')
     final_eval_close = models.DateField(verbose_name='final evaluation ends')
-    
+
     final_result_announcement = models.DateField(verbose_name='results announced')

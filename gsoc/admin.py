@@ -331,8 +331,8 @@ class TimelineAdmin(admin.ModelAdmin):
         }),
         ('PSF Dates', {
             'fields': (('suborg_registration_open',
-                       'suborg_registration_close',
-                       'suborg_announcement'),)
+                        'suborg_registration_close',
+                        'suborg_announcement'),)
         }),
         ('Google Dates', {
             'fields': (('org_applications_open',
