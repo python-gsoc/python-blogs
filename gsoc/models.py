@@ -390,3 +390,42 @@ class RegLink(models.Model):
 def create_send_reglink_schedulers(sender, instance, **kwargs):
     if instance.adduserlog is not None and instance.scheduler is None:
         instance.create_scheduler()
+
+
+class Timeline(models.Model):
+    gsoc_year = models.OneToOneField(GsocYear, on_delete=models.CASCADE)
+
+    suborg_registration_open = models.DateField(verbose_name='suborg applications open')
+    suborg_registration_close = models.DateField(verbose_name='suborg application deadline')
+    suborg_announcement = models.DateField(verbose_name='suborgs announced')
+
+    org_applications_open = models.DateField(verbose_name='organization applications open')
+    org_applications_close = models.DateField(verbose_name='organization application deadline')
+    orgs_announcement = models.DateField(verbose_name='organizations announced')
+
+    student_application_open = models.DateField(verbose_name='student application period starts')
+    student_application_close = models.DateField(verbose_name='student application period deadline')
+
+    application_review_open = models.DateField(verbose_name='application review period starts')
+    application_review_close = models.DateField(verbose_name='application review period starts')
+    student_project_announcement = models.DateField(verbose_name='student projects announced')
+
+    community_bonding_open = models.DateField(verbose_name='community bonding period starts')
+    community_bonding_close = models.DateField(verbose_name='community bonding period ends')
+
+    coding_open = models.DateField(verbose_name='coding starts')
+    coding_close = models.DateField(verbose_name='coding ends')
+
+    eval_1_open = models.DateField(verbose_name='first evaluation starts')
+    eval_1_close = models.DateField(verbose_name='first evaluation ends')
+
+    eval_2_open = models.DateField(verbose_name='second evaluation starts')
+    eval_2_close = models.DateField(verbose_name='second evaluation ends')
+    
+    final_submission_open = models.DateField(verbose_name='final code submission starts')
+    final_submission_close = models.DateField(verbose_name='final code submission ends')
+    
+    final_eval_open = models.DateField(verbose_name='final evaluation starts')
+    final_eval_close = models.DateField(verbose_name='final evaluation ends')
+    
+    final_result_announcement = models.DateField(verbose_name='results announced')
