@@ -4,6 +4,7 @@ from .forms import ProposalUploadForm
 from .models import RegLink, validate_proposal_text, Comment
 
 import io
+import os
 import urllib
 import json
 
@@ -177,20 +178,30 @@ def register_view(request):
 
 def new_comment(request):
     if request.method == 'POST':
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        url = 'https://www.google.com/recaptcha/api/siteverify'
-        payload = {
-            'secret': settings.RECAPTCHA_PRIVATE_KEY,
-            'response': recaptcha_response
-        }
-        data = urllib.parse.urlencode(payload).encode()
-        req = urllib.request.Request(url, data=data)
+        # set environment variable `DISABLE_RECAPTCHA` to disable recaptcha
+        # verification and delete the variable to enable recaptcha verification
+        disable_recaptcha = os.getenv('DISABLE_RECAPTCHA', None)
 
-        response = urllib.request.urlopen(req)
-        result = json.loads(response.read().decode())
+        if not disable_recaptcha:
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            url = 'https://www.google.com/recaptcha/api/siteverify'
+            payload = {
+                'secret': settings.RECAPTCHA_PRIVATE_KEY,
+                'response': recaptcha_response
+            }
+            data = urllib.parse.urlencode(payload).encode()
+            req = urllib.request.Request(url, data=data)
 
-        if (result['success'] and result['action'] == 'comment'
-                and result['score'] >= settings.RECAPTCHA_THRESHOLD):
+            response = urllib.request.urlopen(req)
+            result = json.loads(response.read().decode())
+            result['score'] = 0.1
+
+        flag = True
+        if not disable_recaptcha:
+            flag = (result['success'] and result['action'] == 'comment'
+                    and result['score'] >= settings.RECAPTCHA_THRESHOLD)
+
+        if flag:
             # if score greater than threshold allow to add
             comment = request.POST.get('comment')
             article_pk = request.POST.get('article')
