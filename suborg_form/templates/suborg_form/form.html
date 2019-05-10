@@ -9,10 +9,6 @@
     Remember to save the data before you leave!
   {% endif %}
   </h3>
-  <h3>Reference ID:(If you leave, you can continue at any time with your reference ID)</h3>
-  <div style="word-wrap: break-word;padding: 1em">
-   {{ reference_id }}
-  </div>
   <hr>
   <form class="pure-form pure-form-stacked"
         method="post"
@@ -24,7 +20,6 @@
     <input type="submit" class="pure-button pure-button-primary" name="submit_type"
            value="Finish">
     <hr>
-    <input type="hidden" name='reference_id' value="{{ reference_id }}">
       <fieldset>
       <legend>Public Profile</legend>
       <label for="organization_name">Organization Name*</label>
@@ -48,9 +43,8 @@
               {% endif %}>{{ v }}</option>
         {% endfor %}
       </select>
-      <label for="logo_img">Upload Your LOGO. Must be a 24-bit PNG, minimum height 256 pixels.</label>
+      <label for="logo_img">Upload Your LOGO. Must be a 24-bit PNG, minimum height 256 pixels.{% if submission.logo.name %}<br>(Currently {{submission.logo.name}}){% endif %}</label>
       <input id="logo_img" name="logo" type="file">
-
       <hr>
       <h4>You must complete at least one of the following three contact options: *</h4>
       <label for="chat_url">Chat<br>
@@ -88,7 +82,7 @@
       <legend>Other Details</legend>
       {% for q in text_questions %}
       <label for="question_{{ q.question.pk }}">{{ q.question.question }}
-      {% if q.optional %}(optional){% else %} * {% endif %}</label>
+      {% if q.question.optional %}(optional){% else %} * {% endif %}</label>
       <textarea id='question_{{ q.question.pk }}' name="question_{{ q.question.pk }}"
                 cols="40" rows="6" style="resize: none"
                 >{% if q.answer %}{{ q.answer }}{% endif %}</textarea>

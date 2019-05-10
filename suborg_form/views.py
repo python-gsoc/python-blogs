@@ -1,58 +1,47 @@
 from collections.abc import Sequence
 
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseForbidden
 from .models import SuborgSubmission, Mentor, SuborgContact
-
+from .forms import SuborgLogoForm
 # Create your views here.
 
 
 def index(request):
     return render(request, 'suborg_form/index.html')
 
-
+@login_required
 def form(request):
     get_data = request.GET.copy()
     post_data = request.POST.copy()
-    reference_id = get_data.get('reference_id', post_data.get('reference_id', '')).strip()
     context = {
         'msg': '',
     }
-    if reference_id:
-        submission = SuborgSubmission.objects.filter(reference_id=reference_id).first()
-        if submission is None:
-            context['msg'] += '<br>Invalid reference ID!'
-            return render(request, 'suborg_form/index.html', context)
-        context['reference_id'] = reference_id
-    else:
-        if request.method == 'POST':
-            context['msg'] += '<br>Empty reference ID!'
-            return render(request, 'suborg_form/index.html', context)
-        submission = SuborgSubmission.objects.create()
-        context['reference_id'] = submission.reference_id
+    user = request.user
+    submission = SuborgSubmission.objects.filter(user=user).first()
+    if submission is None:
+        submission = SuborgSubmission.objects.create(user=user)
     if 'submit_type' in post_data.keys():
-        context.update(handle_submit(request))
+        context.update(handle_submit(request, submission))
     else:
         context.update(submission.form_page_dict())
     return render(request, 'suborg_form/form.html', context)
 
-def handle_submit(request):
+def handle_submit(request, submission):
     context = {
         'msg': '',
     }
     files = request.FILES.copy()
-    
+
     data = request.POST.copy()
-    reference_id = data.get('reference_id', '')
-    submission = SuborgSubmission.objects. \
-        filter(reference_id=reference_id).first()
     if submission is None:
         return HttpResponseForbidden()
     is_finished = data.get('submit_type', 'Finish') == 'Finish'
     questions = [q for q in data.keys() if q.startswith('question_')]
     current_dict = submission.current_answer_dict()
-    
+
     for q in questions:
         if data[q].strip():
             try:
@@ -81,13 +70,19 @@ def handle_submit(request):
     submission.suborgcontact_set.all().delete()
     for m, c in contact_methods.items():
         SuborgContact.objects.create(method=m, link=c, suborg=submission)
-    
     submission.save()
+    logo_form = SuborgLogoForm(data, files, instance=submission)
+    if logo_form.is_valid():
+        logo_form.save()
     context.update(submission.form_page_dict())
-    
+
     if is_finished:
         try:
-            if not submission.logo:
+            try:
+                logo_path = submission.logo.path
+            except:
+                logo_path = None
+            if not submission.logo or not logo_path:
                 raise ValidationError("Logo not uploaded.")
             submission.update_questions(current_dict, validate=True)
             submission.validate()

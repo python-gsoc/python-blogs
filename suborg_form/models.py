@@ -5,14 +5,8 @@ from django.db import models
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 # Create your models here.
-
-
-def gen_reference_id():
-    s = string.ascii_lowercase + string.ascii_uppercase + string.digits
-    s = s * 100
-    return ''.join(random.sample(s, 128))
-
 
 class SuborgSubmission(models.Model):
     LICENSES = (
@@ -29,7 +23,6 @@ class SuborgSubmission(models.Model):
     )
     start_time = models.DateTimeField(auto_now_add=True)
     is_finished = models.BooleanField(default=False)
-    reference_id = models.TextField(default=gen_reference_id, editable=False)
     is_proved = models.BooleanField(default=False)
 
     name = models.TextField(null=True)
@@ -40,6 +33,8 @@ class SuborgSubmission(models.Model):
     admin_email = models.EmailField(null=True)
     is_suborg = models.BooleanField(default=True)
     logo = models.ImageField(upload_to='suborg_logos/', null=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     def contact_link(self, method):
         contact = self.suborgcontact_set.filter(method=method).first()
         if not contact:
@@ -55,7 +50,6 @@ class SuborgSubmission(models.Model):
         self.init_text_questions()
         licenses = {x[0]: x[1] for x in SuborgSubmission.LICENSES}
         return {
-            'reference_id': self.reference_id,
             'text_questions': self.suborgtextquestion_set.all(),
             'submission': self,
             'licenses': licenses,
@@ -71,7 +65,7 @@ class SuborgSubmission(models.Model):
                         self.opensource_license,
                         #self.potential_mentor_number,
                         self.admin_email,
-                        #self.logo
+                        self.logo
                         ])
         if has_vals is False:
             raise ValidationError('Fields with "*" can\'t be empty!')
