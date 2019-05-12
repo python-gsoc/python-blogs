@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification,
                      AddUserLog, Event)
-from .forms import UserProfileForm, UserDetailsForm, RegLinkForm
+from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, EventForm
 
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -326,6 +326,21 @@ admin.site.register(AddUserLog, AddUserLogAdmin)
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'start_date', 'end_date', 'gsoc_year')
     list_filter = ('gsoc_year', )
+    form = EventForm
+    fieldsets = (
+        ('Event', {
+            'fields': ('gsoc_year',
+                       'title',
+                       ('start_date', 'end_date'),
+                       ('groups', 'users'))
+        }),
+        ('Calendar', {
+            'fields': ('add_calendar_event', )
+        }),
+        ('Notifications', {
+            'fields': ('starts_from', 'frequency')
+        })
+    )
 
 
 admin.site.register(Event, EventAdmin)
