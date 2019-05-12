@@ -194,7 +194,6 @@ def new_comment(request):
 
             response = urllib.request.urlopen(req)
             result = json.loads(response.read().decode())
-            result['score'] = 0.1
 
         flag = True
         if not disable_recaptcha:
