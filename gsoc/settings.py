@@ -70,6 +70,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'gsoc', 'templates'),
             os.path.join(BASE_DIR, 'blogs_list', 'templates'),
+            os.path.join(BASE_DIR, 'suborg_application', 'templates'),
             ],
         'OPTIONS': {
             'context_processors': [
@@ -148,7 +149,8 @@ INSTALLED_APPS = (
     'taggit',
     'gsoc',
     'blogs_list',
-    'debug_toolbar',
+    'suborg_application',
+    'debug_toolbar'
 )
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
