@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 from .models import UserDetails, UserProfile, RegLink, BlogPostDueDate, Event
+=======
+from .models import UserDetails, UserProfile, RegLink, SubOrgDetails
+>>>>>>> Add model for SubOrg details
 
-from django.forms import ModelForm, Select
+from django import forms
 
 
-class UserProfileForm(ModelForm):
+class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = (
@@ -15,23 +19,23 @@ class UserProfileForm(ModelForm):
             'hidden'
             )
         widgets = {
-            'app_config': Select(),
+            'app_config': forms.Select(),
             }
 
 
-class ProposalUploadForm(ModelForm):
+class ProposalUploadForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['accepted_proposal_pdf']
 
 
-class UserDetailsForm(ModelForm):
+class UserDetailsForm(forms.ModelForm):
     class Meta:
         model = UserDetails
         fields = ('deactivation_date',)
 
 
-class RegLinkForm(ModelForm):
+class RegLinkForm(forms.ModelForm):
     class Meta:
         model = RegLink
         fields = ('email', 'user_role', 'user_suborg', 'user_gsoc_year')
@@ -47,3 +51,9 @@ class EventForm(ModelForm):
     class Meta:
         model = Event
         fields = ('title', 'start_date', 'end_date')
+
+
+class SubOrgApplicationForm(forms.ModelForm):
+    class Meta:
+        model = SubOrgDetails
+        exclude = ('gsoc_year', )
