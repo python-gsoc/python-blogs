@@ -47,3 +47,9 @@ EMAIL_PORT = 25
 #EMAIL_HOST_USER = ""
 #EMAIL_HOST_PASSWORD = ""
 REPLY_EMAIL = 'gsoc-admins@python.org'
+
+# reCAPTCHA settings
+# update the `RECAPTCHA_PUBLIC_KEY` in `/static/js/recaptcha.js` manually
+RECAPTCHA_PRIVATE_KEY = '6LdAVqIUAAAAACv_tNPudwx_pD9dbjtwvr3WwQ9Y'
+RECAPTCHA_PUBLIC_KEY = '6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj'
+RECAPTCHA_THRESHOLD = 0.5

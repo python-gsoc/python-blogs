@@ -253,6 +253,9 @@ div.problem {
     color: red;
 }
 
+.grecaptcha-badge {
+    display: none;
+}
 .center {
     display: flex;
     justify-content: center;

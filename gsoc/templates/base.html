@@ -11,12 +11,13 @@
         <!--[if gt IE 8]><!-->
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
         <!--<![endif]-->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
             crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="/static/css/python-gsoc.css">
         <link rel="stylesheet" href="/static/css/side-menu.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+        <script src='https://www.google.com/recaptcha/api.js?render=6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj'></script>
         {% load static %}
         <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
         {% block head %}{% endblock %}
@@ -85,12 +86,14 @@
                             No such user found! Please verify your credentials and enter again.
                         </div>
                     {% endif %}
-                    {% if errors %}
-                        {% for e in errors %}
-                            <div class="notification-box">
-                                {{ e }}
-                            </div>
-                        {% endfor %}
+                    {% if not request.user.is_authenticated %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="notification-box">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     {% endif %}
                     {% if request.current_page.publisher_is_draft %}
                         {% for notification in request.current_page.notifications.all %}
@@ -114,5 +117,7 @@
         {% render_block 'js' %}
         <script src="/static/js/menu.js"></script>
         <script src="/static/js/gsoc.js"></script>
+        <!-- <script src="/static/js/recaptcha.js"></script> -->
+        {% block js %}{% endblock %}
     </body>
 </html>

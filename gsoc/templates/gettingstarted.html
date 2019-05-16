@@ -121,3 +121,11 @@ Getting Started
    </div>
 <!-- getting started -->
 {% endblock %}
+
+{% block js %}
+<script>
+	grecaptcha.ready(function() {
+		grecaptcha.execute('6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj', {action: 'gettingstarted'});
+	});
+</script>
+{% endblock %}

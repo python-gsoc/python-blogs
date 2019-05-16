@@ -15,3 +15,5 @@ logs/*
 # Pyenv
 .python-version
 
+# Vscode
+.vscode

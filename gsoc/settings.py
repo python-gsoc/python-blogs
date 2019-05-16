@@ -150,7 +150,7 @@ INSTALLED_APPS = (
     'taggit',
     'gsoc',
     'blogs_list',
-    'debug_toolbar'
+    'debug_toolbar',
 )
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',

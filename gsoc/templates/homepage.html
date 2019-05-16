@@ -86,3 +86,11 @@ Splash
 		</div>
 	</div>
 {% endblock %}
+
+{% block js %}
+<script>
+	grecaptcha.ready(function() {
+		grecaptcha.execute('6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj', {action: 'homepage'});
+	});
+</script>
+{% endblock %}
