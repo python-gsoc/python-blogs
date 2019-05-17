@@ -243,7 +243,7 @@ LOGIN_REDIRECT_URL = '/after-login/'
 LOGGING_CONFIG = None
 
 if DEBUG:
-    ERROR_LEVEL = 'DEBUG'
+    ERROR_LEVEL = 'INFO'
 else:
     ERROR_LEVEL = 'WARNING'
 
