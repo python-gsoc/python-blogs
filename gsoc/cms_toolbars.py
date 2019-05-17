@@ -85,7 +85,7 @@ def add_goto_blog_button(self):
     user = getattr(self.request, 'user', None)
     if user and user.is_current_year_student():
         profile = user.student_profile()
-        ns = profile.app_config.app_title
+        ns = profile.app_config.namespace
         page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
         url = page.get_absolute_url()
         self.toolbar.add_button(_('My Blog'), url, side=self.toolbar.RIGHT)

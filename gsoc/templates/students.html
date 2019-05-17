@@ -274,7 +274,7 @@ feedback.</div> -->
 {% block js %}
 <script>
 	grecaptcha.ready(function() {
-		grecaptcha.execute('6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj', {action: 'students'});
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'students'});
 	});
 </script>
 {% endblock %}

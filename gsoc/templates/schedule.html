@@ -51,7 +51,7 @@ Schedule
 {% block js %}
 <script>
 	grecaptcha.ready(function() {
-		grecaptcha.execute('6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj', {action: 'schedule'});
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'schedule'});
 	});
 </script>
 {% endblock %}
