@@ -253,9 +253,12 @@ admin.site.register(RegLink, RegLinkAdmin)
 
 
 class SchedulerAdmin(admin.ModelAdmin):
-    list_display = ('command', 'data', 'success', 'last_error', 'created')
+    list_display = ('command', 'get_short_data', 'success', 'last_error', 'created')
     list_filter = ('command', 'success')
     sortable_by = ('created', 'last_error')
+
+    def get_short_data(self, obj):
+        return '{}...'.format(obj.data[:50])
 
 
 admin.site.register(Scheduler, SchedulerAdmin)
