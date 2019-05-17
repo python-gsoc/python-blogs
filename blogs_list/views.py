@@ -29,8 +29,8 @@ def list_blogs(request):
                 page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
-                proposal_name = profile.accepted_proposal_pdf.name
-                proposal_path = os.path.join(MEDIA_URL, proposal_name)
+                proposal_name = profile.accepted_proposal_pdf.name if profile.proposal_confirmed else None
+                proposal_path = os.path.join(MEDIA_URL, proposal_name) if proposal_name else None
 
                 blogset.append({
                     'title': profile.app_config.app_title,

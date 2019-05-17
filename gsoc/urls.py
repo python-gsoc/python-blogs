@@ -54,6 +54,7 @@ urlpatterns += [
     url('after-login/', gsoc.views.after_login_view, name='after-login'),
     url('upload-proposal/', gsoc.views.upload_proposal_view, name='upload-proposal'),
     url('cancel_proposal_upload/', gsoc.views.cancel_proposal_upload_view, name='cancel-proposal-upload'),
+    url('confirm_proposal/', gsoc.views.confirm_proposal_view, name='confirm-proposal'),
 ]
 
 # Add comment routes

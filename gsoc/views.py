@@ -93,10 +93,11 @@ def upload_proposal_view(request):
             profile = request.user.student_profile()
             form = ProposalUploadForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
-                form.save()
+                print("Scanning file for private data")
                 scan_result = scan_proposal(file)
                 if scan_result:
                     resp['private_data'] = scan_result.message_dict
+                form.save()
     return JsonResponse(resp)
 
 
@@ -105,6 +106,15 @@ def upload_proposal_view(request):
 def cancel_proposal_upload_view(request):
     profile = request.user.student_profile()
     profile.accepted_proposal_pdf.delete()
+    return shortcuts.HttpResponse()
+
+
+@decorators.login_required
+@decorators.user_passes_test(is_user_accepted_student)
+def confirm_proposal_view(request):
+    profile = request.user.student_profile()
+    if profile.accepted_proposal_pdf:
+        profile.confirm_proposal()
     return shortcuts.HttpResponse()
 
 

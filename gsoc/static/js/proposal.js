@@ -72,6 +72,7 @@ function showInfoBoxBtns(callback1, callback2) {
 }
 function onFindPrivateData(text) {
   const successCallback = function() {
+    axios.get('/confirm_proposal');
     inPageInfo("Upload succeeded! Please refresh to get rid of the GIANT banner!",false);
     setProposalUploadingStatus(false);
   };

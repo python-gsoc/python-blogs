@@ -68,6 +68,7 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True, upload_to=PROPOSALS_PATH)
+    proposal_confirmed = models.BooleanField(default=False)
     app_config = AppHookConfigField(NewsBlogConfig,
                                     verbose_name=_('Section'),
                                     blank=True, null=True,)
@@ -76,10 +77,14 @@ class UserProfile(models.Model):
     objects = UserProfileManager()
     all_objects = models.Manager()
 
+    def confirm_proposal(self):
+        self.proposal_confirmed = True
+        self.save()
+
 
 def has_proposal(self):
     try:
-        if self.userprofile_set.get(role=3).accepted_proposal_pdf.path:
+        if self.userprofile_set.get(role=3).proposal_confirmed:
             return True
 
     except BaseException:
