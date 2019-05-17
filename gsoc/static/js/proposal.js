@@ -112,6 +112,7 @@ function uploadProposal() {
         onFindPrivateData(confirmText);
         return
       }
+      axios.get('/confirm_proposal');
       setProposalUploadingStatus(false);
       inPageInfo('Proposal upload succeeded! Please refresh to get rid of the GIANT banner!', false);
     })
