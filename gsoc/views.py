@@ -93,11 +93,10 @@ def upload_proposal_view(request):
             profile = request.user.student_profile()
             form = ProposalUploadForm(request.POST, request.FILES, instance=profile)
             if form.is_valid():
-                print("Scanning file for private data")
+                form.save()
                 scan_result = scan_proposal(file)
                 if scan_result:
                     resp['private_data'] = scan_result.message_dict
-                form.save()
     return JsonResponse(resp)
 
 
