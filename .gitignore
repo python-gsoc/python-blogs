@@ -11,6 +11,7 @@ logs/*
 
 # Project root static folder
 /static/
+/media/proposals/
 
 # Pyenv
 .python-version
