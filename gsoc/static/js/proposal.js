@@ -50,7 +50,7 @@ function beforeUpload() {
   const offlineCancel = function(){
     inPageInfo("Proposal upload canceled.")
     };
-  const infoText = 'Please make sure there is no private data in your pdf file. Confirm?'
+  const infoText = 'Please make sure there is no private data in your pdf file as this WILL be shown publically on the internet. Confirm?'
   inPageInfo(infoText, false);
   showInfoBoxBtns(uploadProposal, offlineCancel)
 }
