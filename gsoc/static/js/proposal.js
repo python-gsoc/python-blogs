@@ -101,7 +101,7 @@ function uploadProposal() {
       if(privateData["emails"].length > 0 ||
       privateData["possible_phone_numbers"].length > 0 ||
       privateData["locations"].length > 0) {
-        let confirmText = "We seemed to have found private data in your pdf file. WE DO NOT RECOMEND UPLOADING A PDF WITH PHONE NUMBERS OR EMAIL ADDRESSE'S AS THIS WILL BE SHOWN PUBLICALLY ON THE INTERNET. Are you sure to proceed?";
+        let confirmText = "We seemed to have found private data in your pdf file. WE DO NOT RECOMEND UPLOADING A PDF WITH PHONE NUMBERS, PHYSICAL ADDRESS, OR EMAIL ADDRESSES AS THIS WILL BE SHOWN PUBLICALLY ON THE INTERNET. Are you sure to proceed?";
         if (privateData['emails'].length > 0)
         confirmText += `<br> Email addresses: ${privateData['emails'].toString()}`
         if(privateData['possible_phone_numbers'].length > 0)
