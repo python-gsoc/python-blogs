@@ -114,9 +114,17 @@ auth.models.User.add_to_class('has_proposal', has_proposal)
 auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
 auth.models.User.add_to_class('student_profile', student_profile)
 
+
+@receiver(models.signals.post_delete, sender=UserProfile)
+def delete_blog(sender, instance, **kwargs):
+    """
+    Deletes the blog of the deleted user if a student
+    """
+    if instance.app_config:
+        instance.app_config.delete()
+
+
 # Auto Delete Redundant Proposal
-
-
 @receiver(models.signals.post_delete, sender=UserProfile)
 def auto_delete_proposal_on_delete(sender, instance, **kwargs):
     """
