@@ -125,7 +125,7 @@ Getting Started
 {% block js %}
 <script>
 	grecaptcha.ready(function() {
-		grecaptcha.execute('6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj', {action: 'gettingstarted'});
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'gettingstarted'});
 	});
 </script>
 {% endblock %}

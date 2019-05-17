@@ -85,7 +85,7 @@ My Profile
 {% block js %}
 <script>
 	grecaptcha.ready(function() {
-		grecaptcha.execute('6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj', {action: 'myprofile'});
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'myprofile'});
 	});
 </script>
 {% endblock %}

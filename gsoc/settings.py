@@ -83,7 +83,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'sekizai.context_processors.sekizai',
                 'django.template.context_processors.static',
-                'cms.context_processors.cms_settings'
+                'cms.context_processors.cms_settings',
+                'gsoc.context_processors.recaptcha_site_key',
                 ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',

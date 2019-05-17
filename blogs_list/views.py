@@ -26,8 +26,7 @@ def list_blogs(request):
             if profile.app_config:
                 flag = True
                 ns = profile.app_config.namespace
-                page = Page.objects.filter(application_namespace=ns)
-                page = page.filter(publisher_is_draft=False).first()
+                page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
                 proposal_name = profile.accepted_proposal_pdf.name
