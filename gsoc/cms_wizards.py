@@ -73,7 +73,7 @@ def save(self, commit=True):
 
     # If 'content' field has value, create a TextPlugin with same and add it to the PlaceholderField
     content = clean_html(self.cleaned_data.get('content', ''), False)
-    if content and permissions.has_plugin_permission(self.user, 'TextPlugin', 'add'):
+    if content:
         add_plugin(
             placeholder=article.content,
             plugin_type='TextPlugin',
