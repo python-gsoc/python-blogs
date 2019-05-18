@@ -67,7 +67,7 @@ def article_get_form():
                 #   'fields':()}),
                 (_('Advanced Settings'),
                     {'classes': ('collapse',),
-                    'fields': ('app_config',)}),
+                     'fields': ('app_config',)}),
                 )
             self.readonly_fields = (
                 'author',

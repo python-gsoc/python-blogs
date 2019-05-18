@@ -140,7 +140,7 @@ def populate(self):
             'aldryn_newsblog.add_newsblogconfig')
         config_perms = [change_config_perm, add_config_perm]
 
-        change_article_perm = False        
+        change_article_perm = False
         userprofiles = user.userprofile_set.all()
 
         if user.is_superuser:

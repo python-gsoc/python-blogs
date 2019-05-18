@@ -53,7 +53,7 @@ class BlogsFeed(Feed):
 
     def item_title(self, item):
         return item.title
-    
+
     def item_description(self, item):
         request = get_request()
         c = ContentRenderer(request)
