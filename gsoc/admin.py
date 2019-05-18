@@ -50,7 +50,7 @@ def article_get_form():
             ori_fieldsets = getattr(self, 'fieldsets', ()) or ()
         self.readonly_fields = ori_readonly_fields
         self.fieldsets = ori_fieldsets
-        self.actions = None
+        # self.actions = None
         form = ori_get_form(self, request, obj, **kwargs)
         if is_request_by_student:
             self.fieldsets = (
@@ -67,7 +67,7 @@ def article_get_form():
                 #   'fields':()}),
                 (_('Advanced Settings'),
                     {'classes': ('collapse',),
-                    'fields': ('app_config',)}),
+                     'fields': ('app_config',)}),
                 )
             self.readonly_fields = (
                 'author',
@@ -80,7 +80,7 @@ def article_get_form():
                 'meta_keywords',
                 'owner',
                 )
-            return form
+        return form
     return return_func
 
 
@@ -206,7 +206,7 @@ def has_add_permission(self, request, obj=None):
 ArticleAdmin.save_model = Article_save_model
 ArticleAdmin.delete_model = Article_delete_model
 ArticleAdmin.get_queryset = Article_get_queryset
-ArticleAdmin.get_form = article_get_form()
+# ArticleAdmin.get_form = article_get_form()
 ArticleAdmin.add_view = Article_add_view
 ArticleAdmin.change_view = Article_change_view
 ArticleAdmin.has_add_permission = has_add_permission
