@@ -42,6 +42,8 @@
     {% if not detail_view %}
         <div class="lead">
             {% render_model article "lead_in" "" "" "truncatewords_html:'20'" %}
+            {% render_placeholder article.content language placeholder_language as content %}
+            {{ content|truncatewords_html:20 }}
         </div>
         <a href="{% namespace_url 'article-detail' article.slug namespace=namespace default='' %}">Read More ...</a>
     {% endif %}
