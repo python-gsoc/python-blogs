@@ -40,21 +40,26 @@ def add_admin_menu(self):
                 sites_menu.add_link_item(site.name, url='http://%s' % site.domain,
                                          active=site.pk == self.current_site.pk)
 
+        user = getattr(self.request, 'user', None)
+
         # admin
         self._admin_menu.add_sideframe_item(_('Administration'), url=admin_reverse('index'))
 
         # scheduler
-        self._admin_menu.add_sideframe_item(_('Schedulers'), url=admin_reverse('gsoc_scheduler_changelist'))
+        if user and user.is_superuser:
+            self._admin_menu.add_sideframe_item(_('Schedulers'),
+                                                url=admin_reverse('gsoc_scheduler_changelist'))
         self._admin_menu.add_break(ADMINISTRATION_BREAK)
 
         # cms users settings
         self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
-        self._admin_menu.add_modal_item(
-            name='Add Users',
-            url=admin_reverse('gsoc_adduserlog_add'),
-            on_close=None,
-            )
+        if user and user.is_superuser:
+            self._admin_menu.add_modal_item(
+                name='Add Users',
+                url=admin_reverse('gsoc_adduserlog_add'),
+                on_close=None,
+                )
         # clipboard
         if self.toolbar.edit_mode_active:
             # True if the clipboard exists and there's plugins in it.
