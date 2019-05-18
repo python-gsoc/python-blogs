@@ -140,15 +140,18 @@ def populate(self):
             'aldryn_newsblog.add_newsblogconfig')
         config_perms = [change_config_perm, add_config_perm]
 
-        add_article_perm = False
-        change_article_perm = False
+        change_article_perm = False        
         userprofiles = user.userprofile_set.all()
-        for profile in userprofiles:
-            if profile.app_config == config:
-                add_article_perm = True
-                change_article_perm = True
-                break
 
+        if user.is_superuser:
+            change_article_perm = True
+        else:
+            for profile in userprofiles:
+                if profile.app_config == config:
+                    change_article_perm = True
+                    break
+
+        add_article_perm = user.is_superuser if article else False
         delete_article_perm = user.is_superuser if article else False
 
         article_perms = [change_article_perm, add_article_perm,
@@ -173,12 +176,12 @@ def populate(self):
                                 **url_args)
             menu.add_sideframe_item(_('Article list'), url=url)
 
-        if add_article_perm:
-            url_args = {'app_config': config.pk, 'owner': user.pk, }
-            if language:
-                url_args.update({'language': language, })
-            url = get_admin_url('aldryn_newsblog_article_add', **url_args)
-            menu.add_modal_item(_('Add new article'), url=url)
+        # if add_article_perm:
+        #     url_args = {'app_config': config.pk, 'owner': user.pk, }
+        #     if language:
+        #         url_args.update({'language': language, })
+        #     url = get_admin_url('aldryn_newsblog_article_add', **url_args)
+        #     menu.add_modal_item(_('Add new article'), url=url)
 
         if change_article_perm and article:
             url_args = {}

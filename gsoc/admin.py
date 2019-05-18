@@ -50,6 +50,7 @@ def article_get_form():
             ori_fieldsets = getattr(self, 'fieldsets', ()) or ()
         self.readonly_fields = ori_readonly_fields
         self.fieldsets = ori_fieldsets
+        self.actions = None
         form = ori_get_form(self, request, obj, **kwargs)
         if is_request_by_student:
             self.fieldsets = (
@@ -60,14 +61,13 @@ def article_get_form():
                         'is_published',
                         'is_featured',
                         'featured_image',
-                        'lead_in',
                         )}),
                 # (_('Meta Options'),
                 #  {'classes': ('collapse',),
                 #   'fields':()}),
                 (_('Advanced Settings'),
-                 {'classes': ('collapse',),
-                  'fields': ('app_config',)}),
+                    {'classes': ('collapse',),
+                    'fields': ('app_config',)}),
                 )
             self.readonly_fields = (
                 'author',
@@ -80,7 +80,7 @@ def article_get_form():
                 'meta_keywords',
                 'owner',
                 )
-        return form
+            return form
     return return_func
 
 
@@ -200,12 +200,16 @@ def Article_get_queryset(self, request):
     return qs
 
 
+def has_add_permission(self, request, obj=None):
+    return False
+
 ArticleAdmin.save_model = Article_save_model
 ArticleAdmin.delete_model = Article_delete_model
 ArticleAdmin.get_queryset = Article_get_queryset
 ArticleAdmin.get_form = article_get_form()
 ArticleAdmin.add_view = Article_add_view
 ArticleAdmin.change_view = Article_change_view
+ArticleAdmin.has_add_permission = has_add_permission
 
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
