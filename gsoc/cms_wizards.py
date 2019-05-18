@@ -8,6 +8,8 @@ from cms.utils import permissions
 
 from djangocms_text_ckeditor.html import clean_html
 
+from aldryn_newsblog.models import Article
+
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.cms_wizards import (
     NewsBlogArticleWizard,
@@ -69,6 +71,7 @@ def save(self, commit=True):
     article = super(CreateNewsBlogArticleForm, self).save(commit=False)
     article.owner = self.user
     article.app_config = NewsBlogConfig.objects.filter(pk=self.cleaned_data['app_config']).first()
+    article.is_published = True
     article.save()
 
     # If 'content' field has value, create a TextPlugin with same and add it to the PlaceholderField
