@@ -7,6 +7,7 @@ import io
 import os
 import urllib
 import json
+import uuid
 
 from django.contrib import messages
 from django.contrib.auth import decorators, password_validation, validators
@@ -49,6 +50,9 @@ def convert_pdf_to_txt(f):
 def is_user_accepted_student(user):
     return user.is_current_year_student()
 
+def is_superuser(user):
+    return user.is_superuser
+
 
 def scan_proposal(file):
     """
@@ -87,6 +91,10 @@ def upload_proposal_view(request):
         }
     if request.method == 'POST':
         file = request.FILES.get('accepted_proposal_pdf')
+        resp['file_type_valid'] = file and file.name.endswith('.pdf')
+        if len(file.name) > 100 and resp['file_type_valid']:
+            file.name = str(uuid.uuid4()) + '.pdf'
+            print(file.name)
         resp['file_type_valid'] = file and file.name.endswith('.pdf')
         resp['file_not_too_large'] = file.size < 20 * 1024 * 1024
         if resp['file_type_valid'] and resp['file_not_too_large']:
