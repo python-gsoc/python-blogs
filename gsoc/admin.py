@@ -257,11 +257,11 @@ admin.site.register(RegLink, RegLinkAdmin)
 
 
 class SchedulerAdmin(admin.ModelAdmin):
-    list_display = ('command', 'get_short_data', 'success', 'last_error', 'created')
+    list_display = ('command', 'short_data', 'success', 'last_error', 'created')
     list_filter = ('command', 'success')
     sortable_by = ('created', 'last_error')
 
-    def get_short_data(self, obj):
+    def short_data(self, obj):
         return '{}...'.format(obj.data[:50])
 
 
@@ -324,8 +324,13 @@ class RegLinkInline(admin.TabularInline):
 
 
 class AddUserLogAdmin(admin.ModelAdmin):
+    list_display = ('log_id', 'used_stat')
     readonly_fields = ('log_id', )
     inlines = (RegLinkInline, )
 
+    def used_stat(self, obj):
+        _all = len(RegLink.objects.filter(adduserlog=obj))
+        _used = len(RegLink.objects.filter(adduserlog=obj, is_used=True))
+        return '{}/{}'.format(_used, _all)
 
 admin.site.register(AddUserLog, AddUserLogAdmin)

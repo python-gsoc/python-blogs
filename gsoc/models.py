@@ -290,9 +290,9 @@ def gen_uuid_str():
 
 class AddUserLog(models.Model):
     class Meta:
-        verbose_name = 'Add Users' \
+        verbose_name = 'Add Users ' \
                        '(The invites will be sent to the emails on save)'
-        verbose_name_plural = 'Add Users' \
+        verbose_name_plural = 'Add Users ' \
                               '(The invites will be sent to the emails on save)'
     log_id = models.CharField(max_length=36,
                               default=gen_uuid_str)
