@@ -50,6 +50,7 @@ def convert_pdf_to_txt(f):
 def is_user_accepted_student(user):
     return user.is_current_year_student()
 
+
 def is_superuser(user):
     return user.is_superuser
 
@@ -264,11 +265,11 @@ def delete_comment(request):
     if request.method == 'POST':
         pk = request.POST.get('comment_pk')
         redirect_path = request.POST.get('redirect')
-        
+
         if pk:
             comment = Comment.objects.get(pk=pk)
             comment.delete()
-        
+
         if redirect_path:
             return redirect(redirect_path)
         else:
