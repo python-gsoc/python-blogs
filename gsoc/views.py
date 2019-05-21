@@ -257,3 +257,19 @@ def new_comment(request):
             return redirect(redirect_path)
         else:
             return redirect('/')
+
+
+@decorators.user_passes_test(is_superuser)
+def delete_comment(request):
+    if request.method == 'POST':
+        pk = request.POST.get('comment_pk')
+        redirect_path = request.POST.get('redirect')
+        
+        if pk:
+            comment = Comment.objects.get(pk=pk)
+            comment.delete()
+        
+        if redirect_path:
+            return redirect(redirect_path)
+        else:
+            return redirect('/')
