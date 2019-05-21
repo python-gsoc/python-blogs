@@ -42,6 +42,7 @@ def list_blogs(request):
                     })
 
         if flag:
+            blogset = sorted(blogset, key=lambda i: (i['title']))
             blogsets.append((year.gsoc_year, blogset))
 
     if not blogsets:

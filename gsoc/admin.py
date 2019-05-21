@@ -234,7 +234,7 @@ class RegLinkAdmin(admin.ModelAdmin):
         'adduserlog',
         'has_scheduler'
         )
-    list_display = ('reglink_id', 'url', 'is_used', 'is_sent', 'created_at')
+    list_display = ('reglink_id', 'email', 'is_used', 'is_sent', 'created_at')
     list_filter = [
         'is_used',
         'created_at',
