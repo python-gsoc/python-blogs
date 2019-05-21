@@ -269,7 +269,7 @@ admin.site.register(Scheduler, SchedulerAdmin)
 
 
 class HiddenUserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'gsoc_year', 'suborg_full_name', 'hidden')
+    list_display = ('user', 'gsoc_year', 'suborg_full_name', 'proposal_confirmed', 'hidden')
     list_filter = ('hidden', )
     readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config',
                        'proposal_confirmed')
