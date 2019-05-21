@@ -20,6 +20,20 @@
                 <i class="fa fa-share"></i>
                 <span onclick="copyCommentUrl({{ comment.pk }})" id="share-{{ comment.pk }}">Share</span>
             </span>
+            {% if user.is_superuser %}
+                <span class="delete">
+                    <form method="POST" action="{% url 'delete_comment' %}" id="delete-form-{{ comment.pk }}">
+                        {% csrf_token %}
+                        <input type=hidden name="comment_pk" value="{{ comment.pk }}" />
+                        <input type="hidden" name="redirect" id="del-redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" value="" />
+                        <script>
+                            document.getElementById('del-redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}').value = window.location.pathname;
+                        </script>
+                    </form>
+                    <i class="fa fa-trash"></i>
+                    <span onclick="deleteComment({{ comment.pk }})" id="delete-{{ comment.pk }}">Delete</span>
+                </span>
+            {% endif %}
         </div>
     </div>
     <div class="aldryn-newsblog-subcomments">

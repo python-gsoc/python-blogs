@@ -60,4 +60,5 @@ urlpatterns += [
 # Add comment routes
 urlpatterns += [
     url('comment/new/', gsoc.views.new_comment, name='new_comment'),
+    url('comment/delete/', gsoc.views.delete_comment, name='delete_comment')
 ]

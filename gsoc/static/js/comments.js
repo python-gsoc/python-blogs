@@ -27,6 +27,19 @@ function copyCommentUrl(commentPk) {
     })
 }
 
+function deleteComment(commentPk) {
+    var del = document.getElementById(`delete-${commentPk}`);
+    if (del.innerHTML == 'Delete') {
+        del.innerHTML = 'Confirm Delete?';
+        sleep(3000).then(() => {
+            del.innerHTML = 'Delete';
+        })
+    }
+    else if (del.innerHTML == 'Confirm Delete?') {
+        document.getElementById(`delete-form-${commentPk}`).submit();
+    }
+}
+
 (function markSelected() {
     var parts = window.location.href.split('#')
     if (parts.length == 2 && parts[1].split('-')[0] == 'comment') {

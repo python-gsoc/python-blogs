@@ -48,6 +48,10 @@
     cursor: pointer;
 }
 
+.comment-container .c-actions .delete {
+    cursor: pointer;
+}
+
 .comment-container .c-content {
     font-size: 14px;
 }
