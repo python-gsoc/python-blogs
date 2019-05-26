@@ -98,4 +98,4 @@ def send_reg_reminder(scheduler: Scheduler):
     if reglink.is_usable():
         return send_email(scheduler)
     else:
-        return None
+        return "link already used"
