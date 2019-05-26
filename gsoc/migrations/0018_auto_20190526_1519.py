@@ -14,8 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name='adduserlog',
             options={'verbose_name': 'Add Users (The invites will be sent to the emails on save)',
-                     'verbose_name_plural': 'Add Users (The invites will be sent to\
-                                             the emails on save)'},
+                     'verbose_name_plural': 'Add Users (The invites will be sent to the emails on save)'},
         ),
         migrations.AddField(
             model_name='reglink',

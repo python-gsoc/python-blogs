@@ -215,10 +215,16 @@ admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
 
 
+def send_reminder(self, request, queryset):
+    for reglink in queryset:
+        reglink.create_reminder(trigger_time=timezone.now())
+
+send_reminder.short_description = 'Send reminders'
+
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('url', 'is_sent',
-                           'adduserlog', 'has_scheduler')}),
+                           'adduserlog', 'has_scheduler', 'has_reminder')}),
         ("Configure user to be registered",
             {'fields': (
                 "user_role",
@@ -232,13 +238,15 @@ class RegLinkAdmin(admin.ModelAdmin):
         'adduserlog',
         'is_sent',
         'adduserlog',
-        'has_scheduler'
+        'has_scheduler',
+        'has_reminder'
         )
-    list_display = ('reglink_id', 'email', 'is_used', 'is_sent', 'created_at')
+    list_display = ('reglink_id', 'email', 'is_used', 'is_sent', 'has_reminder', 'created_at')
     list_filter = [
         'is_used',
         'created_at',
         ]
+    actions = [send_reminder]
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = self.readonly_fields

@@ -4,7 +4,7 @@ import datetime
 import uuid
 
 from django.contrib.auth.models import Permission
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -327,6 +327,10 @@ class RegLink(models.Model):
         return self.scheduler is not None
 
     @property
+    def has_reminder(self):
+        return self.reminder is not None
+
+    @property
     def url(self):
         return f'{reverse("register")}?reglink_id={self.reglink_id}'
 
@@ -401,22 +405,32 @@ class RegLink(models.Model):
                                      data=scheduler_data)
         self.scheduler = s
         self.save()
+        
 
-    def create_reminder(self, trigger_time=timezone.now()):
-        validate_email(self.email)
-        scheduler_data = build_send_reminder_json(self.email,
-                                                  self.pk,
-                                                  template='registration_reminder.html',
-                                                  subject='Reminder for registration',
-                                                  template_data={
-                                                      'register_link':
-                                                          settings.INETLOCATION +
-                                                          self.url})
-        s = Scheduler.objects.create(command='send_reg_reminder',
-                                     activation_date=trigger_time + datetime.timedelta(days=3),
-                                     data=scheduler_data)
-        self.reminder = s
-        self.save()
+    def create_reminder(self, trigger_time=None):
+        if self.has_scheduler:
+            validate_email(self.email)
+            scheduler_data = build_send_reminder_json(self.email,
+                                                    self.pk,
+                                                    template='registration_reminder.html',
+                                                    subject='Reminder for registration',
+                                                    template_data={
+                                                        'register_link':
+                                                            settings.INETLOCATION +
+                                                            self.url})
+            
+            if not trigger_time:
+                activation_date = self.scheduler.activation_date + datetime.timedelta(days=3)
+            else:
+                activation_date = trigger_time
+
+            s = Scheduler.objects.create(command='send_reg_reminder',
+                                        activation_date=activation_date,
+                                        data=scheduler_data)
+            self.reminder = s
+            self.save()
+        else:
+            self.create_scheduler()
 
 
 @receiver(models.signals.post_save, sender=RegLink)
