@@ -405,28 +405,27 @@ class RegLink(models.Model):
                                      data=scheduler_data)
         self.scheduler = s
         self.save()
-        
 
     def create_reminder(self, trigger_time=None):
         if self.has_scheduler:
             validate_email(self.email)
             scheduler_data = build_send_reminder_json(self.email,
-                                                    self.pk,
-                                                    template='registration_reminder.html',
-                                                    subject='Reminder for registration',
-                                                    template_data={
-                                                        'register_link':
-                                                            settings.INETLOCATION +
-                                                            self.url})
-            
+                                                      self.pk,
+                                                      template='registration_reminder.html',
+                                                      subject='Reminder for registration',
+                                                      template_data={
+                                                          'register_link':
+                                                              settings.INETLOCATION +
+                                                              self.url})
+
             if not trigger_time:
                 activation_date = self.scheduler.activation_date + datetime.timedelta(days=3)
             else:
                 activation_date = trigger_time
 
             s = Scheduler.objects.create(command='send_reg_reminder',
-                                        activation_date=activation_date,
-                                        data=scheduler_data)
+                                         activation_date=activation_date,
+                                         data=scheduler_data)
             self.reminder = s
             self.save()
         else:

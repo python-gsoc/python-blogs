@@ -219,7 +219,9 @@ def send_reminder(self, request, queryset):
     for reglink in queryset:
         reglink.create_reminder(trigger_time=timezone.now())
 
+
 send_reminder.short_description = 'Send reminders'
+
 
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
