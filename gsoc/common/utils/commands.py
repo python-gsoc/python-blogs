@@ -7,7 +7,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
 from django.template import Template
-from gsoc.models import Scheduler
+from gsoc.models import Scheduler, RegLink
 
 from django.contrib.auth.models import User
 from .irc import send_message
@@ -90,3 +90,12 @@ def send_irc_msgs(schedulers):
         s.success = True
         s.save()
     return None
+
+
+def send_reg_reminder(scheduler: Scheduler):
+    data = json.loads(scheduler.data)
+    reglink = RegLink.objects.get(pk=data['object_pk'])
+    if reglink.is_usable():
+        return send_email(scheduler)
+    else:
+        return None

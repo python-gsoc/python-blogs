@@ -28,7 +28,7 @@ from cms.utils.apphook_reload import mark_urlconf_as_changed
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
-from gsoc.common.utils.tools import build_send_mail_json
+from gsoc.common.utils.tools import build_send_mail_json, build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH
 
 NewsBlogConfig.__str__ = lambda self: self.app_title
@@ -180,6 +180,7 @@ class Scheduler(models.Model):
         ('send_email', 'send_email'),
         ('send_irc_msg', 'send_irc_msg'),
         ('deactivate_user', 'deactivate_user'),
+        ('send_reg_reminder', 'send_reg_reminder')
         )
 
     id = models.AutoField(primary_key=True)
@@ -318,6 +319,8 @@ class RegLink(models.Model):
                              default='', max_length=300, validators=[validate_email])
     scheduler = models.ForeignKey(Scheduler, null=True,
                                   blank=True, on_delete=models.CASCADE, editable=False)
+    reminder = models.ForeignKey(Scheduler, null=True, related_name='reglinks',
+                                 blank=True, on_delete=models.CASCADE, editable=False)
 
     @property
     def has_scheduler(self):
@@ -399,11 +402,33 @@ class RegLink(models.Model):
         self.scheduler = s
         self.save()
 
+    def create_reminder(self, trigger_time=timezone.now()):
+        validate_email(self.email)
+        scheduler_data = build_send_reminder_json(self.email,
+                                                  self.pk,
+                                                  template='registration_reminder.html',
+                                                  subject='Reminder for registration',
+                                                  template_data={
+                                                      'register_link':
+                                                          settings.INETLOCATION +
+                                                          self.url})
+        s = Scheduler.objects.create(command='send_reg_reminder',
+                                     activation_date=trigger_time + datetime.timedelta(days=3),
+                                     data=scheduler_data)
+        self.reminder = s
+        self.save()
+
 
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reglink_schedulers(sender, instance, **kwargs):
     if instance.adduserlog is not None and instance.scheduler is None:
         instance.create_scheduler()
+
+
+@receiver(models.signals.post_save, sender=RegLink)
+def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
+    if instance.adduserlog is not None and instance.reminder is None:
+        instance.create_reminder()
 
 
 class Comment(models.Model):
