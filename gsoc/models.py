@@ -75,6 +75,8 @@ class UserProfile(models.Model):
                                     verbose_name=_('Section'),
                                     blank=True, null=True,)
     hidden = models.BooleanField(name='hidden', default=False)
+    reminder_disabled = models.BooleanField(default=False)
+    current_blog_count = models.IntegerField(default=0)
 
     objects = UserProfileManager()
     all_objects = models.Manager()
@@ -182,7 +184,10 @@ class Scheduler(models.Model):
         ('send_email', 'send_email'),
         ('send_irc_msg', 'send_irc_msg'),
         ('deactivate_user', 'deactivate_user'),
-        ('send_reg_reminder', 'send_reg_reminder')
+        ('send_reg_reminder', 'send_reg_reminder'),
+        ('add_blog_counter', 'add_blog_counter'),
+        ('check_blog_counter', 'check_blog_counter'),
+        ('send_due_reminder', 'send_due_reminder'),
         )
 
     id = models.AutoField(primary_key=True)
@@ -195,6 +200,49 @@ class Scheduler(models.Model):
 
     def __str__(self):
         return self.command
+
+
+class BlogPostDueDate(models.Model):
+    title = models.CharField(max_length=255)
+    date = models.DateTimeField()
+    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
+    add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
+                                              blank=True, related_name='dd_counters')
+    post_due_first_reminder = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
+                                                blank=True, related_name='dd_first_rem')
+    post_due_final_reminder = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
+                                                blank=True, related_name='dd_final_rem')
+
+    def save(self, *args, **kwargs):
+        if not self.gsoc_year:
+            self.gsoc_year = GsocYear.objects.get(gsoc_year=self.date.year)
+        super(UserDetails, self).save(*args, **kwargs)
+
+    def create_schedulers(self):
+        if not self.add_counter_scheduler:
+            s = Scheduler.objects.create(type='add_blog_counter',
+                                        activation_date=self.date + datetime.timedelta(days=-6),
+                                        data='\{\}')
+            self.add_counter_scheduler = s
+
+        if not self.post_due_first_reminder:
+            s = Scheduler.objects.create(type='check_blog_counter',
+                                        activation_date=self.date + datetime.timedelta(days=1),
+                                        data='\{\}')
+            self.post_due_first_reminder = s
+
+        if not self.post_due_final_reminder:
+            s = Scheduler.objects.create(type='check_blog_counter',
+                                        activation_date=self.date + datetime.timedelta(days=3),
+                                        data='\{\}')
+            self.post_due_final_reminder = s
+
+        self.save()
+
+
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def create_send_reglink_schedulers(sender, instance, **kwargs):
+    instance.create_schedulers()
 
 
 class PageNotification(models.Model):
@@ -364,6 +412,12 @@ class RegLink(models.Model):
         if self.user_role != role.get('Student', 3):
             return user
 
+        # increase blog counter
+        date = timezone.now() + datetime.timedelta(days=6)
+        due_dates = BlogPostDueDate.objects.filter(date__lt=date).all()
+        profile.current_blog_count = len(due_dates)
+
+        # setup blog
         blogname = f"{user.username}'s Blog"
         app_config = NewsBlogConfig.objects.create(namespace=namespace)
         app_config.app_title = blogname

@@ -7,10 +7,11 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
 from django.template import Template
-from gsoc.models import Scheduler, RegLink
-
 from django.contrib.auth.models import User
+
 from .irc import send_message
+
+from gsoc.models import Scheduler, RegLink, GsocYear, UserProfile
 
 
 def send_email(scheduler: Scheduler):
@@ -99,3 +100,22 @@ def send_reg_reminder(scheduler: Scheduler):
         return send_email(scheduler)
     else:
         return "link already used"
+
+
+def add_blog_counter(scheduler: Scheduler):
+    gsoc_year = GsocYear.objects.first()
+    current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+    for profile in current_profiles:
+        profile.current_blog_count += 1
+        profile.save()
+    return None
+
+
+def check_blog_counter(scheduler: Scheduler):
+    gsoc_year = GsocYear.objects.first()
+    current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+    errors = {}
+    for profile in current_profiles:
+        if profile.current_blog_count > 0 and not (profile.hidden or
+                                                   profile.reminder_disabled):
+            errors[profile.user.username] = send_email(scheduler)
