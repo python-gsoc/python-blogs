@@ -207,42 +207,25 @@ class BlogPostDueDate(models.Model):
     date = models.DateTimeField()
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
     add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
-                                              blank=True, related_name='dd_counters')
-    post_due_first_reminder = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
-                                                blank=True, related_name='dd_first_rem')
-    post_due_final_reminder = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
-                                                blank=True, related_name='dd_final_rem')
+                                              blank=True)
 
     def save(self, *args, **kwargs):
         if not self.gsoc_year:
             self.gsoc_year = GsocYear.objects.get(gsoc_year=self.date.year)
         super(UserDetails, self).save(*args, **kwargs)
 
-    def create_schedulers(self):
-        if not self.add_counter_scheduler:
-            s = Scheduler.objects.create(type='add_blog_counter',
-                                        activation_date=self.date + datetime.timedelta(days=-6),
-                                        data='\{\}')
-            self.add_counter_scheduler = s
-
-        if not self.post_due_first_reminder:
-            s = Scheduler.objects.create(type='check_blog_counter',
-                                        activation_date=self.date + datetime.timedelta(days=1),
-                                        data='\{\}')
-            self.post_due_first_reminder = s
-
-        if not self.post_due_final_reminder:
-            s = Scheduler.objects.create(type='check_blog_counter',
-                                        activation_date=self.date + datetime.timedelta(days=3),
-                                        data='\{\}')
-            self.post_due_final_reminder = s
-
+    def create_scheduler(self):
+        s = Scheduler.objects.create(type='add_blog_counter',
+                                    activation_date=self.date + datetime.timedelta(days=-6),
+                                    data='\{\}')
+        self.add_counter_scheduler = s
         self.save()
 
 
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def create_send_reglink_schedulers(sender, instance, **kwargs):
-    instance.create_schedulers()
+    if not self.add_counter_scheduler:
+        instance.create_scheduler()
 
 
 class PageNotification(models.Model):

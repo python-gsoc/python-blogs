@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.core.management.base import BaseCommand
 
 import gsoc.settings as config
-from gsoc.models import Scheduler
+from gsoc.models import Scheduler, GsocYear, UserProfile
 from gsoc.common.utils import commands
 
 
@@ -43,7 +43,10 @@ class Command(BaseCommand):
 
     def build_items(self, options):
         # build tasks
-        self.stdout.write(self.style.SUCCESS('Build items'), ending='\n')
+        self.stdout.write(self.style.SUCCESS('Building blog reminders'), ending='\n')
+        gsoc_year = GsocYear.objects.first()
+        current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+        # for profile
 
     def handle_process(self, scheduler):
         if scheduler.activation_date and timezone.now() > scheduler.activation_date:
