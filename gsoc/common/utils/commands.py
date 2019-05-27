@@ -109,3 +109,13 @@ def add_blog_counter(scheduler: Scheduler):
         profile.current_blog_count += 1
         profile.save()
     return None
+
+
+def check_blog_counter(scheduler: Scheduler):
+    gsoc_year = GsocYear.objects.first()
+    current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+    errors = {}
+    for profile in current_profiles:
+        if profile.current_blog_count > 0 and not (profile.hidden or
+                                                   profile.reminder_disabled):
+            errors[profile.user.username] = send_email(scheduler)
