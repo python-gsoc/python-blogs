@@ -187,8 +187,6 @@ class Scheduler(models.Model):
         ('deactivate_user', 'deactivate_user'),
         ('send_reg_reminder', 'send_reg_reminder'),
         ('add_blog_counter', 'add_blog_counter'),
-        ('check_blog_counter', 'check_blog_counter'),
-        ('send_due_reminder', 'send_due_reminder'),
         )
 
     id = models.AutoField(primary_key=True)
@@ -224,7 +222,9 @@ class BlogPostDueDate(models.Model):
     add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
                                               blank=True)
     pre_blog_reminder_builder = models.ForeignKey(Builder, on_delete=models.CASCADE,
-                                                  null=True, blank=True)
+                                                  null=True, blank=True,
+                                                  related_name='pre')
+    post_blog_reminder_builder = models.ManyToManyField(Builder, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.gsoc_year:
@@ -242,9 +242,23 @@ class BlogPostDueDate(models.Model):
         builder_data = json.dumps({
             'due_date_pk': self.pk
         })
+
         s = Builder.objects.create(category='build_pre_blog_reminders',
                                    activation_date=self.date + datetime.timedelta(days=-3),
                                    data=builder_data)
+        self.pre_blog_reminder_builder = s
+
+        s = Builder.objects.create(category='build_post_blog_reminders',
+                                   activation_date=self.date + datetime.timedelta(days=1),
+                                   data=builder_data)
+        self.post_blog_reminder_builder.add(s)
+
+        s = Builder.objects.create(category='build_post_blog_reminders',
+                                   activation_date=self.date + datetime.timedelta(days=3),
+                                   data=builder_data)
+        self.post_blog_reminder_builder.add(s)
+
+        self.save()
 
 
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
