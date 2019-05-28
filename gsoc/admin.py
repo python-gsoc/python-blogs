@@ -279,7 +279,8 @@ admin.site.register(Scheduler, SchedulerAdmin)
 
 
 class HiddenUserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'gsoc_year', 'suborg_full_name', 'proposal_confirmed', 'hidden')
+    list_display = ('user', 'email', 'gsoc_year', 'suborg_full_name',
+                    'proposal_confirmed', 'hidden')
     list_filter = ('hidden', )
     readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config',
                        'proposal_confirmed')
@@ -292,6 +293,9 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
                        'app_config')
             })
         )
+
+    def email(self, obj):
+        return obj.user.email
 
     def get_queryset(self, request):
         return UserProfile.all_objects.all()
