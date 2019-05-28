@@ -2,6 +2,7 @@ import os
 import re
 import datetime
 import uuid
+import json
 
 from django.contrib.auth.models import Permission
 from django.contrib import auth, messages
@@ -191,7 +192,7 @@ class Scheduler(models.Model):
         )
 
     id = models.AutoField(primary_key=True)
-    command = models.CharField(name='command', max_length=20, choices=commands)
+    command = models.CharField(name='command', max_length=40, choices=commands)
     activation_date = models.DateTimeField(name='activation_date', null=True, blank=True)
     data = models.TextField(name='data')
     success = models.BooleanField(name='success', null=True)
@@ -202,12 +203,28 @@ class Scheduler(models.Model):
         return self.command
 
 
+class Builder(models.Model):
+    categories = (
+        ('build_pre_blog_reminders', 'build_pre_blog_reminders'),
+    )
+
+    category = models.CharField(max_length=40, choices=categories)
+    activation_date = models.DateTimeField(null=True, blank=True)
+    built = models.BooleanField(default=False)
+    data = models.TextField()
+
+    def __str__(self):
+        return self.category
+
+
 class BlogPostDueDate(models.Model):
     title = models.CharField(max_length=255)
     date = models.DateTimeField()
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
     add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
                                               blank=True)
+    pre_blog_reminder_builder = models.ForeignKey(Builder, on_delete=models.CASCADE,
+                                                  null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.gsoc_year:
@@ -215,11 +232,19 @@ class BlogPostDueDate(models.Model):
         super(UserDetails, self).save(*args, **kwargs)
 
     def create_scheduler(self):
-        s = Scheduler.objects.create(type='add_blog_counter',
+        s = Scheduler.objects.create(command='add_blog_counter',
                                     activation_date=self.date + datetime.timedelta(days=-6),
                                     data='\{\}')
         self.add_counter_scheduler = s
         self.save()
+
+    def create_builders(self):
+        builder_data = json.dumps({
+            'due_date_pk': self.pk
+        })
+        s = Builder.objects.create(category='build_pre_blog_reminders',
+                                   activation_date=self.date + datetime.timedelta(days=-3),
+                                   data=builder_data)
 
 
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
