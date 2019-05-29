@@ -46,19 +46,19 @@ class BlogsFeed(Feed):
         return articles
 
     def item_author_name(self, item):
-        return item.owner.username
+        return item.owner.username.encode()
 
     def item_author_email(self, item):
-        return item.owner.email
+        return item.owner.email.encode()
 
     def item_title(self, item):
-        return item.title
+        return item.title.encode()
 
     def item_description(self, item):
         request = get_request()
         c = ContentRenderer(request)
         html = c.render_placeholder(item.content, RequestContext(request))
-        return html
+        return html.encode()
 
     def item_pubdate(self, item):
         return item.publishing_date
