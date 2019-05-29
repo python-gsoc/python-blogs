@@ -1,3 +1,5 @@
+import unicodedata
+
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import DefaultFeed
 from django.conf import settings
@@ -11,6 +13,10 @@ from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 
 from cms.models import Page, Site
 from cms.plugin_rendering import ContentRenderer
+
+
+def remove_control_characters(s):
+    return "".join(ch for ch in s if unicodedata.category(ch)[0] != "C")
 
 
 def get_request(language=None):
@@ -58,7 +64,7 @@ class BlogsFeed(Feed):
         request = get_request()
         c = ContentRenderer(request)
         html = c.render_placeholder(item.content, RequestContext(request))
-        return html
+        return remove_control_characters(html)
 
     def item_pubdate(self, item):
         return item.publishing_date
