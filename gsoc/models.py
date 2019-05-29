@@ -219,7 +219,8 @@ class Builder(models.Model):
 class BlogPostDueDate(models.Model):
     title = models.CharField(max_length=255)
     date = models.DateTimeField()
-    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
+    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True,
+                                  blank=True)
     add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
                                               blank=True)
     pre_blog_reminder_builder = models.ForeignKey(Builder, on_delete=models.CASCADE,
@@ -230,12 +231,12 @@ class BlogPostDueDate(models.Model):
     def save(self, *args, **kwargs):
         if not self.gsoc_year:
             self.gsoc_year = GsocYear.objects.get(gsoc_year=self.date.year)
-        super(UserDetails, self).save(*args, **kwargs)
+        super(BlogPostDueDate, self).save(*args, **kwargs)
 
     def create_scheduler(self):
         s = Scheduler.objects.create(command='add_blog_counter',
                                      activation_date=self.date + datetime.timedelta(days=-6),
-                                     data='{{}}')
+                                     data='{}')
         self.add_counter_scheduler = s
         self.save()
 
@@ -263,9 +264,10 @@ class BlogPostDueDate(models.Model):
 
 
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
-def create_send_reglink_schedulers(sender, instance, **kwargs):
-    if not self.add_counter_scheduler:
+def create_schedulers_builders(sender, instance, **kwargs):
+    if not instance.add_counter_scheduler:
         instance.create_scheduler()
+        instance.create_builders()
 
 
 class PageNotification(models.Model):

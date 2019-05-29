@@ -1,5 +1,5 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-                     BlogPostDueDate)
+                     BlogPostDueDate, Builder)
 from .forms import UserProfileForm, UserDetailsForm, RegLinkForm
 
 from django.contrib.auth.models import User
@@ -281,17 +281,17 @@ admin.site.register(Scheduler, SchedulerAdmin)
 
 class HiddenUserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'email', 'gsoc_year', 'suborg_full_name', 'proposal_confirmed',
-                    'hidden', 'reminder_disabled')
+                    'hidden', 'reminder_disabled', 'current_blog_count')
     list_filter = ('hidden', 'reminder_disabled')
     readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config',
-                       'proposal_confirmed')
+                       'proposal_confirmed', 'current_blog_count')
     fieldsets = (
         ('Unhide', {
             'fields': ('hidden', 'reminder_disabled')
             }),
         ('User Profile Details', {
             'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'proposal_confirmed',
-                       'app_config')
+                       'app_config', 'current_blog_count')
             })
         )
 
@@ -358,3 +358,4 @@ class BlogPostDueDateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(BlogPostDueDate, BlogPostDueDateAdmin)
+admin.site.register(Builder)

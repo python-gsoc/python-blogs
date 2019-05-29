@@ -43,14 +43,14 @@ class Command(BaseCommand):
 
     def build_items(self, options):
         # build tasks
-        builders = Builder.objects.all()
+        builders = Builder.objects.filter(built=False).all()
         if len(builders) is 0:
             self.stdout.write(self.style.SUCCESS('No build tasks'), ending='\n')
         else:
             for builder in builders:
-                if not scheduler.activation_date:
+                if not builder.activation_date:
                     flag = True
-                elif scheduler.activation_date and timezone.now() > scheduler.activation_date:
+                elif builder.activation_date and timezone.now() > builder.activation_date:
                     flag = True
                 else:
                     flag = False
