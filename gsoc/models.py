@@ -35,6 +35,8 @@ NewsBlogConfig.__str__ = lambda self: self.app_title
 
 
 class SubOrg(models.Model):
+    class Meta:
+        ordering = ['suborg_name']
     suborg_name = models.CharField(name='suborg_name', max_length=80)
 
     def __str__(self):
