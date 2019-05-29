@@ -538,3 +538,13 @@ def get_root_comments(self):
 
 
 Article.add_to_class('get_root_comments', get_root_comments)
+
+
+@receiver(models.signals.post_save, sender=Article)
+def decrease_blog_counter(sender, instance, **kwargs):
+    section = instance.app_config
+    up = UserProfile.objects.get(app_config=section)
+    if up.current_blog_count > 0:
+        up.current_blog_count -= 1
+        print('Decreasing', up.current_blog_count)
+        up.save()
