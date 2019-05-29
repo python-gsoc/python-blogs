@@ -16,7 +16,7 @@ from cms.plugin_rendering import ContentRenderer
 
 
 def remove_control_characters(s):
-    return "".join(ch for ch in s if unicodedata.category(ch)[0]!="C")
+    return "".join(ch for ch in s if unicodedata.category(ch)[0] != "C")
 
 
 def get_request(language=None):
