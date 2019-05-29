@@ -33,7 +33,7 @@ def convert_pdf_to_txt(f):
     rsrcmgr = PDFResourceManager()
     retstr = io.StringIO()
     laparams = LAParams()
-    device = TextConverter(rsrcmgr, retstr, codec='utf-8', laparams=laparams)
+    device = TextConverter(rsrcmgr, retstr, codec='utf-8', laparams=None)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
     pagenos = set()
     for page in PDFPage.get_pages(f, pagenos, maxpages=0,
