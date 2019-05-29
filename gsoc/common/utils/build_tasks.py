@@ -25,6 +25,7 @@ def build_pre_blog_reminders(builder):
             s = Scheduler.objects.create(command='send_email',
                                          data=scheduler_data)
 
+
 def build_post_blog_reminders(builder):
     data = json.loads(builder.data)
     due_date = BlogPostDueDate.objects.get(pk=data['due_date_pk'])

@@ -234,8 +234,8 @@ class BlogPostDueDate(models.Model):
 
     def create_scheduler(self):
         s = Scheduler.objects.create(command='add_blog_counter',
-                                    activation_date=self.date + datetime.timedelta(days=-6),
-                                    data='\{\}')
+                                     activation_date=self.date + datetime.timedelta(days=-6),
+                                     data='{{}}')
         self.add_counter_scheduler = s
         self.save()
 

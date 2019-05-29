@@ -348,11 +348,13 @@ class AddUserLogAdmin(admin.ModelAdmin):
         _used = len(RegLink.objects.filter(adduserlog=obj, is_used=True))
         return '{}/{}'.format(_used, _all)
 
+
 admin.site.register(AddUserLog, AddUserLogAdmin)
 
 
 class BlogPostDueDateAdmin(admin.ModelAdmin):
     fields = ('title', 'date')
     list_display = ('title', 'date')
+
 
 admin.site.register(BlogPostDueDate, BlogPostDueDateAdmin)
