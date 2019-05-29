@@ -204,6 +204,7 @@ class Scheduler(models.Model):
 class Builder(models.Model):
     categories = (
         ('build_pre_blog_reminders', 'build_pre_blog_reminders'),
+        ('build_post_blog_reminders', 'build_post_blog_reminders'),
     )
 
     category = models.CharField(max_length=40, choices=categories)
