@@ -1,4 +1,4 @@
-from .models import UserDetails, UserProfile, RegLink
+from .models import UserDetails, UserProfile, RegLink, BlogPostDueDate
 
 from django.forms import ModelForm, Select
 
@@ -35,3 +35,9 @@ class RegLinkForm(ModelForm):
     class Meta:
         model = RegLink
         fields = ('email', 'user_role', 'user_suborg', 'user_gsoc_year')
+
+
+class BlogPostDueDateForm(ModelForm):
+    class Meta:
+        model = BlogPostDueDate
+        fields = ('date', )

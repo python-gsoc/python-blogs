@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-                     BlogPostDueDate, Builder)
-from .forms import UserProfileForm, UserDetailsForm, RegLinkForm
+                     BlogPostDueDate, Builder, Timeline)
+from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm
 
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -350,12 +350,17 @@ class AddUserLogAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AddUserLog, AddUserLogAdmin)
-
-
-class BlogPostDueDateAdmin(admin.ModelAdmin):
-    fields = ('title', 'date')
-    list_display = ('title', 'date')
-
-
-admin.site.register(BlogPostDueDate, BlogPostDueDateAdmin)
 admin.site.register(Builder)
+
+
+class BlogPostDueDateInline(admin.TabularInline):
+    model = BlogPostDueDate
+    form = BlogPostDueDateForm
+
+
+class TimelineAdmin(admin.ModelAdmin):
+    list_display = ('gsoc_year', )
+    inlines = (BlogPostDueDateInline, )
+
+
+admin.site.register(Timeline, TimelineAdmin)

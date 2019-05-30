@@ -216,22 +216,20 @@ class Builder(models.Model):
         return self.category
 
 
+class Timeline(models.Model):
+    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
+
+
 class BlogPostDueDate(models.Model):
-    title = models.CharField(max_length=255)
-    date = models.DateTimeField()
-    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True,
+    date = models.DateField()
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
                                   blank=True)
     add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
                                               blank=True)
     pre_blog_reminder_builder = models.ForeignKey(Builder, on_delete=models.CASCADE,
                                                   null=True, blank=True,
                                                   related_name='pre')
-    post_blog_reminder_builder = models.ManyToManyField(Builder, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if not self.gsoc_year:
-            self.gsoc_year = GsocYear.objects.get(gsoc_year=self.date.year)
-        super(BlogPostDueDate, self).save(*args, **kwargs)
+    post_blog_reminder_builder = models.ManyToManyField(Builder, blank=True)
 
     def create_scheduler(self):
         s = Scheduler.objects.create(command='add_blog_counter',
