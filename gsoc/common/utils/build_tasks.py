@@ -51,22 +51,26 @@ def build_post_blog_reminders(builder):
             mentors = UserProfile.objects.filter(suborg_full_name=suborg, role=2)
             suborg_admins = UserProfile.objects.filter(suborg_full_name=suborg, role=1)
             student_email = profile.user.email
-            
+
             mentors_emails = [_.user.email for _ in mentors]
             mentors_emails.extend([_.user.email for _ in suborg_admins])
 
-            scheduler_data_student = build_send_mail_json(student_email,
-                                                  template='post_blog_reminder_student.html',
-                                                  subject='Reminder for Weekly Blog Post',
-                                                  template_data=template_data)
+            scheduler_data_student = build_send_mail_json(
+                student_email,
+                template='post_blog_reminder_student.html',
+                subject='Reminder for Weekly Blog Post',
+                template_data=template_data
+                )
 
-            scheduler_data_mentors = build_send_mail_json(mentors_emails,
-                                                  template='post_blog_reminder_mentors.html',
-                                                  subject='Weekly Blog Post missed by a Student of your Sub-Org',
-                                                  template_data=template_data)            
+            scheduler_data_mentors = build_send_mail_json(
+                mentors_emails,
+                template='post_blog_reminder_mentors.html',
+                subject='Weekly Blog Post missed by a Student of your Sub-Org',
+                template_data=template_data
+                )
 
             Scheduler.objects.create(command='send_email',
                                      data=scheduler_data_student)
-            
+
             Scheduler.objects.create(command='send_email',
                                      data=scheduler_data_mentors)
