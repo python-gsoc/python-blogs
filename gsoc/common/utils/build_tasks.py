@@ -34,22 +34,39 @@ def build_post_blog_reminders(builder):
     for profile in profiles:
         if profile.current_blog_count is not 0 and not (profile.hidden and
                                                         profile.reminder_disabled):
-            template_data = {
+            student_template_data = {
                 'current_blog_count': profile.current_blog_count,
                 'due_date': due_date.date.strftime('%d %B %Y')
+            }
+
+            mentors_template_data = {
+                'student_username': profile.user.username,
+                'student_email': profile.user.email,
+                'suborg_name': profile.suborg_full_name.suborg_name,
+                'due_date': due_date.date.strftime('%d %B %Y'),
+                'current_blog_count': profile.current_blog_count
             }
 
             suborg = profile.suborg_full_name
             mentors = UserProfile.objects.filter(suborg_full_name=suborg, role=2)
             suborg_admins = UserProfile.objects.filter(suborg_full_name=suborg, role=1)
-            emails = [profile.user.email]
-            emails.extend([_.user.email for _ in mentors])
-            emails.extend([_.user.email for _ in suborg_admins])
+            student_email = profile.user.email
+            
+            mentors_emails = [_.user.email for _ in mentors]
+            mentors_emails.extend([_.user.email for _ in suborg_admins])
 
-            scheduler_data = build_send_mail_json(emails,
-                                                  template='post_blog_reminder.html',
+            scheduler_data_student = build_send_mail_json(student_email,
+                                                  template='post_blog_reminder_student.html',
                                                   subject='Reminder for Weekly Blog Post',
                                                   template_data=template_data)
 
-            s = Scheduler.objects.create(command='send_email',
-                                         data=scheduler_data)
+            scheduler_data_mentors = build_send_mail_json(mentors_emails,
+                                                  template='post_blog_reminder_mentors.html',
+                                                  subject='Weekly Blog Post missed by a Student of your Sub-Org',
+                                                  template_data=template_data)            
+
+            Scheduler.objects.create(command='send_email',
+                                     data=scheduler_data_student)
+            
+            Scheduler.objects.create(command='send_email',
+                                     data=scheduler_data_mentors)
