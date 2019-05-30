@@ -1,5 +1,5 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-                     BlogPostDueDate, Builder, Timeline)
+                     BlogPostDueDate, Builder, Timeline, ArticleReview)
 from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm
 
 from django.contrib.auth.models import User
@@ -364,3 +364,20 @@ class TimelineAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Timeline, TimelineAdmin)
+
+
+class ArticleReviewAdmin(admin.ModelAdmin):
+    list_display = ('article', 'is_reviewed', 'last_reviewed_by')
+    list_filter = ('last_reviewed_by', 'is_reviewed')
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(ArticleReview, ArticleReviewAdmin)

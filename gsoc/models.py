@@ -549,3 +549,32 @@ def decrease_blog_counter(sender, instance, **kwargs):
         up.current_blog_count -= 1
         print('Decreasing', up.current_blog_count)
         up.save()
+
+
+class ArticleReview(models.Model):
+    article = models.OneToOneField(Article, on_delete=models.CASCADE)
+    last_reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE,
+                                    null=True, blank=True,
+                                    limit_choices_to={
+                                        'is_superuser': True,
+                                    })
+    is_reviewed = models.BooleanField(default=False)
+
+
+    def save(self, *args, **kwargs):
+        if self.reviewed_by:
+            if not self.reviewed_by.is_superuser:
+                raise ValidationError('The user does not have permissions to review an article.')
+        super(ArticleReview, self).save(*args, **kwargs)
+
+
+@receiver(models.signals.post_save, sender=Article)
+def add_review(sender, instance, **kwargs):
+    ar = ArticleReview.objects.filter(article=instance).all()
+    if not ar:
+        ArticleReview.objects.create(article=instance)
+
+    if ar:
+        ar = ar.first()
+        ar.is_reviewed = False
+        ar.save()
