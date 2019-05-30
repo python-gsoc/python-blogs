@@ -4,8 +4,8 @@ from django.utils import timezone
 from django.core.management.base import BaseCommand
 
 import gsoc.settings as config
-from gsoc.models import Scheduler
-from gsoc.common.utils import commands
+from gsoc.models import Scheduler, GsocYear, UserProfile, Builder
+from gsoc.common.utils import commands, build_tasks
 
 
 class Command(BaseCommand):
@@ -43,10 +43,38 @@ class Command(BaseCommand):
 
     def build_items(self, options):
         # build tasks
-        self.stdout.write(self.style.SUCCESS('Build items'), ending='\n')
+        builders = Builder.objects.filter(built=False).all()
+        if len(builders) is 0:
+            self.stdout.write(self.style.SUCCESS('No build tasks'), ending='\n')
+        else:
+            for builder in builders:
+                if not builder.activation_date:
+                    flag = True
+                elif builder.activation_date and timezone.now() > builder.activation_date:
+                    flag = True
+                else:
+                    flag = False
+
+                if flag:
+                    self.stdout.write('Running build task {}:{}'
+                                      .format(builder.category, builder.pk), ending='\n')
+                    getattr(build_tasks, builder.category)(builder)
+                    self.stdout.write(self.style
+                                      .SUCCESS('Finished build task {}:{}'
+                                               .format(builder.category, builder.pk)),
+                                      ending='\n')
+                    builder.built = True
+                    builder.save()
 
     def handle_process(self, scheduler):
-        if scheduler.activation_date and timezone.now() > scheduler.activation_date:
+        if not scheduler.activation_date:
+            flag = True
+        elif scheduler.activation_date and timezone.now() > scheduler.activation_date:
+            flag = True
+        else:
+            flag = False
+
+        if flag:
             self.stdout.write('Running command {}:{}'
                               .format(scheduler.command, scheduler.id), ending='\n')
             err = getattr(commands, scheduler.command)(scheduler)
