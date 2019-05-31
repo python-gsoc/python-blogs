@@ -62,3 +62,9 @@ urlpatterns += [
     url('comment/new/', gsoc.views.new_comment, name='new_comment'),
     url('comment/delete/', gsoc.views.delete_comment, name='delete_comment')
 ]
+
+# Review article routes
+urlpatterns += [
+    url(r'^article/review/(?P<article_id>[0-9]+)/$', gsoc.views.review_article,
+        name='review_article')
+]

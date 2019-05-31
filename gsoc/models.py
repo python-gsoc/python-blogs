@@ -561,8 +561,8 @@ class ArticleReview(models.Model):
     is_reviewed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if self.reviewed_by:
-            if not self.reviewed_by.is_superuser:
+        if self.last_reviewed_by:
+            if not self.last_reviewed_by.is_superuser:
                 raise ValidationError('The user does not have permissions to review an article.')
         super(ArticleReview, self).save(*args, **kwargs)
 

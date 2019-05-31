@@ -13,6 +13,7 @@ from cms.utils.urlutils import admin_reverse
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language_from_request
+from django.urls import reverse
 
 from aldryn_translation_tools.utils import (
     get_admin_url, get_object_from_request,
@@ -21,6 +22,8 @@ from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
 from cms.models import Page
+
+from gsoc.models import ArticleReview
 
 
 def add_admin_menu(self):
@@ -199,6 +202,15 @@ def populate(self):
                                 [article.pk, ])
             menu.add_modal_item(_('Delete this article'), url=url,
                                 on_close=redirect_url)
+
+        try:
+            article_review = ArticleReview.objects.get(article=article)
+            if not article_review.is_reviewed and user.is_superuser:
+                url = reverse('review_article', args=[article.id])
+                self.toolbar.add_button(_('Mark Reviewed'), url=url,
+                                        side=self.toolbar.RIGHT)
+        except ArticleReview.DoesNotExist:
+            pass
 
 
 NewsBlogToolbar.populate = populate
