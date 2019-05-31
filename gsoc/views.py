@@ -1,7 +1,7 @@
 from gsoc import settings
 
 from .forms import ProposalUploadForm
-from .models import RegLink, validate_proposal_text, Comment
+from .models import RegLink, validate_proposal_text, Comment, ArticleReview
 
 import io
 import os
@@ -16,6 +16,7 @@ from django import shortcuts
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
+from django.urls import reverse
 
 from aldryn_newsblog.models import Article
 
@@ -274,3 +275,17 @@ def delete_comment(request):
             return redirect(redirect_path)
         else:
             return redirect('/')
+
+
+@decorators.user_passes_test(is_superuser)
+def review_article(request, article_id):
+    if request.method == 'GET':
+        a = Article.objects.get(id=article_id)
+        try:
+            ar = ArticleReview.objects.get(article=a)
+            ar.is_reviewed = True
+            ar.last_reviewed_by = request.user
+            ar.save()
+        except ArticleReview.DoesNotExist:
+            pass
+    return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
