@@ -1,4 +1,4 @@
-from multiprocessing.dummy import Pool as ThreadPool
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand
@@ -112,13 +112,11 @@ class Command(BaseCommand):
 
         # generic handlers
         schedulers = Scheduler.objects.filter(success=None)
+        threads = []
         if len(schedulers) is not 0:
             try:
-                pool = ThreadPool(options['num_workers'])
-                res = pool.map_async(self.handle_process, schedulers)
-                res.get(timeout=options['timeout'])
-                pool.close()
-                pool.join()
+                executor = ThreadPoolExecutor(max_workers=options['num_workers'])
+                executor.map(self.handle_process, schedulers, timeout=options['timeout'])
             except TimeoutError as e:
                 self.stdout.write(self.style.ERROR('Time limit exceeded'), ending='\n')
 

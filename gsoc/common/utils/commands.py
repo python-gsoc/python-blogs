@@ -86,36 +86,35 @@ def send_irc_msgs(schedulers):
     sends the irc messages from `send_irc_msg` `Scheduler` objects
     and returns any error encountered
     """
-    send_message([_.data for _ in schedulers])
-    for s in schedulers:
-        s.success = True
-        s.save()
-    return None
+    try:
+        send_message([_.data for _ in schedulers])
+        for s in schedulers:
+            s.success = True
+            s.save()
+        return None
+    except Exception as e:
+        return str(e)
 
 
 def send_reg_reminder(scheduler: Scheduler):
-    data = json.loads(scheduler.data)
-    reglink = RegLink.objects.get(pk=data['object_pk'])
-    if reglink.is_usable():
-        return send_email(scheduler)
-    else:
-        return "link already used"
+    try:
+        data = json.loads(scheduler.data)
+        reglink = RegLink.objects.get(pk=data['object_pk'])
+        if reglink.is_usable():
+            return send_email(scheduler)
+        else:
+            return "link already used"
+    except Exception as e:
+        return str(e)
 
 
 def add_blog_counter(scheduler: Scheduler):
-    gsoc_year = GsocYear.objects.first()
-    current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
-    for profile in current_profiles:
-        profile.current_blog_count += 1
-        profile.save()
-    return None
-
-
-def check_blog_counter(scheduler: Scheduler):
-    gsoc_year = GsocYear.objects.first()
-    current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
-    errors = {}
-    for profile in current_profiles:
-        if profile.current_blog_count > 0 and not (profile.hidden or
-                                                   profile.reminder_disabled):
-            errors[profile.user.username] = send_email(scheduler)
+    try:
+        gsoc_year = GsocYear.objects.first()
+        current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+        for profile in current_profiles:
+            profile.current_blog_count += 1
+            profile.save()
+        return None
+    except Exception as e:
+        return str(e)
