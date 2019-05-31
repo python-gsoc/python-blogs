@@ -52,24 +52,24 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('No build tasks'), ending='\n')
         else:
             self.stdout.write('Running build task {}:{}'
-                                .format(builder.category, builder.pk), ending='\n')
+                              .format(builder.category, builder.pk), ending='\n')
             getattr(build_tasks, builder.category)(builder)
             self.stdout.write(self.style
-                                .SUCCESS('Finished build task {}:{}'
-                                        .format(builder.category, builder.pk)),
-                                ending='\n')
+                              .SUCCESS('Finished build task {}:{}'
+                                       .format(builder.category, builder.pk)),
+                              ending='\n')
             builder.built = True
             builder.save()
 
     def handle_process(self, scheduler):
         self.stdout.write('Running command {}:{}'
-                            .format(scheduler.command, scheduler.id), ending='\n')
+                          .format(scheduler.command, scheduler.id), ending='\n')
         err = getattr(commands, scheduler.command)(scheduler)
         if not err:
             self.stdout.write(self.style
-                                .SUCCESS('Finished command {}:{}'
-                                        .format(scheduler.command, scheduler.id)),
-                                ending='\n')
+                              .SUCCESS('Finished command {}:{}'
+                                       .format(scheduler.command, scheduler.id)),
+                              ending='\n')
             scheduler.success = True
             scheduler.save()
 
