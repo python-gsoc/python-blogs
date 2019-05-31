@@ -554,12 +554,11 @@ def decrease_blog_counter(sender, instance, **kwargs):
 class ArticleReview(models.Model):
     article = models.OneToOneField(Article, on_delete=models.CASCADE)
     last_reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE,
-                                    null=True, blank=True,
-                                    limit_choices_to={
-                                        'is_superuser': True,
-                                    })
+                                         null=True, blank=True,
+                                         limit_choices_to={
+                                            'is_superuser': True,
+                                         })
     is_reviewed = models.BooleanField(default=False)
-
 
     def save(self, *args, **kwargs):
         if self.reviewed_by:
