@@ -43,64 +43,51 @@ class Command(BaseCommand):
 
     def build_items(self, options):
         # build tasks
-        builders = Builder.objects.filter(built=False).all()
+        today = timezone.now()
+        x = Builder.objects.filter(built=False, activation_date=None).all()
+        y = Builder.objects.filter(built=False, activation_date__lte=today).all()
+        builders = x | y
+
         if len(builders) is 0:
             self.stdout.write(self.style.SUCCESS('No build tasks'), ending='\n')
         else:
-            for builder in builders:
-                if not builder.activation_date:
-                    flag = True
-                elif builder.activation_date and timezone.now() > builder.activation_date:
-                    flag = True
-                else:
-                    flag = False
-
-                if flag:
-                    self.stdout.write('Running build task {}:{}'
-                                      .format(builder.category, builder.pk), ending='\n')
-                    getattr(build_tasks, builder.category)(builder)
-                    self.stdout.write(self.style
-                                      .SUCCESS('Finished build task {}:{}'
-                                               .format(builder.category, builder.pk)),
-                                      ending='\n')
-                    builder.built = True
-                    builder.save()
+            self.stdout.write('Running build task {}:{}'
+                                .format(builder.category, builder.pk), ending='\n')
+            getattr(build_tasks, builder.category)(builder)
+            self.stdout.write(self.style
+                                .SUCCESS('Finished build task {}:{}'
+                                        .format(builder.category, builder.pk)),
+                                ending='\n')
+            builder.built = True
+            builder.save()
 
     def handle_process(self, scheduler):
-        if not scheduler.activation_date:
-            flag = True
-        elif scheduler.activation_date and timezone.now() > scheduler.activation_date:
-            flag = True
+        self.stdout.write('Running command {}:{}'
+                            .format(scheduler.command, scheduler.id), ending='\n')
+        err = getattr(commands, scheduler.command)(scheduler)
+        if not err:
+            self.stdout.write(self.style
+                                .SUCCESS('Finished command {}:{}'
+                                        .format(scheduler.command, scheduler.id)),
+                                ending='\n')
+            scheduler.success = True
+            scheduler.save()
+
         else:
-            flag = False
-
-        if flag:
-            self.stdout.write('Running command {}:{}'
-                              .format(scheduler.command, scheduler.id), ending='\n')
-            err = getattr(commands, scheduler.command)(scheduler)
-            if not err:
-                self.stdout.write(self.style
-                                  .SUCCESS('Finished command {}:{}'
-                                           .format(scheduler.command, scheduler.id)),
-                                  ending='\n')
-                scheduler.success = True
-                scheduler.save()
-
-            else:
-                self.stdout.write(
-                    self.style.ERROR(
-                        'Command {}:{} failed with error: {}' .format(
-                            scheduler.command,
-                            scheduler.id,
-                            err)),
-                    ending='\n')
-                scheduler.success = False
-                scheduler.last_error = err
-                scheduler.save()
+            self.stdout.write(
+                self.style.ERROR(
+                    'Command {}:{} failed with error: {}' .format(
+                        scheduler.command,
+                        scheduler.id,
+                        err)),
+                ending='\n')
+            scheduler.success = False
+            scheduler.last_error = err
+            scheduler.save()
 
     def process_items(self, options):
         # custom handlers
-        irc_schedulers = Scheduler.objects.filter(success=None).filter(command='send_irc_msg')
+        irc_schedulers = Scheduler.objects.filter(success=None, command='send_irc_msg')
         if len(irc_schedulers) is 0:
             self.stdout.write(self.style.SUCCESS('No scheduled send_irc_msg tasks'), ending='\n')
         else:
@@ -111,7 +98,11 @@ class Command(BaseCommand):
                                                  .format(len(irc_schedulers))), ending='\n')
 
         # generic handlers
-        schedulers = Scheduler.objects.filter(success=None)
+        today = timezone.now()
+        x = Scheduler.objects.filter(success=None, activation_date=None).all()
+        y = Scheduler.objects.filter(success=None, activation_date__lte=today).all()
+        schedulers = x | y
+
         threads = []
         if len(schedulers) is not 0:
             try:
