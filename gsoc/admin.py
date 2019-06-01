@@ -1,5 +1,6 @@
-from .models import UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog
-from .forms import UserProfileForm, UserDetailsForm, RegLinkForm
+from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
+                     BlogPostDueDate, Builder, Timeline, ArticleReview)
+from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm
 
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -50,6 +51,7 @@ def article_get_form():
             ori_fieldsets = getattr(self, 'fieldsets', ()) or ()
         self.readonly_fields = ori_readonly_fields
         self.fieldsets = ori_fieldsets
+        # self.actions = None
         form = ori_get_form(self, request, obj, **kwargs)
         if is_request_by_student:
             self.fieldsets = (
@@ -60,14 +62,13 @@ def article_get_form():
                         'is_published',
                         'is_featured',
                         'featured_image',
-                        'lead_in',
                         )}),
                 # (_('Meta Options'),
                 #  {'classes': ('collapse',),
                 #   'fields':()}),
                 (_('Advanced Settings'),
-                 {'classes': ('collapse',),
-                  'fields': ('app_config',)}),
+                    {'classes': ('collapse',),
+                     'fields': ('app_config',)}),
                 )
             self.readonly_fields = (
                 'author',
@@ -200,21 +201,33 @@ def Article_get_queryset(self, request):
     return qs
 
 
+def has_add_permission(self, request, obj=None):
+    return False
+
 ArticleAdmin.save_model = Article_save_model
 ArticleAdmin.delete_model = Article_delete_model
 ArticleAdmin.get_queryset = Article_get_queryset
-ArticleAdmin.get_form = article_get_form()
+# ArticleAdmin.get_form = article_get_form()
 ArticleAdmin.add_view = Article_add_view
 ArticleAdmin.change_view = Article_change_view
+ArticleAdmin.has_add_permission = has_add_permission
 
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
 
 
+def send_reminder(self, request, queryset):
+    for reglink in queryset:
+        reglink.create_reminder(trigger_time=timezone.now())
+
+
+send_reminder.short_description = 'Send reminders'
+
+
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('url', 'is_sent',
-                           'adduserlog', 'has_scheduler')}),
+                           'adduserlog', 'has_scheduler', 'has_reminder')}),
         ("Configure user to be registered",
             {'fields': (
                 "user_role",
@@ -228,13 +241,15 @@ class RegLinkAdmin(admin.ModelAdmin):
         'adduserlog',
         'is_sent',
         'adduserlog',
-        'has_scheduler'
+        'has_scheduler',
+        'has_reminder'
         )
-    list_display = ('reglink_id', 'url', 'is_used', 'is_sent', 'created_at')
+    list_display = ('reglink_id', 'email', 'is_used', 'is_sent', 'has_reminder', 'created_at')
     list_filter = [
         'is_used',
         'created_at',
         ]
+    actions = [send_reminder]
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = self.readonly_fields
@@ -253,26 +268,35 @@ admin.site.register(RegLink, RegLinkAdmin)
 
 
 class SchedulerAdmin(admin.ModelAdmin):
-    list_display = ('command', 'data', 'success', 'last_error', 'created')
+    list_display = ('command', 'short_data', 'success', 'last_error', 'created')
     list_filter = ('command', 'success')
     sortable_by = ('created', 'last_error')
+
+    def short_data(self, obj):
+        return '{}...'.format(obj.data[:50])
 
 
 admin.site.register(Scheduler, SchedulerAdmin)
 
 
 class HiddenUserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'gsoc_year', 'suborg_full_name', 'hidden')
-    list_filter = ('hidden', )
-    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config')
+    list_display = ('user', 'email', 'gsoc_year', 'suborg_full_name', 'proposal_confirmed',
+                    'hidden', 'reminder_disabled', 'current_blog_count')
+    list_filter = ('hidden', 'reminder_disabled')
+    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config',
+                       'proposal_confirmed', 'current_blog_count')
     fieldsets = (
         ('Unhide', {
-            'fields': ('hidden', )
+            'fields': ('hidden', 'reminder_disabled')
             }),
         ('User Profile Details', {
-            'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config')
+            'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'proposal_confirmed',
+                       'app_config', 'current_blog_count')
             })
         )
+
+    def email(self, obj):
+        return obj.user.email
 
     def get_queryset(self, request):
         return UserProfile.all_objects.all()
@@ -315,8 +339,42 @@ class RegLinkInline(admin.TabularInline):
 
 
 class AddUserLogAdmin(admin.ModelAdmin):
+    list_display = ('log_id', 'used_stat')
     readonly_fields = ('log_id', )
     inlines = (RegLinkInline, )
 
+    def used_stat(self, obj):
+        _all = len(RegLink.objects.filter(adduserlog=obj))
+        _used = len(RegLink.objects.filter(adduserlog=obj, is_used=True))
+        return '{}/{}'.format(_used, _all)
+
 
 admin.site.register(AddUserLog, AddUserLogAdmin)
+admin.site.register(Builder)
+
+
+class BlogPostDueDateInline(admin.TabularInline):
+    model = BlogPostDueDate
+    form = BlogPostDueDateForm
+
+
+class TimelineAdmin(admin.ModelAdmin):
+    list_display = ('gsoc_year', )
+    inlines = (BlogPostDueDateInline, )
+
+
+admin.site.register(Timeline, TimelineAdmin)
+
+
+class ArticleReviewAdmin(admin.ModelAdmin):
+    list_display = ('article', 'is_reviewed', 'last_reviewed_by')
+    list_filter = ('last_reviewed_by', 'is_reviewed')
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(ArticleReview, ArticleReviewAdmin)

@@ -32,10 +32,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ('127.0.0.1',)
 
-if DEBUG:
-    INETLOCATION = 'http://localhost:8000'
-else:
-    INETLOCATION = 'https://blogs.python-gsoc.org'
+INETLOCATION = 'https://blogs.python-gsoc.org'
 # Application definition
 ROOT_URLCONF = 'gsoc.urls'
 
@@ -86,7 +83,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'sekizai.context_processors.sekizai',
                 'django.template.context_processors.static',
-                'cms.context_processors.cms_settings'
+                'cms.context_processors.cms_settings',
+                'gsoc.context_processors.recaptcha_site_key',
                 ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -150,7 +148,7 @@ INSTALLED_APPS = (
     'taggit',
     'gsoc',
     'blogs_list',
-    'debug_toolbar'
+    'debug_toolbar',
 )
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -245,9 +243,9 @@ LOGIN_REDIRECT_URL = '/after-login/'
 LOGGING_CONFIG = None
 
 if DEBUG:
-    ERROR_LEVEL = 'DEBUG'
-else:
     ERROR_LEVEL = 'INFO'
+else:
+    ERROR_LEVEL = 'WARNING'
 
 ERROR_HANDLERS = ['file', 'mail_admins']
 

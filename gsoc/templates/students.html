@@ -270,3 +270,11 @@ and demonstrate that you've understood by incorporating their feedback into
 what you're proposing. We reject a lot of students who haven't listened to mentor
 feedback.</div> -->
 {% endblock %}
+
+{% block js %}
+<script>
+	grecaptcha.ready(function() {
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'students'});
+	});
+</script>
+{% endblock %}

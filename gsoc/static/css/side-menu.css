@@ -47,6 +47,14 @@ The content `<div>` is where all your content goes.
     line-height: 1.6em;
 }
 
+.content-blog {
+    margin: 0 auto;
+    padding: 0 2em;
+    max-width: 1600px;
+    margin-bottom: 50px;
+    line-height: 1.6em;
+}
+
 .header {
      margin: 0;
      color: #333;

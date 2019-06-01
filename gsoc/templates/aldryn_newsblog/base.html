@@ -2,6 +2,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="/static/css/article.css">
+<link rel="stylesheet" href="/static/css/comments.css">
 <link href="https://fonts.googleapis.com/css?family=Source+Serif+Pro" rel="stylesheet">
 {% endblock head %}
 
@@ -10,3 +11,22 @@
         {% block newsblog_content %}{% endblock %}
     </div>
 {% endblock content %}
+
+{% block js %}
+    <script src="/static/js/comments.js"></script>
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'comment'}).then(function(token) {
+                forms = document.getElementsByClassName('comment-form');
+                for (var i=0; i<forms.length; i++) {
+                    form = forms.item(i);
+                    var input =  document.createElement('input')
+                    input.setAttribute('type', 'hidden');
+                    input.setAttribute('name', 'g-recaptcha-response');
+                    input.setAttribute('value', `${token}`);
+                    form.appendChild(input);
+                }
+            });
+        });
+    </script>
+{% endblock %}

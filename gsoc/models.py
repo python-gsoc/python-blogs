@@ -2,9 +2,10 @@ import os
 import re
 import datetime
 import uuid
+import json
 
 from django.contrib.auth.models import Permission
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -18,6 +19,7 @@ from django.conf import settings
 from aldryn_apphooks_config.fields import AppHookConfigField
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
+from aldryn_newsblog.models import Article
 
 from cms.models import Page, PagePermission
 from cms import api
@@ -27,13 +29,15 @@ from cms.utils.apphook_reload import mark_urlconf_as_changed
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
-from gsoc.common.utils.tools import build_send_mail_json
+from gsoc.common.utils.tools import build_send_mail_json, build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH
 
 NewsBlogConfig.__str__ = lambda self: self.app_title
 
 
 class SubOrg(models.Model):
+    class Meta:
+        ordering = ['suborg_name']
     suborg_name = models.CharField(name='suborg_name', max_length=80)
 
     def __str__(self):
@@ -67,13 +71,20 @@ class UserProfile(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE, null=True, blank=False)
     suborg_full_name = models.ForeignKey(SubOrg, on_delete=models.CASCADE, null=True, blank=False)
     accepted_proposal_pdf = models.FileField(blank=True, null=True, upload_to=PROPOSALS_PATH)
+    proposal_confirmed = models.BooleanField(default=False)
     app_config = AppHookConfigField(NewsBlogConfig,
                                     verbose_name=_('Section'),
                                     blank=True, null=True,)
     hidden = models.BooleanField(name='hidden', default=False)
+    reminder_disabled = models.BooleanField(default=False)
+    current_blog_count = models.IntegerField(default=0)
 
     objects = UserProfileManager()
     all_objects = models.Manager()
+
+    def confirm_proposal(self):
+        self.proposal_confirmed = True
+        self.save()
 
 
 def has_proposal(self):
@@ -105,9 +116,17 @@ auth.models.User.add_to_class('has_proposal', has_proposal)
 auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
 auth.models.User.add_to_class('student_profile', student_profile)
 
+
+@receiver(models.signals.post_delete, sender=UserProfile)
+def delete_blog(sender, instance, **kwargs):
+    """
+    Deletes the blog of the deleted user if a student
+    """
+    if instance.app_config:
+        instance.app_config.delete()
+
+
 # Auto Delete Redundant Proposal
-
-
 @receiver(models.signals.post_delete, sender=UserProfile)
 def auto_delete_proposal_on_delete(sender, instance, **kwargs):
     """
@@ -163,10 +182,12 @@ class Scheduler(models.Model):
         ('send_email', 'send_email'),
         ('send_irc_msg', 'send_irc_msg'),
         ('deactivate_user', 'deactivate_user'),
+        ('send_reg_reminder', 'send_reg_reminder'),
+        ('add_blog_counter', 'add_blog_counter'),
         )
 
     id = models.AutoField(primary_key=True)
-    command = models.CharField(name='command', max_length=20, choices=commands)
+    command = models.CharField(name='command', max_length=40, choices=commands)
     activation_date = models.DateTimeField(name='activation_date', null=True, blank=True)
     data = models.TextField(name='data')
     success = models.BooleanField(name='success', null=True)
@@ -175,6 +196,73 @@ class Scheduler(models.Model):
 
     def __str__(self):
         return self.command
+
+
+class Builder(models.Model):
+    categories = (
+        ('build_pre_blog_reminders', 'build_pre_blog_reminders'),
+        ('build_post_blog_reminders', 'build_post_blog_reminders'),
+    )
+
+    category = models.CharField(max_length=40, choices=categories)
+    activation_date = models.DateTimeField(null=True, blank=True)
+    built = models.BooleanField(default=False)
+    data = models.TextField()
+
+    def __str__(self):
+        return self.category
+
+
+class Timeline(models.Model):
+    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
+
+
+class BlogPostDueDate(models.Model):
+    date = models.DateField()
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
+                                  blank=True)
+    add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
+                                              blank=True)
+    pre_blog_reminder_builder = models.ForeignKey(Builder, on_delete=models.CASCADE,
+                                                  null=True, blank=True,
+                                                  related_name='pre')
+    post_blog_reminder_builder = models.ManyToManyField(Builder, blank=True)
+
+    def create_scheduler(self):
+        s = Scheduler.objects.create(command='add_blog_counter',
+                                     activation_date=self.date + datetime.timedelta(days=-6),
+                                     data='{}')
+        self.add_counter_scheduler = s
+        self.save()
+
+    def create_builders(self):
+        builder_data = json.dumps({
+            'due_date_pk': self.pk
+        })
+
+        s = Builder.objects.create(category='build_pre_blog_reminders',
+                                   activation_date=self.date + datetime.timedelta(days=-3),
+                                   data=builder_data)
+        self.pre_blog_reminder_builder = s
+
+        s = Builder.objects.create(category='build_post_blog_reminders',
+                                   activation_date=self.date + datetime.timedelta(days=1),
+                                   data=builder_data)
+        self.post_blog_reminder_builder.add(s)
+
+        s = Builder.objects.create(category='build_post_blog_reminders',
+                                   activation_date=self.date + datetime.timedelta(days=3),
+                                   data=builder_data)
+        self.post_blog_reminder_builder.add(s)
+
+        self.save()
+
+
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def create_schedulers_builders(sender, instance, **kwargs):
+    if not instance.add_counter_scheduler:
+        instance.create_scheduler()
+        instance.create_builders()
 
 
 class PageNotification(models.Model):
@@ -273,9 +361,9 @@ def gen_uuid_str():
 
 class AddUserLog(models.Model):
     class Meta:
-        verbose_name = 'Add Users' \
+        verbose_name = 'Add Users ' \
                        '(The invites will be sent to the emails on save)'
-        verbose_name_plural = 'Add Users' \
+        verbose_name_plural = 'Add Users ' \
                               '(The invites will be sent to the emails on save)'
     log_id = models.CharField(max_length=36,
                               default=gen_uuid_str)
@@ -301,10 +389,16 @@ class RegLink(models.Model):
                              default='', max_length=300, validators=[validate_email])
     scheduler = models.ForeignKey(Scheduler, null=True,
                                   blank=True, on_delete=models.CASCADE, editable=False)
+    reminder = models.ForeignKey(Scheduler, null=True, related_name='reglinks',
+                                 blank=True, on_delete=models.CASCADE, editable=False)
 
     @property
     def has_scheduler(self):
         return self.scheduler is not None
+
+    @property
+    def has_reminder(self):
+        return self.reminder is not None
 
     @property
     def url(self):
@@ -338,6 +432,12 @@ class RegLink(models.Model):
         if self.user_role != role.get('Student', 3):
             return user
 
+        # increase blog counter
+        date = timezone.now() + datetime.timedelta(days=6)
+        due_dates = BlogPostDueDate.objects.filter(date__lt=date).all()
+        profile.current_blog_count = len(due_dates)
+
+        # setup blog
         blogname = f"{user.username}'s Blog"
         app_config = NewsBlogConfig.objects.create(namespace=namespace)
         app_config.app_title = blogname
@@ -382,8 +482,95 @@ class RegLink(models.Model):
         self.scheduler = s
         self.save()
 
+    def create_reminder(self, trigger_time=None):
+        if self.has_scheduler:
+            validate_email(self.email)
+            scheduler_data = build_send_reminder_json(self.email,
+                                                      self.pk,
+                                                      template='registration_reminder.html',
+                                                      subject='Reminder for registration',
+                                                      template_data={
+                                                          'register_link':
+                                                              settings.INETLOCATION +
+                                                              self.url})
+
+            if not trigger_time:
+                activation_date = self.scheduler.activation_date + datetime.timedelta(days=3)
+            else:
+                activation_date = trigger_time
+
+            s = Scheduler.objects.create(command='send_reg_reminder',
+                                         activation_date=activation_date,
+                                         data=scheduler_data)
+            self.reminder = s
+            self.save()
+        else:
+            self.create_scheduler()
+
 
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reglink_schedulers(sender, instance, **kwargs):
     if instance.adduserlog is not None and instance.scheduler is None:
         instance.create_scheduler()
+
+
+@receiver(models.signals.post_save, sender=RegLink)
+def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
+    if instance.adduserlog is not None and instance.reminder is None:
+        instance.create_reminder()
+
+
+class Comment(models.Model):
+    username = models.CharField(max_length=50)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    content = models.TextField()
+    parent = models.ForeignKey('self', null=True,
+                               on_delete=models.CASCADE,
+                               related_name='replies')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+def get_root_comments(self):
+    return self.comment_set.filter(parent=None).all()
+
+
+Article.add_to_class('get_root_comments', get_root_comments)
+
+
+@receiver(models.signals.post_save, sender=Article)
+def decrease_blog_counter(sender, instance, **kwargs):
+    section = instance.app_config
+    up = UserProfile.objects.get(app_config=section)
+    if up.current_blog_count > 0:
+        up.current_blog_count -= 1
+        print('Decreasing', up.current_blog_count)
+        up.save()
+
+
+class ArticleReview(models.Model):
+    article = models.OneToOneField(Article, on_delete=models.CASCADE)
+    last_reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE,
+                                         null=True, blank=True,
+                                         limit_choices_to={
+                                            'is_superuser': True,
+                                         })
+    is_reviewed = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.last_reviewed_by:
+            if not self.last_reviewed_by.is_superuser:
+                raise ValidationError('The user does not have permissions to review an article.')
+        super(ArticleReview, self).save(*args, **kwargs)
+
+
+@receiver(models.signals.post_save, sender=Article)
+def add_review(sender, instance, **kwargs):
+    ar = ArticleReview.objects.filter(article=instance).all()
+    if not ar:
+        ArticleReview.objects.create(article=instance)
+
+    if ar:
+        ar = ar.first()
+        ar.is_reviewed = False
+        ar.save()

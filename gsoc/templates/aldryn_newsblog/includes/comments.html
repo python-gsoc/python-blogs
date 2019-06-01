@@ -1,0 +1,72 @@
+{% for comment in comments %}
+    <div class="comment-container">
+        <div class="comment" id="comment-{{ comment.pk }}">
+            <div class="c-username">
+                {{ comment.username }}
+            </div>
+            <div class="c-content">
+                {{ comment.content }}
+            </div>
+        </div>
+        <div class="c-actions">
+            <span class="datetime">
+                {{ comment.created_at }}
+            </span>
+            <span class="reply">
+                <i class="fa fa-reply"></i>
+                <span onclick="showCommentForm({{ comment.pk }})" id="reply-{{ comment.pk }}">Reply</span>
+            </span>
+            <span class="share">
+                <i class="fa fa-share"></i>
+                <span onclick="copyCommentUrl({{ comment.pk }})" id="share-{{ comment.pk }}">Share</span>
+            </span>
+            {% if user.is_superuser %}
+                <span class="delete">
+                    <form method="POST" action="{% url 'delete_comment' %}" id="delete-form-{{ comment.pk }}">
+                        {% csrf_token %}
+                        <input type=hidden name="comment_pk" value="{{ comment.pk }}" />
+                        <input type="hidden" name="redirect" id="del-redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" value="" />
+                        <script>
+                            document.getElementById('del-redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}').value = window.location.pathname;
+                        </script>
+                    </form>
+                    <i class="fa fa-trash"></i>
+                    <span onclick="deleteComment({{ comment.pk }})" id="delete-{{ comment.pk }}">Delete</span>
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="aldryn-newsblog-subcomments">
+        {% include "aldryn_newsblog/includes/comments.html" with comments=comment.replies.all parent=comment article=article user=user csrf_token=csrf_token only %}
+    </div>
+{% endfor %}
+
+<form id="form-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" class="pure-form comment-form" action="{% url 'new_comment' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="redirect" id="redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" value="" />
+    
+    <script>
+        document.getElementById('redirect-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}').value = window.location.pathname;
+    </script>
+    
+    <input type="hidden" name="article" value="{{ article.pk }}" />
+    
+    {% if parent %}
+        <input type="hidden" name="parent" value="{{ parent.pk }}" />
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+        <input type="hidden" name="user" value="{{ user.pk }}" />
+    {% endif %}
+
+    <fieldset class="pure-group">
+        {% if user.is_authenticated %}
+            <input type="text" name="username" value="{{ user.username }}" class="pure-input-1" disabled />
+        {% else %}
+            <input type="text" name="username" placeholder="Username" class="pure-input-1" required />
+        {% endif %}
+        <textarea name="comment" placeholder="Comment" class="pure-input-1" required></textarea>
+    </fieldset>
+    
+    <input class="pure-button pure-button-primary pure-input-1" type="submit" value="Submit"/>
+</form>

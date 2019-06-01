@@ -50,7 +50,7 @@ function beforeUpload() {
   const offlineCancel = function(){
     inPageInfo("Proposal upload canceled.")
     };
-  const infoText = 'Please make sure there is no private data in your pdf file. Confirm?'
+  const infoText = 'Please make sure there is no private data in your pdf file as this WILL be shown publically on the internet. Confirm?'
   inPageInfo(infoText, false);
   showInfoBoxBtns(uploadProposal, offlineCancel)
 }
@@ -72,6 +72,7 @@ function showInfoBoxBtns(callback1, callback2) {
 }
 function onFindPrivateData(text) {
   const successCallback = function() {
+    axios.get('/confirm_proposal');
     inPageInfo("Upload succeeded! Please refresh to get rid of the GIANT banner!",false);
     setProposalUploadingStatus(false);
   };
@@ -101,7 +102,7 @@ function uploadProposal() {
       if(privateData["emails"].length > 0 ||
       privateData["possible_phone_numbers"].length > 0 ||
       privateData["locations"].length > 0) {
-        let confirmText = "We seemed to have found these private data in your pdf file. Are you sure to proceed?";
+        let confirmText = "We seemed to have found private data in your pdf file. WE DO NOT RECOMEND UPLOADING A PDF WITH PHONE NUMBERS, PHYSICAL ADDRESS, OR EMAIL ADDRESSES AS THIS WILL BE SHOWN PUBLICALLY ON THE INTERNET. Are you sure to proceed?";
         if (privateData['emails'].length > 0)
         confirmText += `<br> Email addresses: ${privateData['emails'].toString()}`
         if(privateData['possible_phone_numbers'].length > 0)
@@ -111,6 +112,7 @@ function uploadProposal() {
         onFindPrivateData(confirmText);
         return
       }
+      axios.get('/confirm_proposal');
       setProposalUploadingStatus(false);
       inPageInfo('Proposal upload succeeded! Please refresh to get rid of the GIANT banner!', false);
     })

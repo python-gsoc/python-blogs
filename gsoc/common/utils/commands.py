@@ -7,10 +7,11 @@ from django.conf import settings
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
 from django.template import Template
-from gsoc.models import Scheduler
-
 from django.contrib.auth.models import User
+
 from .irc import send_message
+
+from gsoc.models import Scheduler, RegLink, GsocYear, UserProfile
 
 
 def send_email(scheduler: Scheduler):
@@ -85,8 +86,35 @@ def send_irc_msgs(schedulers):
     sends the irc messages from `send_irc_msg` `Scheduler` objects
     and returns any error encountered
     """
-    send_message([_.data for _ in schedulers])
-    for s in schedulers:
-        s.success = True
-        s.save()
-    return None
+    try:
+        send_message([_.data for _ in schedulers])
+        for s in schedulers:
+            s.success = True
+            s.save()
+        return None
+    except Exception as e:
+        return str(e)
+
+
+def send_reg_reminder(scheduler: Scheduler):
+    try:
+        data = json.loads(scheduler.data)
+        reglink = RegLink.objects.get(pk=data['object_pk'])
+        if reglink.is_usable():
+            return send_email(scheduler)
+        else:
+            return "link already used"
+    except Exception as e:
+        return str(e)
+
+
+def add_blog_counter(scheduler: Scheduler):
+    try:
+        gsoc_year = GsocYear.objects.first()
+        current_profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+        for profile in current_profiles:
+            profile.current_blog_count += 1
+            profile.save()
+        return None
+    except Exception as e:
+        return str(e)

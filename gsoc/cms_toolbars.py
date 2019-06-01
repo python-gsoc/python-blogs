@@ -13,6 +13,7 @@ from cms.utils.urlutils import admin_reverse
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language_from_request
+from django.urls import reverse
 
 from aldryn_translation_tools.utils import (
     get_admin_url, get_object_from_request,
@@ -21,6 +22,8 @@ from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
 from cms.models import Page
+
+from gsoc.models import ArticleReview
 
 
 def add_admin_menu(self):
@@ -40,21 +43,26 @@ def add_admin_menu(self):
                 sites_menu.add_link_item(site.name, url='http://%s' % site.domain,
                                          active=site.pk == self.current_site.pk)
 
+        user = getattr(self.request, 'user', None)
+
         # admin
         self._admin_menu.add_sideframe_item(_('Administration'), url=admin_reverse('index'))
 
         # scheduler
-        self._admin_menu.add_sideframe_item(_('Schedulers'), url=admin_reverse('gsoc_scheduler_changelist'))
+        if user and user.is_superuser:
+            self._admin_menu.add_sideframe_item(_('Schedulers'),
+                                                url=admin_reverse('gsoc_scheduler_changelist'))
         self._admin_menu.add_break(ADMINISTRATION_BREAK)
 
         # cms users settings
         self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
-        self._admin_menu.add_modal_item(
-            name='Add Users',
-            url=admin_reverse('gsoc_adduserlog_add'),
-            on_close=None,
-            )
+        if user and user.is_superuser:
+            self._admin_menu.add_modal_item(
+                name='Add Users',
+                url=admin_reverse('gsoc_adduserlog_add'),
+                on_close=None,
+                )
         # clipboard
         if self.toolbar.edit_mode_active:
             # True if the clipboard exists and there's plugins in it.
@@ -85,7 +93,7 @@ def add_goto_blog_button(self):
     user = getattr(self.request, 'user', None)
     if user and user.is_current_year_student():
         profile = user.student_profile()
-        ns = profile.app_config.app_title
+        ns = profile.app_config.namespace
         page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
         url = page.get_absolute_url()
         self.toolbar.add_button(_('My Blog'), url, side=self.toolbar.RIGHT)
@@ -135,15 +143,18 @@ def populate(self):
             'aldryn_newsblog.add_newsblogconfig')
         config_perms = [change_config_perm, add_config_perm]
 
-        add_article_perm = False
         change_article_perm = False
         userprofiles = user.userprofile_set.all()
-        for profile in userprofiles:
-            if profile.app_config == config:
-                add_article_perm = True
-                change_article_perm = True
-                break
 
+        if user.is_superuser:
+            change_article_perm = True
+        else:
+            for profile in userprofiles:
+                if profile.app_config == config:
+                    change_article_perm = True
+                    break
+
+        add_article_perm = user.is_superuser if article else False
         delete_article_perm = user.is_superuser if article else False
 
         article_perms = [change_article_perm, add_article_perm,
@@ -168,12 +179,12 @@ def populate(self):
                                 **url_args)
             menu.add_sideframe_item(_('Article list'), url=url)
 
-        if add_article_perm:
-            url_args = {'app_config': config.pk, 'owner': user.pk, }
-            if language:
-                url_args.update({'language': language, })
-            url = get_admin_url('aldryn_newsblog_article_add', **url_args)
-            menu.add_modal_item(_('Add new article'), url=url)
+        # if add_article_perm:
+        #     url_args = {'app_config': config.pk, 'owner': user.pk, }
+        #     if language:
+        #         url_args.update({'language': language, })
+        #     url = get_admin_url('aldryn_newsblog_article_add', **url_args)
+        #     menu.add_modal_item(_('Add new article'), url=url)
 
         if change_article_perm and article:
             url_args = {}
@@ -191,6 +202,15 @@ def populate(self):
                                 [article.pk, ])
             menu.add_modal_item(_('Delete this article'), url=url,
                                 on_close=redirect_url)
+
+        try:
+            article_review = ArticleReview.objects.get(article=article)
+            if not article_review.is_reviewed and user.is_superuser:
+                url = reverse('review_article', args=[article.id])
+                self.toolbar.add_button(_('Mark Reviewed'), url=url,
+                                        side=self.toolbar.RIGHT)
+        except ArticleReview.DoesNotExist:
+            pass
 
 
 NewsBlogToolbar.populate = populate

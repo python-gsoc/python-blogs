@@ -146,3 +146,11 @@ Contact
 	</div>
 	<!-- Contact -->
 {% endblock %}
+
+{% block js %}
+<script>
+	grecaptcha.ready(function() {
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'contact'});
+	});
+</script>
+{% endblock %}

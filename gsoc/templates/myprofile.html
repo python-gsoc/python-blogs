@@ -81,3 +81,11 @@ My Profile
 </div>
   	<!-- End Upload Accepted Proposal -->
 {% endblock %}
+
+{% block js %}
+<script>
+	grecaptcha.ready(function() {
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'myprofile'});
+	});
+</script>
+{% endblock %}

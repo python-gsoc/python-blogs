@@ -1,3 +1,5 @@
+from .models import UserProfile
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -5,6 +7,8 @@ from cms.api import add_plugin
 from cms.utils import permissions
 
 from djangocms_text_ckeditor.html import clean_html
+
+from aldryn_newsblog.models import Article
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.cms_wizards import (
@@ -48,6 +52,10 @@ def __init__(self, **kwargs):
     get_published_app_configs()
 
     userprofiles = self.user.userprofile_set.all()
+
+    if self.user.is_superuser:
+        userprofiles = UserProfile.objects.all()
+
     app_config_choices = []
     for profile in userprofiles:
         app_config_choices.append((profile.app_config.pk, profile.app_config.get_app_title()))
@@ -63,11 +71,12 @@ def save(self, commit=True):
     article = super(CreateNewsBlogArticleForm, self).save(commit=False)
     article.owner = self.user
     article.app_config = NewsBlogConfig.objects.filter(pk=self.cleaned_data['app_config']).first()
+    article.is_published = True
     article.save()
 
     # If 'content' field has value, create a TextPlugin with same and add it to the PlaceholderField
     content = clean_html(self.cleaned_data.get('content', ''), False)
-    if content and permissions.has_plugin_permission(self.user, 'TextPlugin', 'add'):
+    if content:
         add_plugin(
             placeholder=article.content,
             plugin_type='TextPlugin',

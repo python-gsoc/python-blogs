@@ -2,6 +2,7 @@ import os
 import random
 
 from django.shortcuts import render
+from django.contrib import messages
 
 from gsoc.models import (
     GsocYear,
@@ -25,12 +26,11 @@ def list_blogs(request):
             if profile.app_config:
                 flag = True
                 ns = profile.app_config.namespace
-                page = Page.objects.filter(application_namespace=ns)
-                page = page.filter(publisher_is_draft=False).first()
+                page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
-                proposal_name = profile.accepted_proposal_pdf.name
-                proposal_path = os.path.join(MEDIA_URL, proposal_name)
+                proposal_name = profile.accepted_proposal_pdf.name if profile.proposal_confirmed else None
+                proposal_path = os.path.join(MEDIA_URL, proposal_name) if proposal_name else None
 
                 blogset.append({
                     'title': profile.app_config.app_title,
@@ -42,11 +42,13 @@ def list_blogs(request):
                     })
 
         if flag:
+            blogset = sorted(blogset, key=lambda i: (i['title']))
             blogsets.append((year.gsoc_year, blogset))
 
-    err = "No blogs currently! Please visit again later." if not blogsets else None
+    if not blogsets:
+        messages.add_message(request, messages.ERROR,
+                             'No blogs currently! Please visit again later.')
 
     return render(request, 'list_view.html', {
         'blogsets': blogsets,
-        'errors': [err]
         })

@@ -324,3 +324,11 @@ Mentors
 		</div>
 	</div> <!-- content -->
 {% endblock %}
+
+{% block js %}
+<script>
+	grecaptcha.ready(function() {
+		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'mentors'});
+	});
+</script>
+{% endblock %}
