@@ -81,11 +81,15 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
             choices=app_config_choices
             )
 
+    def clean(self):
+        cd = self.cleaned_data
+        app_config = NewsBlogConfig.objects.get(pk=self.cleaned_data['app_config'])
+        cd['app_config'] = app_config
+        return cd
+
     def save(self, commit=True):
         article = super(CreateNewsBlogArticleForm, self).save(commit=False)
         article.owner = self.user
-        article.app_config = NewsBlogConfig.objects.\
-            filter(pk=self.cleaned_data['app_config']).first()
         article.is_published = True
         article.save()
         return article
