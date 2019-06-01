@@ -54,6 +54,7 @@ def article_get_form():
         # self.actions = None
         form = ori_get_form(self, request, obj, **kwargs)
         if is_request_by_student:
+            self.actions = None
             self.fieldsets = (
                 (None, {
                     'fields': (
@@ -202,12 +203,21 @@ def Article_get_queryset(self, request):
     return qs
 
 
+def Article_get_actions(self, request):
+    actions = super(ArticleAdmin, self).get_actions(request)
+    if not request.user.is_superuser:
+        return []
+    else:
+        return actions
+
+
 ArticleAdmin.save_model = Article_save_model
 ArticleAdmin.delete_model = Article_delete_model
 ArticleAdmin.get_queryset = Article_get_queryset
 ArticleAdmin.get_form = article_get_form()
 ArticleAdmin.add_view = Article_add_view
 ArticleAdmin.change_view = Article_change_view
+ArticleAdmin.get_actions = Article_get_actions
 
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
