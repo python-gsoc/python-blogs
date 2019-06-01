@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from cms.api import add_plugin
 from cms.utils import permissions
+from cms.wizards.forms import BaseFormMixin
+from cms.wizards.wizard_pool import wizard_pool
 
 from djangocms_text_ckeditor.html import clean_html
 
@@ -13,9 +15,11 @@ from aldryn_newsblog.models import Article
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.cms_wizards import (
     NewsBlogArticleWizard,
-    CreateNewsBlogArticleForm,
-    get_published_app_configs
+    get_published_app_configs,
+    newsblog_article_wizard
 )
+
+from parler.forms import TranslatableModelForm
 
 
 def user_has_add_permission(self, user, **kwargs):
@@ -41,51 +45,59 @@ def user_has_add_permission(self, user, **kwargs):
 NewsBlogArticleWizard.user_has_add_permission = user_has_add_permission
 
 
-CreateNewsBlogArticleForm.Meta.fields = ['title']
+class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
+    """
+    The ModelForm for the NewsBlog article wizard. Note that Article has a
+    number of translated fields that we need to access, so, we use
+    TranslatableModelForm
+    """
 
+    class Meta:
+        model = Article
+        fields = ['title', 'lead_in', 'app_config']
+        # The natural widget for app_config is meant for normal Admin views and
+        # contains JS to refresh the page on change. This is not wanted here.
+        widgets = {'app_config': forms.Select()}
 
-def __init__(self, **kwargs):
-    super(CreateNewsBlogArticleForm, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        super(CreateNewsBlogArticleForm, self).__init__(**kwargs)
 
-    # If there's only 1 (or zero) app_configs, don't bother show the
-    # app_config choice field, we'll choose the option for the user.
-    get_published_app_configs()
+        # If there's only 1 (or zero) app_configs, don't bother show the
+        # app_config choice field, we'll choose the option for the user.
+        get_published_app_configs()
 
-    userprofiles = self.user.userprofile_set.all()
+        userprofiles = self.user.userprofile_set.all()
 
-    if self.user.is_superuser:
-        userprofiles = UserProfile.objects.all()
+        if self.user.is_superuser:
+            userprofiles = UserProfile.objects.all()
 
-    app_config_choices = []
-    for profile in userprofiles:
-        app_config_choices.append((profile.app_config.pk, profile.app_config.get_app_title()))
+        app_config_choices = []
+        for profile in userprofiles:
+            app_config_choices.append((profile.app_config.pk, profile.app_config.get_app_title()))
 
-    self.fields['app_config'] = forms.ChoiceField(
-        label=_('Section'),
-        required=True,
-        choices=app_config_choices
-        )
-
-
-def save(self, commit=True):
-    article = super(CreateNewsBlogArticleForm, self).save(commit=False)
-    article.owner = self.user
-    article.app_config = NewsBlogConfig.objects.filter(pk=self.cleaned_data['app_config']).first()
-    article.is_published = True
-    article.save()
-
-    # If 'content' field has value, create a TextPlugin with same and add it to the PlaceholderField
-    content = clean_html(self.cleaned_data.get('content', ''), False)
-    if content:
-        add_plugin(
-            placeholder=article.content,
-            plugin_type='TextPlugin',
-            language=self.language_code,
-            body=content,
+        self.fields['app_config'] = forms.ChoiceField(
+            label=_('Section'),
+            required=True,
+            choices=app_config_choices
             )
 
-    return article
+    def save(self, commit=True):
+        article = super(CreateNewsBlogArticleForm, self).save(commit=False)
+        article.owner = self.user
+        article.app_config = NewsBlogConfig.objects.\
+            filter(pk=self.cleaned_data['app_config']).first()
+        article.is_published = True
+        article.save()
+        return article
 
 
-CreateNewsBlogArticleForm.__init__ = __init__
-CreateNewsBlogArticleForm.save = save
+wizard_pool.unregister(newsblog_article_wizard)
+
+newsblog_article_wizard = NewsBlogArticleWizard(
+    title=_(u"New news/blog article"),
+    weight=200,
+    form=CreateNewsBlogArticleForm,
+    description=_(u"Create a new news/blog article.")
+)
+
+wizard_pool.register(newsblog_article_wizard)

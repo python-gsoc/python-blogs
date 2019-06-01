@@ -61,10 +61,12 @@ class BlogsFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        request = get_request()
-        c = ContentRenderer(request)
-        html = c.render_placeholder(item.content, RequestContext(request))
-        return remove_control_characters(html)
+        if not item.lead_in:
+            request = get_request()
+            c = ContentRenderer(request)
+            html = c.render_placeholder(item.content, RequestContext(request))
+            return remove_control_characters(html)
+        return item.lead_in
 
     def item_pubdate(self, item):
         return item.publishing_date

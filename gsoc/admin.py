@@ -62,6 +62,7 @@ def article_get_form():
                         'is_published',
                         'is_featured',
                         'featured_image',
+                        'lead_in',
                         )}),
                 # (_('Meta Options'),
                 #  {'classes': ('collapse',),
@@ -201,16 +202,12 @@ def Article_get_queryset(self, request):
     return qs
 
 
-def has_add_permission(self, request, obj=None):
-    return False
-
 ArticleAdmin.save_model = Article_save_model
 ArticleAdmin.delete_model = Article_delete_model
 ArticleAdmin.get_queryset = Article_get_queryset
-# ArticleAdmin.get_form = article_get_form()
+ArticleAdmin.get_form = article_get_form()
 ArticleAdmin.add_view = Article_add_view
 ArticleAdmin.change_view = Article_change_view
-ArticleAdmin.has_add_permission = has_add_permission
 
 admin.site.unregister(Article)
 admin.site.register(Article, ArticleAdmin)
