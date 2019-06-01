@@ -8,6 +8,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
+from django.urls import reverse
 
 from aldryn_people.models import Person
 from aldryn_newsblog.admin import ArticleAdmin
@@ -374,8 +375,19 @@ admin.site.register(Timeline, TimelineAdmin)
 
 
 class ArticleReviewAdmin(admin.ModelAdmin):
-    list_display = ('article', 'is_reviewed', 'last_reviewed_by')
+    list_display = ('article', 'author', 'article_link', 'is_reviewed', 'last_reviewed_by')
     list_filter = ('last_reviewed_by', 'is_reviewed')
+    fields = ('article', 'author', 'article_link', 'lead', 'is_reviewed', 'last_reviewed_by')
+
+    def lead(self, obj):
+        return obj.article.lead_in
+
+    def author(self, obj):
+        return obj.article.owner
+
+    def article_link(self, obj):
+        return reverse('{}:article-detail'.format(obj.article.app_config.namespace),
+                       args=[obj.article.slug])
 
     def has_add_permission(self, request, obj=None):
         return False
