@@ -20,7 +20,6 @@ article > heading {
 .lead {
     font-family: 'Source Serif Pro', serif;
     text-align: justify;
-    font-style: italic;
 }
 
 .article-content {
