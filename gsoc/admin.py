@@ -390,7 +390,7 @@ class ArticleReviewAdmin(admin.ModelAdmin):
     def article_link(self, obj):
         url = reverse('{}:article-detail'.format(obj.article.app_config.namespace),
                        args=[obj.article.slug])
-        return mark_safe('<a href="{}">Goto Article</a>'.format(url))
+        return mark_safe('<a href="{}" target="_blank">Goto Article</a>'.format(url))
 
     def has_add_permission(self, request, obj=None):
         return False
