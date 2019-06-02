@@ -202,7 +202,7 @@ def populate(self):
             else:
                 text = _('Publish Article')
                 url = reverse('publish_article', args=[article.id])
-            
+
             self.toolbar.add_button(text, url=url,
                                     side=self.toolbar.RIGHT)
 
