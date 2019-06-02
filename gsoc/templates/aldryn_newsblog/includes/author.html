@@ -7,7 +7,7 @@
                 {% thumbnail author.visual "50x50" crop upscale subject_location=author.visual.subject_location as author_image %}
                 <img src="{{ author_image.url }}" width="50" height="50" alt="{{ author.name }}">
             {% endif %}
-            {{ author.name }}
+            {{ owner.username }}
         </a>
     </p>
     {% if author.function %}<p>{{ author.function }}</p>{% endif %}

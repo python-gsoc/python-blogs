@@ -7,6 +7,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
@@ -386,8 +387,9 @@ class ArticleReviewAdmin(admin.ModelAdmin):
         return obj.article.owner
 
     def article_link(self, obj):
-        return reverse('{}:article-detail'.format(obj.article.app_config.namespace),
+        url = reverse('{}:article-detail'.format(obj.article.app_config.namespace),
                        args=[obj.article.slug])
+        return mark_safe('<a href="{}">Goto Article</a>'.format(url))
 
     def has_add_permission(self, request, obj=None):
         return False
