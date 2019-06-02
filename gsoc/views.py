@@ -288,4 +288,7 @@ def review_article(request, article_id):
             ar.save()
         except ArticleReview.DoesNotExist:
             pass
+        admin_request = request.GET.get('admin')
+        if admin_request == 'true':
+            return redirect(reverse('admin:gsoc_articlereview_change', args=[ar.id]))
     return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
