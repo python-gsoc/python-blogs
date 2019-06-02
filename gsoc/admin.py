@@ -379,6 +379,7 @@ class ArticleReviewAdmin(admin.ModelAdmin):
     list_display = ('article', 'author', 'article_link', 'is_reviewed', 'last_reviewed_by')
     list_filter = ('last_reviewed_by', 'is_reviewed')
     fields = ('article', 'author', 'article_link', 'lead', 'is_reviewed', 'last_reviewed_by')
+    change_form_template = 'admin/article_review_change_form.html'
 
     def lead(self, obj):
         return obj.article.lead_in
