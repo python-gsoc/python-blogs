@@ -66,5 +66,9 @@ urlpatterns += [
 # Review article routes
 urlpatterns += [
     url(r'^article/review/(?P<article_id>[0-9]+)/$', gsoc.views.review_article,
-        name='review_article')
+        name='review_article'),
+    url(r'^article/unpublish/(?P<article_id>[0-9]+)/$', gsoc.views.unpublish_article,
+        name='unpublish_article'),
+    url(r'^article/publish/(?P<article_id>[0-9]+)/$', gsoc.views.publish_article,
+        name='publish_article')
 ]
