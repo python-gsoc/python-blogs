@@ -31,7 +31,7 @@
         <h1 class="heading">
             {% render_model article "title" %}
         </h1>
-        {% include "aldryn_newsblog/includes/author.html" with author=article.author %}
+        {% include "aldryn_newsblog/includes/author.html" with author=article.author owner=article.owner %}
         {%  else %}
         <h2 class="heading">
             {% render_model article "title" %}
