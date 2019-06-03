@@ -292,3 +292,27 @@ def review_article(request, article_id):
         if admin_request == 'true':
             return redirect(reverse('admin:gsoc_articlereview_change', args=[ar.id]))
     return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
+
+
+@decorators.login_required
+def unpublish_article(request, article_id):
+    if request.method == 'GET':
+        a = Article.objects.get(id=article_id)
+        if request.user == a.owner or request.user.is_superuser:
+            a.is_published = False
+            a.save()
+        else:
+            messages.error(request, 'User does not have permission to unpublish article')
+    return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
+
+
+@decorators.login_required
+def publish_article(request, article_id):
+    if request.method == 'GET':
+        a = Article.objects.get(id=article_id)
+        if request.user == a.owner or request.user.is_superuser:
+            a.is_published = True
+            a.save()
+        else:
+            messages.error(request, 'User does not have permission to publish article')
+    return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))

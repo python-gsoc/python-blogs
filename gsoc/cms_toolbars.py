@@ -195,6 +195,17 @@ def populate(self):
             menu.add_modal_item(_('Edit this article'), url=url,
                                 active=True)
 
+        if change_article_perm and article:
+            if article.is_published:
+                text = _('Unpublish Article')
+                url = reverse('unpublish_article', args=[article.id])
+            else:
+                text = _('Publish Article')
+                url = reverse('publish_article', args=[article.id])
+
+            self.toolbar.add_button(text, url=url,
+                                    side=self.toolbar.RIGHT)
+
         if delete_article_perm and article:
             redirect_url = self.get_on_delete_redirect_url(
                 article, language=language)
