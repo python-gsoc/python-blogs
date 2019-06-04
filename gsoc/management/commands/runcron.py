@@ -51,15 +51,16 @@ class Command(BaseCommand):
         if len(builders) is 0:
             self.stdout.write(self.style.SUCCESS('No build tasks'), ending='\n')
         else:
-            self.stdout.write('Running build task {}:{}'
-                              .format(builder.category, builder.pk), ending='\n')
-            getattr(build_tasks, builder.category)(builder)
-            self.stdout.write(self.style
-                              .SUCCESS('Finished build task {}:{}'
-                                       .format(builder.category, builder.pk)),
-                              ending='\n')
-            builder.built = True
-            builder.save()
+            for builder in builders:
+                self.stdout.write('Running build task {}:{}'
+                                    .format(builder.category, builder.pk), ending='\n')
+                getattr(build_tasks, builder.category)(builder)
+                self.stdout.write(self.style
+                                    .SUCCESS('Finished build task {}:{}'
+                                            .format(builder.category, builder.pk)),
+                                    ending='\n')
+                builder.built = True
+                builder.save()
 
     def handle_process(self, scheduler):
         self.stdout.write('Running command {}:{}'
