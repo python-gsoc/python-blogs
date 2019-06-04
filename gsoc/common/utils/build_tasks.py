@@ -60,14 +60,14 @@ def build_post_blog_reminders(builder):
                 student_email,
                 template='post_blog_reminder_student.html',
                 subject='Reminder for Weekly Blog Post',
-                template_data=template_data
+                template_data=student_template_data
                 )
 
             scheduler_data_mentors = build_send_mail_json(
                 mentors_emails,
                 template='post_blog_reminder_mentors.html',
                 subject='Weekly Blog Post missed by a Student of your Sub-Org',
-                template_data=template_data
+                template_data=mentors_template_data
                 )
 
             Scheduler.objects.create(command='send_email',
