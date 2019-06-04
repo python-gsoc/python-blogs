@@ -52,7 +52,7 @@ def build_post_blog_reminders(builder):
             suborg_admins = UserProfile.objects.filter(suborg_full_name=suborg, role=1)
             student_email = profile.user.email
 
-            mentors_email = ['gsoc-admins@python.org']
+            mentors_emails = ['gsoc-admins@python.org']
             mentors_emails.extend([_.user.email for _ in mentors])
             mentors_emails.extend([_.user.email for _ in suborg_admins])
 
