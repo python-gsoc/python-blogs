@@ -533,16 +533,17 @@ class Comment(models.Model):
     def send_notifications(self):
         article_link = self.article.get_absolute_url()
         comment_link = '{}#comment-{}'.format(article_link, self.pk)
+        template_data = {
+            'article': self.article.title,
+            'created_at': self.created_at.strftime('%I:%M %p, %d %B %Y'),
+            'username': self.username,
+            'link': comment_link,
+        }
         scheduler_data = build_send_mail_json(self.article.owner.email,
                                               template='comment_notification.html',
                                               subject='{} commented on your article'.
                                                       format(self.username),
-                                              template_data={
-                                                  'article': self.article.title,
-                                                  'created_at': self.created_at.
-                                                                strftime('%I:%M %p, %d %B %Y'),
-                                                  'username': self.username,
-                                                  'link': comment_link})
+                                              template_data=template_data)
         Scheduler.objects.create(command='send_email',
                                  data=scheduler_data)
 
@@ -551,12 +552,7 @@ class Comment(models.Model):
                                                   template='comment_reply_notification.html',
                                                   subject='{} replied to your comment'.
                                                           format(self.username),
-                                                  template_data={
-                                                      'article': self.article.title,
-                                                      'created_at': self.created_at.
-                                                          strftime('%I:%M %p, %d %B %Y'),
-                                                      'username': self.username,
-                                                      'link': comment_link})
+                                                  template_data=template_data)
             Scheduler.objects.create(command='send_email',
                                      data=scheduler_data)
 

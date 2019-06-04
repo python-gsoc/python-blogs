@@ -53,12 +53,12 @@ class Command(BaseCommand):
         else:
             for builder in builders:
                 self.stdout.write('Running build task {}:{}'
-                                    .format(builder.category, builder.pk), ending='\n')
+                                  .format(builder.category, builder.pk), ending='\n')
                 getattr(build_tasks, builder.category)(builder)
                 self.stdout.write(self.style
-                                    .SUCCESS('Finished build task {}:{}'
-                                            .format(builder.category, builder.pk)),
-                                    ending='\n')
+                                  .SUCCESS('Finished build task {}:{}'
+                                           .format(builder.category, builder.pk)),
+                                  ending='\n')
                 builder.built = True
                 builder.save()
 
