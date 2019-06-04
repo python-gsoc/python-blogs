@@ -530,12 +530,47 @@ class Comment(models.Model):
                                related_name='replies')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def send_notifications(self):
+        article_link = self.article.get_absolute_url()
+        comment_link = '{}#comment-{}'.format(article_link, self.pk)
+        scheduler_data = build_send_mail_json(self.article.owner.email,
+                                              template='comment_notification.html',
+                                              subject='{} commented on your article'.\
+                                                      format(self.username),
+                                              template_data={
+                                                  'article': self.article.title,
+                                                  'created_at': self.created_at.\
+                                                      strftime('%I:%M %p, %d %B %Y'),
+                                                  'username': self.username,
+                                                  'link': comment_link})
+        Scheduler.objects.create(command='send_email',
+                                 data=scheduler_data)
+
+        if self.parent and self.parent.user:
+            scheduler_data = build_send_mail_json(self.parent.user.email,
+                                                  template='comment_reply_notification.html',
+                                                  subject='{} replied to your comment'.\
+                                                      format(self.username),
+                                                  template_data={
+                                                      'article': self.article.title,
+                                                      'created_at': self.created_at.\
+                                                          strftime('%I:%M %p, %d %B %Y'),
+                                                      'username': self.username,
+                                                      'link': comment_link})
+            Scheduler.objects.create(command='send_email',
+                                     data=scheduler_data)
+
 
 def get_root_comments(self):
     return self.comment_set.filter(parent=None).all()
 
 
 Article.add_to_class('get_root_comments', get_root_comments)
+
+
+@receiver(models.signals.post_save, sender=Comment)
+def send_comment_notification(sender, instance, **kwargs):
+    instance.send_notifications()
 
 
 @receiver(models.signals.post_save, sender=Article)
