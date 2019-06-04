@@ -535,12 +535,12 @@ class Comment(models.Model):
         comment_link = '{}#comment-{}'.format(article_link, self.pk)
         scheduler_data = build_send_mail_json(self.article.owner.email,
                                               template='comment_notification.html',
-                                              subject='{} commented on your article'.\
+                                              subject='{} commented on your article'.
                                                       format(self.username),
                                               template_data={
                                                   'article': self.article.title,
-                                                  'created_at': self.created_at.\
-                                                      strftime('%I:%M %p, %d %B %Y'),
+                                                  'created_at': self.created_at.
+                                                                strftime('%I:%M %p, %d %B %Y'),
                                                   'username': self.username,
                                                   'link': comment_link})
         Scheduler.objects.create(command='send_email',
@@ -549,11 +549,11 @@ class Comment(models.Model):
         if self.parent and self.parent.user:
             scheduler_data = build_send_mail_json(self.parent.user.email,
                                                   template='comment_reply_notification.html',
-                                                  subject='{} replied to your comment'.\
-                                                      format(self.username),
+                                                  subject='{} replied to your comment'.
+                                                          format(self.username),
                                                   template_data={
                                                       'article': self.article.title,
-                                                      'created_at': self.created_at.\
+                                                      'created_at': self.created_at.
                                                           strftime('%I:%M %p, %d %B %Y'),
                                                       'username': self.username,
                                                       'link': comment_link})
