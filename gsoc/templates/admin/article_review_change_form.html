@@ -1,7 +1,26 @@
 {% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+    <style>
+        .submit-row .closelink {
+            background-color: #00BBFF !important;
+        }
+
+        .submit-row .closelink:hover {
+            background-color: #447e9b !important;
+            color: white !important;
+        }
+    </style>
+{% endblock %}
+
 
 {% block submit_buttons_bottom %}
-    <div class="submit-row">
-        <a href="{% url 'review_article' article_id=original.article.id %}?admin=true" class="closelink">Mark Reviewed</a>
-    </div>
+    {% if not original.is_reviewed %}
+        <div class="submit-row">
+            <a href="{% url 'review_article' article_id=original.article.id %}?admin=true" class="closelink">Mark Reviewed</a>
+        </div>
+    {% endif %}
 {% endblock %}
