@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
+from django.utils.html import mark_safe
 from django.core.validators import validate_email
 from django.utils import timezone
 from django.shortcuts import reverse
@@ -577,6 +578,15 @@ def decrease_blog_counter(sender, instance, **kwargs):
         up.current_blog_count -= 1
         print('Decreasing', up.current_blog_count)
         up.save()
+
+
+@receiver(models.signals.post_save, sender=Article)
+def clean_html(sender, instance, **kwargs):
+    if '<pre>' in instance.lead_in or '</pre>' in instance.lead_in:
+        instance.lead_in = re.sub(r'<pre>', '<code>', instance.lead_in)
+        instance.lead_in = re.sub(r'<\/pre>', '</code>', instance.lead_in)
+        instance.lead_in = mark_safe(instance.lead_in)
+        instance.save()
 
 
 class ArticleReview(models.Model):
