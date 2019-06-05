@@ -566,7 +566,8 @@ def is_unclean(self):
     unclean_texts = (
         '<pre>',
         '</pre>',
-        '<meta charset="utf-8">'
+        '&lt;',
+        '&gt;',
     )
     for _ in unclean_texts:
         if _ in self.lead_in:
@@ -577,7 +578,8 @@ def is_unclean(self):
 def clean_article_html(self):
     self.lead_in = re.sub(r'<pre>', '<code>', self.lead_in)
     self.lead_in = re.sub(r'<\/pre>', '</code>', self.lead_in)
-    self.lead_in = re.sub('<meta charset="utf-8">', '', self.lead_in)
+    self.lead_in = re.sub(r'&lt;', '<', self.lead_in)
+    self.lead_in = re.sub(r'&gt;', '>', self.lead_in)
     self.lead_in = mark_safe(self.lead_in)
     self.save()
 
