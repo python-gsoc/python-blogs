@@ -582,7 +582,7 @@ def decrease_blog_counter(sender, instance, **kwargs):
 
 @receiver(models.signals.post_save, sender=Article)
 def clean_html(sender, instance, **kwargs):
-    if '<pre>' in instance.lead_in or '</pre>' in  instance.lead_in:
+    if '<pre>' in instance.lead_in or '</pre>' in instance.lead_in:
         instance.lead_in = re.sub(r'<pre>', '<code>', instance.lead_in)
         instance.lead_in = re.sub(r'<\/pre>', '</code>', instance.lead_in)
         instance.lead_in = mark_safe(instance.lead_in)
