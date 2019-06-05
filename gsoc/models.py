@@ -562,7 +562,29 @@ def get_root_comments(self):
     return self.comment_set.filter(parent=None).all()
 
 
+def is_unclean(self):
+    unclean_texts = (
+        '<pre>',
+        '</pre>',
+        '<meta charset="utf-8">'
+    )
+    for _ in unclean_texts:
+        if _ in self.lead_in:
+            return True
+    return False
+
+
+def clean_article_html(self):
+    self.lead_in = re.sub(r'<pre>', '<code>', self.lead_in)
+    self.lead_in = re.sub(r'<\/pre>', '</code>', self.lead_in)
+    self.lead_in = re.sub('<meta charset="utf-8">', '', self.lead_in)
+    self.lead_in = mark_safe(self.lead_in)
+    self.save()
+
+
 Article.add_to_class('get_root_comments', get_root_comments)
+Article.add_to_class('is_unclean', is_unclean)
+Article.add_to_class('clean_article_html', clean_article_html)
 
 
 @receiver(models.signals.post_save, sender=Comment)
@@ -582,11 +604,8 @@ def decrease_blog_counter(sender, instance, **kwargs):
 
 @receiver(models.signals.post_save, sender=Article)
 def clean_html(sender, instance, **kwargs):
-    if '<pre>' in instance.lead_in or '</pre>' in instance.lead_in:
-        instance.lead_in = re.sub(r'<pre>', '<code>', instance.lead_in)
-        instance.lead_in = re.sub(r'<\/pre>', '</code>', instance.lead_in)
-        instance.lead_in = mark_safe(instance.lead_in)
-        instance.save()
+    if instance.is_unclean()
+        instance.clean_article_html()
 
 
 class ArticleReview(models.Model):
