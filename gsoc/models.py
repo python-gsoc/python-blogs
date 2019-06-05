@@ -604,7 +604,7 @@ def decrease_blog_counter(sender, instance, **kwargs):
 
 @receiver(models.signals.post_save, sender=Article)
 def clean_html(sender, instance, **kwargs):
-    if instance.is_unclean()
+    if instance.is_unclean():
         instance.clean_article_html()
 
 
