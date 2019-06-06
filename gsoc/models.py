@@ -219,6 +219,8 @@ class Timeline(models.Model):
 
 
 class BlogPostDueDate(models.Model):
+    class Meta:
+        ordering = ['date']
     date = models.DateField()
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
                                   blank=True)

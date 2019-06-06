@@ -28,12 +28,18 @@ def build_pre_blog_reminders(builder):
 
 def build_post_blog_reminders(builder):
     data = json.loads(builder.data)
+    last_due_date = BlogPostDueDate.objects.last()
     due_date = BlogPostDueDate.objects.get(pk=data['due_date_pk'])
+    if due_date == last_due_date:
+        blogs_count = 0
+    else:
+        blogs_count = 1
+
     gsoc_year = GsocYear.objects.first()
     profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
     for profile in profiles:
-        if profile.current_blog_count is not 0 and not (profile.hidden and
-                                                        profile.reminder_disabled):
+        if profile.current_blog_count > blogs_count and not (profile.hidden and
+                                                             profile.reminder_disabled):
             student_template_data = {
                 'current_blog_count': profile.current_blog_count,
                 'due_date': due_date.date.strftime('%d %B %Y')
