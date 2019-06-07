@@ -405,3 +405,22 @@ class ArticleReviewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ArticleReview, ArticleReviewAdmin)
+
+
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'start_date', 'end_date', 'cal_link')
+
+    def cal_link(self, obj):
+        if obj.link:
+            return mark_safe('<a href="{}" target="_blank">Goto Event</a>'.format(obj.link))
+        else:
+            return None
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(Event, EventAdmin)
