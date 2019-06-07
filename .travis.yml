@@ -1,11 +1,11 @@
 language: python
+cache: pip
 python:
   - "3.6.5"
 install:
   - pip install -r requirements.txt
 before_script:
   - cp settings_local.py.template settings_local.py
-  - git checkout origin/master
-  - python manage.py migrate
+  # - python manage.py migrate
 script:
-  - python manage.py test
+  - python manage.py runserver
