@@ -2,6 +2,10 @@
 
 Blog and management platform for PSF for running GSoC
 
+## Build Status
+
+[![Build Status](https://travis-ci.com/sounak98/python-blogs.svg)](https://travis-ci.com/sounak98/python-blogs)
+
 ## Installation
 
 - Requires python 3.6+
