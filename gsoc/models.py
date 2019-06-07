@@ -246,7 +246,7 @@ class Event(models.Model):
             event = service.events().insert(calendarId='primary', body=event).execute()
             self.link = event.get('htmlLink')
             self.save()
-        
+
     def save(self, *args, **kwargs):
         if not self.end_date:
             self.end_date = self.start_date
@@ -258,7 +258,7 @@ def create_calendar_schedulers(sender, instance, **kwargs):
     if not instance.link:
         data = json.dumps({
             'event': instance.pk,
-        })        
+        })
         Scheduler.objects.create(command='add_calendar_event',
                                  data=data)
 

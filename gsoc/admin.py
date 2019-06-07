@@ -415,7 +415,7 @@ class EventAdmin(admin.ModelAdmin):
             return mark_safe('<a href="{}" target="_blank">Goto Event</a>'.format(obj.link))
         else:
             return None
-    
+
     def has_add_permission(self, request, obj=None):
         return False
 

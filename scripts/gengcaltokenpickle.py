@@ -6,8 +6,8 @@ from google.auth.transport.requests import Request
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.events']
 
-# Needs credentials.json downloadable from 
-# https://developers.google.com/calendar/quickstart/python 
+# Needs credentials.json downloadable from
+# https://developers.google.com/calendar/quickstart/python
 # in the same directory as the script to run
 # and then place the pickle file generated in the root directory
 # of the application (the script automatically does that although
@@ -26,6 +26,6 @@ if not creds or not creds.valid:
             'credentials.json', SCOPES
         )
         creds = flow.run_local_server()
-    
+
     with open('../gcal_api_token.pickle', 'wb') as token:
         pickle.dump(creds, token)
