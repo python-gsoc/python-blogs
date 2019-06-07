@@ -218,6 +218,14 @@ class Timeline(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
 
 
+class Event(models.Model):
+    title = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
+                                 blank=True)
+
+
 class BlogPostDueDate(models.Model):
     class Meta:
         ordering = ['date']

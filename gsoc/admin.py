@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-                     BlogPostDueDate, Builder, Timeline, ArticleReview)
-from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm
+                     BlogPostDueDate, Builder, Timeline, ArticleReview, Event)
+from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm
 
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -367,9 +367,14 @@ class BlogPostDueDateInline(admin.TabularInline):
     form = BlogPostDueDateForm
 
 
+class EventInline(admin.TabularInline):
+    model = Event
+    form = EventForm
+
+
 class TimelineAdmin(admin.ModelAdmin):
     list_display = ('gsoc_year', )
-    inlines = (BlogPostDueDateInline, )
+    inlines = (BlogPostDueDateInline, EventInline)
 
 
 admin.site.register(Timeline, TimelineAdmin)

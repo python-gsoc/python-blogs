@@ -1,4 +1,4 @@
-from .models import UserDetails, UserProfile, RegLink, BlogPostDueDate
+from .models import UserDetails, UserProfile, RegLink, BlogPostDueDate, Event
 
 from django.forms import ModelForm, Select
 
@@ -41,3 +41,9 @@ class BlogPostDueDateForm(ModelForm):
     class Meta:
         model = BlogPostDueDate
         fields = ('date', )
+
+
+class EventForm(ModelForm):
+    class Meta:
+        model = Event
+        fields = ('title', 'start_date', 'end_date')
