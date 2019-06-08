@@ -236,7 +236,7 @@ class Timeline(models.Model):
 
 
 @receiver(models.signals.post_save, sender=Timeline)
-def create_calendar_schedulers(sender, instance, **kwargs):
+def add_calendar(sender, instance, **kwargs):
     instance.add_calendar()
 
 
@@ -262,7 +262,7 @@ class Event(models.Model):
                 },
             }
             calendar_id = self.timeline.calendar_id if self.timeline else 'primary'
-            if self.event_id:
+            if not self.event_id:
                 event = service.events().insert(calendarId=calendar_id, body=event).execute()
                 self.event_id = event.get('id')
                 self.save()
@@ -278,8 +278,9 @@ class Event(models.Model):
 
 
 @receiver(models.signals.post_save, sender=Event)
-def create_calendar_schedulers(sender, instance, **kwargs):
+def event_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
+
 
 class BlogPostDueDate(models.Model):
     class Meta:
@@ -300,7 +301,7 @@ class BlogPostDueDate(models.Model):
             creds = pickle.load(token)
             service = build('calendar', 'v3', credentials=creds)
             event = {
-                'summary': self.title,
+                'summary': 'Weekly Blog Post Due',
                 'start': {
                     'date': self.date.strftime('%Y-%m-%d')
                 },
@@ -309,7 +310,7 @@ class BlogPostDueDate(models.Model):
                 },
             }
             calendar_id = self.timeline.calendar_id if self.timeline else 'primary'
-            if self.event_id:
+            if not self.event_id:
                 event = service.events().insert(calendarId=calendar_id, body=event).execute()
                 self.event_id = event.get('id')
                 self.save()
@@ -353,6 +354,11 @@ def create_schedulers_builders(sender, instance, **kwargs):
     if not instance.add_counter_scheduler:
         instance.create_scheduler()
         instance.create_builders()
+
+
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
 
 
 class PageNotification(models.Model):
