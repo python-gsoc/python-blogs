@@ -580,7 +580,7 @@ class Comment(models.Model):
     username = models.CharField(max_length=50)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    content = models.CharField(max_length=255)
+    content = models.CharField(max_length=1100)
     parent = models.ForeignKey('self', null=True,
                                on_delete=models.CASCADE,
                                related_name='replies')
