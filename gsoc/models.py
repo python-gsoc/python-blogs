@@ -55,6 +55,7 @@ def has_proposal(self):
     except BaseException:
         return False
 
+
 auth.models.User.add_to_class('has_proposal', has_proposal)
 
 
@@ -66,6 +67,7 @@ def is_current_year_student(self):
     current_year = timezone.now().year
     return current_year == year
 
+
 auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
 
 
@@ -76,11 +78,13 @@ def student_profile(self, year=timezone.now().year):
     return self.userprofile_set.filter(role=3,
                                        gsoc_year=gsoc_year).first()
 
+
 auth.models.User.add_to_class('student_profile', student_profile)
 
 
 def get_root_comments(self):
     return self.comment_set.filter(parent=None).all()
+
 
 Article.add_to_class('get_root_comments', get_root_comments)
 
@@ -97,6 +101,7 @@ def is_unclean(self):
             return True
     return False
 
+
 Article.add_to_class('is_unclean', is_unclean)
 
 
@@ -107,6 +112,7 @@ def clean_article_html(self):
     self.lead_in = re.sub(r'&gt;', '>', self.lead_in)
     self.lead_in = mark_safe(self.lead_in)
     self.save()
+
 
 Article.add_to_class('clean_article_html', clean_article_html)
 
