@@ -1,7 +1,7 @@
 from gsoc import settings
 
 from .forms import ProposalUploadForm
-from .models import RegLink, validate_proposal_text, Comment, ArticleReview
+from .models import RegLink, ProposalTextValidator, Comment, ArticleReview
 
 import io
 import os
@@ -65,7 +65,8 @@ def scan_proposal(file):
     except BaseException:
         text = ''
     try:
-        validate_proposal_text(text)
+        v = ProposalTextValidator()
+        v.validate(text)
         return None
     except ValidationError as err:
         return err

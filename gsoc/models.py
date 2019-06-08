@@ -36,8 +36,82 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 from gsoc.common.utils.tools import build_send_mail_json, build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 
+
+# Util Functions
+
+def gen_uuid_str():
+    return str(uuid.uuid4())
+
+
+# Patching
+
 NewsBlogConfig.__str__ = lambda self: self.app_title
 
+
+def has_proposal(self):
+    try:
+        proposal = self.student_profile().accepted_proposal_pdf
+        return proposal is not None and proposal.path
+    except BaseException:
+        return False
+
+auth.models.User.add_to_class('has_proposal', has_proposal)
+
+
+def is_current_year_student(self):
+    profile = self.student_profile()
+    if not profile:
+        return False
+    year = profile.gsoc_year.gsoc_year
+    current_year = timezone.now().year
+    return current_year == year
+
+auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
+
+
+def student_profile(self, year=timezone.now().year):
+    gsoc_year = GsocYear.objects.filter(gsoc_year=year).first()
+    if gsoc_year is None:
+        return None
+    return self.userprofile_set.filter(role=3,
+                                       gsoc_year=gsoc_year).first()
+
+auth.models.User.add_to_class('student_profile', student_profile)
+
+
+def get_root_comments(self):
+    return self.comment_set.filter(parent=None).all()
+
+Article.add_to_class('get_root_comments', get_root_comments)
+
+
+def is_unclean(self):
+    unclean_texts = (
+        '<pre>',
+        '</pre>',
+        '&lt;',
+        '&gt;',
+    )
+    for _ in unclean_texts:
+        if _ in self.lead_in:
+            return True
+    return False
+
+Article.add_to_class('is_unclean', is_unclean)
+
+
+def clean_article_html(self):
+    self.lead_in = re.sub(r'<pre>', '<code>', self.lead_in)
+    self.lead_in = re.sub(r'<\/pre>', '</code>', self.lead_in)
+    self.lead_in = re.sub(r'&lt;', '<', self.lead_in)
+    self.lead_in = re.sub(r'&gt;', '>', self.lead_in)
+    self.lead_in = mark_safe(self.lead_in)
+    self.save()
+
+Article.add_to_class('clean_article_html', clean_article_html)
+
+
+# Models
 
 class SubOrg(models.Model):
     class Meta:
@@ -89,80 +163,6 @@ class UserProfile(models.Model):
     def confirm_proposal(self):
         self.proposal_confirmed = True
         self.save()
-
-
-def has_proposal(self):
-    try:
-        proposal = self.student_profile().accepted_proposal_pdf
-        return proposal is not None and proposal.path
-    except BaseException:
-        return False
-
-
-def is_current_year_student(self):
-    profile = self.student_profile()
-    if not profile:
-        return False
-    year = profile.gsoc_year.gsoc_year
-    current_year = timezone.now().year
-    return current_year == year
-
-
-def student_profile(self, year=timezone.now().year):
-    gsoc_year = GsocYear.objects.filter(gsoc_year=year).first()
-    if gsoc_year is None:
-        return None
-    return self.userprofile_set.filter(role=3,
-                                       gsoc_year=gsoc_year).first()
-
-
-auth.models.User.add_to_class('has_proposal', has_proposal)
-auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
-auth.models.User.add_to_class('student_profile', student_profile)
-
-
-@receiver(models.signals.post_delete, sender=UserProfile)
-def delete_blog(sender, instance, **kwargs):
-    """
-    Deletes the blog of the deleted user if a student
-    """
-    if instance.app_config:
-        instance.app_config.delete()
-
-
-# Auto Delete Redundant Proposal
-@receiver(models.signals.post_delete, sender=UserProfile)
-def auto_delete_proposal_on_delete(sender, instance, **kwargs):
-    """
-    Deletes proposal after a UserProfile object is deleted.
-    """
-    if instance.accepted_proposal_pdf:
-        try:
-            filepath = instance.accepted_proposal_pdf.path
-        except ValueError:
-            return
-        if os.path.isfile(filepath):
-            os.remove(filepath)
-
-
-@receiver(models.signals.pre_save, sender=UserProfile)
-def auto_delete_proposal_on_change(sender, instance, **kwargs):
-    """
-    Deletes old proposal before a new one is uploaded.
-    """
-    if not instance.pk:
-        return
-    try:
-        old_file = UserProfile.objects.get(pk=instance.pk).accepted_proposal_pdf
-        old_file_path = old_file.path
-    except UserProfile.DoesNotExist:
-        return
-    except ValueError:
-        return
-    new_file = instance.accepted_proposal_pdf
-    if not old_file == new_file:
-        if os.path.isfile(old_file_path):
-            os.remove(old_file_path)
 
 
 class UserDetails(models.Model):
@@ -235,11 +235,6 @@ class Timeline(models.Model):
                 self.save()
 
 
-@receiver(models.signals.post_save, sender=Timeline)
-def add_calendar(sender, instance, **kwargs):
-    instance.add_calendar()
-
-
 class Event(models.Model):
     title = models.CharField(max_length=100)
     start_date = models.DateField()
@@ -275,11 +270,6 @@ class Event(models.Model):
         if not self.end_date:
             self.end_date = self.start_date
         super().save(*args, **kwargs)
-
-
-@receiver(models.signals.post_save, sender=Event)
-def event_add_to_calendar(sender, instance, **kwargs):
-    instance.add_to_calendar()
 
 
 class BlogPostDueDate(models.Model):
@@ -347,18 +337,6 @@ class BlogPostDueDate(models.Model):
         self.post_blog_reminder_builder.add(s)
 
         self.save()
-
-
-@receiver(models.signals.post_save, sender=BlogPostDueDate)
-def create_schedulers_builders(sender, instance, **kwargs):
-    if not instance.add_counter_scheduler:
-        instance.create_scheduler()
-        instance.create_builders()
-
-
-@receiver(models.signals.post_save, sender=BlogPostDueDate)
-def due_date_add_to_calendar(sender, instance, **kwargs):
-    instance.add_to_calendar()
 
 
 class PageNotification(models.Model):
@@ -448,13 +426,6 @@ class ProposalTextValidator:
         return _("The text in a proposal should not contain any private data.")
 
 
-validate_proposal_text = ProposalTextValidator()
-
-
-def gen_uuid_str():
-    return str(uuid.uuid4())
-
-
 class AddUserLog(models.Model):
     class Meta:
         verbose_name = 'Add Users ' \
@@ -528,11 +499,6 @@ class RegLink(models.Model):
         if self.user_role != role.get('Student', 3):
             return user
 
-        # increase blog counter
-        date = timezone.now() + datetime.timedelta(days=6)
-        due_dates = BlogPostDueDate.objects.filter(date__lt=date).all()
-        profile.current_blog_count = len(due_dates)
-
         # setup blog
         blogname = f"{user.username}'s Blog"
         app_config = NewsBlogConfig.objects.create(namespace=namespace)
@@ -604,18 +570,6 @@ class RegLink(models.Model):
             self.create_scheduler()
 
 
-@receiver(models.signals.post_save, sender=RegLink)
-def create_send_reglink_schedulers(sender, instance, **kwargs):
-    if instance.adduserlog is not None and instance.scheduler is None:
-        instance.create_scheduler()
-
-
-@receiver(models.signals.post_save, sender=RegLink)
-def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
-    if instance.adduserlog is not None and instance.reminder is None:
-        instance.create_reminder()
-
-
 class Comment(models.Model):
     username = models.CharField(max_length=50)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
@@ -653,59 +607,6 @@ class Comment(models.Model):
                                      data=scheduler_data)
 
 
-def get_root_comments(self):
-    return self.comment_set.filter(parent=None).all()
-
-
-def is_unclean(self):
-    unclean_texts = (
-        '<pre>',
-        '</pre>',
-        '&lt;',
-        '&gt;',
-    )
-    for _ in unclean_texts:
-        if _ in self.lead_in:
-            return True
-    return False
-
-
-def clean_article_html(self):
-    self.lead_in = re.sub(r'<pre>', '<code>', self.lead_in)
-    self.lead_in = re.sub(r'<\/pre>', '</code>', self.lead_in)
-    self.lead_in = re.sub(r'&lt;', '<', self.lead_in)
-    self.lead_in = re.sub(r'&gt;', '>', self.lead_in)
-    self.lead_in = mark_safe(self.lead_in)
-    self.save()
-
-
-Article.add_to_class('get_root_comments', get_root_comments)
-Article.add_to_class('is_unclean', is_unclean)
-Article.add_to_class('clean_article_html', clean_article_html)
-
-
-@receiver(models.signals.post_save, sender=Comment)
-def send_comment_notification(sender, instance, **kwargs):
-    instance.send_notifications()
-
-
-@receiver(models.signals.pre_save, sender=Article)
-def decrease_blog_counter(sender, instance, **kwargs):
-    if not instance.pk:
-        section = instance.app_config
-        up = UserProfile.objects.get(app_config=section)
-        if up.current_blog_count > 0:
-            up.current_blog_count -= 1
-            print('Decreasing', up.current_blog_count)
-            up.save()
-
-
-@receiver(models.signals.post_save, sender=Article)
-def clean_html(sender, instance, **kwargs):
-    if instance.is_unclean():
-        instance.clean_article_html()
-
-
 class ArticleReview(models.Model):
     article = models.OneToOneField(Article, on_delete=models.CASCADE)
     last_reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE,
@@ -722,6 +623,131 @@ class ArticleReview(models.Model):
         super(ArticleReview, self).save(*args, **kwargs)
 
 
+# Receivers
+
+# Update blog count when new UserProfile is created
+@receiver(models.signals.pre_save, sender=UserProfile)
+def update_blog_counter(sender, instance, **kwargs):
+    if not instance.pk:
+        # increase blog counter
+        date = timezone.now() + datetime.timedelta(days=6)
+        due_dates = BlogPostDueDate.objects.filter(date__lt=date).all()
+        instance.current_blog_count = len(due_dates)
+
+
+# Delete blog when student profile is deleted
+@receiver(models.signals.post_delete, sender=UserProfile)
+def delete_blog(sender, instance, **kwargs):
+    """
+    Deletes the blog of the deleted user if a student
+    """
+    if instance.app_config:
+        instance.app_config.delete()
+
+
+# Auto Delete Redundant Proposal
+@receiver(models.signals.post_delete, sender=UserProfile)
+def auto_delete_proposal_on_delete(sender, instance, **kwargs):
+    """
+    Deletes proposal after a UserProfile object is deleted.
+    """
+    if instance.accepted_proposal_pdf:
+        try:
+            filepath = instance.accepted_proposal_pdf.path
+        except ValueError:
+            return
+        if os.path.isfile(filepath):
+            os.remove(filepath)
+
+
+# Auto Delete Proposal when new Proposal is uploaded
+@receiver(models.signals.pre_save, sender=UserProfile)
+def auto_delete_proposal_on_change(sender, instance, **kwargs):
+    """
+    Deletes old proposal before a new one is uploaded.
+    """
+    if not instance.pk:
+        return
+    try:
+        old_file = UserProfile.objects.get(pk=instance.pk).accepted_proposal_pdf
+        old_file_path = old_file.path
+    except UserProfile.DoesNotExist:
+        return
+    except ValueError:
+        return
+    new_file = instance.accepted_proposal_pdf
+    if not old_file == new_file:
+        if os.path.isfile(old_file_path):
+            os.remove(old_file_path)
+
+
+# Add Google Calendar when new Timeline is created
+@receiver(models.signals.post_save, sender=Timeline)
+def add_calendar(sender, instance, **kwargs):
+    instance.add_calendar()
+
+
+# Add new Event to Google Calendar
+@receiver(models.signals.post_save, sender=Event)
+def event_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
+# Add respective Schedulers and Builders
+# when BlogPostDueDate is created
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def create_schedulers_builders(sender, instance, **kwargs):
+    if not instance.add_counter_scheduler:
+        instance.create_scheduler()
+        instance.create_builders()
+
+
+# Add new BlogPostDueDate to Google Calendar
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
+# Add Send RegLink Schedulers when RegLink is created
+@receiver(models.signals.post_save, sender=RegLink)
+def create_send_reglink_schedulers(sender, instance, **kwargs):
+    if instance.adduserlog is not None and instance.scheduler is None:
+        instance.create_scheduler()
+
+
+# Add Send RegLink Reminder Schedulers when RegLink is created
+@receiver(models.signals.post_save, sender=RegLink)
+def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
+    if instance.adduserlog is not None and instance.reminder is None:
+        instance.create_reminder()
+
+
+# Add Send Comment Notification
+@receiver(models.signals.post_save, sender=Comment)
+def send_comment_notification(sender, instance, **kwargs):
+    instance.send_notifications()
+
+
+# Decrease Blog Counter when new Article is created
+@receiver(models.signals.pre_save, sender=Article)
+def decrease_blog_counter(sender, instance, **kwargs):
+    if not instance.pk:
+        section = instance.app_config
+        up = UserProfile.objects.get(app_config=section)
+        if up.current_blog_count > 0:
+            up.current_blog_count -= 1
+            print('Decreasing', up.current_blog_count)
+            up.save()
+
+
+# Clean lead_in HTML when new Article is created
+@receiver(models.signals.post_save, sender=Article)
+def clean_html(sender, instance, **kwargs):
+    if instance.is_unclean():
+        instance.clean_article_html()
+
+
+# Add ArticleReveiw object when new Article is created
 @receiver(models.signals.post_save, sender=Article)
 def add_review(sender, instance, **kwargs):
     ar = ArticleReview.objects.filter(article=instance).all()
