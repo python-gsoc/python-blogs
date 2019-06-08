@@ -231,7 +231,7 @@ class Event(models.Model):
     link = models.URLField(null=True, blank=True)
 
     def add_to_calendar(self):
-        with open('gcal_api_token.pickle', 'rb') as token:
+        with open('google_api_token.pickle', 'rb') as token:
             creds = pickle.load(token)
             service = build('calendar', 'v3', credentials=creds)
             event = {

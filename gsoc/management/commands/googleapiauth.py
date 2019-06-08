@@ -1,5 +1,5 @@
 import pickle
-import os.path
+import os
 
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -14,19 +14,13 @@ class Command(BaseCommand):
     requires_system_checks = False   # for debugging
 
     def handle(self, *args, **options):
-        creds = None
-        if os.path.exists('gcal_api_token.pickle'):
-            with open('gcal_api_token.pickle', 'rb') as token:
-                creds = pickle.load(token)
+        if os.path.exists('google_api_token.pickle'):
+            os.remove('google_api_token.pickle')
+        
+        flow = InstalledAppFlow.from_client_config(
+            GOOGLE_API_CLIENT_CONFIG, GOOGLE_API_SCOPES
+        )
+        creds = flow.run_console()
 
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.Refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_config(
-                    GOOGLE_API_CLIENT_CONFIG, GOOGLE_API_SCOPES
-                )
-                creds = flow.run_console()
-
-            with open('gcal_api_token.pickle', 'wb') as token:
-                pickle.dump(creds, token)
+        with open('google_api_token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
