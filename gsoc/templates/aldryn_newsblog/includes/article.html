@@ -27,26 +27,14 @@
             {% endfor %}
         </div>
 
-        {% if detail_view %}
         <h1 class="heading">
             {% render_model article "title" %}
         </h1>
         {% include "aldryn_newsblog/includes/author.html" with author=article.author owner=article.owner %}
-        {%  else %}
-        <h2 class="heading">
-            {% render_model article "title" %}
-        </h2>
-        {% endif %}
+
     </div>
 
-    {% if not detail_view %}
-        <div class="lead">
-            {% render_model article "lead_in" "" "" "truncatewords_html:'200000'" %}
-        </div>
-        <a href="{% namespace_url 'article-detail' article.slug namespace=namespace default='' %}">View Blog Post</a>
-    {% endif %}
-
-    {% if article.tags and detail_view %}
+    {% if article.tags %}
         <p class="tags">
             {% if article.tags.all %}
             Tags: 
@@ -55,6 +43,13 @@
                 <a href="{% namespace_url 'article-list-by-tag' tag=tag.slug namespace=namespace default='' %}">{{ tag.name }}</a>
             {% endfor %}
         </p>
+    {% endif %}
+
+    {% if not detail_view %}
+        <div class="lead">
+            {% render_model article "lead_in" %}
+        </div>
+        <a href="{% namespace_url 'article-detail' article.slug namespace=namespace default='' %}">View Blog Post</a>
     {% endif %}
 
     {% if detail_view %}
