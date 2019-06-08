@@ -8,7 +8,8 @@
                 <img src="{{ author_image.url }}" width="50" height="50" alt="{{ author.name }}">
             {% endif %}
         </a>
-        {{ owner.username }}, {{ article.publishing_date|date:'d M Y' }}
+        {{ owner.username }}<br />
+        Published: {{ article.publishing_date|date:'m/d/Y' }}
     </p>
     {% if author.function %}<p>{{ author.function }}</p>{% endif %}
     {% if author.article_count %}<p>{{ author.article_count }}</p>{% endif %}
