@@ -49,3 +49,11 @@ function deleteComment(commentPk) {
         }
     }
 }());
+
+function updateCharCount(formId) {
+    var textAreaEl = document.getElementById(`comment-textarea-${formId}`);
+    var remainingCharEl = document.getElementById(`remaining-chars-${formId}`);
+    len = textAreaEl.value.length;
+    var remaining = 1000 - len;
+    remainingCharEl.innerHTML = `${remaining} characters left`;
+}

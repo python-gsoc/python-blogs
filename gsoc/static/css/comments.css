@@ -55,3 +55,7 @@
 .comment-container .c-content {
     font-size: 14px;
 }
+
+form textarea {
+    border-radius: 0 0 4px 4px !important;
+}
