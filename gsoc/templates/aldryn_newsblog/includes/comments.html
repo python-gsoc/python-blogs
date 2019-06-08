@@ -65,8 +65,10 @@
         {% else %}
             <input type="text" name="username" placeholder="Username" class="pure-input-1" required />
         {% endif %}
-        <textarea name="comment" placeholder="Comment" class="pure-input-1" required></textarea>
+        <textarea name="comment" placeholder="Comment" class="pure-input-1" id="comment-textarea-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}"
+         maxlength="1000" onkeyup="updateCharCount({% if parent %}{{ parent.pk }}{% else %}'root'{% endif %});" required></textarea>
+        <span class="pure-form-message" id="remaining-chars-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}">1000 characters left</span>
     </fieldset>
-    
+
     <input class="pure-button pure-button-primary pure-input-1" type="submit" value="Submit"/>
 </form>
