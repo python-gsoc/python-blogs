@@ -689,14 +689,15 @@ def send_comment_notification(sender, instance, **kwargs):
     instance.send_notifications()
 
 
-@receiver(models.signals.post_save, sender=Article)
+@receiver(models.signals.pre_save, sender=Article)
 def decrease_blog_counter(sender, instance, **kwargs):
-    section = instance.app_config
-    up = UserProfile.objects.get(app_config=section)
-    if up.current_blog_count > 0:
-        up.current_blog_count -= 1
-        print('Decreasing', up.current_blog_count)
-        up.save()
+    if not instance.pk:
+        section = instance.app_config
+        up = UserProfile.objects.get(app_config=section)
+        if up.current_blog_count > 0:
+            up.current_blog_count -= 1
+            print('Decreasing', up.current_blog_count)
+            up.save()
 
 
 @receiver(models.signals.post_save, sender=Article)
