@@ -34,7 +34,7 @@ import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json, build_send_reminder_json
-from gsoc.settings import PROPOSALS_PATH
+from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 
 NewsBlogConfig.__str__ = lambda self: self.app_title
 
@@ -231,7 +231,7 @@ class Event(models.Model):
     link = models.URLField(null=True, blank=True)
 
     def add_to_calendar(self):
-        with open('gcal_api_token.pickle', 'rb') as token:
+        with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
             creds = pickle.load(token)
             service = build('calendar', 'v3', credentials=creds)
             event = {

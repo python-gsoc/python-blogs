@@ -21,5 +21,4 @@ logs/*
 
 # Google Calendar creds
 scripts/credentials.json
-gcal_api_token.pickle
-
+google_api_token.pickle
