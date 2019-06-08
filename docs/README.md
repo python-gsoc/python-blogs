@@ -8,7 +8,7 @@ Blog and management platform for PSF for running GSoC
 
 ## Installation
 
-- Requires python 3.6+
+- Requires python 3.7.3+
 
 To install development dependncies:
 
