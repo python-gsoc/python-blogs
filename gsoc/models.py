@@ -188,7 +188,6 @@ class Scheduler(models.Model):
         ('deactivate_user', 'deactivate_user'),
         ('send_reg_reminder', 'send_reg_reminder'),
         ('add_blog_counter', 'add_blog_counter'),
-        ('add_calendar_event', 'add_calendar_event'),
         )
 
     id = models.AutoField(primary_key=True)
@@ -220,6 +219,25 @@ class Builder(models.Model):
 
 class Timeline(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
+    calendar_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def add_calendar(self):
+        if not self.calendar_id:
+            with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
+                creds = pickle.load(token)
+                service = build('calendar', 'v3', credentials=creds)
+                calendar = {
+                    'summary': 'GSoC @ PSF {} Calendar'.format(self.gsoc_year.gsoc_year),
+                    'timezone': 'UTC',
+                }
+                calendar = service.calendars().insert(body=calendar).execute()
+                self.calendar_id = calendar.get('id')
+                self.save()
+
+
+@receiver(models.signals.post_save, sender=Timeline)
+def create_calendar_schedulers(sender, instance, **kwargs):
+    instance.add_calendar()
 
 
 class Event(models.Model):
@@ -228,7 +246,7 @@ class Event(models.Model):
     end_date = models.DateField(null=True, blank=True)
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
                                  blank=True)
-    link = models.URLField(null=True, blank=True)
+    event_id = models.CharField(max_length=255, null=True, blank=True)
 
     def add_to_calendar(self):
         with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
@@ -243,9 +261,15 @@ class Event(models.Model):
                     'date': self.end_date.strftime('%Y-%m-%d')
                 },
             }
-            event = service.events().insert(calendarId='primary', body=event).execute()
-            self.link = event.get('htmlLink')
-            self.save()
+            calendar_id = self.timeline.calendar_id if self.timeline else 'primary'
+            if self.event_id:
+                event = service.events().insert(calendarId=calendar_id, body=event).execute()
+                self.event_id = event.get('id')
+                self.save()
+            else:
+                service.events().update(calendarId=calendar_id,
+                                        eventId=self.event_id,
+                                        body=event).execute()
 
     def save(self, *args, **kwargs):
         if not self.end_date:
@@ -255,13 +279,7 @@ class Event(models.Model):
 
 @receiver(models.signals.post_save, sender=Event)
 def create_calendar_schedulers(sender, instance, **kwargs):
-    if not instance.link:
-        data = json.dumps({
-            'event': instance.pk,
-        })
-        Scheduler.objects.create(command='add_calendar_event',
-                                 data=data)
-
+    instance.add_to_calendar()
 
 class BlogPostDueDate(models.Model):
     class Meta:
@@ -275,6 +293,30 @@ class BlogPostDueDate(models.Model):
                                                   null=True, blank=True,
                                                   related_name='pre')
     post_blog_reminder_builder = models.ManyToManyField(Builder, blank=True)
+    event_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def add_to_calendar(self):
+        with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
+            creds = pickle.load(token)
+            service = build('calendar', 'v3', credentials=creds)
+            event = {
+                'summary': self.title,
+                'start': {
+                    'date': self.date.strftime('%Y-%m-%d')
+                },
+                'end': {
+                    'date': self.date.strftime('%Y-%m-%d')
+                },
+            }
+            calendar_id = self.timeline.calendar_id if self.timeline else 'primary'
+            if self.event_id:
+                event = service.events().insert(calendarId=calendar_id, body=event).execute()
+                self.event_id = event.get('id')
+                self.save()
+            else:
+                service.events().update(calendarId=calendar_id,
+                                        eventId=self.event_id,
+                                        body=event).execute()
 
     def create_scheduler(self):
         s = Scheduler.objects.create(command='add_blog_counter',
