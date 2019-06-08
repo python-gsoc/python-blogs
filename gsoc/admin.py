@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-                     BlogPostDueDate, Builder, Timeline, ArticleReview)
-from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm
+                     BlogPostDueDate, Builder, Timeline, ArticleReview, Event)
+from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm
 
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -367,9 +367,14 @@ class BlogPostDueDateInline(admin.TabularInline):
     form = BlogPostDueDateForm
 
 
+class EventInline(admin.TabularInline):
+    model = Event
+    form = EventForm
+
+
 class TimelineAdmin(admin.ModelAdmin):
     list_display = ('gsoc_year', )
-    inlines = (BlogPostDueDateInline, )
+    inlines = (BlogPostDueDateInline, EventInline)
 
 
 admin.site.register(Timeline, TimelineAdmin)
@@ -400,3 +405,22 @@ class ArticleReviewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ArticleReview, ArticleReviewAdmin)
+
+
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('title', 'start_date', 'end_date', 'cal_link')
+
+    def cal_link(self, obj):
+        if obj.link:
+            return mark_safe('<a href="{}" target="_blank">Goto Event</a>'.format(obj.link))
+        else:
+            return None
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(Event, EventAdmin)

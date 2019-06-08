@@ -21,15 +21,15 @@ DATABASES = {
         'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
         'USER': ''                              # Not used with sqlite3.
     },
-    'auth_db': {
-        'CONN_MAX_AGE': 0,
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'HOST': '',                             # Set to empty string for localhost. Not used with sqlite3.
-        'NAME': 'users.db',                     # Or path to database file if using sqlite3.
-        'PASSWORD': '',                         # Not used with sqlite3.
-        'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
-        'USER': ''                              # Not used with sqlite3.
-    },
+    # 'auth_db': {
+    #     'CONN_MAX_AGE': 0,
+    #     'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+    #     'HOST': '',                             # Set to empty string for localhost. Not used with sqlite3.
+    #     'NAME': 'users.db',                     # Or path to database file if using sqlite3.
+    #     'PASSWORD': '',                         # Not used with sqlite3.
+    #     'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
+    #     'USER': ''                              # Not used with sqlite3.
+    # },
 }
 
 # EMAIL CONFIGURATION
@@ -49,6 +49,7 @@ EMAIL_PORT = 25
 REPLY_EMAIL = 'gsoc-admins@python.org'
 
 # reCAPTCHA settings
+# update the `RECAPTCHA_PUBLIC_KEY` in `/static/js/recaptcha.js` manually
 RECAPTCHA_PRIVATE_KEY = '6LdAVqIUAAAAACv_tNPudwx_pD9dbjtwvr3WwQ9Y'
 RECAPTCHA_PUBLIC_KEY = '6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj'
-RECAPTCHA_THRESHOLD = 0.5
+RECAPTCHA_THRESHOLD = 0.1

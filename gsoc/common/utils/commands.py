@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 
 from .irc import send_message
 
-from gsoc.models import Scheduler, RegLink, GsocYear, UserProfile
+from gsoc.models import Scheduler, RegLink, GsocYear, UserProfile, Event
 
 
 def send_email(scheduler: Scheduler):
@@ -115,6 +115,16 @@ def add_blog_counter(scheduler: Scheduler):
         for profile in current_profiles:
             profile.current_blog_count += 1
             profile.save()
+        return None
+    except Exception as e:
+        return str(e)
+
+
+def add_calendar_event(scheduler: Scheduler):
+    try:
+        pk = json.loads(scheduler.data)['event']
+        event = Event.objects.get(pk=pk)
+        event.add_to_calendar()
         return None
     except Exception as e:
         return str(e)

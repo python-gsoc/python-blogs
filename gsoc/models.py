@@ -3,6 +3,9 @@ import re
 import datetime
 import uuid
 import json
+import pickle
+
+from googleapiclient.discovery import build
 
 from django.contrib.auth.models import Permission
 from django.contrib import auth, messages
@@ -185,6 +188,7 @@ class Scheduler(models.Model):
         ('deactivate_user', 'deactivate_user'),
         ('send_reg_reminder', 'send_reg_reminder'),
         ('add_blog_counter', 'add_blog_counter'),
+        ('add_calendar_event', 'add_calendar_event'),
         )
 
     id = models.AutoField(primary_key=True)
@@ -216,6 +220,47 @@ class Builder(models.Model):
 
 class Timeline(models.Model):
     gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
+
+
+class Event(models.Model):
+    title = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
+                                 blank=True)
+    link = models.URLField(null=True, blank=True)
+
+    def add_to_calendar(self):
+        with open('gcal_api_token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+            service = build('calendar', 'v3', credentials=creds)
+            event = {
+                'summary': self.title,
+                'start': {
+                    'date': self.start_date.strftime('%Y-%m-%d')
+                },
+                'end': {
+                    'date': self.end_date.strftime('%Y-%m-%d')
+                },
+            }
+            event = service.events().insert(calendarId='primary', body=event).execute()
+            self.link = event.get('htmlLink')
+            self.save()
+
+    def save(self, *args, **kwargs):
+        if not self.end_date:
+            self.end_date = self.start_date
+        super().save(*args, **kwargs)
+
+
+@receiver(models.signals.post_save, sender=Event)
+def create_calendar_schedulers(sender, instance, **kwargs):
+    if not instance.link:
+        data = json.dumps({
+            'event': instance.pk,
+        })
+        Scheduler.objects.create(command='add_calendar_event',
+                                 data=data)
 
 
 class BlogPostDueDate(models.Model):
