@@ -1,7 +1,6 @@
 import pickle
 import os
 
-from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from django.core.management import BaseCommand
