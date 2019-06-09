@@ -233,7 +233,7 @@ class Timeline(models.Model):
                 creds = pickle.load(token)
                 service = build('calendar', 'v3', credentials=creds)
                 calendar = {
-                    'summary': 'GSoC @ PSF {} Calendar'.format(self.gsoc_year.gsoc_year),
+                    'summary': 'GSoC @ PSF Calendar',
                     'timezone': 'UTC',
                 }
                 calendar = service.calendars().insert(body=calendar).execute()
@@ -281,6 +281,7 @@ class Event(models.Model):
 class BlogPostDueDate(models.Model):
     class Meta:
         ordering = ['date']
+    title = models.CharField(max_length=100, default='Weekly Blog Post Due')
     date = models.DateField()
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
                                   blank=True)
@@ -297,7 +298,7 @@ class BlogPostDueDate(models.Model):
             creds = pickle.load(token)
             service = build('calendar', 'v3', credentials=creds)
             event = {
-                'summary': 'Weekly Blog Post Due',
+                'summary': self.title,
                 'start': {
                     'date': self.date.strftime('%Y-%m-%d')
                 },

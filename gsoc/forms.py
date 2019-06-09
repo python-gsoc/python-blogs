@@ -40,7 +40,7 @@ class RegLinkForm(ModelForm):
 class BlogPostDueDateForm(ModelForm):
     class Meta:
         model = BlogPostDueDate
-        fields = ('date', )
+        fields = ('title', 'date')
 
 
 class EventForm(ModelForm):
