@@ -56,7 +56,7 @@ RECAPTCHA_THRESHOLD = 0.1
 
 # google oauth client_config
 GOOGLE_API_SCOPES = [
-    'https://www.googleapis.com/auth/calendar.events',
+    'https://www.googleapis.com/auth/calendar',
 ]
 GOOGLE_API_CLIENT_CONFIG = {
     "installed": {
