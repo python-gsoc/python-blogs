@@ -374,6 +374,7 @@ class EventInline(admin.TabularInline):
 
 class TimelineAdmin(admin.ModelAdmin):
     list_display = ('gsoc_year', )
+    exclude = ('calendar_id', )
     inlines = (BlogPostDueDateInline, EventInline)
 
 
