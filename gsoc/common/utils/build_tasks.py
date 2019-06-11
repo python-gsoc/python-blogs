@@ -74,7 +74,7 @@ def build_post_blog_reminders(builder):
                     )
 
                 Scheduler.objects.create(command='send_email',
-                            data=scheduler_data_mentors)
+                                         data=scheduler_data_mentors)
 
             student_template_data = {
                 'current_blog_count': profile.current_blog_count,
@@ -87,6 +87,6 @@ def build_post_blog_reminders(builder):
                 subject='Reminder for Weekly Blog Post',
                 template_data=student_template_data
                 )
-            
+
             Scheduler.objects.create(command='send_email',
                                      data=scheduler_data_student)
