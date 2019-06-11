@@ -4,7 +4,7 @@ Blog and management platform for PSF for running GSoC
 
 ## Build Status
 
-[![Build Status](https://travis-ci.com/sounak98/python-blogs.svg)](https://travis-ci.com/sounak98/python-blogs)
+[![Build Status](https://travis-ci.org/python-gsoc/python-blogs.svg?branch=master)](https://travis-ci.org/python-gsoc/python-blogs)
 
 ## Installation
 
