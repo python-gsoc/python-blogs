@@ -272,6 +272,14 @@ class Event(models.Model):
                                         eventId=self.event_id,
                                         body=event).execute()
 
+    def delete_from_calendar(self):
+        if self.event_id:
+            with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
+                creds = pickle.load(token)
+                service = build('calendar', 'v3', credentials=creds)
+                service.events().delete(calendarId=self.timeline.calendar_id,
+                                        eventId=self.event_id).execute()
+
     def save(self, *args, **kwargs):
         if not self.end_date:
             self.end_date = self.start_date
@@ -315,6 +323,14 @@ class BlogPostDueDate(models.Model):
                 service.events().update(calendarId=calendar_id,
                                         eventId=self.event_id,
                                         body=event).execute()
+
+    def delete_from_calendar(self):
+        if self.event_id:
+            with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
+                creds = pickle.load(token)
+                service = build('calendar', 'v3', credentials=creds)
+                service.events().delete(calendarId=self.timeline.calendar_id,
+                                        eventId=self.event_id).execute()
 
     def create_scheduler(self):
         s = Scheduler.objects.create(command='add_blog_counter',
@@ -700,6 +716,12 @@ def event_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
 
+# Delete Event from Calendar when obj is deleted
+@receiver(models.signals.pre_delete, sender=Event)
+def event_delete_from_calendar(sender, instance, **kwargs):
+    instance.delete_from_calendar()
+
+
 # Add respective Schedulers and Builders
 # when BlogPostDueDate is created
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
@@ -713,6 +735,12 @@ def create_schedulers_builders(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
+
+
+# Delete BlogPostDueDate from Calendar when obj is deleted
+@receiver(models.signals.pre_delete, sender=BlogPostDueDate)
+def due_date_delete_from_calendar(sender, instance, **kwargs):
+    instance.delete_from_calendar()
 
 
 # Add Send RegLink Schedulers when RegLink is created
