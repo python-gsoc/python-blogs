@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-from .models import UserDetails, UserProfile, RegLink, BlogPostDueDate, Event
-=======
-from .models import UserDetails, UserProfile, RegLink, SubOrgDetails
->>>>>>> Add model for SubOrg details
+from .models import (UserDetails, UserProfile, RegLink, BlogPostDueDate, Event,
+                     SubOrgDetails)
 
 from django import forms
 
@@ -41,13 +38,13 @@ class RegLinkForm(forms.ModelForm):
         fields = ('email', 'user_role', 'user_suborg', 'user_gsoc_year')
 
 
-class BlogPostDueDateForm(ModelForm):
+class BlogPostDueDateForm(forms.ModelForm):
     class Meta:
         model = BlogPostDueDate
         fields = ('title', 'date')
 
 
-class EventForm(ModelForm):
+class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ('title', 'start_date', 'end_date')

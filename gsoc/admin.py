@@ -1,11 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-<<<<<<< HEAD
-                     BlogPostDueDate, Builder, Timeline, ArticleReview, Event)
+                     BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails)
 from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm
-=======
-                     SubOrgDetails)
-from .forms import UserProfileForm, UserDetailsForm, RegLinkForm
->>>>>>> Add model for SubOrg details
 
 from django.contrib.auth.models import User
 from django.contrib import admin
