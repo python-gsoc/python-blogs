@@ -1,8 +1,13 @@
 from gsoc.forms import SubOrgApplicationForm
-from gsoc.models import GsocYear
+from gsoc.models import GsocYear, SubOrgDetails
 
+from django.contrib.auth import decorators
 from django.shortcuts import render, redirect
 from django.urls import reverse
+
+
+def is_superuser(user):
+    return user.is_superuser
 
 
 def register_suborg(request):
@@ -24,3 +29,19 @@ def register_suborg(request):
 def post_register(request):
     if request.method == 'GET':
         return render(request, 'post_register.html')
+
+
+@decorators.user_passes_test(is_superuser)
+def accept_application(request, application_id):
+    if request.method == 'GET':
+        application = SubOrgDetails.objects.get(id=application_id)
+        # application.accept()
+    return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
+
+
+@decorators.user_passes_test(is_superuser)
+def reject_application(request, application_id):
+    if request.method == 'GET':
+        application = SubOrgDetails.objects.get(id=application_id)
+        # application.reject()
+    return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))

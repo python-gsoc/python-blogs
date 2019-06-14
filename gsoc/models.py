@@ -168,7 +168,7 @@ class SubOrgDetails(models.Model):
     blog_url = models.URLField(null=True, blank=True)
     link = models.URLField(null=True, blank=True, verbose_name='Any other link')
 
-    accepted = models.BooleanField(default=False)
+    accepted = models.BooleanField(default=None, null=True)
 
     class Meta:
         verbose_name_plural = 'Suborg Details'
