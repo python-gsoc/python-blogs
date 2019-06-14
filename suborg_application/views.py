@@ -35,7 +35,7 @@ def post_register(request):
 def accept_application(request, application_id):
     if request.method == 'GET':
         application = SubOrgDetails.objects.get(id=application_id)
-        # application.accept()
+        application.accept()
     return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
 
 
@@ -43,5 +43,5 @@ def accept_application(request, application_id):
 def reject_application(request, application_id):
     if request.method == 'GET':
         application = SubOrgDetails.objects.get(id=application_id)
-        # application.reject()
+        application.reject()
     return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))

@@ -12,5 +12,5 @@ urlpatterns += [
     url(r'^accept/(?P<application_id>[0-9]+)/$', accept_application,
         name='accept_application'),
     url(r'^reject/(?P<application_id>[0-9]+)/$', reject_application,
-        name='unpublish_article'),
+        name='reject_application'),
 ]

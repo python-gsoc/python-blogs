@@ -32,10 +32,10 @@
 
 
 {% block submit_buttons_bottom %}
-    {% if not original.is_reviewed %}
+    {% if original.accepted == None %}
         <div class="submit-row">
-            <a href="" class="closelink">Accept</a>
-            <a href="" class="closelink reject">Reject</a>
+            <a href="{% url 'suborg_application:accept_application' application_id=original.id %}" class="closelink">Accept</a>
+            <a href="{% url 'suborg_application:reject_application' application_id=original.id %}" class="closelink reject">Reject</a>
         </div>
     {% endif %}
 {% endblock %}

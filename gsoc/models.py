@@ -173,6 +173,14 @@ class SubOrgDetails(models.Model):
     class Meta:
         verbose_name_plural = 'Suborg Details'
 
+    def accept(self):
+        self.accepted = True
+        self.save()
+
+    def reject(self):
+        self.accepted = False
+        self.save()
+
 
 class UserProfileManager(models.Manager):
     def get_queryset(self):
