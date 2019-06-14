@@ -76,7 +76,7 @@ class SubOrgApplicationForm(forms.ModelForm):
         contact = list(filter(lambda a: a is not None, contact))
 
         if len(contact) < 3:
-            raise ValidationError('At least three out of the five contact'\
+            raise ValidationError('At least three out of the five contact'
                                   'details should be entered')
 
         if past_exp and len(past_years) == 0:
@@ -87,7 +87,7 @@ class SubOrgApplicationForm(forms.ModelForm):
         for _y in applied_not_selected:
             for y in past_years:
                 if y == _y:
-                    raise ValidationError('Applied but not selected year can not'\
+                    raise ValidationError('Applied but not selected year can not'
                                           'match with past years')
 
         return cd

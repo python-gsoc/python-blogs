@@ -154,7 +154,7 @@ class SubOrgDetails(models.Model):
         verbose_name='How will you keep mentors engaged with their students?'
     )
     students_on_schedule = models.TextField(
-        verbose_name='How will you help your students stay'\
+        verbose_name='How will you help your students stay '
                      'on schedule to complete their projects?'
     )
     students_involvement_gsoc = models.TextField(
@@ -164,7 +164,7 @@ class SubOrgDetails(models.Model):
         verbose_name='How will you keep students involved with your community after GSoC?'
     )
     past_gsoc_experience = models.BooleanField(
-        verbose_name='Has your org been accepted as a mentor org'\
+        verbose_name='Has your org been accepted as a mentor org '
                      'in Google Summer of Code before?'
     )
     past_years = models.ManyToManyField(
@@ -178,14 +178,14 @@ class SubOrgDetails(models.Model):
         GsocYear,
         blank=True,
         related_name='applied_not_selected',
-        verbose_name='If your org has applied for GSoC'\
+        verbose_name='If your org has applied for GSoC '
                      'before but not been accepted, select the years'
     )
     year_of_start = models.IntegerField(verbose_name='What year was your project started?')
     source_code = models.URLField(verbose_name='Where does your source code live?')
     docs = models.URLField(
-        verbose_name='Please provide the URL that points to the repository, '\
-                     'GitHub organization, or a web page that describes how to'\
+        verbose_name='Please provide the URL that points to the repository, '
+                     'GitHub organization, or a web page that describes how to'
                      ' get your source code'
     )
     anything_else = models.TextField(
@@ -237,7 +237,7 @@ class SubOrgDetails(models.Model):
         RegLink.objects.create(user_role=1,
                                user_suborg=suborg,
                                user_gsoc_year=self.gsoc_year,
-                               email=self.suborg_admin_email) 
+                               email=self.suborg_admin_email)
 
     def reject(self):
         self.accepted = False
