@@ -177,9 +177,40 @@ class SubOrgDetails(models.Model):
         self.accepted = True
         self.save()
 
+        template_data = {
+            'gsoc_year': self.gsoc_year.gsoc_year,
+            'suborg_name': self.suborg_name,
+        }
+        scheduler_data = build_send_mail_json(self.suborg_admin_email,
+                                              template='suborg_accept.html',
+                                              subject='Acceptance for GSoC@PSF {}'.
+                                                      format(self.gsoc_year.gsoc_year),
+                                              template_data=template_data)
+        Scheduler.objects.create(command='send_email',
+                                 data=scheduler_data)
+
+        suborg = SubOrg.objects.create(suborg_name=self.suborg_name)
+
+        RegLink.objects.create(user_role=1,
+                               user_suborg=suborg,
+                               user_gsoc_year=self.gsoc_year,
+                               email=self.suborg_admin_email) 
+
     def reject(self):
         self.accepted = False
         self.save()
+
+        template_data = {
+            'gsoc_year': self.gsoc_year.gsoc_year,
+            'suborg_name': self.suborg_name,
+        }
+        scheduler_data = build_send_mail_json(self.suborg_admin_email,
+                                              template='suborg_reject.html',
+                                              subject='Rejection for GSoC@PSF {}'.
+                                                      format(self.gsoc_year.gsoc_year),
+                                              template_data=template_data)
+        Scheduler.objects.create(command='send_email',
+                                 data=scheduler_data)
 
 
 class UserProfileManager(models.Manager):
@@ -791,14 +822,14 @@ def due_date_delete_from_calendar(sender, instance, **kwargs):
 # Add Send RegLink Schedulers when RegLink is created
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reglink_schedulers(sender, instance, **kwargs):
-    if instance.adduserlog is not None and instance.scheduler is None:
+    if instance.scheduler is None:
         instance.create_scheduler()
 
 
 # Add Send RegLink Reminder Schedulers when RegLink is created
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
-    if instance.adduserlog is not None and instance.reminder is None:
+    if instance.reminder is None:
         instance.create_reminder()
 
 
