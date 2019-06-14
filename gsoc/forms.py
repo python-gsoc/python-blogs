@@ -2,6 +2,7 @@ from .models import (UserDetails, UserProfile, RegLink, BlogPostDueDate, Event,
                      SubOrgDetails)
 
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 class UserProfileForm(forms.ModelForm):
@@ -53,4 +54,38 @@ class EventForm(forms.ModelForm):
 class SubOrgApplicationForm(forms.ModelForm):
     class Meta:
         model = SubOrgDetails
-        exclude = ('gsoc_year', )
+        exclude = ('accepted', )
+        widgets = {
+            'gsoc_year': forms.HiddenInput(),
+        }
+
+    def clean(self):
+        cd = self.cleaned_data
+        past_exp = cd.get('past_gsoc_experience')
+        past_years = cd.get('past_years').all()
+        applied_not_selected = cd.get('applied_but_not_selected').all()
+
+        contact = [
+            cd.get('chat', None),
+            cd.get('mailing_list', None),
+            cd.get('twitter_url', None),
+            cd.get('blog_url', None), 
+            cd.get('link', None)
+        ]
+
+        contact = list(filter(lambda a: a != None, contact))
+
+        if len(contact) < 3:
+            raise ValidationError('At least three out of the five contact details should be entered')
+
+        if past_exp and len(past_years) == 0:
+            raise ValidationError('No past years mentioned but past experience selected')
+        elif not past_exp and len(past_years) > 0:
+            raise ValidationError('Past years mentioned but past experience not selected')
+
+        for _y in applied_not_selected:
+            for y in past_years:
+                if y == _y:
+                    raise ValidationError('Applied but not selected year can not match with past years')
+
+        return cd

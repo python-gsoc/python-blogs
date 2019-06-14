@@ -1,0 +1,41 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+    <style>
+        .submit-row .closelink {
+            background-color: #00BBFF !important;
+        }
+
+        .submit-row .closelink:hover {
+            background-color: #447e9b !important;
+            color: white !important;
+        }
+
+        .submit-row .closelink.reject {
+            background-color: orangered !important;
+        }
+
+        .submit-row .closelink.reject:hover {
+            background-color: rgb(200, 0, 0) !important;
+            color: white !important;
+        }
+
+        .aligned .readonly {
+            margin-top: 0 !important;
+            margin-left: 0 !important;
+        }
+    </style>
+{% endblock %}
+
+
+{% block submit_buttons_bottom %}
+    {% if not original.is_reviewed %}
+        <div class="submit-row">
+            <a href="" class="closelink">Accept</a>
+            <a href="" class="closelink reject">Reject</a>
+        </div>
+    {% endif %}
+{% endblock %}

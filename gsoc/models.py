@@ -162,6 +162,14 @@ class SubOrgDetails(models.Model):
     primary_os_license = models.CharField(max_length=50, verbose_name='Primary Open Source License')
     ideas_list = models.TextField(verbose_name='Ideas List', help_text='Write the ideas one by one, separated with newlines.')
 
+    chat = models.URLField(null=True, blank=True)
+    mailing_list = models.EmailField(null=True, blank=True)
+    twitter_url = models.URLField(null=True, blank=True)
+    blog_url = models.URLField(null=True, blank=True)
+    link = models.URLField(null=True, blank=True, verbose_name='Any other link')
+
+    accepted = models.BooleanField(default=False)
+
     class Meta:
         verbose_name_plural = 'Suborg Details'
 

@@ -18,7 +18,8 @@
 
 {% block content %}
     <div class="content">
-        <form method="POST" action={% url 'suborg_application:register_suborg' %} class="pure-form pure-form-stacked suborg-form">
+        <form method="POST" action={% url 'suborg_application:register_suborg' %} enctype="multipart/form-data" class="pure-form pure-form-stacked suborg-form">
+            {% csrf_token %}
             {{ form }}
             <button type="submit" class="pure-button pure-button-primary">Register</button>
         </form>

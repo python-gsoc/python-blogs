@@ -425,4 +425,18 @@ class EventAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Event, EventAdmin)
-admin.site.register(SubOrgDetails)
+
+
+class SubOrgDetailsAdmin(admin.ModelAdmin):
+    list_display = ('suborg_name', 'gsoc_year')
+    list_filter = ('gsoc_year', )
+    change_form_template = 'admin/suborg_details_change_form.html'
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(SubOrgDetails, SubOrgDetailsAdmin)
