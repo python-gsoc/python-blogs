@@ -69,14 +69,15 @@ class SubOrgApplicationForm(forms.ModelForm):
             cd.get('chat', None),
             cd.get('mailing_list', None),
             cd.get('twitter_url', None),
-            cd.get('blog_url', None), 
+            cd.get('blog_url', None),
             cd.get('link', None)
         ]
 
-        contact = list(filter(lambda a: a != None, contact))
+        contact = list(filter(lambda a: a is not None, contact))
 
         if len(contact) < 3:
-            raise ValidationError('At least three out of the five contact details should be entered')
+            raise ValidationError('At least three out of the five contact'\
+                                  'details should be entered')
 
         if past_exp and len(past_years) == 0:
             raise ValidationError('No past years mentioned but past experience selected')
@@ -86,6 +87,7 @@ class SubOrgApplicationForm(forms.ModelForm):
         for _y in applied_not_selected:
             for y in past_years:
                 if y == _y:
-                    raise ValidationError('Applied but not selected year can not match with past years')
+                    raise ValidationError('Applied but not selected year can not'\
+                                          'match with past years')
 
         return cd
