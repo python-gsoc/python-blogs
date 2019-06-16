@@ -19,7 +19,7 @@ def register_suborg(request):
         form = SubOrgApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             suborg_details = form.save()
-            return redirect(reverse('suborg_application:post_register'))
+            return redirect(reverse('suborg:post_register'))
 
     return render(request, 'register_suborg.html', {
             'form': form,
@@ -45,3 +45,7 @@ def reject_application(request, application_id):
         application = SubOrgDetails.objects.get(id=application_id)
         application.reject()
     return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
+
+
+def add_mentor(request):
+    pass

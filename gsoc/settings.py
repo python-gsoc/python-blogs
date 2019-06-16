@@ -70,7 +70,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'gsoc', 'templates'),
             os.path.join(BASE_DIR, 'blogs_list', 'templates'),
-            os.path.join(BASE_DIR, 'suborg_application', 'templates'),
+            os.path.join(BASE_DIR, 'suborg', 'templates'),
             ],
         'OPTIONS': {
             'context_processors': [
@@ -149,7 +149,7 @@ INSTALLED_APPS = (
     'taggit',
     'gsoc',
     'blogs_list',
-    'suborg_application',
+    'suborg',
     'debug_toolbar'
 )
 THUMBNAIL_PROCESSORS = (

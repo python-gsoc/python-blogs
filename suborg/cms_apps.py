@@ -3,12 +3,12 @@ from cms.apphook_pool import apphook_pool
 from django.utils.translation import ugettext_lazy as _
 
 
-class suborg_application(CMSApp):
-    app_name = "suborg_application"
-    name = _("Suborg Application")
+class suborg(CMSApp):
+    app_name = "suborg"
+    name = _("Suborg")
 
     def get_urls(self, page=None, language=None, **kwargs):
-        return ["suborg_application.urls"]
+        return ["suborg.urls"]
 
 
-apphook_pool.register(suborg_application)
+apphook_pool.register(suborg)
