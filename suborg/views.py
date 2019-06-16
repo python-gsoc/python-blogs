@@ -1,13 +1,18 @@
 from gsoc.forms import SubOrgApplicationForm
-from gsoc.models import GsocYear, SubOrgDetails
+from gsoc.models import GsocYear, SubOrgDetails, RegLink
 
 from django.contrib.auth import decorators
 from django.shortcuts import render, redirect
+from django.forms import modelformset_factory
 from django.urls import reverse
 
 
 def is_superuser(user):
     return user.is_superuser
+
+
+def is_suborg_admin(user):
+    return user.is_current_year_suborg_admin()
 
 
 def register_suborg(request):
@@ -47,5 +52,29 @@ def reject_application(request, application_id):
     return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
 
 
+@decorators.user_passes_test(is_suborg_admin)
 def add_mentor(request):
-    pass
+    profile = request.user.suborg_admin_profile()
+    MentorFormSet = modelformset_factory(RegLink, fields=('email', ), extra=4)
+
+    if request.method == 'POST':
+        formset = MentorFormSet(request.POST)
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.user_suborg = profile.suborg_full_name
+                instance.user_gsoc_year = profile.gsoc_year
+                instance.user_role = 2
+                instance.save()
+        else:
+            return render(request, 'add_mentor.html', {
+                'formset': formset,
+            })
+
+    formset = MentorFormSet(queryset=RegLink.objects.filter(user_gsoc_year=profile.gsoc_year,
+                                                            user_suborg=profile.suborg_full_name,
+                                                            user_role=2))
+
+    return render(request, 'add_mentor.html', {
+        'formset': formset,
+    })

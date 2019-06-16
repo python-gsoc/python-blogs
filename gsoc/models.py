@@ -71,6 +71,29 @@ def is_current_year_student(self):
 auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
 
 
+def is_current_year_suborg_admin(self):
+    profile = self.suborg_admin_profile()
+    if not profile:
+        return False
+    year = profile.gsoc_year.gsoc_year
+    current_year = timezone.now().year
+    return current_year == year
+
+
+auth.models.User.add_to_class('is_current_year_suborg_admin', is_current_year_suborg_admin)
+
+
+def suborg_admin_profile(self, year=timezone.now().year):
+    gsoc_year = GsocYear.objects.filter(gsoc_year=year).first()
+    if gsoc_year is None:
+        return None
+    return self.userprofile_set.filter(role=1,
+                                       gsoc_year=gsoc_year).first()
+
+
+auth.models.User.add_to_class('suborg_admin_profile', suborg_admin_profile)
+
+
 def student_profile(self, year=timezone.now().year):
     gsoc_year = GsocYear.objects.filter(gsoc_year=year).first()
     if gsoc_year is None:
