@@ -23,7 +23,8 @@ urlpatterns = [
             'cmspages': CMSSitemap,
             }
          }),
-    url(r'^robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
+    url(r'^robots.txt', TemplateView.as_view(template_name="robots.txt",
+        content_type="text/plain"), name="robots_file"),
     url(r'^favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
 ]
 
