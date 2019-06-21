@@ -18,6 +18,11 @@
 
 {% block content %}
     <div class="content">
+        {% if message %}
+            <div class="notification-box-light">
+                Please review your application. {{ message }}
+            </div>
+        {% endif %}
         <h1>Apply for participating in GSoC@PSF as a SubOrg!</h1>
         <form method="POST" action={% url 'suborg:register_suborg' %} enctype="multipart/form-data" class="pure-form pure-form-stacked suborg-form">
             {% csrf_token %}

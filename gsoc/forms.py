@@ -56,6 +56,7 @@ class SubOrgApplicationForm(forms.ModelForm):
         model = SubOrgDetails
         exclude = ('accepted', 'last_message', 'changed')
         widgets = {
+            'suborg_admin_email': forms.HiddenInput(),
             'gsoc_year': forms.HiddenInput(),
         }
 

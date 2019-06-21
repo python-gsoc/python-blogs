@@ -33,18 +33,21 @@
 
 				<div class="pure-control-group">
 					{{ form.password.label_tag }}
-					{{ form.password }} 
+					{{ form.password }}
 				</div>
 
 				<div class="pure-controls">
 					<input class="pure-button pure-button-primary" style="background: #16536e;" type="submit" value="Login" />
 					<input type="hidden" name="next" value="{{ next }}" />
-					{# Assumes you setup the password_reset view in your URLconf #}          
+					{# Assumes you setup the password_reset view in your URLconf #}
 					<a class="pure-button pure-button-primary" href="{% url 'password_reset' %}" style="background: #16536e;">Lost password?</a>
 				</div>
 			</fieldset>
 		</form>
 	</section>
+	<div class="content center">
+		<a class="" href="{% url 'new_account' %}">Want to create a new user? Click here!</a>
+	</div>
 
 {% endif %}
 

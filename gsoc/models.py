@@ -659,7 +659,7 @@ class RegLink(models.Model):
     def create_user(self, *args, is_staff=True, **kwargs):
         namespace = str(uuid.uuid4())
         email = kwargs.get('email', self.email)
-        user = User.objects.create(*args, is_staff=is_staff,
+        user, status = User.objects.get_or_create(*args, is_staff=is_staff,
                                    email=email, **kwargs)
         role = {k: v for v, k in UserProfile.ROLES}
         profile = UserProfile.objects.create(user=user, role=self.user_role,

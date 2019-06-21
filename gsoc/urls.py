@@ -31,6 +31,7 @@ urlpatterns = [
 # Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [
     url('accounts/', include('django.contrib.auth.urls')),
+    url('accounts/new', gsoc.views.new_account_view, name='new_account'),
     url('accounts/register', gsoc.views.register_view, name='register')
 ]
 

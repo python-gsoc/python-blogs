@@ -1,6 +1,7 @@
 from gsoc.forms import SubOrgApplicationForm
 from gsoc.models import GsocYear, SubOrgDetails, RegLink
 
+from django.contrib.auth.models import User
 from django.contrib.auth import decorators
 from django.shortcuts import render, redirect
 from django.forms import modelformset_factory
@@ -15,10 +16,25 @@ def is_suborg_admin(user):
     return user.is_current_year_suborg_admin()
 
 
+@decorators.login_required
 def register_suborg(request):
     if request.method == 'GET':
+        email = request.user.email
+        user = User.objects.filter(email=email).first()
         gsoc_year = GsocYear.objects.first()
-        form = SubOrgApplicationForm(initial={'gsoc_year': gsoc_year})
+        instance = SubOrgDetails.objects.filter(suborg_admin_email=email,
+                                                gsoc_year=gsoc_year).first()
+        if instance:
+            form = SubOrgApplicationForm(instance=instance)
+            message = instance.last_message
+        else:
+            form = SubOrgApplicationForm(initial={'gsoc_year': gsoc_year,
+                                                  'suborg_admin_email': request.user.email})
+            message = None
+        return render(request, 'register_suborg.html', {
+            'form': form,
+            'message': message
+        })
 
     elif request.method == 'POST':
         form = SubOrgApplicationForm(request.POST, request.FILES)
@@ -27,10 +43,6 @@ def register_suborg(request):
             suborg_details.changed = True
             suborg_details.save()
             return redirect(reverse('suborg:post_register'))
-
-    return render(request, 'register_suborg.html', {
-            'form': form,
-        })
 
 
 def post_register(request):
