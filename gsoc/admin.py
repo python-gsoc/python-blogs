@@ -440,18 +440,28 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
         'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
         'blog_url', 'link', 'accepted', 'changed'
     )
-    fieldsets = (('Details', {
-        'fields': (
-            'gsoc_year', 'reason_for_participation', 'suborg_admin_email',
-            'mentors_student_engagement', 'students_on_schedule', 'students_involvement_gsoc',
-            'students_involvement_after', 'past_gsoc_experience', 'past_years',
-            'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
-            'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
-            'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
-            'blog_url', 'link', 'changed', 'accepted')}
-        ), ('Review', {
-            'fields': ('last_message', )}
-        ))
+    fieldsets = (
+        (
+            'Details', {
+                'fields': (
+                    'gsoc_year', 'reason_for_participation',
+                    'suborg_admin_email',
+                    'mentors_student_engagement', 'students_on_schedule',
+                    'students_involvement_gsoc',
+                    'students_involvement_after', 'past_gsoc_experience',
+                    'past_years',
+                    'suborg_in_past', 'applied_but_not_selected',
+                    'year_of_start',
+                    'source_code', 'docs', 'anything_else', 'suborg_name',
+                    'description',
+                    'logo', 'primary_os_license', 'ideas_list', 'chat',
+                    'mailing_list', 'twitter_url',
+                    'blog_url', 'link', 'changed', 'accepted'
+                )
+            }
+        ),
+        ('Review', {'fields': ('last_message', )})
+    )
     change_form_template = 'admin/suborg_details_change_form.html'
 
     def save_model(self, request, obj, form, change):
