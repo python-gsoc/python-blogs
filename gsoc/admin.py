@@ -451,7 +451,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
             'blog_url', 'link', 'changed', 'accepted')}
         ), ('Review', {
             'fields': ('last_message', )}
-    ))
+        ))
     change_form_template = 'admin/suborg_details_change_form.html'
 
     def save_model(self, request, obj, form, change):

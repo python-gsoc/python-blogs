@@ -275,7 +275,7 @@ class SubOrgDetails(models.Model):
         }
         scheduler_data = build_send_mail_json(self.suborg_admin_email,
                                               template='suborg_review.html',
-                                              subject='Review your SubOrg Application'\
+                                              subject='Review your SubOrg Application'
                                                       ' for GSoC@PSF {}'.
                                                       format(self.gsoc_year.gsoc_year),
                                               template_data=template_data)
