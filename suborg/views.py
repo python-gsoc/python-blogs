@@ -23,7 +23,9 @@ def register_suborg(request):
     elif request.method == 'POST':
         form = SubOrgApplicationForm(request.POST, request.FILES)
         if form.is_valid():
-            suborg_details = form.save()
+            suborg_details = form.save(commit=False)
+            suborg_details.changed = True
+            suborg_details.save()
             return redirect(reverse('suborg:post_register'))
 
     return render(request, 'register_suborg.html', {
@@ -44,12 +46,12 @@ def accept_application(request, application_id):
     return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
 
 
-@decorators.user_passes_test(is_superuser)
-def reject_application(request, application_id):
-    if request.method == 'GET':
-        application = SubOrgDetails.objects.get(id=application_id)
-        application.reject()
-    return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
+# @decorators.user_passes_test(is_superuser)
+# def reject_application(request, application_id):
+#     if request.method == 'GET':
+#         application = SubOrgDetails.objects.get(id=application_id)
+#         application.reject()
+#     return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
 
 
 @decorators.user_passes_test(is_suborg_admin)

@@ -14,11 +14,12 @@
             color: white !important;
         }
 
-        .submit-row .closelink.reject {
+        .submit-row .reject {
             background-color: orangered !important;
+            color: white !important;
         }
 
-        .submit-row .closelink.reject:hover {
+        .submit-row .reject:hover {
             background-color: rgb(200, 0, 0) !important;
             color: white !important;
         }
@@ -32,10 +33,8 @@
 
 
 {% block submit_buttons_bottom %}
-    {% if original.accepted == None %}
-        <div class="submit-row">
-            <a href="{% url 'suborg:accept_application' application_id=original.id %}" class="closelink">Accept</a>
-            <a href="{% url 'suborg:reject_application' application_id=original.id %}" class="closelink reject">Reject</a>
-        </div>
-    {% endif %}
+    <div class="submit-row">
+        <a href="{% url 'suborg:accept_application' application_id=original.id %}" class="closelink">Accept</a>
+        <input type="submit" value="Send Review" class="reject" name="_save">
+    </div>
 {% endblock %}

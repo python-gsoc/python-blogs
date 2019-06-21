@@ -54,7 +54,7 @@ class EventForm(forms.ModelForm):
 class SubOrgApplicationForm(forms.ModelForm):
     class Meta:
         model = SubOrgDetails
-        exclude = ('accepted', )
+        exclude = ('accepted', 'last_message', 'changed')
         widgets = {
             'gsoc_year': forms.HiddenInput(),
         }
@@ -88,6 +88,6 @@ class SubOrgApplicationForm(forms.ModelForm):
             for y in past_years:
                 if y == _y:
                     raise ValidationError('Applied but not selected year can not'
-                                          'match with past years')
+                                          ' match with past years')
 
         return cd

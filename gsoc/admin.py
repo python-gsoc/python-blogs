@@ -428,12 +428,36 @@ admin.site.register(Event, EventAdmin)
 
 
 class SubOrgDetailsAdmin(admin.ModelAdmin):
-    list_display = ('suborg_name', 'gsoc_year')
-    list_filter = ('gsoc_year', )
+    list_display = ('suborg_name', 'gsoc_year', 'changed')
+    list_filter = ('gsoc_year', 'changed')
+    # fields = ('last_message', )
+    readonly_fields = (
+        'gsoc_year', 'reason_for_participation', 'suborg_admin_email',
+        'mentors_student_engagement', 'students_on_schedule', 'students_involvement_gsoc',
+        'students_involvement_after', 'past_gsoc_experience', 'past_years',
+        'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
+        'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
+        'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
+        'blog_url', 'link', 'accepted', 'changed'
+    )
+    fieldsets = (('Details', {
+        'fields': (
+            'gsoc_year', 'reason_for_participation', 'suborg_admin_email',
+            'mentors_student_engagement', 'students_on_schedule', 'students_involvement_gsoc',
+            'students_involvement_after', 'past_gsoc_experience', 'past_years',
+            'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
+            'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
+            'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
+            'blog_url', 'link', 'changed', 'accepted')}
+        ), ('Review', {
+            'fields': ('last_message', )}
+    ))
     change_form_template = 'admin/suborg_details_change_form.html'
 
-    def has_change_permission(self, request, obj=None):
-        return False
+    def save_model(self, request, obj, form, change):
+        obj.changed = False
+        obj.send_review()
+        super(SubOrgDetailsAdmin, self).save_model(request, obj, form, change)
 
     def has_add_permission(self, request, obj=None):
         return False

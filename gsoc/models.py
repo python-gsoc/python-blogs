@@ -234,7 +234,9 @@ class SubOrgDetails(models.Model):
     blog_url = models.URLField(null=True, blank=True)
     link = models.URLField(null=True, blank=True, verbose_name='Any other link')
 
-    accepted = models.BooleanField(default=None, null=True)
+    last_message = models.TextField(null=True, blank=True)
+    accepted = models.BooleanField(default=False)
+    changed = models.BooleanField(default=None, null=True)
 
     class Meta:
         verbose_name_plural = 'Suborg Details'
@@ -262,17 +264,19 @@ class SubOrgDetails(models.Model):
                                user_gsoc_year=self.gsoc_year,
                                email=self.suborg_admin_email)
 
-    def reject(self):
+    def send_review(self):
         self.accepted = False
         self.save()
 
         template_data = {
             'gsoc_year': self.gsoc_year.gsoc_year,
             'suborg_name': self.suborg_name,
+            'message': self.last_message,
         }
         scheduler_data = build_send_mail_json(self.suborg_admin_email,
-                                              template='suborg_reject.html',
-                                              subject='Rejection for GSoC@PSF {}'.
+                                              template='suborg_review.html',
+                                              subject='Review your SubOrg Application'\
+                                                      ' for GSoC@PSF {}'.
                                                       format(self.gsoc_year.gsoc_year),
                                               template_data=template_data)
         Scheduler.objects.create(command='send_email',
