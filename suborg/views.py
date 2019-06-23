@@ -38,7 +38,7 @@ def register_suborg(request):
             suborg_details.changed = True
             suborg_details.save()
             return redirect(reverse('suborg:post_register'))
-    
+
     return render(request, 'register_suborg.html', {
         'form': form,
         'message': message
