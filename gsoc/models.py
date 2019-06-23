@@ -225,8 +225,8 @@ class SubOrgDetails(models.Model):
                                           verbose_name='Primary Open Source License')
     ideas_list = models.URLField(verbose_name='Ideas List')
 
-    chat = models.URLField(null=True, blank=True)
-    mailing_list = models.EmailField(null=True, blank=True)
+    chat = models.CharField(max_length=80, null=True, blank=True)
+    mailing_list = models.CharField(max_length=80, null=True, blank=True)
     twitter_url = models.URLField(null=True, blank=True)
     blog_url = models.URLField(null=True, blank=True)
     link = models.URLField(null=True, blank=True, verbose_name='Any other link')

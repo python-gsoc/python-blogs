@@ -76,8 +76,8 @@ class SubOrgApplicationForm(forms.ModelForm):
 
         contact = list(filter(lambda a: a is not None, contact))
 
-        if len(contact) < 3:
-            raise ValidationError('At least three out of the five contact'
+        if len(contact) < 1:
+            raise ValidationError('At least one out of the five contact'
                                   'details should be entered')
 
         if past_exp and len(past_years) == 0:
