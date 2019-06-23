@@ -18,23 +18,18 @@ def is_suborg_admin(user):
 
 @decorators.login_required
 def register_suborg(request):
+    user = User.objects.filter(email=email).first()
+    email = request.user.email
+    gsoc_year = GsocYear.objects.first()
+    instance = SubOrgDetails.objects.filter(suborg_admin_email=email,
+                                            gsoc_year=gsoc_year).first()
+    message = instance.last_message if instance else None
     if request.method == 'GET':
-        email = request.user.email
-        user = User.objects.filter(email=email).first()
-        gsoc_year = GsocYear.objects.first()
-        instance = SubOrgDetails.objects.filter(suborg_admin_email=email,
-                                                gsoc_year=gsoc_year).first()
         if instance:
             form = SubOrgApplicationForm(instance=instance)
-            message = instance.last_message
         else:
             form = SubOrgApplicationForm(initial={'gsoc_year': gsoc_year,
                                                   'suborg_admin_email': request.user.email})
-            message = None
-        return render(request, 'register_suborg.html', {
-            'form': form,
-            'message': message
-        })
 
     elif request.method == 'POST':
         form = SubOrgApplicationForm(request.POST, request.FILES)
@@ -43,6 +38,11 @@ def register_suborg(request):
             suborg_details.changed = True
             suborg_details.save()
             return redirect(reverse('suborg:post_register'))
+    
+    return render(request, 'register_suborg.html', {
+        'form': form,
+        'message': message
+    })
 
 
 def post_register(request):
