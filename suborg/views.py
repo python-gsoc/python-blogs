@@ -18,8 +18,8 @@ def is_suborg_admin(user):
 
 @decorators.login_required
 def register_suborg(request):
-    user = User.objects.filter(email=email).first()
     email = request.user.email
+    user = User.objects.filter(email=email).first()
     gsoc_year = GsocYear.objects.first()
     instance = SubOrgDetails.objects.filter(suborg_admin_email=email,
                                             gsoc_year=gsoc_year).first()
