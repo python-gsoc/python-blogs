@@ -223,10 +223,7 @@ class SubOrgDetails(models.Model):
                              help_text='Must be a 24-bit PNG, minimum height 256 pixels.')
     primary_os_license = models.CharField(max_length=50,
                                           verbose_name='Primary Open Source License')
-    ideas_list = models.TextField(
-        verbose_name='Ideas List',
-        help_text='Write the ideas one by one, separated with newlines.'
-    )
+    ideas_list = models.URLField(verbose_name='Ideas List')
 
     chat = models.URLField(null=True, blank=True)
     mailing_list = models.EmailField(null=True, blank=True)
