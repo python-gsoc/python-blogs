@@ -58,6 +58,8 @@ class SubOrgApplicationForm(forms.ModelForm):
         widgets = {
             'suborg_admin_email': forms.HiddenInput(),
             'gsoc_year': forms.HiddenInput(),
+            'past_years': forms.CheckboxSelectMultiple(),
+            'applied_but_not_selected': forms.CheckboxSelectMultiple(),
         }
 
     def clean(self):

@@ -33,8 +33,10 @@ def register_suborg(request):
 
     elif request.method == 'POST':
         form = SubOrgApplicationForm(request.POST, request.FILES)
+        if instance:
+            form = SubOrgApplicationForm(request.POST, request.FILES, instance=instance)
         if form.is_valid():
-            suborg_details = form.save(commit=False)
+            suborg_details = form.save()
             suborg_details.changed = True
             suborg_details.save()
             return redirect(reverse('suborg:post_register'))
