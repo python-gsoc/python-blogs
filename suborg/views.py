@@ -8,6 +8,7 @@ from django.forms import modelformset_factory
 from django.urls import reverse
 from django.contrib import messages
 
+
 def is_superuser(user):
     return user.is_superuser
 
@@ -31,7 +32,7 @@ def application_list(request):
 def register_suborg(request):
     email = request.user.email
     gsoc_year = GsocYear.objects.first()
-    
+
     if request.method == 'GET':
         form = SubOrgApplicationForm(initial={'gsoc_year': gsoc_year,
                                               'suborg_admin_email': email})
@@ -56,9 +57,9 @@ def update_application(request, application_id):
     if instance.suborg_admin_email != email:
         messages.error(request, 'You do not have access to the application')
         return redirect(reverse('suborg:application_list'))
-    
+
     message = instance.last_message if instance else None
-    
+
     if request.method == 'GET':
         form = SubOrgApplicationForm(instance=instance)
 

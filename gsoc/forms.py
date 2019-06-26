@@ -81,19 +81,19 @@ class SubOrgApplicationForm(forms.ModelForm):
         contact = list(filter(lambda a: a is not None, contact))
 
         if not (suborg or suborg_name):
-            raise ValidationError('Either suborg should be selected or'
+            raise ValidationError('Either suborg should be selected or '
                                   'the suborg name')
-        
+
         if not suborg and suborg_name == suborg.suborg_name:
-            raise ValidationError('Suborg with the entered name exists,'
+            raise ValidationError('Suborg with the entered name exists, '
                                   'Please select from the list')
 
         if suborg and suborg_name:
-            raise ValidationError('Either suborg should be selected or'
+            raise ValidationError('Either suborg should be selected or '
                                   'the suborg name, not both')
 
         if len(contact) < 1:
-            raise ValidationError('At least one out of the five contact'
+            raise ValidationError('At least one out of the five contact '
                                   'details should be entered')
 
         if past_exp and len(past_years) == 0:

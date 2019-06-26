@@ -218,9 +218,9 @@ class SubOrgDetails(models.Model):
     )
 
     suborg = models.ForeignKey(SubOrg, null=True, blank=True,
-                               on_delete=models.CASCADE, verbose_name='Select your suborg, if '\
+                               on_delete=models.CASCADE, verbose_name='Select your suborg, if '
                                                                       'you have applied before')
-    suborg_name = models.CharField(max_length=80, verbose_name='If applying for the first time'\
+    suborg_name = models.CharField(max_length=80, verbose_name='If applying for the first time'
                                                                ' enter the name of your suborg',
                                    null=True, blank=True)
     description = models.TextField(verbose_name='A very short description of your organization')
