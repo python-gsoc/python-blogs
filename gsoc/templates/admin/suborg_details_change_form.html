@@ -1,0 +1,40 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+    <style>
+        .submit-row .closelink {
+            background-color: #00BBFF !important;
+        }
+
+        .submit-row .closelink:hover {
+            background-color: #447e9b !important;
+            color: white !important;
+        }
+
+        .submit-row .reject {
+            background-color: orangered !important;
+            color: white !important;
+        }
+
+        .submit-row .reject:hover {
+            background-color: rgb(200, 0, 0) !important;
+            color: white !important;
+        }
+
+        .aligned .readonly {
+            margin-top: 0 !important;
+            margin-left: 0 !important;
+        }
+    </style>
+{% endblock %}
+
+
+{% block submit_buttons_bottom %}
+    <div class="submit-row">
+        <a href="{% url 'suborg:accept_application' application_id=original.id %}" class="closelink">Accept</a>
+        <input type="submit" value="Rejection Message" class="reject" name="_save">
+    </div>
+{% endblock %}

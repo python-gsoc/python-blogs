@@ -1,0 +1,21 @@
+{% extends CMS_TEMPLATE %}
+
+{% block content %}
+<div class="content">
+    <h1>Select any of the applications to change</h1>
+    <ul>
+        {% for application in applications %}
+            <li><a href="{% url 'suborg:update_application' application_id=application.id %}">
+                {% if application.suborg %}
+                    {{ application.suborg.suborg_name }}
+                {% else %}
+                    {{ application.suborg_name }}
+                {% endif %}
+            </a></li>
+        {% endfor %}
+    </ul>
+    <p>
+        <a href="{% url 'suborg:register_suborg' %}">Want to create a new application?</a>
+    </p>
+</div>
+{% endblock %}

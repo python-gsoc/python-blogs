@@ -18,18 +18,20 @@ import gsoc.views
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^sitemap\.xml$', sitemap,
+    url(r'^sitemap\.xml', sitemap,
         {'sitemaps': {
             'cmspages': CMSSitemap,
             }
          }),
-    url(r'^robots.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"), name="robots_file"),
-    url(r'^favicon.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
+    url(r'^robots.txt', TemplateView.as_view(template_name="robots.txt",
+        content_type="text/plain"), name="robots_file"),
+    url(r'^favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
 ]
 
 # Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [
     url('accounts/', include('django.contrib.auth.urls')),
+    url('accounts/new', gsoc.views.new_account_view, name='new_account'),
     url('accounts/register', gsoc.views.register_view, name='register')
 ]
 
@@ -65,10 +67,10 @@ urlpatterns += [
 
 # Review article routes
 urlpatterns += [
-    url(r'^article/review/(?P<article_id>[0-9]+)/$', gsoc.views.review_article,
+    url(r'^article/review/(?P<article_id>[0-9]+)/', gsoc.views.review_article,
         name='review_article'),
-    url(r'^article/unpublish/(?P<article_id>[0-9]+)/$', gsoc.views.unpublish_article,
+    url(r'^article/unpublish/(?P<article_id>[0-9]+)/', gsoc.views.unpublish_article,
         name='unpublish_article'),
-    url(r'^article/publish/(?P<article_id>[0-9]+)/$', gsoc.views.publish_article,
+    url(r'^article/publish/(?P<article_id>[0-9]+)/', gsoc.views.publish_article,
         name='publish_article')
 ]

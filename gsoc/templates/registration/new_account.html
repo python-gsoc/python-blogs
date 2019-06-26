@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Account
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <form class="pure-form pure-form-stacked" method="POST" action="{% url 'new_account' %}">
+            <fieldset>
+                {% csrf_token %}
+                <legend><h2>Create New Account</h2></legend>
+        
+                <p>
+                    <label for="email">Email</label>
+                    <input id="email" type="email" name="email" required>
+                </p>
+        
+                <button type="submit" class="pure-button pure-button-primary">Get Registration Link</button>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends CMS_TEMPLATE %}
+
+{% block head %}
+    <style>
+        .suborg-form br {
+            display: none;
+        }
+
+        .suborg-form label {
+            margin: 20px 0 0 0;
+        }
+
+        .suborg-form .pure-button {
+            margin: 20px 0 0 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        {% if message %}
+            <div class="notification-box-light">
+                Please review your application. {{ message }}
+            </div>
+        {% endif %}
+        <h1>Apply for participating in GSoC@PSF as a SubOrg!</h1>
+        <form method="POST" action={% url 'suborg:register_suborg' %} enctype="multipart/form-data" class="pure-form pure-form-stacked suborg-form">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" class="pure-button pure-button-primary">Register</button>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block js %}
+    <script>
+        helptexts = document.getElementsByClassName('helptext');
+        for (var i=0; i<helptexts.length; i++) {
+            helptext = helptexts.item(i);
+            console.log(helptext)
+            helptext.classList.add('pure-form-message');
+        }
+    </script>
+{% endblock %}

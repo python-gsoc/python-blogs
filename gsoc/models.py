@@ -71,6 +71,29 @@ def is_current_year_student(self):
 auth.models.User.add_to_class('is_current_year_student', is_current_year_student)
 
 
+def is_current_year_suborg_admin(self):
+    profile = self.suborg_admin_profile()
+    if not profile:
+        return False
+    year = profile.gsoc_year.gsoc_year
+    current_year = timezone.now().year
+    return current_year == year
+
+
+auth.models.User.add_to_class('is_current_year_suborg_admin', is_current_year_suborg_admin)
+
+
+def suborg_admin_profile(self, year=timezone.now().year):
+    gsoc_year = GsocYear.objects.filter(gsoc_year=year).first()
+    if gsoc_year is None:
+        return None
+    return self.userprofile_set.filter(role=1,
+                                       gsoc_year=gsoc_year).first()
+
+
+auth.models.User.add_to_class('suborg_admin_profile', suborg_admin_profile)
+
+
 def student_profile(self, year=timezone.now().year):
     gsoc_year = GsocYear.objects.filter(gsoc_year=year).first()
     if gsoc_year is None:
@@ -135,6 +158,134 @@ class GsocYear(models.Model):
 
     def __str__(self):
         return str(self.gsoc_year)
+
+
+class SubOrgDetails(models.Model):
+    gsoc_year = models.ForeignKey(
+        GsocYear,
+        on_delete=models.CASCADE,
+        related_name='suborg_details'
+    )
+
+    reason_for_participation = models.TextField(
+        verbose_name='Why does your org want to participate in Google Summer of Code?'
+    )
+    suborg_admin_email = models.EmailField(
+        verbose_name='Suborg admin email'
+    )
+    mentors_student_engagement = models.TextField(
+        verbose_name='How will you keep mentors engaged with their students?'
+    )
+    students_on_schedule = models.TextField(
+        verbose_name='How will you help your students stay '
+                     'on schedule to complete their projects?'
+    )
+    students_involvement_gsoc = models.TextField(
+        verbose_name='How will you get your students involved in your community during GSoC?'
+    )
+    students_involvement_after = models.TextField(
+        verbose_name='How will you keep students involved with your community after GSoC?'
+    )
+    past_gsoc_experience = models.BooleanField(
+        verbose_name='Has your org been accepted as a mentor org '
+                     'in Google Summer of Code before?'
+    )
+    past_years = models.ManyToManyField(
+        GsocYear,
+        blank=True,
+        verbose_name='Which years did your org participate in GSoC?'
+    )
+    suborg_in_past = models.BooleanField(verbose_name='Was this as a Suborg?')
+
+    applied_but_not_selected = models.ManyToManyField(
+        GsocYear,
+        blank=True,
+        related_name='applied_not_selected',
+        verbose_name='If your org has applied for GSoC '
+                     'before but not been accepted, select the years'
+    )
+    year_of_start = models.IntegerField(verbose_name='What year was your project started?')
+    source_code = models.URLField(verbose_name='Where does your source code live?')
+    docs = models.URLField(
+        verbose_name='Please provide the URL that points to the repository, '
+                     'GitHub organization, or a web page that describes how to'
+                     ' get your source code'
+    )
+    anything_else = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name='Anything else we should know (optional)'
+    )
+
+    suborg = models.ForeignKey(SubOrg, null=True, blank=True,
+                               on_delete=models.CASCADE, verbose_name='Select your suborg, if '
+                                                                      'you have applied before')
+    suborg_name = models.CharField(max_length=80, verbose_name='If applying for the first time'
+                                                               ' enter the name of your suborg',
+                                   null=True, blank=True)
+    description = models.TextField(verbose_name='A very short description of your organization')
+    logo = models.ImageField(upload_to='logos/', verbose_name='Your organization logo',
+                             help_text='Must be a 24-bit PNG, minimum height 256 pixels.')
+    primary_os_license = models.CharField(max_length=50,
+                                          verbose_name='Primary Open Source License')
+    ideas_list = models.URLField(verbose_name='Ideas List')
+
+    chat = models.CharField(max_length=80, null=True, blank=True)
+    mailing_list = models.CharField(max_length=80, null=True, blank=True)
+    twitter_url = models.URLField(null=True, blank=True)
+    blog_url = models.URLField(null=True, blank=True)
+    link = models.URLField(null=True, blank=True, verbose_name='Any other link')
+
+    last_message = models.TextField(null=True, blank=True)
+    last_updated_at = models.DateTimeField(null=True, blank=True)
+    last_updated_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+
+    accepted = models.BooleanField(default=False)
+    changed = models.BooleanField(default=None, null=True)
+
+    class Meta:
+        verbose_name_plural = 'Suborg Details'
+
+    def accept(self):
+        self.accepted = True
+        if not self.suborg:
+            self.suborg = SubOrg.objects.create(suborg_name=self.suborg_name)
+        self.save()
+
+        template_data = {
+            'gsoc_year': self.gsoc_year.gsoc_year,
+            'suborg_name': self.suborg.suborg_name,
+        }
+        scheduler_data = build_send_mail_json(self.suborg_admin_email,
+                                              template='suborg_accept.html',
+                                              subject='Acceptance for GSoC@PSF {}'.
+                                                      format(self.gsoc_year.gsoc_year),
+                                              template_data=template_data)
+        Scheduler.objects.create(command='send_email',
+                                 data=scheduler_data)
+
+        RegLink.objects.create(user_role=1,
+                               user_suborg=suborg,
+                               user_gsoc_year=self.gsoc_year,
+                               email=self.suborg_admin_email)
+
+    def send_review(self):
+        self.accepted = False
+        self.save()
+
+        template_data = {
+            'gsoc_year': self.gsoc_year.gsoc_year,
+            'suborg_name': self.suborg_name,
+            'message': self.last_message,
+        }
+        scheduler_data = build_send_mail_json(self.suborg_admin_email,
+                                              template='suborg_review.html',
+                                              subject='Review your SubOrg Application'
+                                                      ' for GSoC@PSF {}'.
+                                                      format(self.gsoc_year.gsoc_year),
+                                              template_data=template_data)
+        Scheduler.objects.create(command='send_email',
+                                 data=scheduler_data)
 
 
 class UserProfileManager(models.Manager):
@@ -513,7 +664,7 @@ class RegLink(models.Model):
     def create_user(self, *args, is_staff=True, **kwargs):
         namespace = str(uuid.uuid4())
         email = kwargs.get('email', self.email)
-        user = User.objects.create(*args, is_staff=is_staff,
+        user, status = User.objects.get_or_create(*args, is_staff=is_staff,
                                    email=email, **kwargs)
         role = {k: v for v, k in UserProfile.ROLES}
         profile = UserProfile.objects.create(user=user, role=self.user_role,
@@ -746,14 +897,14 @@ def due_date_delete_from_calendar(sender, instance, **kwargs):
 # Add Send RegLink Schedulers when RegLink is created
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reglink_schedulers(sender, instance, **kwargs):
-    if instance.adduserlog is not None and instance.scheduler is None:
+    if instance.scheduler is None:
         instance.create_scheduler()
 
 
 # Add Send RegLink Reminder Schedulers when RegLink is created
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
-    if instance.adduserlog is not None and instance.reminder is None:
+    if instance.reminder is None:
         instance.create_reminder()
 
 

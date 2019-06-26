@@ -1,7 +1,8 @@
 from gsoc import settings
 
 from .forms import ProposalUploadForm
-from .models import RegLink, ProposalTextValidator, Comment, ArticleReview
+from .models import (RegLink, ProposalTextValidator, Comment, ArticleReview,
+                     GsocYear)
 
 import io
 import os
@@ -126,6 +127,21 @@ def confirm_proposal_view(request):
     if profile.accepted_proposal_pdf:
         profile.confirm_proposal()
     return shortcuts.HttpResponse()
+
+
+def new_account_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email', None)
+        gsoc_year = GsocYear.objects.first()
+        if email:
+            RegLink.objects.create(user_role=0,
+                                   user_gsoc_year=gsoc_year,
+                                   email=email)
+            messages.success(request, 'You will get the registration link sent to your email soon')
+        else:
+            messages.error(request, 'An error occured, try again!')
+        return shortcuts.redirect('/')
+    return shortcuts.render(request, 'registration/new_account.html')
 
 
 def register_view(request):
