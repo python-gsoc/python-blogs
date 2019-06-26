@@ -17,6 +17,10 @@ def is_suborg_admin(user):
     return user.is_current_year_suborg_admin()
 
 
+def home(request):
+    return redirect(reverse('suborg:register_suborg'))
+
+
 @decorators.login_required
 def application_list(request):
     applications = SubOrgDetails.objects.filter(suborg_admin_email=request.user.email)
