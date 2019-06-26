@@ -217,7 +217,12 @@ class SubOrgDetails(models.Model):
         verbose_name='Anything else we should know (optional)'
     )
 
-    suborg_name = models.CharField(max_length=80, verbose_name='Name')
+    suborg = models.ForeignKey(SubOrg, null=True, blank=True,
+                               on_delete=models.CASCADE, verbose_name='Select your suborg, if '\
+                                                                      'you have applied before')
+    suborg_name = models.CharField(max_length=80, verbose_name='If applying for the first time'\
+                                                               ' enter the name of your suborg',
+                                   null=True, blank=True)
     description = models.TextField(verbose_name='A very short description of your organization')
     logo = models.ImageField(upload_to='logos/', verbose_name='Your organization logo',
                              help_text='Must be a 24-bit PNG, minimum height 256 pixels.')
@@ -232,6 +237,9 @@ class SubOrgDetails(models.Model):
     link = models.URLField(null=True, blank=True, verbose_name='Any other link')
 
     last_message = models.TextField(null=True, blank=True)
+    last_updated_at = models.DateTimeField(null=True, blank=True)
+    last_updated_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+
     accepted = models.BooleanField(default=False)
     changed = models.BooleanField(default=None, null=True)
 
@@ -240,11 +248,13 @@ class SubOrgDetails(models.Model):
 
     def accept(self):
         self.accepted = True
+        if not self.suborg:
+            self.suborg = SubOrg.objects.create(suborg_name=self.suborg_name)
         self.save()
 
         template_data = {
             'gsoc_year': self.gsoc_year.gsoc_year,
-            'suborg_name': self.suborg_name,
+            'suborg_name': self.suborg.suborg_name,
         }
         scheduler_data = build_send_mail_json(self.suborg_admin_email,
                                               template='suborg_accept.html',
@@ -253,8 +263,6 @@ class SubOrgDetails(models.Model):
                                               template_data=template_data)
         Scheduler.objects.create(command='send_email',
                                  data=scheduler_data)
-
-        suborg = SubOrg.objects.create(suborg_name=self.suborg_name)
 
         RegLink.objects.create(user_role=1,
                                user_suborg=suborg,

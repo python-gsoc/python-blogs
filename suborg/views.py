@@ -6,7 +6,7 @@ from django.contrib.auth import decorators
 from django.shortcuts import render, redirect
 from django.forms import modelformset_factory
 from django.urls import reverse
-
+from django.contrib import messages
 
 def is_superuser(user):
     return user.is_superuser
@@ -17,24 +17,53 @@ def is_suborg_admin(user):
 
 
 @decorators.login_required
+def application_list(request):
+    applications = SubOrgDetails.objects.filter(suborg_admin_email=request.user.email)
+    if len(applications) == 0:
+        return redirect(reverse('suborg:register_suborg'))
+
+    return render(request, 'application_list.html', {
+        'applications': applications,
+    })
+
+
+@decorators.login_required
 def register_suborg(request):
     email = request.user.email
-    user = User.objects.filter(email=email).first()
     gsoc_year = GsocYear.objects.first()
-    instance = SubOrgDetails.objects.filter(suborg_admin_email=email,
-                                            gsoc_year=gsoc_year).first()
-    message = instance.last_message if instance else None
+    
     if request.method == 'GET':
-        if instance:
-            form = SubOrgApplicationForm(instance=instance)
-        else:
-            form = SubOrgApplicationForm(initial={'gsoc_year': gsoc_year,
-                                                  'suborg_admin_email': request.user.email})
+        form = SubOrgApplicationForm(initial={'gsoc_year': gsoc_year,
+                                              'suborg_admin_email': email})
 
     elif request.method == 'POST':
         form = SubOrgApplicationForm(request.POST, request.FILES)
-        if instance:
-            form = SubOrgApplicationForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            suborg_details = form.save()
+            suborg_details.changed = True
+            suborg_details.save()
+            return redirect(reverse('suborg:post_register'))
+
+    return render(request, 'register_suborg.html', {
+        'form': form
+    })
+
+
+@decorators.login_required
+def update_application(request, application_id):
+    email = request.user.email
+    instance = SubOrgDetails.objects.get(id=application_id)
+    if instance.suborg_admin_email != email:
+        messages.error(request, 'You do not have access to the application')
+        return redirect(reverse('suborg:application_list'))
+    
+    message = instance.last_message if instance else None
+    
+    if request.method == 'GET':
+        form = SubOrgApplicationForm(instance=instance)
+
+    elif request.method == 'POST':
+        form = SubOrgApplicationForm(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             suborg_details = form.save()
             suborg_details.changed = True

@@ -54,7 +54,7 @@ class EventForm(forms.ModelForm):
 class SubOrgApplicationForm(forms.ModelForm):
     class Meta:
         model = SubOrgDetails
-        exclude = ('accepted', 'last_message', 'changed')
+        exclude = ('accepted', 'last_message', 'changed', 'last_updated_at', 'last_updated_by')
         widgets = {
             'suborg_admin_email': forms.HiddenInput(),
             'gsoc_year': forms.HiddenInput(),
@@ -67,6 +67,8 @@ class SubOrgApplicationForm(forms.ModelForm):
         past_exp = cd.get('past_gsoc_experience')
         past_years = cd.get('past_years').all()
         applied_not_selected = cd.get('applied_but_not_selected').all()
+        suborg_name = cd.get('suborg_name')
+        suborg = cd.get('suborg')
 
         contact = [
             cd.get('chat', None),
@@ -77,6 +79,18 @@ class SubOrgApplicationForm(forms.ModelForm):
         ]
 
         contact = list(filter(lambda a: a is not None, contact))
+
+        if not (suborg or suborg_name):
+            raise ValidationError('Either suborg should be selected or'
+                                  'the suborg name')
+        
+        if not suborg and suborg_name == suborg.suborg_name:
+            raise ValidationError('Suborg with the entered name exists,'
+                                  'Please select from the list')
+
+        if suborg and suborg_name:
+            raise ValidationError('Either suborg should be selected or'
+                                  'the suborg name, not both')
 
         if len(contact) < 1:
             raise ValidationError('At least one out of the five contact'
