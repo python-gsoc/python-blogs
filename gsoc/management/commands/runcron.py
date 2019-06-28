@@ -63,7 +63,7 @@ class Command(BaseCommand):
                                       ending='\n')
                     builder.built = True
                     builder.save()
-                
+
                 else:
                     self.stdout.write(
                         self.style.ERROR(

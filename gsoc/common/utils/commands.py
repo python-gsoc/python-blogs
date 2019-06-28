@@ -13,9 +13,9 @@ def send_email(scheduler: Scheduler):
     data = json.loads(scheduler.data)
     try:
         send_mail(data['send_to'],
-                   data['subject'],
-                   data['template'],
-                   data['template_data'])
+                  data['subject'],
+                  data['template'],
+                  data['template_data'])
     except SMTPSenderRefused as e:
         last_error = json.dumps({
             "message": str(e),
