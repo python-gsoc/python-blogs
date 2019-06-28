@@ -13,7 +13,7 @@ def build_pre_blog_reminders(builder):
         gsoc_year = GsocYear.objects.first()
         profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
         for profile in profiles:
-            if profile.current_blog_count is not 0 and not (profile.hidden and
+            if profile.current_blog_count is not 0 and not (profile.hidden or
                                                             profile.reminder_disabled):
                 template_data = {
                     'current_blog_count': profile.current_blog_count,
@@ -45,7 +45,7 @@ def build_post_blog_reminders(builder):
         gsoc_year = GsocYear.objects.first()
         profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
         for profile in profiles:
-            if profile.current_blog_count > blogs_count and not (profile.hidden and
+            if profile.current_blog_count > blogs_count and not (profile.hidden or
                                                                  profile.reminder_disabled):
                 suborg = profile.suborg_full_name
                 mentors = UserProfile.objects.filter(suborg_full_name=suborg, role=2)
