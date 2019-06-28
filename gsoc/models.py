@@ -367,8 +367,9 @@ class Builder(models.Model):
 
     category = models.CharField(max_length=40, choices=categories)
     activation_date = models.DateTimeField(null=True, blank=True)
-    built = models.BooleanField(default=False)
+    built = models.BooleanField(default=None, null=True)
     data = models.TextField()
+    last_error = models.TextField(null=True, default=None, blank=True)
 
     def __str__(self):
         return self.category

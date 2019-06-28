@@ -1,39 +1,21 @@
 import json
 from smtplib import SMTPResponseException, SMTPSenderRefused
 
-from django.core.mail import EmailMessage
-from django.conf import settings
-
-from django.template.loader import get_template
-from django.template import TemplateDoesNotExist
-from django.template import Template
 from django.contrib.auth.models import User
 
 from .irc import send_message
 
 from gsoc.models import Scheduler, RegLink, GsocYear, UserProfile, Event
+from .tools import send_mail
 
 
 def send_email(scheduler: Scheduler):
     data = json.loads(scheduler.data)
     try:
-        data['template'] = get_template(f'email/{data["template"]}')
-    except TemplateDoesNotExist:
-        data['template'] = Template(data['template'])
-    context_dict = {} if not data['template_data'] else data['template_data']
-    content = data['template'].render(context_dict)
-    if isinstance(data['send_to'], str):
-        data['send_to'] = [data['send_to']]
-    try:
-        send_email = EmailMessage(
-            body=content,
-            subject=settings.EMAIL_SUBJECT_PREFIX + data['subject'],
-            from_email=settings.SERVER_EMAIL,
-            reply_to=settings.REPLY_EMAIL,
-            to=data['send_to'],
-            )
-        send_email.content_subtype = "html"
-        send_email.send()
+        send_mail(data['send_to'],
+                   data['subject'],
+                   data['template'],
+                   data['template_data'])
     except SMTPSenderRefused as e:
         last_error = json.dumps({
             "message": str(e),
