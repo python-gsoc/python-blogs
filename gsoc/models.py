@@ -400,6 +400,17 @@ class Event(models.Model):
                                  blank=True)
     event_id = models.CharField(max_length=255, null=True, blank=True)
 
+    @property
+    def calendar_link(self):
+        if self.event_id:
+            with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
+                creds = pickle.load(token)
+                service = build('calendar', 'v3', credentials=creds)
+                event = service.events().get(calendarId=self.timeline.calendar_id,
+                                             eventId=self.event_id).execute()
+                return event.get('htmlLink', None)
+        return None
+
     def add_to_calendar(self):
         with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
             creds = pickle.load(token)
