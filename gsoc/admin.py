@@ -359,7 +359,18 @@ class AddUserLogAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AddUserLog, AddUserLogAdmin)
-admin.site.register(Builder)
+
+
+class BuilderAdmin(admin.ModelAdmin):
+    list_display = ('category', 'short_data', 'built', 'last_error')
+    list_filter = ('category', 'built')
+    sortable_by = ('last_error')
+
+    def short_data(self, obj):
+        return '{}...'.format(obj.data[:50])
+
+
+admin.site.register(Builder, BuilderAdmin)
 
 
 class BlogPostDueDateInline(admin.TabularInline):
