@@ -45,8 +45,8 @@ class Command(BaseCommand):
     def build_items(self, options):
         # build tasks
         today = timezone.now()
-        x = Builder.objects.filter(built=False, activation_date=None).all()
-        y = Builder.objects.filter(built=False, activation_date__lte=today).all()
+        x = Builder.objects.filter(built=None, activation_date=None).all()
+        y = Builder.objects.filter(built=None, activation_date__lte=today).all()
         builders = x | y
 
         if len(builders) is 0:
