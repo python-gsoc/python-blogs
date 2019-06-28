@@ -34,11 +34,11 @@ def send_mail(send_to, subject, template, context={}):
         template = get_template(f'email/{template}')
     except TemplateDoesNotExist:
         template = Template(template)
-    
+
     content = template.render(context)
     if isinstance(send_to, str):
         send_to = [send_to]
-    
+
     send_email = EmailMessage(
         body=content,
         subject=settings.EMAIL_SUBJECT_PREFIX + subject,
