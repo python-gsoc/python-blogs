@@ -409,7 +409,8 @@ admin.site.register(ArticleReview, ArticleReviewAdmin)
 
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'start_date', 'end_date', 'calendar_link')
+    list_display = ('title', 'start_date', 'end_date')
+    fields = ('title', 'start_date', 'end_date', 'timeline', 'calendar_link')
 
     def has_add_permission(self, request, obj=None):
         return False

@@ -2,10 +2,11 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
-import gsoc.settings as config
 from gsoc.models import Scheduler, GsocYear, UserProfile, Builder
 from gsoc.common.utils import commands, build_tasks
+from gsoc.common.utils.tools import send_mail
 
 
 class Command(BaseCommand):
@@ -28,7 +29,7 @@ class Command(BaseCommand):
             '-t',
             '--timeout',
             nargs='?',
-            default=config.RUNCRON_TIMEOUT,
+            default=settings.RUNCRON_TIMEOUT,
             type=int,
             help='Set timeout'
             )
@@ -36,7 +37,7 @@ class Command(BaseCommand):
             '-n',
             '--num_workers',
             nargs='?',
-            default=config.RUNCRON_NUM_WORKERS,
+            default=settings.RUNCRON_NUM_WORKERS,
             type=int,
             help='Set number of workers'
             )
@@ -54,15 +55,36 @@ class Command(BaseCommand):
             for builder in builders:
                 self.stdout.write('Running build task {}:{}'
                                   .format(builder.category, builder.pk), ending='\n')
-                getattr(build_tasks, builder.category)(builder)
-                self.stdout.write(self.style
-                                  .SUCCESS('Finished build task {}:{}'
-                                           .format(builder.category, builder.pk)),
-                                  ending='\n')
-                builder.built = True
-                builder.save()
+                err = getattr(build_tasks, builder.category)(builder)
+                if not err:
+                    self.stdout.write(self.style
+                                      .SUCCESS('Finished build task {}:{}'
+                                               .format(builder.category, builder.pk)),
+                                      ending='\n')
+                    builder.built = True
+                    builder.save()
+                
+                else:
+                    self.stdout.write(
+                        self.style.ERROR(
+                            'Build task {}:{} failed with error: {}' .format(
+                                builder.category,
+                                builder.pk,
+                                err)),
+                        ending='\n')
+                    builder.built = False
+                    builder.last_error = err
+                    builder.save()
+                    send_mail(settings.ADMIN_EMAIL,
+                              'Exception on runcron build_items',
+                              'cron_error.html',
+                              {
+                                  'message': err,
+                                  'time': today,
+                              })
 
     def handle_process(self, scheduler):
+        today = timezone.now()
         self.stdout.write('Running command {}:{}'
                           .format(scheduler.command, scheduler.id), ending='\n')
         err = getattr(commands, scheduler.command)(scheduler)
@@ -85,6 +107,13 @@ class Command(BaseCommand):
             scheduler.success = False
             scheduler.last_error = err
             scheduler.save()
+            send_mail(settings.ADMIN_EMAIL,
+                      'Exception on runcron process_items',
+                      'cron_error.html',
+                      {
+                          'message': err,
+                          'time': today,
+                      })
 
     def process_items(self, options):
         # custom handlers
