@@ -28,3 +28,5 @@ profanityfilter>=2.0.6
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
+
+PyGithub

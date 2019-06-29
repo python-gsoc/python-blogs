@@ -7,6 +7,8 @@ from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
 from django.template import Template
 
+from github import Github
+
 
 def build_send_mail_json(send_to,
                          template: str,
@@ -48,3 +50,20 @@ def send_mail(send_to, subject, template, context={}):
         )
     send_email.content_subtype = "html"
     send_email.send()
+
+
+def render_site_template(template, context):
+    try:
+        template = get_template(f'site/{template}')
+    except TemplateDoesNotExist:
+        template = Template(template)
+    
+    return template.render(context)
+
+
+def push_site_template(file_path, content):
+    content = content.encode()
+    g = Github(settings.GITHUB_ACCESS_TOKEN)
+    repo = g.get_repo(settings.STATIC_SITE_REPO)
+    f = repo.get_contents(file_path)
+    repo.update_file(f.path, f'Update {file_path}', content, f.sha)
