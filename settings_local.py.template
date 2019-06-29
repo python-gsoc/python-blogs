@@ -74,3 +74,6 @@ GOOGLE_API_CLIENT_CONFIG = {
 # GITHUB SETTINGS
 STATIC_SITE_REPO = 'python-gsoc/python-gsoc.github.io'
 GITHUB_ACCESS_TOKEN = ''
+GITHUB_FILE_PATH = {
+    'deadlines.html': 'deadlines.html'
+}

@@ -57,7 +57,7 @@ def render_site_template(template, context):
         template = get_template(f'site/{template}')
     except TemplateDoesNotExist:
         template = Template(template)
-    
+
     return template.render(context)
 
 
