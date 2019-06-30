@@ -265,9 +265,18 @@ class SubOrgDetails(models.Model):
                                  data=scheduler_data)
 
         RegLink.objects.create(user_role=1,
-                               user_suborg=suborg,
+                               user_suborg=self.suborg,
                                user_gsoc_year=self.gsoc_year,
                                email=self.suborg_admin_email)
+
+        s = Scheduler.objects.filter(command='update_site_template',
+                                     data=json.dumps({'template': 'index.html'}),
+                                     success=None).all()
+        if len(s) == 0:
+            time = timezone.now() + timezone.timedelta(minutes=5)
+            Scheduler.objects.create(command='update_site_template',
+                                     data=json.dumps({'template': 'index.html'}),
+                                     activation_date=time)
 
     def send_review(self):
         self.accepted = False
@@ -887,8 +896,10 @@ def event_publish_to_github_pages(sender, instance, **kwargs):
                                  data=json.dumps({'template': 'deadlines.html'}),
                                  success=None).all()
     if len(s) == 0:
+        time = timezone.now() + timezone.timedelta(minutes=5)
         Scheduler.objects.create(command='update_site_template',
-                                 data=json.dumps({'template': 'deadlines.html'}))
+                                 data=json.dumps({'template': 'deadlines.html'}),
+                                 activation_date=time)
 
 
 # Delete Event from Calendar when obj is deleted

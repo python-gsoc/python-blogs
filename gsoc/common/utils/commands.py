@@ -6,7 +6,8 @@ from django.conf import settings
 
 from .irc import send_message
 
-from gsoc.models import Scheduler, RegLink, GsocYear, UserProfile, Event, BlogPostDueDate
+from gsoc.models import (Scheduler, RegLink, GsocYear, UserProfile, Event,
+                         BlogPostDueDate, SubOrgDetails)
 from .tools import send_mail, render_site_template, push_site_template
 
 
@@ -116,11 +117,15 @@ def add_calendar_event(scheduler: Scheduler):
 def update_site_template(scheduler: Scheduler):
     try:
         template = json.loads(scheduler.data)['template']
+        gsoc_year = GsocYear.objects.first()
         if template == 'deadlines.html':
-            gsoc_year = GsocYear.objects.first()
             context = {
                 'events': Event.objects.filter(timeline__gsoc_year=gsoc_year).all(),
                 'duedates': BlogPostDueDate.objects.filter(timeline__gsoc_year=gsoc_year).all(),
+            }
+        elif template == 'index.html':
+            context = {
+                'suborgs': SubOrgDetails.objects.filter(gsoc_year=gsoc_year, accepted=True).all(),
             }
         content = render_site_template(template, context)
         push_site_template(settings.GITHUB_FILE_PATH[template], content)
