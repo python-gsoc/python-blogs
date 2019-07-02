@@ -70,3 +70,10 @@ GOOGLE_API_CLIENT_CONFIG = {
         "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"]
     }
 }
+
+# GITHUB SETTINGS
+STATIC_SITE_REPO = 'python-gsoc/python-gsoc.github.io'
+GITHUB_ACCESS_TOKEN = ''
+GITHUB_FILE_PATH = {
+    'deadlines.html': 'deadlines.html'
+}
