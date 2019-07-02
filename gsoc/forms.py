@@ -1,5 +1,5 @@
 from .models import (UserDetails, UserProfile, RegLink, BlogPostDueDate, Event,
-                     SubOrgDetails)
+                     SubOrgDetails, SubOrg)
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -84,9 +84,11 @@ class SubOrgApplicationForm(forms.ModelForm):
             raise ValidationError('Either suborg should be selected or '
                                   'the suborg name')
 
-        if not suborg and suborg_name == suborg.suborg_name:
-            raise ValidationError('Suborg with the entered name exists, '
-                                  'Please select from the list')
+        if not suborg:
+            _suborgs = SubOrg.objects.filter(suborg_name=suborg_name).all()
+            if len(_suborgs) > 0:
+                raise ValidationError('Suborg with the entered name exists, '
+                                      'Please select from the list')
 
         if suborg and suborg_name:
             raise ValidationError('Either suborg should be selected or '
