@@ -2,6 +2,7 @@ from .models import UserProfile
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import Permission
 
 from cms.api import add_plugin
 from cms.utils import permissions
@@ -35,7 +36,12 @@ def user_has_add_permission(self, user, **kwargs):
         return False
 
     # Ensure user has permission to create articles.
-    if user.is_superuser or user.student_profile() is not None:
+    if user.student_profile() is not None:
+        add_perm = Permission.objects.filter(codename='add_article').first()
+        if add_perm in user.user_permissions.all():
+            return True
+
+    if user.is_superuser:
         return True
 
     # By default, no permission.

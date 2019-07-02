@@ -351,7 +351,7 @@ class Scheduler(models.Model):
     commands = (
         ('send_email', 'send_email'),
         ('send_irc_msg', 'send_irc_msg'),
-        ('deactivate_user', 'deactivate_user'),
+        ('revoke_student_permissions', 'revoke_student_permissions'),
         ('send_reg_reminder', 'send_reg_reminder'),
         ('add_blog_counter', 'add_blog_counter'),
         ('update_site_template', 'update_site_template'),

@@ -10,6 +10,7 @@ from cms.cms_toolbars import (
 from cms.utils.conf import get_cms_setting
 from cms.utils.urlutils import admin_reverse
 
+from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language_from_request
@@ -151,8 +152,10 @@ def populate(self):
         else:
             for profile in userprofiles:
                 if profile.app_config == config:
-                    change_article_perm = True
-                    break
+                    change_perm = Permission.objects.filter(codename='change_article').first()
+                    if change_perm in user.user_permissions.all():
+                        change_article_perm = True
+                        break
 
         add_article_perm = user.is_superuser if article else False
         delete_article_perm = user.is_superuser if article else False
