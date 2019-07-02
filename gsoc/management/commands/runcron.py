@@ -116,8 +116,14 @@ class Command(BaseCommand):
                       })
 
     def process_items(self, options):
+        today = timezone.now()
+
         # custom handlers
-        irc_schedulers = Scheduler.objects.filter(success=None, command='send_irc_msg')
+        irc_schedulers_1 = Scheduler.objects.filter(success=None, command='send_irc_msg',
+                                                    activation_date=None)
+        irc_schedulers_2 = Scheduler.objects.filter(success=None, command='send_irc_msg',
+                                                    activation_date__lte=today)
+        irc_schedulers = irc_schedulers_1 | irc_schedulers_2
         if len(irc_schedulers) is 0:
             self.stdout.write(self.style.SUCCESS('No scheduled send_irc_msg tasks'), ending='\n')
         else:
@@ -127,8 +133,21 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Sent {} irc message(s)'
                                                  .format(len(irc_schedulers))), ending='\n')
 
+        template_schedulers_1 = Scheduler.objects.filter(success=None,
+                                                         command='update_site_template',
+                                                         activation_date=None).all()
+        template_schedulers_2 = Scheduler.objects.filter(success=None,
+                                                         command='update_site_template',
+                                                         activation_date__lte=today).all()
+        template_schedulers = template_schedulers_1 | template_schedulers_2
+        if len(template_schedulers) is 0:
+            self.stdout.write(self.style.SUCCESS('No scheduled update_site_template tasks'),
+                              ending='\n')
+        else:
+            for scheduler in template_schedulers:
+                self.handle_process(scheduler)
+
         # generic handlers
-        today = timezone.now()
         x = Scheduler.objects.filter(success=None, activation_date=None).all()
         y = Scheduler.objects.filter(success=None, activation_date__lte=today).all()
         schedulers = x | y
