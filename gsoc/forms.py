@@ -1,5 +1,5 @@
 from .models import (UserDetails, UserProfile, RegLink, BlogPostDueDate, Event,
-                     SubOrgDetails, SubOrg)
+                     SubOrgDetails, SubOrg, GsocEndDate)
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -49,6 +49,12 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ('title', 'start_date', 'end_date')
+
+
+class GsocEndDateForm(forms.ModelForm):
+    class Meta:
+        model = GsocEndDate
+        fields = ('date', )
 
 
 class SubOrgApplicationForm(forms.ModelForm):

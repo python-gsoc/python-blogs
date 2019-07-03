@@ -373,6 +373,7 @@ class Builder(models.Model):
     categories = (
         ('build_pre_blog_reminders', 'build_pre_blog_reminders'),
         ('build_post_blog_reminders', 'build_post_blog_reminders'),
+        ('build_revoke_student_perms', 'build_revoke_student_perms'),
     )
 
     category = models.CharField(max_length=40, choices=categories)
@@ -533,6 +534,11 @@ class BlogPostDueDate(models.Model):
         self.post_blog_reminder_builder.add(s)
 
         self.save()
+
+
+class GsocEndDate(models.Model):
+    timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
+    date = models.DateField()
 
 
 class PageNotification(models.Model):
@@ -921,6 +927,13 @@ def create_schedulers_builders(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
+
+
+# Add new builder for GsocEndDate
+@receiver(models.signals.post_save, sender=GsocEndDate)
+def add_revoke_perms_builder(sender, instance, **kwargs):
+    Builder.objects.create(category='build_revoke_student_perms',
+                           activation_date=instance.date)
 
 
 # Publish the duedate to Github pages
