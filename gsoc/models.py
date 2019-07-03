@@ -278,7 +278,6 @@ class SubOrgDetails(models.Model):
                                      data=json.dumps({'template': 'index.html'}),
                                      activation_date=time)
 
-
     def send_update_notification(self):
         if self.suborg:
             suborg_name = self.suborg.suborg_name
