@@ -1,6 +1,9 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-                     BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails)
-from .forms import UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm
+                     BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails,
+                     GsocEndDate)
+from .forms import (UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm,
+                    GsocEndDateForm)
+                    
 
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -383,10 +386,15 @@ class EventInline(admin.TabularInline):
     form = EventForm
 
 
+class GsocEndDateInline(admin.TabularInline):
+    model = GsocEndDate
+    form = GsocEndDateForm
+
+
 class TimelineAdmin(admin.ModelAdmin):
     list_display = ('gsoc_year', )
     exclude = ('calendar_id', )
-    inlines = (BlogPostDueDateInline, EventInline)
+    inlines = (BlogPostDueDateInline, EventInline, GsocEndDateInline)
 
 
 admin.site.register(Timeline, TimelineAdmin)

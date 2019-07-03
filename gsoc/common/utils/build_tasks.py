@@ -98,3 +98,14 @@ def build_post_blog_reminders(builder):
         return None
     except Exception as e:
         return str(e)
+
+
+def build_revoke_student_perms(builder):
+    try:
+        gsoc_year = GsocYear.objects.first()
+        profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+        for profile in profiles:
+            Scheduler.objects.create(command='revoke_student_permissions',
+                                     data=profile.user.id)
+    except Exception as e:
+        return str(e)

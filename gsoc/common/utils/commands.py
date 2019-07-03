@@ -1,7 +1,7 @@
 import json
 from smtplib import SMTPResponseException, SMTPSenderRefused
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.conf import settings
 
 from .irc import send_message
@@ -50,14 +50,20 @@ def send_email(scheduler: Scheduler):
     return None
 
 
-def deactivate_user(scheduler: Scheduler):
+def revoke_student_permissions(scheduler: Scheduler):
     """
-    makes a user inactive when scheduled
+    revoke article permissions from students when scheduled
     """
     try:
-        u = User.objects.filter(pk=scheduler.data).first()
-        u.is_active = False
-        u.save()
+        u = User.objects.filter(pk=int(scheduler.data)).first()
+
+        add_perm = Permission.objects.filter(codename='add_article').first()
+        change_perm = Permission.objects.filter(codename='change_article').first()
+        delete_perm = Permission.objects.filter(codename='delete_article').first()
+        view_perm = Permission.objects.filter(codename='view_article').first()
+
+        u.user_permissions.remove(add_perm, change_perm, delete_perm, view_perm)
+
         scheduler.success = True
         scheduler.save()
         return None
