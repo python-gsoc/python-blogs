@@ -3,7 +3,7 @@ from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotificat
                      GsocEndDate)
 from .forms import (UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm,
                     GsocEndDateForm)
-                    
+
 
 from django.contrib.auth.models import User
 from django.contrib import admin
