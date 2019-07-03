@@ -47,6 +47,7 @@ def register_suborg(request):
             suborg_details = form.save()
             suborg_details.changed = True
             suborg_details.save()
+            suborg_details.send_update_notification()
             return redirect(reverse('suborg:post_register'))
 
     return render(request, 'register_suborg.html', {
@@ -73,6 +74,7 @@ def update_application(request, application_id):
             suborg_details = form.save()
             suborg_details.changed = True
             suborg_details.save()
+            suborg_details.send_update_notification()
             return redirect(reverse('suborg:post_register'))
 
     return render(request, 'register_suborg.html', {

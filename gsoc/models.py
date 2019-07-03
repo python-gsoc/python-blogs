@@ -278,13 +278,35 @@ class SubOrgDetails(models.Model):
                                      data=json.dumps({'template': 'index.html'}),
                                      activation_date=time)
 
+    def send_update_notification(self):
+        if self.suborg:
+            suborg_name = self.suborg.suborg_name
+        else:
+            suborg_name = self.suborg_name
+
+        template_data = {
+            'suborg_name': suborg_name
+        }
+        scheduler_data = build_send_mail_json(settings.ADMIN_EMAIL,
+                                              template='suborg_application_notification.html',
+                                              subject='Review new/updated SubOrg Application',
+                                              template_data=template_data)
+        Scheduler.objects.create(command='send_email',
+                                 data=scheduler_data)
+
+
     def send_review(self):
         self.accepted = False
         self.save()
 
+        if self.suborg:
+            suborg_name = self.suborg.suborg_name
+        else:
+            suborg_name = self.suborg_name
+
         template_data = {
             'gsoc_year': self.gsoc_year.gsoc_year,
-            'suborg_name': self.suborg_name,
+            'suborg_name': suborg_name,
             'message': self.last_message,
         }
         scheduler_data = build_send_mail_json(self.suborg_admin_email,
