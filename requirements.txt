@@ -1,4 +1,4 @@
-django>=2.1.7,<2.2
+django~>2.2.3
 django-debug-toolbar>=1.11
 
 django-cms>=3.6,<4
