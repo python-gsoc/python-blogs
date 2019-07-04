@@ -279,10 +279,20 @@ class RegLinkAdmin(admin.ModelAdmin):
 admin.site.register(RegLink, RegLinkAdmin)
 
 
+def rerun_scheduler(self, request, queryset):
+    for scheduler in queryset:
+        Scheduler.objects.create(command=scheduler.command,
+                                 data=scheduler.data)
+
+
+rerun_scheduler.short_description = 'Rerun schedulers'
+
+
 class SchedulerAdmin(admin.ModelAdmin):
     list_display = ('command', 'short_data', 'success', 'last_error', 'created')
     list_filter = ('command', 'success')
     sortable_by = ('created', 'last_error')
+    actions = [rerun_scheduler]
 
     def short_data(self, obj):
         return '{}...'.format(obj.data[:50])
@@ -364,10 +374,20 @@ class AddUserLogAdmin(admin.ModelAdmin):
 admin.site.register(AddUserLog, AddUserLogAdmin)
 
 
+def rerun_builder(self, request, queryset):
+    for builder in queryset:
+        Builder.objects.create(category=builder.category,
+                               data=builder.data)
+
+
+rerun_builder.short_description = 'Rerun builders'
+
+
 class BuilderAdmin(admin.ModelAdmin):
     list_display = ('category', 'short_data', 'built', 'last_error')
     list_filter = ('category', 'built')
     sortable_by = ('last_error')
+    actions = [rerun_builder]
 
     def short_data(self, obj):
         return '{}...'.format(obj.data[:50])
