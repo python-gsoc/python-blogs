@@ -77,9 +77,10 @@ def update_application(request, application_id):
             suborg_details.send_update_notification()
             return redirect(reverse('suborg:post_register'))
 
-    return render(request, 'register_suborg.html', {
+    return render(request, 'update_suborg.html', {
         'form': form,
-        'message': message
+        'message': message,
+        'id': application_id,
     })
 
 
