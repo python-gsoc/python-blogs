@@ -25,8 +25,9 @@ phonenumbers==8.10.6
 pre-commit>=1.14.4
 profanityfilter>=2.0.6
 
-google-api-python-client
-google-auth-httplib2
-google-auth-oauthlib
+google-api-python-client>=1.7.9
+google-auth-httplib2>=0.0.3
+google-auth-oauthlib>=0.3.0
 
-PyGithub
+PyGithub>=1.43.7
+
