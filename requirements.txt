@@ -19,19 +19,25 @@ djangocms-audio>=1.1.0
 djangocms_history>=1.0.0
 aldryn-newsblog>=2.2.1
 
-#gsoc pdf requirements
+#gsoc irc requirements
 fredirc==0.3.0
+
+#gsoc pdf requirements
 pdfminer.six==20181108
 chardet==3.0.4
 phonenumbers==8.10.6
-pre-commit>=1.14.4
+
+#gsoc comments requirements
 profanityfilter>=2.0.6
 
-#google api
+#git pre-commit hook
+pre-commit>=1.14.4
+
+#google api for calander
 google-api-python-client>=1.7.9
 google-auth-httplib2>=0.0.3
 google-auth-oauthlib>=0.3.0
 
-#github api
+#github api for pushing html pages
 PyGithub>=1.43.7
 
