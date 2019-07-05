@@ -1,7 +1,7 @@
-django>=2.1.10,<2.2
+django~=2.1.10
 django-debug-toolbar>=1.11
 
-django-cms>=3.6,<4
+django-cms~=3.6.0
 djangocms-text-ckeditor>=3.7
 djangocms-file>=2.2
 djangocms-column>=1.9
