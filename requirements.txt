@@ -1,6 +1,10 @@
+#django
 django~=2.1.10
+
+#django debug
 django-debug-toolbar>=1.11
 
+#django cms
 django-cms~=3.6.0
 djangocms-text-ckeditor>=3.7.0
 djangocms-file>=2.2.0
@@ -12,22 +16,22 @@ djangocms-snippet>=2.1.0
 djangocms-googlemap>=1.2.0
 djangocms-video>=2.1.1
 djangocms-audio>=1.1.0
-
 djangocms_history>=1.0.0
-
 aldryn-newsblog>=2.2.1
 
+#gsoc pdf requirements
 fredirc==0.3.0
-
 pdfminer.six==20181108
 chardet==3.0.4
 phonenumbers==8.10.6
 pre-commit>=1.14.4
 profanityfilter>=2.0.6
 
+#google api
 google-api-python-client>=1.7.9
 google-auth-httplib2>=0.0.3
 google-auth-oauthlib>=0.3.0
 
+#github api
 PyGithub>=1.43.7
 
