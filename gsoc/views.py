@@ -169,8 +169,8 @@ def register_view(request):
             reglink.create_user(username=user.username)
             reglink.is_used = True
             reglink.save()
-            messages.success(request, f'A user with {user.email} already exists in our database. '\
-                                      f'A new profile has been created. Please login with your '\
+            messages.success(request, f'A user with {user.email} already exists in our database. '
+                                      f'A new profile has been created. Please login with your '
                                       f'existing credentials.')
             return shortcuts.redirect('/')
         if reglink_usable is False:
