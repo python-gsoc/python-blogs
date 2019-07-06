@@ -1,5 +1,10 @@
 Welcome to GSoC with the Python Software Foundation! <br />
 <br />
+{% if role is not 3 %}
+You have been invitied to be a {% if role == 1 %}Suborg Admin{% elif role == 2 %}Mentor{% endif %} with {suborg} for Google Summer of Code {% now 'Y' %} with the Python Software Foundation.<br />
+<br />
+You will need to register using the link below to be invited by Google.<br />
+{% else %}
 All students are required to post weekly, there are 2 types of posts students will have to make, the first is the weekly check-in. For a weekly check-in every student will have to answer these 3 questions in a post; with each answer being <100 words.<br />
 <br />
 &emsp;1. What did you do this week?<br />
@@ -8,7 +13,8 @@ All students are required to post weekly, there are 2 types of posts students wi
 <br />
 The second post is a blog post, here a student will be required to go into some detail on what they are working on, what they struggle with, and what solutions they have come to. There is no formal structure to this and every student is welcome to use their own style but the above three questions should be answered in the blog post at some point. <br />
 <br />
-This year we are introducing our new GSoC blogging platform, this platform will be worked on during GSoC so please report any bugs, issues, or suggestions to <a href = "https://github.com/python-gsoc/python-blogs/issues">https://github.com/python-gsoc/python-blogs/issues</a> or email <a href = "mailto: gsoc-admins@python.org">gsoc-admins@python.org</a> The site will be updated every Tuesday/Wednesday so if you don't get your blogs in on time you may encounter bugs and otherwise, so make sure you get your posts in on time!<br />
+{% endif %}
+Blogs and suborgs are handled by our new GSoC blogging platform, so please report any bugs, issues, or suggestions to <a href = "https://github.com/python-gsoc/python-blogs/issues">https://github.com/python-gsoc/python-blogs/issues</a> or email <a href = "mailto: gsoc-admins@python.org">gsoc-admins@python.org</a> <br />
 <br />
 To register you will need to go to {{ register_link }} <br />
 <br />
