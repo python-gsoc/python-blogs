@@ -771,7 +771,9 @@ class RegLink(models.Model):
                                                   'register_link':
                                                       settings.INETLOCATION +
                                                       self.url,
-                                                  'role': self.user_role})
+                                                  'role': self.user_role,
+                                                  'gsoc_year': self.user_gsoc_role,
+                                                  'suborg':self.user_suborg.suborg_name.strip()})
         s = Scheduler.objects.create(command='send_email',
                                      activation_date=trigger_time,
                                      data=scheduler_data)
