@@ -772,8 +772,8 @@ class RegLink(models.Model):
                                                        f'{self.user_gsoc_year.gsoc_year} with PSF'),
                                               template_data={
                                                   'register_link':
-                                                      settings.INETLOCATION +
-                                                      self.url,
+                                                      (settings.INETLOCATION +
+                                                       self.url),
                                                   'role': self.user_role,
                                                   'gsoc_year': self.user_gsoc_role,
                                                   'suborg':self.user_suborg.suborg_name.strip()})
