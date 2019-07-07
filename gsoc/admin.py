@@ -473,6 +473,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
         'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
         'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
         'blog_url', 'link', 'accepted', 'changed', 'last_reviewed_at', 'last_reviewed_by',
+        'created_at', 'updated_at',
     )
     fieldsets = (
         (
@@ -491,7 +492,8 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
                     'logo', 'primary_os_license', 'ideas_list', 'chat',
                     'mailing_list', 'twitter_url',
                     'blog_url', 'link', 'changed', 'accepted',
-                    'last_reviewed_at', 'last_reviewed_by'
+                    'last_reviewed_at', 'last_reviewed_by',
+                    'created_at', 'updated_at',
                 )
             }
         ),

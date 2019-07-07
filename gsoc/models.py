@@ -240,6 +240,9 @@ class SubOrgDetails(models.Model):
     last_reviewed_at = models.DateTimeField(null=True, blank=True)
     last_reviewed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
 
+    created_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+
     accepted = models.BooleanField(default=False)
     changed = models.BooleanField(default=None, null=True)
 

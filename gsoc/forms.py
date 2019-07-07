@@ -60,7 +60,8 @@ class GsocEndDateForm(forms.ModelForm):
 class SubOrgApplicationForm(forms.ModelForm):
     class Meta:
         model = SubOrgDetails
-        exclude = ('accepted', 'last_message', 'changed', 'last_reviewed_at', 'last_reviewed_by')
+        exclude = ('accepted', 'last_message', 'changed', 'last_reviewed_at', 'last_reviewed_by',
+                   'created_at', 'updated_at')
         widgets = {
             'suborg_admin_email': forms.HiddenInput(),
             'gsoc_year': forms.HiddenInput(),
