@@ -472,7 +472,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
         'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
         'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
         'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
-        'blog_url', 'link', 'accepted', 'changed', 'last_updated_at', 'last_updated_by',
+        'blog_url', 'link', 'accepted', 'changed', 'last_reviewed_at', 'last_reviewed_by',
     )
     fieldsets = (
         (
@@ -491,7 +491,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
                     'logo', 'primary_os_license', 'ideas_list', 'chat',
                     'mailing_list', 'twitter_url',
                     'blog_url', 'link', 'changed', 'accepted',
-                    'last_updated_at', 'last_updated_by'
+                    'last_reviewed_at', 'last_reviewed_by'
                 )
             }
         ),
@@ -501,8 +501,8 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.changed = False
-        obj.last_updated_at = timezone.now()
-        obj.last_updated_by = request.user
+        obj.last_reviewed_at = timezone.now()
+        obj.last_reviewed_by = request.user
         obj.send_review()
         super(SubOrgDetailsAdmin, self).save_model(request, obj, form, change)
 

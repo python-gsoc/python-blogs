@@ -237,8 +237,8 @@ class SubOrgDetails(models.Model):
     link = models.URLField(null=True, blank=True, verbose_name='Any other link')
 
     last_message = models.TextField(null=True, blank=True)
-    last_updated_at = models.DateTimeField(null=True, blank=True)
-    last_updated_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    last_reviewed_at = models.DateTimeField(null=True, blank=True)
+    last_reviewed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
 
     accepted = models.BooleanField(default=False)
     changed = models.BooleanField(default=None, null=True)
