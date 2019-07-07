@@ -771,11 +771,10 @@ class RegLink(models.Model):
                                                        f' as a {role[self.user_role]} for GSoC '
                                                        f'{self.user_gsoc_year.gsoc_year} with PSF'),
                                               template_data={
-                                                  'register_link': settings.INETLOCATION +
-                                                                   self.url,
+                                                  'register_link': settings.INETLOCATION + self.url,
                                                   'role': self.user_role,
                                                   'gsoc_year': self.user_gsoc_role,
-                                                  'suborg':self.user_suborg.suborg_name.strip()})
+                                                  'suborg': self.user_suborg.suborg_name.strip()})
         s = Scheduler.objects.create(command='send_email',
                                      activation_date=trigger_time,
                                      data=scheduler_data)
