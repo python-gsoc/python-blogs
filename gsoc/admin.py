@@ -305,7 +305,7 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'email', 'gsoc_year', 'suborg_full_name', 'proposal_confirmed',
                     'hidden', 'reminder_disabled', 'current_blog_count')
     list_filter = ('hidden', 'reminder_disabled')
-    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config',
+    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'blog_link',
                        'proposal_confirmed', 'current_blog_count')
     fieldsets = (
         ('Unhide', {
@@ -313,9 +313,15 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
             }),
         ('User Profile Details', {
             'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'proposal_confirmed',
-                       'app_config', 'current_blog_count')
+                       'blog_link', 'current_blog_count')
             })
         )
+
+    def blog_link(self, obj):
+        ns = obj.app_config.namespace
+        page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
+        url = page.get_absolute_url()
+        return mark_safe(f'<a href="{url}">{ns}</a>')
 
     def email(self, obj):
         return obj.user.email
