@@ -468,7 +468,7 @@ admin.site.register(Event, EventAdmin)
 
 
 class SubOrgDetailsAdmin(admin.ModelAdmin):
-    list_display = ('suborg_name', 'gsoc_year', 'changed')
+    list_display = ('suborg_name', 'gsoc_year', 'changed', 'accepted')
     list_filter = ('gsoc_year', 'changed')
     # fields = ('last_message', )
     readonly_fields = (
