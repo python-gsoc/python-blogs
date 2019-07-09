@@ -17,6 +17,7 @@ def build_pre_blog_reminders(builder):
                                                             profile.reminder_disabled):
                 template_data = {
                     'current_blog_count': profile.current_blog_count,
+                    'type': due_date.category,
                     'due_date': due_date.date.strftime('%d %B %Y')
                 }
 

@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.forms import modelformset_factory
 from django.urls import reverse
 from django.contrib import messages
+from django.utils import timezone
 
 
 def is_superuser(user):
@@ -46,6 +47,7 @@ def register_suborg(request):
         if form.is_valid():
             suborg_details = form.save()
             suborg_details.changed = True
+            suborg_details.created_at = timezone.now()
             suborg_details.save()
             suborg_details.send_update_notification()
             return redirect(reverse('suborg:post_register'))
@@ -73,13 +75,15 @@ def update_application(request, application_id):
         if form.is_valid():
             suborg_details = form.save()
             suborg_details.changed = True
+            suborg_details.updated_at = timezone.now()
             suborg_details.save()
             suborg_details.send_update_notification()
             return redirect(reverse('suborg:post_register'))
 
-    return render(request, 'register_suborg.html', {
+    return render(request, 'update_suborg.html', {
         'form': form,
-        'message': message
+        'message': message,
+        'id': application_id,
     })
 
 

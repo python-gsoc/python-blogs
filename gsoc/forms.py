@@ -42,7 +42,7 @@ class RegLinkForm(forms.ModelForm):
 class BlogPostDueDateForm(forms.ModelForm):
     class Meta:
         model = BlogPostDueDate
-        fields = ('title', 'date')
+        fields = ('title', 'date', 'category')
 
 
 class EventForm(forms.ModelForm):
@@ -60,7 +60,8 @@ class GsocEndDateForm(forms.ModelForm):
 class SubOrgApplicationForm(forms.ModelForm):
     class Meta:
         model = SubOrgDetails
-        exclude = ('accepted', 'last_message', 'changed', 'last_updated_at', 'last_updated_by')
+        exclude = ('accepted', 'last_message', 'changed', 'last_reviewed_at', 'last_reviewed_by',
+                   'created_at', 'updated_at')
         widgets = {
             'suborg_admin_email': forms.HiddenInput(),
             'gsoc_year': forms.HiddenInput(),
@@ -86,19 +87,18 @@ class SubOrgApplicationForm(forms.ModelForm):
 
         contact = list(filter(lambda a: a is not None, contact))
 
-        if not (suborg or suborg_name):
+        if not suborg and suborg_name:
+            suborg = SubOrg.objects.filter(suborg_name=suborg_name)
+            if len(suborg) > 0:
+                cd['suborg'] = suborg.first()
+        elif suborg and not suborg_name:
+            cd['suborg_name'] = suborg.suborg_name
+        elif suborg and suborg_name:
+            if suborg.suborg_name != suborg_name:
+                raise ValidationError('Inconsistent suborg field values')
+        else:
             raise ValidationError('Either suborg should be selected or '
                                   'the suborg name')
-
-        if not suborg:
-            _suborgs = SubOrg.objects.filter(suborg_name=suborg_name).all()
-            if len(_suborgs) > 0:
-                raise ValidationError('Suborg with the entered name exists, '
-                                      'Please select from the list')
-
-        if suborg and suborg_name:
-            raise ValidationError('Either suborg should be selected or '
-                                  'the suborg name, not both')
 
         if len(contact) < 1:
             raise ValidationError('At least one out of the five contact '

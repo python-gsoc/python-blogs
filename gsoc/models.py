@@ -237,8 +237,11 @@ class SubOrgDetails(models.Model):
     link = models.URLField(null=True, blank=True, verbose_name='Any other link')
 
     last_message = models.TextField(null=True, blank=True)
-    last_updated_at = models.DateTimeField(null=True, blank=True)
-    last_updated_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    last_reviewed_at = models.DateTimeField(null=True, blank=True)
+    last_reviewed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
 
     accepted = models.BooleanField(default=False)
     changed = models.BooleanField(default=None, null=True)
@@ -483,6 +486,11 @@ class Event(models.Model):
 
 
 class BlogPostDueDate(models.Model):
+    categories = (
+        (0, 'Weekly Check-In'),
+        (1, 'Blog Post'),
+    )
+    
     class Meta:
         ordering = ['date']
     title = models.CharField(max_length=100, default='Weekly Blog Post Due')
@@ -496,6 +504,8 @@ class BlogPostDueDate(models.Model):
                                                   related_name='pre')
     post_blog_reminder_builder = models.ManyToManyField(Builder, blank=True)
     event_id = models.CharField(max_length=255, null=True, blank=True)
+    category = models.IntegerField(choices=categories, null=True, blank=True)
+    
 
     def add_to_calendar(self):
         with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
@@ -755,13 +765,23 @@ class RegLink(models.Model):
 
     def create_scheduler(self, trigger_time=timezone.now()):
         validate_email(self.email)
+        role = {
+            0: 'Others',
+            1: 'Suborg Admin',
+            2: 'Mentor',
+            3: 'Student',
+        }
         scheduler_data = build_send_mail_json(self.email,
                                               template='invite.html',
-                                              subject='Your GSoC 2019 invite',
+                                              subject=(f'You have been invited to join '
+                                                       f'{self.user_suborg.suborg_name.strip()}'
+                                                       f' as a {role[self.user_role]} for GSoC '
+                                                       f'{self.user_gsoc_year.gsoc_year} with PSF'),
                                               template_data={
-                                                  'register_link':
-                                                      settings.INETLOCATION +
-                                                      self.url})
+                                                  'register_link': settings.INETLOCATION + self.url,
+                                                  'role': self.user_role,
+                                                  'gsoc_year': self.user_gsoc_role,
+                                                  'suborg': self.user_suborg.suborg_name.strip()})
         s = Scheduler.objects.create(command='send_email',
                                      activation_date=trigger_time,
                                      data=scheduler_data)

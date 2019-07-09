@@ -279,10 +279,20 @@ class RegLinkAdmin(admin.ModelAdmin):
 admin.site.register(RegLink, RegLinkAdmin)
 
 
+def rerun_scheduler(self, request, queryset):
+    for scheduler in queryset:
+        Scheduler.objects.create(command=scheduler.command,
+                                 data=scheduler.data)
+
+
+rerun_scheduler.short_description = 'Rerun schedulers'
+
+
 class SchedulerAdmin(admin.ModelAdmin):
     list_display = ('command', 'short_data', 'success', 'last_error', 'created')
     list_filter = ('command', 'success')
     sortable_by = ('created', 'last_error')
+    actions = [rerun_scheduler]
 
     def short_data(self, obj):
         return '{}...'.format(obj.data[:50])
@@ -295,7 +305,7 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'email', 'gsoc_year', 'suborg_full_name', 'proposal_confirmed',
                     'hidden', 'reminder_disabled', 'current_blog_count')
     list_filter = ('hidden', 'reminder_disabled')
-    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'app_config',
+    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'blog_link',
                        'proposal_confirmed', 'current_blog_count')
     fieldsets = (
         ('Unhide', {
@@ -303,9 +313,15 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
             }),
         ('User Profile Details', {
             'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'proposal_confirmed',
-                       'app_config', 'current_blog_count')
+                       'blog_link', 'current_blog_count')
             })
         )
+
+    def blog_link(self, obj):
+        ns = obj.app_config.namespace
+        page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
+        url = page.get_absolute_url()
+        return mark_safe(f'<a href="{url}">{ns}</a>')
 
     def email(self, obj):
         return obj.user.email
@@ -364,10 +380,20 @@ class AddUserLogAdmin(admin.ModelAdmin):
 admin.site.register(AddUserLog, AddUserLogAdmin)
 
 
+def rerun_builder(self, request, queryset):
+    for builder in queryset:
+        Builder.objects.create(category=builder.category,
+                               data=builder.data)
+
+
+rerun_builder.short_description = 'Rerun builders'
+
+
 class BuilderAdmin(admin.ModelAdmin):
     list_display = ('category', 'short_data', 'built', 'last_error')
     list_filter = ('category', 'built')
     sortable_by = ('last_error')
+    actions = [rerun_builder]
 
     def short_data(self, obj):
         return '{}...'.format(obj.data[:50])
@@ -452,7 +478,8 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
         'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
         'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
         'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
-        'blog_url', 'link', 'accepted', 'changed', 'last_updated_at', 'last_updated_by',
+        'blog_url', 'link', 'accepted', 'changed', 'last_reviewed_at', 'last_reviewed_by',
+        'created_at', 'updated_at',
     )
     fieldsets = (
         (
@@ -471,7 +498,8 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
                     'logo', 'primary_os_license', 'ideas_list', 'chat',
                     'mailing_list', 'twitter_url',
                     'blog_url', 'link', 'changed', 'accepted',
-                    'last_updated_at', 'last_updated_by'
+                    'last_reviewed_at', 'last_reviewed_by',
+                    'created_at', 'updated_at',
                 )
             }
         ),
@@ -481,8 +509,8 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.changed = False
-        obj.last_updated_at = timezone.now()
-        obj.last_updated_by = request.user
+        obj.last_reviewed_at = timezone.now()
+        obj.last_reviewed_by = request.user
         obj.send_review()
         super(SubOrgDetailsAdmin, self).save_model(request, obj, form, change)
 

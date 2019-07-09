@@ -11,7 +11,7 @@ import json
 import uuid
 
 from django.contrib import messages
-from django.contrib.auth import decorators, password_validation, validators
+from django.contrib.auth import decorators, password_validation, validators, logout
 from django.contrib.auth.models import User
 from django import shortcuts
 from django.http import JsonResponse
@@ -145,6 +145,10 @@ def new_account_view(request):
 
 
 def register_view(request):
+    if request.user.is_authenticated:
+        messages.info(request, "You have been logged out.")
+        logout(request)
+
     reglink_id = request.GET.get('reglink_id', request.POST.get('reglink_id', ''))
     try:
         reglink = RegLink.objects.get(reglink_id=reglink_id)
@@ -160,6 +164,15 @@ def register_view(request):
         'email': getattr(reglink, 'email', 'EMPTY')
         }
     if reglink_usable is False or request.method == 'GET':
+        user = User.objects.filter(email=context['email']).first()
+        if user:
+            reglink.create_user(username=user.username)
+            reglink.is_used = True
+            reglink.save()
+            messages.success(request, f'A user with {user.email} already exists in our database. '
+                                      f'A new profile has been created. Please login with your '
+                                      f'existing credentials.')
+            return shortcuts.redirect('/')
         if reglink_usable is False:
             context['can_register'] = False
             context['warning'] = 'Your registration link is invalid! Please check again!'
