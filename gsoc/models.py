@@ -490,7 +490,7 @@ class BlogPostDueDate(models.Model):
         (0, 'Weekly Check-In'),
         (1, 'Blog Post'),
     )
-    
+
     class Meta:
         ordering = ['date']
     title = models.CharField(max_length=100, default='Weekly Blog Post Due')
@@ -505,7 +505,7 @@ class BlogPostDueDate(models.Model):
     post_blog_reminder_builder = models.ManyToManyField(Builder, blank=True)
     event_id = models.CharField(max_length=255, null=True, blank=True)
     category = models.IntegerField(choices=categories, null=True, blank=True)
-    
+
 
     def add_to_calendar(self):
         with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
