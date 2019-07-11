@@ -79,7 +79,7 @@ GITHUB_FILE_PATH = {
     'index.html': 'index.html'
 }
 
-#memcached
+#memcached use django.core.cache.backends.memcached.PyLibMCCache
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
