@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
                      BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails,
-                     GsocEndDate)
+                     GsocEndDate, Comment)
 from .forms import (UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm,
                     GsocEndDateForm)
 
@@ -519,3 +519,13 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SubOrgDetails, SubOrgDetailsAdmin)
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('username', 'article', 'content')
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(Comment, CommentAdmin)

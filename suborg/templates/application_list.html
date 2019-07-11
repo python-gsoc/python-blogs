@@ -5,13 +5,20 @@
     <h1>Select any of the applications to change</h1>
     <ul>
         {% for application in applications %}
-            <li><a href="{% url 'suborg:update_application' application_id=application.id %}">
-                {% if application.suborg %}
-                    {{ application.suborg.suborg_name }}
+            <li>
+                <a href="{% url 'suborg:update_application' application_id=application.id %}">
+                    {% if application.suborg %}
+                        {{ application.suborg.suborg_name }}
+                    {% else %}
+                        {{ application.suborg_name }}
+                    {% endif %}
+                </a>
+                {% if application.accepted %}
+                     - Accepted, <a href="{% url 'suborg:add_mentor' application_id=application.id %}">Add Mentors</a>
                 {% else %}
-                    {{ application.suborg_name }}
+                     - Not Accepted
                 {% endif %}
-            </a></li>
+            </li>
         {% endfor %}
     </ul>
     <p>
