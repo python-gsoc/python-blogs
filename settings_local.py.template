@@ -82,7 +82,7 @@ GITHUB_FILE_PATH = {
 #memcached
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
         'LOCATION': '127.0.0.1:11211',
     }
 }
