@@ -78,3 +78,13 @@ GITHUB_FILE_PATH = {
     'deadlines.html': 'deadlines.html',
     'index.html': 'index.html'
 }
+
+#memcached
+if not DEBUG:
+    MIDDLEWARE = ('django.middleware.cache.UpdateCacheMiddleware',)+MIDDLEWARE+('django.middleware.cache.FetchFromCacheMiddleware',)
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+            'LOCATION': '127.0.0.1:11211',
+        }
+    }
