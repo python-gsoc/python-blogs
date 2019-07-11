@@ -96,6 +96,7 @@ TEMPLATES = [
 ]
 
 MIDDLEWARE = (
+    'django.middleware.cache.UpdateCacheMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'cms.middleware.utils.ApphookReloadMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -109,7 +110,7 @@ MIDDLEWARE = (
     'cms.middleware.page.CurrentPageMiddleware',
     'cms.middleware.toolbar.ToolbarMiddleware',
     'cms.middleware.language.LanguageCookieMiddleware',
-
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 INSTALLED_APPS = (
