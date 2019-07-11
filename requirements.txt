@@ -41,3 +41,5 @@ google-auth-oauthlib>=0.3.0
 #github api for pushing html pages
 PyGithub>=1.43.7
 
+#memcached
+pylibmc>=1.6.0 
