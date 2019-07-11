@@ -16,6 +16,6 @@ urlpatterns = [
         #     name='reject_application'),
     ])),
     url('^mentor/', include([
-        url('^add/', views.add_mentor, name='add_mentor')
+        url('^add/(?P<application_id>[0-9]+)/', views.add_mentor, name='add_mentor')
     ])),
 ]

@@ -19,7 +19,7 @@ def is_suborg_admin(user):
 
 
 def home(request):
-    return redirect(reverse('suborg:register_suborg'))
+    return redirect(reverse('suborg:application_list'))
 
 
 @decorators.login_required
@@ -108,9 +108,18 @@ def accept_application(request, application_id):
 #     return redirect(reverse('admin:gsoc_suborgdetails_change', args=[application_id]))
 
 
-@decorators.user_passes_test(is_suborg_admin)
-def add_mentor(request):
-    profile = request.user.suborg_admin_profile()
+@decorators.login_required
+def add_mentor(request, application_id):
+    application = SubOrgDetails.objects.get(id=application_id)
+
+    if not application.accepted:
+        messages.error(request, 'Application not accepted yet! Can not add mentors.')
+        return redirect(reverse('suborg:application_list'))
+
+    if application.suborg_admin_email != request.user.email:
+        messages.error(request, 'You are not authorized to add mentors for this suborg.')
+        return redirect(reverse('suborg:application_list'))
+
     MentorFormSet = modelformset_factory(RegLink, fields=('email', ), extra=4)
 
     if request.method == 'POST':
@@ -118,8 +127,8 @@ def add_mentor(request):
         if formset.is_valid():
             instances = formset.save(commit=False)
             for instance in instances:
-                instance.user_suborg = profile.suborg_full_name
-                instance.user_gsoc_year = profile.gsoc_year
+                instance.user_suborg = application.suborg
+                instance.user_gsoc_year = application.gsoc_year
                 instance.user_role = 2
                 instance.save()
         else:
@@ -127,8 +136,8 @@ def add_mentor(request):
                 'formset': formset,
             })
 
-    formset = MentorFormSet(queryset=RegLink.objects.filter(user_gsoc_year=profile.gsoc_year,
-                                                            user_suborg=profile.suborg_full_name,
+    formset = MentorFormSet(queryset=RegLink.objects.filter(user_gsoc_year=application.gsoc_year,
+                                                            user_suborg=application.suborg,
                                                             user_role=2))
 
     return render(request, 'add_mentor.html', {
