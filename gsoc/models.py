@@ -749,13 +749,19 @@ class RegLink(models.Model):
                                apphook_namespace=namespace,
                                parent=blog_list_page)
         su = User.objects.filter(is_superuser=True).first()
-        api.publish_page(page, su, 'en')
+        page = api.publish_page(page, su, 'en')
+
+        PagePermission.objects.create(user=user, page=page)
 
         permissions = list()
         permissions.append(Permission.objects.filter(codename='add_article').first())
         permissions.append(Permission.objects.filter(codename='change_article').first())
         permissions.append(Permission.objects.filter(codename='delete_article').first())
         permissions.append(Permission.objects.filter(codename='view_article').first())
+        permissions.append(Permission.objects.filter(codename='add_pagenotification').first())
+        permissions.append(Permission.objects.filter(codename='change_pagenotification').first())
+        permissions.append(Permission.objects.filter(codename='delete_pagenotification').first())
+        permissions.append(Permission.objects.filter(codename='view_pagenotification').first())
         user.user_permissions.set(permissions)
 
         mark_urlconf_as_changed()
