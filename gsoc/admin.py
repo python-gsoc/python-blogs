@@ -337,6 +337,10 @@ class PageNotificationAdmin(admin.ModelAdmin):
     list_display = ('message', 'user', 'page')
     list_filter = ('user', 'page')
 
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super(PageNotificationAdmin, self).save_model(request, obj, form, change)
+
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:
             fieldsets = (
