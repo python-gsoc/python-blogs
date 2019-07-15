@@ -118,7 +118,7 @@ def is_unclean(self):
         '</pre>',
         '&lt;',
         '&gt;',
-    )
+        )
     for _ in unclean_texts:
         if _ in self.lead_in:
             return True
@@ -165,36 +165,36 @@ class SubOrgDetails(models.Model):
         GsocYear,
         on_delete=models.CASCADE,
         related_name='suborg_details'
-    )
+        )
 
     reason_for_participation = models.TextField(
         verbose_name='Why does your org want to participate in Google Summer of Code?'
-    )
+        )
     suborg_admin_email = models.EmailField(
         verbose_name='Suborg admin email'
-    )
+        )
     mentors_student_engagement = models.TextField(
         verbose_name='How will you keep mentors engaged with their students?'
-    )
+        )
     students_on_schedule = models.TextField(
         verbose_name='How will you help your students stay '
                      'on schedule to complete their projects?'
-    )
+        )
     students_involvement_gsoc = models.TextField(
         verbose_name='How will you get your students involved in your community during GSoC?'
-    )
+        )
     students_involvement_after = models.TextField(
         verbose_name='How will you keep students involved with your community after GSoC?'
-    )
+        )
     past_gsoc_experience = models.BooleanField(
         verbose_name='Has your org been accepted as a mentor org '
                      'in Google Summer of Code before?'
-    )
+        )
     past_years = models.ManyToManyField(
         GsocYear,
         blank=True,
         verbose_name='Which years did your org participate in GSoC?'
-    )
+        )
     suborg_in_past = models.BooleanField(verbose_name='Was this as a Suborg?')
 
     applied_but_not_selected = models.ManyToManyField(
@@ -203,19 +203,19 @@ class SubOrgDetails(models.Model):
         related_name='applied_not_selected',
         verbose_name='If your org has applied for GSoC '
                      'before but not been accepted, select the years'
-    )
+        )
     year_of_start = models.IntegerField(verbose_name='What year was your project started?')
     source_code = models.URLField(verbose_name='Where does your source code live?')
     docs = models.URLField(
         verbose_name='Please provide the URL that points to the repository, '
                      'GitHub organization, or a web page that describes how to'
                      ' get your source code'
-    )
+        )
     anything_else = models.TextField(
         null=True,
         blank=True,
         verbose_name='Anything else we should know (optional)'
-    )
+        )
 
     suborg = models.ForeignKey(SubOrg, null=True, blank=True,
                                on_delete=models.CASCADE, verbose_name='Select your suborg, if '
@@ -258,7 +258,7 @@ class SubOrgDetails(models.Model):
         template_data = {
             'gsoc_year': self.gsoc_year.gsoc_year,
             'suborg_name': self.suborg.suborg_name,
-        }
+            }
         scheduler_data = build_send_mail_json(self.suborg_admin_email,
                                               template='suborg_accept.html',
                                               subject='Acceptance for GSoC@PSF {}'.
@@ -289,14 +289,13 @@ class SubOrgDetails(models.Model):
 
         template_data = {
             'suborg_name': suborg_name
-        }
+            }
         scheduler_data = build_send_mail_json(settings.ADMIN_EMAIL,
                                               template='suborg_application_notification.html',
                                               subject='Review new/updated SubOrg Application',
                                               template_data=template_data)
         Scheduler.objects.create(command='send_email',
                                  data=scheduler_data)
-
 
     def send_review(self):
         self.accepted = False
@@ -311,7 +310,7 @@ class SubOrgDetails(models.Model):
             'gsoc_year': self.gsoc_year.gsoc_year,
             'suborg_name': suborg_name,
             'message': self.last_message,
-        }
+            }
         scheduler_data = build_send_mail_json(self.suborg_admin_email,
                                               template='suborg_review.html',
                                               subject='Review your SubOrg Application'
@@ -399,7 +398,7 @@ class Builder(models.Model):
         ('build_pre_blog_reminders', 'build_pre_blog_reminders'),
         ('build_post_blog_reminders', 'build_post_blog_reminders'),
         ('build_revoke_student_perms', 'build_revoke_student_perms'),
-    )
+        )
 
     category = models.CharField(max_length=40, choices=categories)
     activation_date = models.DateTimeField(null=True, blank=True)
@@ -423,7 +422,7 @@ class Timeline(models.Model):
                 calendar = {
                     'summary': 'GSoC @ PSF Calendar',
                     'timezone': 'UTC',
-                }
+                    }
                 calendar = service.calendars().insert(body=calendar).execute()
                 self.calendar_id = calendar.get('id')
                 self.save()
@@ -456,11 +455,11 @@ class Event(models.Model):
                 'summary': self.title,
                 'start': {
                     'date': self.start_date.strftime('%Y-%m-%d')
-                },
+                    },
                 'end': {
                     'date': self.end_date.strftime('%Y-%m-%d')
-                },
-            }
+                    },
+                }
             calendar_id = self.timeline.calendar_id if self.timeline else 'primary'
             if not self.event_id:
                 event = service.events().insert(calendarId=calendar_id, body=event).execute()
@@ -489,14 +488,14 @@ class BlogPostDueDate(models.Model):
     categories = (
         (0, 'Weekly Check-In'),
         (1, 'Blog Post'),
-    )
+        )
 
     class Meta:
         ordering = ['date']
     title = models.CharField(max_length=100, default='Weekly Blog Post Due')
     date = models.DateField()
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True,
-                                  blank=True)
+                                 blank=True)
     add_counter_scheduler = models.ForeignKey(Scheduler, on_delete=models.CASCADE, null=True,
                                               blank=True)
     pre_blog_reminder_builder = models.ForeignKey(Builder, on_delete=models.CASCADE,
@@ -506,7 +505,6 @@ class BlogPostDueDate(models.Model):
     event_id = models.CharField(max_length=255, null=True, blank=True)
     category = models.IntegerField(choices=categories, null=True, blank=True)
 
-
     def add_to_calendar(self):
         with open(os.path.join(BASE_DIR, 'google_api_token.pickle'), 'rb') as token:
             creds = pickle.load(token)
@@ -515,11 +513,11 @@ class BlogPostDueDate(models.Model):
                 'summary': self.title,
                 'start': {
                     'date': self.date.strftime('%Y-%m-%d')
-                },
+                    },
                 'end': {
                     'date': self.date.strftime('%Y-%m-%d')
-                },
-            }
+                    },
+                }
             calendar_id = self.timeline.calendar_id if self.timeline else 'primary'
             if not self.event_id:
                 event = service.events().insert(calendarId=calendar_id, body=event).execute()
@@ -548,7 +546,7 @@ class BlogPostDueDate(models.Model):
     def create_builders(self):
         builder_data = json.dumps({
             'due_date_pk': self.pk
-        })
+            })
 
         s = Builder.objects.create(category='build_pre_blog_reminders',
                                    activation_date=self.date + datetime.timedelta(days=-3),
@@ -725,7 +723,7 @@ class RegLink(models.Model):
         namespace = str(uuid.uuid4())
         email = kwargs.get('email', self.email)
         user, status = User.objects.get_or_create(*args, is_staff=is_staff,
-                                   email=email, **kwargs)
+                                                  email=email, **kwargs)
         role = {k: v for v, k in UserProfile.ROLES}
         profile = UserProfile.objects.create(user=user, role=self.user_role,
                                              gsoc_year=self.user_gsoc_year,
@@ -770,7 +768,7 @@ class RegLink(models.Model):
             1: 'Suborg Admin',
             2: 'Mentor',
             3: 'Student',
-        }
+            }
         scheduler_data = build_send_mail_json(self.email,
                                               template='invite.html',
                                               subject=(f'You have been invited to join '
@@ -832,7 +830,7 @@ class Comment(models.Model):
             'created_at': self.created_at.strftime('%I:%M %p, %d %B %Y'),
             'username': self.username,
             'link': comment_link,
-        }
+            }
         scheduler_data = build_send_mail_json(self.article.owner.email,
                                               template='comment_notification.html',
                                               subject='{} commented on your article'.
@@ -856,8 +854,8 @@ class ArticleReview(models.Model):
     last_reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE,
                                          null=True, blank=True,
                                          limit_choices_to={
-                                            'is_superuser': True,
-                                         })
+                                             'is_superuser': True,
+                                             })
     is_reviewed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):

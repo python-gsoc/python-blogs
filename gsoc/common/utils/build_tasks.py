@@ -12,6 +12,11 @@ def build_pre_blog_reminders(builder):
         due_date = BlogPostDueDate.objects.get(pk=data['due_date_pk'])
         gsoc_year = GsocYear.objects.first()
         profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+        categories = (
+            (0, 'Weekly Check-In'),
+            (1, 'Blog Post'),
+            )
+        category = categories[due_date.category][1]
         for profile in profiles:
             if profile.current_blog_count is not 0 and not (profile.hidden or
                                                             profile.reminder_disabled):
@@ -19,11 +24,11 @@ def build_pre_blog_reminders(builder):
                     'current_blog_count': profile.current_blog_count,
                     'type': due_date.category,
                     'due_date': due_date.date.strftime('%d %B %Y')
-                }
+                    }
 
                 scheduler_data = build_send_mail_json(profile.user.email,
                                                       template='pre_blog_reminder.html',
-                                                      subject='Reminder for Weekly Blog Post',
+                                                      subject=f'Reminder for {category}',
                                                       template_data=template_data)
 
                 s = Scheduler.objects.create(command='send_email',
@@ -42,6 +47,12 @@ def build_post_blog_reminders(builder):
             blogs_count = 0
         else:
             blogs_count = 1
+
+        categories = (
+            (0, 'Weekly Check-In'),
+            (1, 'Blog Post'),
+            )
+        category = categories[due_date.category][1]
 
         gsoc_year = GsocYear.objects.first()
         profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
@@ -70,14 +81,14 @@ def build_post_blog_reminders(builder):
                         'suborg_name': profile.suborg_full_name.suborg_name,
                         'due_date': due_date.date.strftime('%d %B %Y'),
                         'current_blog_count': profile.current_blog_count
-                    }
+                        }
 
                     scheduler_data_mentors = build_send_mail_json(
                         mentors_emails,
                         template='post_blog_reminder_mentors.html',
-                        subject='Weekly Blog Post missed by a Student of your Sub-Org',
+                        subject=f'{category} missed by a Student of your Sub-Org',
                         template_data=mentors_template_data
-                    )
+                        )
 
                     Scheduler.objects.create(command='send_email',
                                              data=scheduler_data_mentors)
@@ -85,14 +96,14 @@ def build_post_blog_reminders(builder):
                 student_template_data = {
                     'current_blog_count': profile.current_blog_count,
                     'due_date': due_date.date.strftime('%d %B %Y')
-                }
+                    }
 
                 scheduler_data_student = build_send_mail_json(
                     profile.user.email,
                     template=student_template,
-                    subject='Reminder for Weekly Blog Post',
+                    subject=f'Reminder for {category}',
                     template_data=student_template_data
-                )
+                    )
 
                 Scheduler.objects.create(command='send_email',
                                          data=scheduler_data_student)
