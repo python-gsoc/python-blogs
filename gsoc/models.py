@@ -983,6 +983,14 @@ def add_revoke_perms_builder(sender, instance, **kwargs):
                            activation_date=instance.date)
 
 
+# Add new builder for GsocEndDate
+@receiver(models.signals.post_save, sender=GsocEndDate)
+def add_revoke_perms_builder(sender, instance, **kwargs):
+    Scheduler.objects.create(command='archive_gsoc_pages',
+                             activation_date=instance.date,
+                             data="{}")
+
+
 # Publish the duedate to Github pages
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def duedate_publish_to_github_pages(sender, instance, **kwargs):
