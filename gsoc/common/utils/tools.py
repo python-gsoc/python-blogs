@@ -67,3 +67,41 @@ def push_site_template(file_path, content):
     repo = g.get_repo(settings.STATIC_SITE_REPO)
     f = repo.get_contents(file_path)
     repo.update_file(f.path, f'Update {file_path}', content, f.sha)
+
+
+def is_year(file_name):
+    try:
+        year = int(file_name)
+        if year >= 2000 and year <= 2100:
+            return True
+        return False
+    except:
+        return False
+
+
+def get_files(repo, except_files=['CNAME', 'LICENSE.md', 'README.md']):
+    contents = repo.get_contents('')
+    files = []
+    while contents:
+        file_content = contents.pop(0)
+        if not (file_content.path in except_files or is_year(file_content.path)):
+            if file_content.type == "dir":
+                contents.extend(repo.get_contents(file_content.path))
+            else:
+                files.append(file_content)
+    return files
+
+
+def archive_current_gsoc_files(current_year):
+    g = Github(settings.GITHUB_ACCESS_TOKEN)
+    repo = g.get_repo(settings.STATIC_SITE_REPO)
+    files = get_files(repo)
+    for file in files:
+        try:
+            repo.create_file(f'{current_year}/{file.path}',
+                             f'Archive GSoC {current_year} files', file.decoded_content)
+        except Exception as e1:
+            repo.update_file(f'{current_year}/{file.path}',
+                             f'Archive GSoC {current_year} files',
+                             file.content,
+                             file.sha)

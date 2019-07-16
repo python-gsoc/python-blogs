@@ -8,7 +8,8 @@ from .irc import send_message
 
 from gsoc.models import (Scheduler, RegLink, GsocYear, UserProfile, Event,
                          BlogPostDueDate, SubOrgDetails)
-from .tools import send_mail, render_site_template, push_site_template
+from .tools import (send_mail, render_site_template, push_site_template,
+                    archive_current_gsoc_files)
 
 
 def send_email(scheduler: Scheduler):
@@ -128,12 +129,18 @@ def update_site_template(scheduler: Scheduler):
             context = {
                 'events': Event.objects.filter(timeline__gsoc_year=gsoc_year).all(),
                 'duedates': BlogPostDueDate.objects.filter(timeline__gsoc_year=gsoc_year).all(),
-            }
+                }
         elif template == 'index.html':
             context = {
                 'suborgs': SubOrgDetails.objects.filter(gsoc_year=gsoc_year, accepted=True).all(),
-            }
+                }
         content = render_site_template(template, context)
         push_site_template(settings.GITHUB_FILE_PATH[template], content)
     except Exception as e:
         return str(e)
+
+
+def archive_gsoc_pages(scheduler: Scheduler):
+    try:
+        gsoc_year = GsocYear.objects.first()
+        archive_current_gsoc_files(gsoc_year.gsoc_year)

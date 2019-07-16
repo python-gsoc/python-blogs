@@ -379,6 +379,7 @@ class Scheduler(models.Model):
         ('send_reg_reminder', 'send_reg_reminder'),
         ('add_blog_counter', 'add_blog_counter'),
         ('update_site_template', 'update_site_template'),
+        ('archive_gsoc_pages', 'archive_gsoc_pages')
         )
 
     id = models.AutoField(primary_key=True)
