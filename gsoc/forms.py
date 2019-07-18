@@ -1,3 +1,5 @@
+from PIL import Image
+
 from .models import (UserDetails, UserProfile, RegLink, BlogPostDueDate, Event,
                      SubOrgDetails, SubOrg, GsocEndDate)
 
@@ -76,6 +78,10 @@ class SubOrgApplicationForm(forms.ModelForm):
         applied_not_selected = cd.get('applied_but_not_selected').all()
         suborg_name = cd.get('suborg_name')
         suborg = cd.get('suborg')
+        logo = cd.get('logo')
+
+        im = Image.open(logo)
+        width, height = im.size
 
         contact = [
             cd.get('chat', None),
@@ -86,6 +92,9 @@ class SubOrgApplicationForm(forms.ModelForm):
         ]
 
         contact = list(filter(lambda a: a is not None, contact))
+
+        if width != 256 or height != 256:
+            raise ValidationError('The image should of size 256 x 256 pixels')
 
         if not suborg and suborg_name:
             suborg = SubOrg.objects.filter(suborg_name=suborg_name)

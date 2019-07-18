@@ -188,14 +188,16 @@ class SubOrgDetails(models.Model):
         )
     past_gsoc_experience = models.BooleanField(
         verbose_name='Has your org been accepted as a mentor org '
-                     'in Google Summer of Code before?'
+                     'in Google Summer of Code before?',
+        help_text='Mark the checkbox for yes'
         )
     past_years = models.ManyToManyField(
         GsocYear,
         blank=True,
         verbose_name='Which years did your org participate in GSoC?'
         )
-    suborg_in_past = models.BooleanField(verbose_name='Was this as a Suborg?')
+    suborg_in_past = models.BooleanField(verbose_name='Was this as a Suborg?',
+                                         help_text='Mark the checkbox for yes')
 
     applied_but_not_selected = models.ManyToManyField(
         GsocYear,
@@ -225,7 +227,7 @@ class SubOrgDetails(models.Model):
                                    null=True, blank=True)
     description = models.TextField(verbose_name='A very short description of your organization')
     logo = models.ImageField(upload_to='logos/', verbose_name='Your organization logo',
-                             help_text='Must be a 24-bit PNG, minimum height 256 pixels.')
+                             help_text='Must be a 24-bit PNG of 256 x 256 pixels.')
     primary_os_license = models.CharField(max_length=50,
                                           verbose_name='Primary Open Source License')
     ideas_list = models.URLField(verbose_name='Ideas List')
