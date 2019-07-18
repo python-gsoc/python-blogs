@@ -341,7 +341,7 @@ DJANGOCMS_VIDEO_ALLOWED_EXTENSIONS = ['mp4', 'webm', 'ogv']
 CKEDITOR_SETTINGS = {
     'disableNativeSpellChecker': False,
     'language': '{{ language }}',
-    'extraPlugins': 'button,clipboard,dialog,dialogui,image2,lineutils,notification,toolbar,widget,widgetselection,youtube',
+    'extraPlugins': 'button,clipboard,dialog,dialogui,image2,lineutils,notification,toolbar,widget,widgetselection,youtube,codesnippet',
     'toolbar': [
         {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste',
                                         'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
@@ -357,7 +357,7 @@ CKEDITOR_SETTINGS = {
                    'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
         {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
         {'name': 'insert', 'items': ['Table', 'HorizontalRule',
-                                     'Smiley', 'SpecialChar', 'PageBreak', 'Image', 'Youtube']},
+                                     'Smiley', 'SpecialChar', 'PageBreak', 'Image', 'Youtube', 'CodeSnippet']},
         '/',
         {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
         {'name': 'colors', 'items': ['TextColor', 'BGColor']},

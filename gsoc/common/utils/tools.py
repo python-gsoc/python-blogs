@@ -75,7 +75,7 @@ def is_year(file_name):
         if year >= 2000 and year <= 2100:
             return True
         return False
-    except:
+    except Exception as e:
         return False
 
 
@@ -100,7 +100,7 @@ def archive_current_gsoc_files(current_year):
         try:
             repo.create_file(f'{current_year}/{file.path}',
                              f'Archive GSoC {current_year} files', file.decoded_content)
-        except Exception as e1:
+        except Exception as e:
             repo.update_file(f'{current_year}/{file.path}',
                              f'Archive GSoC {current_year} files',
                              file.content,

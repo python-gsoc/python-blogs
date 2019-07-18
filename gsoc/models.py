@@ -1041,10 +1041,10 @@ def decrease_blog_counter(sender, instance, **kwargs):
 
 
 # Clean lead_in HTML when new Article is created
-@receiver(models.signals.post_save, sender=Article)
-def clean_html(sender, instance, **kwargs):
-    if instance.is_unclean():
-        instance.clean_article_html()
+# @receiver(models.signals.post_save, sender=Article)
+# def clean_html(sender, instance, **kwargs):
+#     if instance.is_unclean():
+#         instance.clean_article_html()
 
 
 # Add ArticleReveiw object when new Article is created
