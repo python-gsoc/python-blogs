@@ -91,5 +91,18 @@
             console.log(helptext)
             helptext.classList.add('pure-form-message');
         }
+
+        function togglePastExpFields() {
+            let flag = document.getElementById('id_past_gsoc_experience').checked;
+            let past_exp_cbs = document.getElementsByName('past_years');
+            past_exp_cbs.forEach(element => {
+                element.disabled = !flag;
+            });
+        }
+        
+        let pastExpFlag = document.getElementById('id_past_gsoc_experience');
+        pastExpFlag.onchange = togglePastExpFields;
+
+        togglePastExpFields();
     </script>
 {% endblock %}
