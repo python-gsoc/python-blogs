@@ -13,6 +13,57 @@
         .suborg-form .pure-button {
             margin: 20px 0 0 0;
         }
+
+        .suborg-form textarea {
+            width: 100%;
+        }
+
+        .suborg-form input[type=text] {
+            width: 100%;
+        }
+
+        .suborg-form input[type=url] {
+            width: 100%;
+        }
+
+        .suborg-form input[type=number] {
+            width: 100%;
+        }
+
+        ul#id_past_years {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #id_past_years li {
+            float: left;
+            margin: 0 20px 0 0;
+        }
+
+        ul#id_applied_but_not_selected {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #id_applied_but_not_selected li {
+            float: left;
+            margin: 0 20px 0 0;
+        }
+
+        form ul.errorlist {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .errorlist li {
+            color: red;
+        }
     </style>
 {% endblock %}
 
@@ -40,5 +91,18 @@
             console.log(helptext)
             helptext.classList.add('pure-form-message');
         }
+
+        function togglePastExpFields() {
+            let flag = document.getElementById('id_past_gsoc_experience').checked;
+            let past_exp_cbs = document.getElementsByName('past_years');
+            past_exp_cbs.forEach(element => {
+                element.disabled = !flag;
+            });
+        }
+        
+        let pastExpFlag = document.getElementById('id_past_gsoc_experience');
+        pastExpFlag.onchange = togglePastExpFields;
+
+        togglePastExpFields();
     </script>
 {% endblock %}

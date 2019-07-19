@@ -188,14 +188,16 @@ class SubOrgDetails(models.Model):
         )
     past_gsoc_experience = models.BooleanField(
         verbose_name='Has your org been accepted as a mentor org '
-                     'in Google Summer of Code before?'
+                     'in Google Summer of Code before?',
+        help_text='Mark the checkbox for yes'
         )
     past_years = models.ManyToManyField(
         GsocYear,
         blank=True,
         verbose_name='Which years did your org participate in GSoC?'
         )
-    suborg_in_past = models.BooleanField(verbose_name='Was this as a Suborg?')
+    suborg_in_past = models.BooleanField(verbose_name='Was this as a Suborg?',
+                                         help_text='Mark the checkbox for yes')
 
     applied_but_not_selected = models.ManyToManyField(
         GsocYear,
@@ -225,7 +227,7 @@ class SubOrgDetails(models.Model):
                                    null=True, blank=True)
     description = models.TextField(verbose_name='A very short description of your organization')
     logo = models.ImageField(upload_to='logos/', verbose_name='Your organization logo',
-                             help_text='Must be a 24-bit PNG, minimum height 256 pixels.')
+                             help_text='Must be a 24-bit PNG of 256 x 256 pixels.')
     primary_os_license = models.CharField(max_length=50,
                                           verbose_name='Primary Open Source License')
     ideas_list = models.URLField(verbose_name='Ideas List')
@@ -379,6 +381,7 @@ class Scheduler(models.Model):
         ('send_reg_reminder', 'send_reg_reminder'),
         ('add_blog_counter', 'add_blog_counter'),
         ('update_site_template', 'update_site_template'),
+        ('archive_gsoc_pages', 'archive_gsoc_pages')
         )
 
     id = models.AutoField(primary_key=True)
@@ -982,6 +985,14 @@ def add_revoke_perms_builder(sender, instance, **kwargs):
                            activation_date=instance.date)
 
 
+# Add new builder for GsocEndDate
+@receiver(models.signals.post_save, sender=GsocEndDate)
+def add_revoke_perms_builder(sender, instance, **kwargs):
+    Scheduler.objects.create(command='archive_gsoc_pages',
+                             activation_date=instance.date,
+                             data="{}")
+
+
 # Publish the duedate to Github pages
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def duedate_publish_to_github_pages(sender, instance, **kwargs):
@@ -1032,10 +1043,10 @@ def decrease_blog_counter(sender, instance, **kwargs):
 
 
 # Clean lead_in HTML when new Article is created
-@receiver(models.signals.post_save, sender=Article)
-def clean_html(sender, instance, **kwargs):
-    if instance.is_unclean():
-        instance.clean_article_html()
+# @receiver(models.signals.post_save, sender=Article)
+# def clean_html(sender, instance, **kwargs):
+#     if instance.is_unclean():
+#         instance.clean_article_html()
 
 
 # Add ArticleReveiw object when new Article is created
