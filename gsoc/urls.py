@@ -74,3 +74,7 @@ urlpatterns += [
     url(r'^article/publish/(?P<article_id>[0-9]+)/', gsoc.views.publish_article,
         name='publish_article')
 ]
+
+urlpatterns += [
+    url(r'.*\/blogs\/.*', gsoc.views.redirect_blogs)
+]

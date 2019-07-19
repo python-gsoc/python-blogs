@@ -29,6 +29,9 @@ from pdfminer.pdfpage import PDFPage
 from profanityfilter import ProfanityFilter
 
 
+def redirect_blogs(request):
+    return redirect('/')
+
 # handle proposal upload
 
 def convert_pdf_to_txt(f):
@@ -346,3 +349,4 @@ def publish_article(request, article_id):
         else:
             messages.error(request, 'User does not have permission to publish article')
     return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
+
