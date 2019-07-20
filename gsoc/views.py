@@ -32,8 +32,10 @@ from profanityfilter import ProfanityFilter
 def redirect_blogs_list(request):
     return HttpResponseRedirect(f'/')
 
+
 def redirect_blogs(request, blog_name):
     return HttpResponseRedirect(f'/{blog_name}/')
+
 
 def redirect_articles(request, blog_name, article_name):
     return HttpResponseRedirect(f'/{blog_name}/{article_name}/')
