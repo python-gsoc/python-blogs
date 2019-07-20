@@ -874,6 +874,58 @@ class ArticleReview(models.Model):
         super(ArticleReview, self).save(*args, **kwargs)
 
 
+class SendEmail(models.Model):
+    groups = (
+        ('students', 'Students'),
+        ('mentors', 'Mentors'),
+        ('suborg_admins', 'Suborg Admins'),
+        ('admins', 'Admins'),
+        ('all', 'All')
+    )
+
+    to = models.CharField(null=True, blank=True, max_length=255,
+                          help_text='Separate email with a comma')
+    to_group = models.CharField(max_length=80, choices=groups, null=True, blank=True)
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+    scheduler = models.ForeignKey(Scheduler, blank=True, null=True, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if not (self.to or self.to_group):
+            raise ValidationError(
+                message="Any one of the fields 'to' or 'to_group' should be filled."
+                )
+        emails = []
+        if self.to:
+            emails.extend(self.to.split(','))
+        
+        gsoc_year = GsocYear.objects.first()
+        
+        if self.to_group in 'students':
+            ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
+            emails.extend([_.user.email for _ in ups])
+        elif self.to_group == 'mentors':
+            ups = UserProfile.objects.filter(role=2, gsoc_year=gsoc_year).all()
+            emails.extend([_.user.email for _ in ups])
+        elif self.to_group == 'suborg_admins':
+            ups = UserProfile.objects.filter(role=1, gsoc_year=gsoc_year).all()
+            emails.extend([_.user.email for _ in ups])
+        elif self.to_group == 'all':
+            ups = UserProfile.objects.filter(gsoc_year=gsoc_year).all()
+            emails.extend([_.user.email for _ in ups])
+        
+        scheduler_data = build_send_mail_json(emails,
+                                              template='generic_email.html',
+                                              subject=self.subject,
+                                              template_data={
+                                                  'body': self.body
+                                              })
+        self.scheduler = Scheduler.objects.create(command='send_email',
+                                                  data=scheduler_data)
+
+        super(SendEmail, self).save(*args, **kwargs)
+
+
 # Receivers
 
 # Update blog count when new UserProfile is created

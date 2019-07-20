@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
                      BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails,
-                     GsocEndDate, Comment)
+                     GsocEndDate, Comment, SendEmail)
 from .forms import (UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm,
                     GsocEndDateForm)
 
@@ -533,3 +533,14 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Comment, CommentAdmin)
+
+
+class SendEmailAdmin(admin.ModelAdmin):
+    list_display = ('to', 'to_group', 'subject')
+    exclude = ('scheduler', )
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(SendEmail, SendEmailAdmin)
