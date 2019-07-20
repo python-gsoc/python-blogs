@@ -37,7 +37,11 @@ urlpatterns += [
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    url(r'^', include('cms.urls'))
+    url(r'^blogs/$', gsoc.views.redirect_blogs_list),
+    url(r'^blogs/(?P<blog_name>[\w-]+)/$', gsoc.views.redirect_blogs),
+    url(r'^blogs/(?P<blog_name>[\w-]+)/(?P<article_name>[\w-]+)/',
+        gsoc.views.redirect_articles),
+    url(r'^', include('cms.urls')),
 )
 # This is only needed when using runserver.
 if settings.DEBUG:
@@ -73,8 +77,4 @@ urlpatterns += [
         name='unpublish_article'),
     url(r'^article/publish/(?P<article_id>[0-9]+)/', gsoc.views.publish_article,
         name='publish_article')
-]
-
-urlpatterns += [
-    url(r'.*\/blogs\/.*', gsoc.views.redirect_blogs)
 ]
