@@ -898,9 +898,9 @@ class SendEmail(models.Model):
         emails = []
         if self.to:
             emails.extend(self.to.split(','))
-        
+
         gsoc_year = GsocYear.objects.first()
-        
+
         if self.to_group in 'students':
             ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
             emails.extend([_.user.email for _ in ups])
@@ -913,7 +913,7 @@ class SendEmail(models.Model):
         elif self.to_group == 'all':
             ups = UserProfile.objects.filter(gsoc_year=gsoc_year).all()
             emails.extend([_.user.email for _ in ups])
-        
+
         scheduler_data = build_send_mail_json(emails,
                                               template='generic_email.html',
                                               subject=self.subject,
