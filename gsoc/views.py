@@ -14,7 +14,7 @@ from django.contrib import messages
 from django.contrib.auth import decorators, password_validation, validators, logout
 from django.contrib.auth.models import User
 from django import shortcuts
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -29,8 +29,14 @@ from pdfminer.pdfpage import PDFPage
 from profanityfilter import ProfanityFilter
 
 
-def redirect_blogs(request):
-    return redirect('/')
+def redirect_blogs_list(request):
+    return HttpResponseRedirect(f'/')
+
+def redirect_blogs(request, blog_name):
+    return HttpResponseRedirect(f'/{blog_name}/')
+
+def redirect_articles(request, blog_name, article_name):
+    return HttpResponseRedirect(f'/{blog_name}/{article_name}/')
 
 # handle proposal upload
 
