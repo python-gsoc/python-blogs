@@ -9,7 +9,7 @@ from .irc import send_message
 from gsoc.models import (Scheduler, RegLink, GsocYear, UserProfile, Event,
                          BlogPostDueDate, SubOrgDetails)
 from .tools import (send_mail, render_site_template, push_site_template,
-                    archive_current_gsoc_files)
+                    archive_current_gsoc_files, push_images)
 
 
 def send_email(scheduler: Scheduler):
@@ -136,6 +136,12 @@ def update_site_template(scheduler: Scheduler):
             suborgs = SubOrgDetails.objects.filter(gsoc_year=gsoc_year, accepted=True).all()
             suborg_list = []
             for suborg in suborgs:
+                f = open(suborg.logo.path, 'rb')
+                lines = f.readlines()
+                content = b''
+                for line in lines:
+                    content = content + line
+                push_images(suborg.logo.name, content)
                 _ = {
                     'name': suborg.suborg.suborg_name,
                     'description': suborg.description,
