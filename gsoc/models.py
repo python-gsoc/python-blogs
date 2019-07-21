@@ -902,7 +902,7 @@ class SendEmail(models.Model):
 
         gsoc_year = GsocYear.objects.first()
 
-        if self.to_group in 'students':
+        if self.to_group == 'students':
             ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
             emails.extend([_.user.email for _ in ups])
         elif self.to_group == 'mentors':
