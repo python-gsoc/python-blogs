@@ -272,7 +272,8 @@ class SubOrgDetails(models.Model):
         RegLink.objects.create(user_role=1,
                                user_suborg=self.suborg,
                                user_gsoc_year=self.gsoc_year,
-                               email=self.suborg_admin_email)
+                               email=self.suborg_admin_email,
+                               send_notifications=False)
 
         s = Scheduler.objects.filter(command='update_site_template',
                                      data=json.dumps({'template': 'index.html'}),
@@ -693,6 +694,7 @@ class RegLink(models.Model):
                                   blank=True, on_delete=models.CASCADE, editable=False)
     reminder = models.ForeignKey(Scheduler, null=True, related_name='reglinks',
                                  blank=True, on_delete=models.CASCADE, editable=False)
+    send_notifications = models.BooleanField(default=True)
 
     @property
     def has_scheduler(self):
@@ -1067,14 +1069,14 @@ def due_date_delete_from_calendar(sender, instance, **kwargs):
 # Add Send RegLink Schedulers when RegLink is created
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reglink_schedulers(sender, instance, **kwargs):
-    if instance.scheduler is None:
+    if instance.scheduler is None and instance.send_notifications:
         instance.create_scheduler()
 
 
 # Add Send RegLink Reminder Schedulers when RegLink is created
 @receiver(models.signals.post_save, sender=RegLink)
 def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
-    if instance.reminder is None:
+    if instance.reminder is None and instance.send_notifications:
         instance.create_reminder()
 
 
