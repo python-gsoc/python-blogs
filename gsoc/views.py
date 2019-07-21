@@ -18,6 +18,8 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 from aldryn_newsblog.models import Article
 
@@ -28,6 +30,28 @@ from pdfminer.pdfpage import PDFPage
 
 from profanityfilter import ProfanityFilter
 
+
+# handle file upload
+
+@csrf_exempt
+def upload_file(request):
+    file = request.FILES['upload']
+    filename = str(uuid.uuid4()) + '.' + file.name.split('.')[-1]
+    filepath = os.path.join('media/uploads', filename)
+    fileurl = os.path.join('/', filepath)
+    abspath = os.path.join(settings.BASE_DIR, filepath)
+
+    with open(abspath, 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+
+    return JsonResponse({
+        'uploaded': 1,
+        'fileName': filename,
+        'url': fileurl
+    })
+
+# handle redirect to blogs
 
 def redirect_blogs_list(request):
     return HttpResponseRedirect(f'/')

@@ -341,7 +341,8 @@ DJANGOCMS_VIDEO_ALLOWED_EXTENSIONS = ['mp4', 'webm', 'ogv']
 CKEDITOR_SETTINGS = {
     'disableNativeSpellChecker': False,
     'language': '{{ language }}',
-    'extraPlugins': 'button,clipboard,dialog,dialogui,image2,lineutils,notification,toolbar,widget,widgetselection,youtube,codesnippet',
+    'extraPlugins': 'button,clipboard,dialog,dialogui,image2,lineutils,notification,toolbar,widget,widgetselection,youtube,codesnippet,notificationaggregator,filetools,uploadwidget,uploadfile,uploadimage',
+    'uploadUrl': '/upload/',
     'toolbar': [
         {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste',
                                         'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
