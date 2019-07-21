@@ -40,6 +40,8 @@ def upload_file(request):
     filepath = os.path.join('media/uploads', filename)
     fileurl = os.path.join('/', filepath)
     abspath = os.path.join(settings.BASE_DIR, filepath)
+    if not os.path.exists(os.path.dirname(abspath)):
+        os.makedirs(os.path.dirname(abspath))
 
     with open(abspath, 'wb+') as destination:
         for chunk in file.chunks():
