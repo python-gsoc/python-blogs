@@ -69,6 +69,12 @@ def push_site_template(file_path, content):
     repo.update_file(f.path, f'Update {file_path}', content, f.sha)
 
 
+def push_images(file_path, content):
+    g = Github(settings.GITHUB_ACCESS_TOKEN)
+    repo = g.get_repo(settings.STATIC_SITE_REPO)
+    repo.create_file(file_path, f'Add {file_path} logo', content)
+
+
 def is_year(file_name):
     try:
         year = int(file_name)

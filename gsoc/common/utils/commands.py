@@ -9,7 +9,7 @@ from .irc import send_message
 from gsoc.models import (Scheduler, RegLink, GsocYear, UserProfile, Event,
                          BlogPostDueDate, SubOrgDetails)
 from .tools import (send_mail, render_site_template, push_site_template,
-                    archive_current_gsoc_files)
+                    archive_current_gsoc_files, push_images)
 
 
 def send_email(scheduler: Scheduler):
@@ -131,8 +131,34 @@ def update_site_template(scheduler: Scheduler):
                 'duedates': BlogPostDueDate.objects.filter(timeline__gsoc_year=gsoc_year).all(),
                 }
         elif template == 'index.html':
+            # change this if the number of contact fields increase
+            contact_fields = ('chat', 'mailing_list', 'twitter_url', 'blog_url', 'link')
+            suborgs = SubOrgDetails.objects.filter(gsoc_year=gsoc_year, accepted=True).all()
+            suborg_list = []
+            for suborg in suborgs:
+                f = open(suborg.logo.path, 'rb')
+                lines = f.readlines()
+                content = b''
+                for line in lines:
+                    content = content + line
+                push_images(suborg.logo.name, content)
+                _ = {
+                    'name': suborg.suborg.suborg_name,
+                    'description': suborg.description,
+                    'logo': f'/{suborg.logo.name}',
+                    'ideas_list': suborg.ideas_list,
+                    'contact': []
+                    }
+                contact_count = 0
+                for field in contact_fields:
+                    if getattr(suborg, field):
+                        contact_count += 1
+                        _['contact'].append((field.title().replace('_', ' '),
+                                             getattr(suborg, field)))
+                _['count'] = (contact_count // 2) + 1
+                suborg_list.append(_)
             context = {
-                'suborgs': SubOrgDetails.objects.filter(gsoc_year=gsoc_year, accepted=True).all(),
+                'suborgs': suborg_list
                 }
         content = render_site_template(template, context)
         push_site_template(settings.GITHUB_FILE_PATH[template], content)
@@ -144,3 +170,5 @@ def archive_gsoc_pages(scheduler: Scheduler):
     try:
         gsoc_year = GsocYear.objects.first()
         archive_current_gsoc_files(gsoc_year.gsoc_year)
+    except Exception as e:
+        return str(e)
