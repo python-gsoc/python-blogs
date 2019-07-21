@@ -888,6 +888,7 @@ class SendEmail(models.Model):
     to_group = models.CharField(max_length=80, choices=groups, null=True, blank=True)
     subject = models.CharField(max_length=255)
     body = models.TextField()
+    activation_date = models.DateTimeField(blank=True, null=True)
     scheduler = models.ForeignKey(Scheduler, blank=True, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
@@ -921,7 +922,8 @@ class SendEmail(models.Model):
                                                   'body': self.body
                                               })
         self.scheduler = Scheduler.objects.create(command='send_email',
-                                                  data=scheduler_data)
+                                                  data=scheduler_data,
+                                                  activation_date=self.activation_date)
 
         super(SendEmail, self).save(*args, **kwargs)
 
