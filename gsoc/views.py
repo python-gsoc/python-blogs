@@ -40,11 +40,11 @@ def upload_file(request):
     filepath = os.path.join('media/uploads', filename)
     fileurl = os.path.join('/', filepath)
     abspath = os.path.join(settings.BASE_DIR, filepath)
-    
+
     with open(abspath, 'wb+') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
-    
+
     return JsonResponse({
         'uploaded': 1,
         'fileName': filename,
