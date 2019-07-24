@@ -14,15 +14,16 @@ from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 
 import gsoc.views
+import gsoc.sitemaps as sitemaps
 
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^sitemap\.xml', sitemap,
-        {'sitemaps': {
-            'cmspages': CMSSitemap,
-            }
-         }),
+    url(r'^sitemap.xml', sitemap, {
+        'sitemaps': {
+            'blog_sitemaps': sitemaps.BlogListSitemap,
+        }
+    }),
     url(r'^robots.txt', TemplateView.as_view(template_name="robots.txt",
         content_type="text/plain"), name="robots_file"),
     url(r'^favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
