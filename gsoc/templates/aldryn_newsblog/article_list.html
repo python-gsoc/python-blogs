@@ -1,6 +1,8 @@
 {% extends "aldryn_newsblog/base.html" %}
 {% load i18n %}
 
+{% block meta %}{% if article_list %}{{ article_list.0.app_config.namespace }} - {% endif %}{% endblock %}
+
 {% block newsblog_content %}
     <div class="aldryn-newsblog-list">
         {% for article in article_list %}

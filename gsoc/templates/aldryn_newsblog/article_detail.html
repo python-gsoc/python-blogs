@@ -2,6 +2,8 @@
 {% load i18n cms_tags apphooks_config_tags %}
 
 {% block title %}{{ article.title }} - {{ block.super }}{% endblock %}
+{% block meta %}{{ article.title }} - {{ article.app_config.namespace }} - {% endblock %}
+
 {% block breadcrumb %}{% endblock %}
 
 {% block newsblog_content %}
