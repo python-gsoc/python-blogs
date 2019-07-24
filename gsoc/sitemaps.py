@@ -24,6 +24,6 @@ class BlogListSitemap(Sitemap):
             for article in articles:
                 urls.append(f'{p.get_absolute_url()}{article.slug}/')
         return urls
-    
+
     def location(self, obj):
         return obj
