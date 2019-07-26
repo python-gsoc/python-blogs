@@ -68,17 +68,18 @@ def add_admin_menu(self):
                 url=admin_reverse('gsoc_adduserlog_add'),
                 on_close=None,
                 )
-        
+
         if user:
             self._admin_menu.add_link_item(_('New Suborg Application'),
                                            reverse('suborg:register_suborg'))
             self._admin_menu.add_link_item(_('Manage Suborg Application'),
                                            reverse('suborg:application_list'))
-        
+
         self._admin_menu.add_break(ADMINISTRATION_BREAK)
 
         # cms users settings
-        self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
+        self._admin_menu.add_sideframe_item(_('User settings'),
+                                            url=admin_reverse('cms_usersettings_change'))
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
         # clipboard
         if self.toolbar.edit_mode_active:
