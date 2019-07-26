@@ -112,34 +112,6 @@ def get_root_comments(self):
 Article.add_to_class('get_root_comments', get_root_comments)
 
 
-def is_unclean(self):
-    unclean_texts = (
-        '<pre>',
-        '</pre>',
-        '&lt;',
-        '&gt;',
-        )
-    for _ in unclean_texts:
-        if _ in self.lead_in:
-            return True
-    return False
-
-
-Article.add_to_class('is_unclean', is_unclean)
-
-
-def clean_article_html(self):
-    self.lead_in = re.sub(r'<pre>', '<code>', self.lead_in)
-    self.lead_in = re.sub(r'<\/pre>', '</code>', self.lead_in)
-    self.lead_in = re.sub(r'&lt;', '<', self.lead_in)
-    self.lead_in = re.sub(r'&gt;', '>', self.lead_in)
-    self.lead_in = mark_safe(self.lead_in)
-    self.save()
-
-
-Article.add_to_class('clean_article_html', clean_article_html)
-
-
 # Models
 
 class SubOrg(models.Model):
@@ -1096,13 +1068,6 @@ def decrease_blog_counter(sender, instance, **kwargs):
             up.current_blog_count -= 1
             print('Decreasing', up.current_blog_count)
             up.save()
-
-
-# Clean lead_in HTML when new Article is created
-# @receiver(models.signals.post_save, sender=Article)
-# def clean_html(sender, instance, **kwargs):
-#     if instance.is_unclean():
-#         instance.clean_article_html()
 
 
 # Add ArticleReveiw object when new Article is created
