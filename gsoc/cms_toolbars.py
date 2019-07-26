@@ -53,17 +53,28 @@ def add_admin_menu(self):
         if user and user.is_superuser:
             self._admin_menu.add_sideframe_item(_('Schedulers'),
                                                 url=admin_reverse('gsoc_scheduler_changelist'))
-        self._admin_menu.add_break(ADMINISTRATION_BREAK)
-
-        # cms users settings
-        self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
-        self._admin_menu.add_break(USER_SETTINGS_BREAK)
-        if user and user.is_superuser:
+            self._admin_menu.add_sideframe_item(_('Builders'),
+                                                url=admin_reverse('gsoc_builder_changelist'))
+            self._admin_menu.add_sideframe_item(_('Review Article'),
+                                                url=admin_reverse('gsoc_articlereview_changelist'))
+            self._admin_menu.add_sideframe_item(_('Timeline'),
+                                                url=admin_reverse('gsoc_timeline_changelist'))
+            self._admin_menu.add_sideframe_item(_('Send Email'),
+                                                url=admin_reverse('gsoc_sendemail_add'))
+            self._admin_menu.add_sideframe_item(_('Suborg Applications'),
+                                                url=admin_reverse('gsoc_suborgdetails_changelist'))
             self._admin_menu.add_modal_item(
                 name='Add Users',
                 url=admin_reverse('gsoc_adduserlog_add'),
                 on_close=None,
                 )
+
+        
+        self._admin_menu.add_break(ADMINISTRATION_BREAK)
+
+        # cms users settings
+        self._admin_menu.add_sideframe_item(_('User settings'), url=admin_reverse('cms_usersettings_change'))
+        self._admin_menu.add_break(USER_SETTINGS_BREAK)
         # clipboard
         if self.toolbar.edit_mode_active:
             # True if the clipboard exists and there's plugins in it.
