@@ -85,23 +85,30 @@ def is_year(file_name):
         return False
 
 
-def get_files(repo, except_files=['CNAME', 'LICENSE.md', 'README.md']):
+def get_files(repo, except_files=['CNAME', 'LICENSE.md', 'README.md', 'favicon.ico', 'robots.txt']):
     contents = repo.get_contents('')
     files = []
     while contents:
         file_content = contents.pop(0)
         if not (file_content.path in except_files or is_year(file_content.path)):
-            if file_content.type == "dir":
+            if file_content.type == 'dir':
                 contents.extend(repo.get_contents(file_content.path))
             else:
                 files.append(file_content)
     return files
 
 
+def update_robots_file(repo, current_year):
+    c = repo.get_contents('robots.txt')
+    new_content = c.decoded_content.strip() + f'\nDisallow: /{current_year}/\n'.encode()
+    repo.update_file(c.path, 'Update robots.txt', new_content, c.sha)
+
+
 def archive_current_gsoc_files(current_year):
     g = Github(settings.GITHUB_ACCESS_TOKEN)
     repo = g.get_repo(settings.STATIC_SITE_REPO)
     files = get_files(repo)
+    update_robots_file(repo, current_year)
     for file in files:
         try:
             repo.create_file(f'{current_year}/{file.path}',
