@@ -268,6 +268,7 @@ def new_comment(request):
         # verification and delete the variable to enable recaptcha verification
         disable_recaptcha = os.getenv('DISABLE_RECAPTCHA', None)
 
+        flag = True
         if not disable_recaptcha:
             recaptcha_response = request.POST.get('g-recaptcha-response')
             url = 'https://www.google.com/recaptcha/api/siteverify'
@@ -281,10 +282,7 @@ def new_comment(request):
             response = urllib.request.urlopen(req)
             result = json.loads(response.read().decode())
 
-        flag = True
-        if not disable_recaptcha:
-            flag = (result['success'] and result['action'] == 'comment'
-                    and result['score'] >= settings.RECAPTCHA_THRESHOLD)
+            flag = result['success']
 
         if flag:
             # if score greater than threshold allow to add
