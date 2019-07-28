@@ -1,5 +1,6 @@
 from gsoc import settings
 
+from .common.utils.memcached_stats import MemcachedStats
 from .forms import ProposalUploadForm
 from .models import (RegLink, ProposalTextValidator, Comment, ArticleReview,
                      GsocYear)
@@ -17,6 +18,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django import shortcuts
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
+from django.core.cache import cache
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
@@ -340,6 +342,13 @@ def new_comment(request):
 
         redirect_path = request.POST.get('redirect')
 
+        mem = MemcachedStats()
+        keys = [_[3:] for _ in mem.keys()]
+        for key in keys:
+            if 'cache_page' in key or 'cache_header' in key:
+                print(key, cache.get(key))
+                cache.delete(key)
+        
         if redirect_path:
             return redirect(redirect_path)
         else:
