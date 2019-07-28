@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
                      BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails,
-                     GsocEndDate, Comment, SendEmail)
+                     GsocEndDate, Comment, SendEmail, BlogPostHistory)
 from .forms import (UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm,
                     GsocEndDateForm)
 
@@ -544,3 +544,18 @@ class SendEmailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SendEmail, SendEmailAdmin)
+
+
+class BlogPostHistoryAdmin(admin.ModelAdmin):
+    list_display = ('article', 'timestamp')
+    list_filter = ('article', )
+    fields = ('article', 'content_safe', 'timestamp')
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def content_safe(self, obj):
+        return mark_safe(obj.content)
+
+
+admin.site.register(BlogPostHistory, BlogPostHistoryAdmin)

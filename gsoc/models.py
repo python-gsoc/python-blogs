@@ -469,6 +469,12 @@ class Event(models.Model):
         super().save(*args, **kwargs)
 
 
+class BlogPostHistory(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    content = models.TextField(null=True, blank=True)
+
+
 class BlogPostDueDate(models.Model):
     categories = (
         (0, 'Weekly Check-In'),
@@ -1090,3 +1096,22 @@ def add_review(sender, instance, **kwargs):
         ar = ar.first()
         ar.is_reviewed = False
         ar.save()
+
+
+# Add ArticleReveiw object when new Article is created
+@receiver(models.signals.post_save, sender=Article)
+def add_review(sender, instance, **kwargs):
+    ar = ArticleReview.objects.filter(article=instance).all()
+    if not ar:
+        ArticleReview.objects.create(article=instance)
+
+    if ar:
+        ar = ar.first()
+        ar.is_reviewed = False
+        ar.save()
+
+
+# Add BlogPostHistory object when new Article is created
+@receiver(models.signals.post_save, sender=Article)
+def add_history(sender, instance, **kwargs):
+    BlogPostHistory.objects.create(article=instance, content=instance.lead_in)
