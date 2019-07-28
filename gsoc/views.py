@@ -116,9 +116,7 @@ def scan_proposal(file):
 @decorators.login_required
 def after_login_view(request):
     user = request.user
-    if user.is_current_year_student() and not user.has_proposal():
-        return shortcuts.redirect('/myprofile')
-    return shortcuts.redirect('/')
+    return shortcuts.redirect('/myprofile')
 
 
 @decorators.login_required

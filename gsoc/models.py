@@ -48,6 +48,15 @@ def gen_uuid_str():
 NewsBlogConfig.__str__ = lambda self: self.app_title
 
 
+def current_year_profile(self):
+    gsoc_year = GsocYear.objects.first()
+    profile = self.userprofile_set.filter(gsoc_year=gsoc_year, role__in=[1, 2, 3])
+    return profile.first() if len(profile) > 0 else None
+
+
+auth.models.User.add_to_class('current_year_profile', current_year_profile)
+
+
 def has_proposal(self):
     try:
         proposal = self.student_profile().accepted_proposal_pdf
