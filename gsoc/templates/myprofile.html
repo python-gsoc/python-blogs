@@ -6,11 +6,11 @@ My Profile
 
 {% block content %}
   <div class="content">
-  <h1>Welcome {% if not user.is_anonymous %}{{ user.username }} {% endif %}!</h1>
+  <h1>Welcome{% if not user.is_anonymous %} {{ user.username }}{% endif %}!</h1>
   {% if user.is_anonymous %}
     <div>Please login <a href="{% url 'login' %}">here</a>.</div>
   {% endif %}
-  	<!-- Begin Upload Accepted Proposal -->
+
   {% if user %}
     {% if user.is_current_year_student %}
     <style>
@@ -80,12 +80,4 @@ My Profile
   {% endif %}
 </div>
   	<!-- End Upload Accepted Proposal -->
-{% endblock %}
-
-{% block js %}
-<script>
-	grecaptcha.ready(function() {
-		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'myprofile'});
-	});
-</script>
 {% endblock %}

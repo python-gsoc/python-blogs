@@ -13,6 +13,7 @@ import uuid
 from django.contrib import messages
 from django.contrib.auth import decorators, password_validation, validators, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
 from django import shortcuts
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
@@ -51,9 +52,10 @@ def upload_file(request):
         'uploaded': 1,
         'fileName': filename,
         'url': fileurl
-    })
+        })
 
 # handle redirect to blogs
+
 
 def redirect_blogs_list(request):
     return HttpResponseRedirect(f'/')
@@ -67,6 +69,7 @@ def redirect_articles(request, blog_name, article_name):
     return HttpResponseRedirect(f'/{blog_name}/{article_name}/')
 
 # handle proposal upload
+
 
 def convert_pdf_to_txt(f):
     rsrcmgr = PDFResourceManager()
@@ -262,6 +265,25 @@ def register_view(request):
         return shortcuts.render(request, 'registration/register.html', context)
 
 
+@decorators.login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return shortcuts.render(request, 'registration/change_password.html', {
+        'form': form
+        })
+
+
 def new_comment(request):
     if request.method == 'POST':
         # set environment variable `DISABLE_RECAPTCHA` to disable recaptcha
@@ -275,7 +297,7 @@ def new_comment(request):
             payload = {
                 'secret': settings.RECAPTCHA_PRIVATE_KEY,
                 'response': recaptcha_response
-            }
+                }
             data = urllib.parse.urlencode(payload).encode()
             req = urllib.request.Request(url, data=data)
 
@@ -381,4 +403,3 @@ def publish_article(request, article_id):
         else:
             messages.error(request, 'User does not have permission to publish article')
     return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
-
