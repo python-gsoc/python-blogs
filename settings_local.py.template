@@ -47,10 +47,9 @@ EMAIL_PORT = 25
 #EMAIL_HOST_USER = ""
 #EMAIL_HOST_PASSWORD = ""
 REPLY_EMAIL = 'gsoc-admins@python.org'
-ADMIN_EMAIL = 'gsoc-admins@python.org'
 
 # Admins
-ADMINS = ['matthew.lagoe@gmail.com', 'sounak.98@gmail.com']
+ADMINS = 'gsoc-admins@python.org'
 
 # reCAPTCHA settings
 # update the `RECAPTCHA_PUBLIC_KEY` in `/static/js/recaptcha.js` manually
