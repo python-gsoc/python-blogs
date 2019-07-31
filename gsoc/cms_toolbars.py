@@ -246,7 +246,7 @@ def populate(self):
         try:
             if user.is_superuser:
                 url = (f"{admin_reverse('gsoc_blogposthistory_changelist')}"
-                    f"?article__id__exact={article.id}")
+                       f"?article__id__exact={article.id}")
                 self.toolbar.add_sideframe_item(_('View History'), url=url)
         except Article.DoesNotExist:
             pass
