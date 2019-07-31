@@ -348,7 +348,7 @@ def new_comment(request):
             if 'cache_page' in key or 'cache_header' in key:
                 print(key, cache.get(key))
                 cache.delete(key)
-        
+
         if redirect_path:
             return redirect(redirect_path)
         else:

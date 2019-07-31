@@ -1,4 +1,7 @@
-import re, telnetlib, sys
+import re
+import telnetlib
+import sys
+
 
 class MemcachedStats:
 
@@ -28,7 +31,7 @@ class MemcachedStats:
         ' Return a list of tuples containing keys and details '
         cmd = 'stats cachedump %s %s'
         keys = [key for id in self.slab_ids()
-            for key in self._key_regex.findall(self.command(cmd % (id, limit)))]
+                for key in self._key_regex.findall(self.command(cmd % (id, limit)))]
         if sort:
             return sorted(keys)
         else:

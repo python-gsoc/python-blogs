@@ -368,6 +368,7 @@ admin.site.register(PageNotification, PageNotificationAdmin)
 class RegLinkInline(admin.TabularInline):
     model = RegLink
     form = RegLinkForm
+    extra = 1
 
 
 class AddUserLogAdmin(admin.ModelAdmin):
