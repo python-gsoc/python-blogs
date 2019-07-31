@@ -75,7 +75,7 @@ class Command(BaseCommand):
                     builder.built = False
                     builder.last_error = err
                     builder.save()
-                    send_mail(settings.ADMIN_EMAIL,
+                    send_mail(settings.ADMINS,
                               'Exception on runcron build_items',
                               'cron_error.html',
                               {
@@ -107,7 +107,7 @@ class Command(BaseCommand):
             scheduler.success = False
             scheduler.last_error = err
             scheduler.save()
-            send_mail(settings.ADMIN_EMAIL,
+            send_mail(settings.ADMINS,
                       'Exception on runcron process_items',
                       'cron_error.html',
                       {
