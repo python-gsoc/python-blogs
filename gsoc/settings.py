@@ -282,7 +282,7 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'logs/pygsoc.log'),
             'formatter': 'verbose',
             'when': 'midnight',
-            'backupCount': 60,
+            'backupCount': 5,
             'encoding': 'utf-8',
             },
         'access_logs': {
