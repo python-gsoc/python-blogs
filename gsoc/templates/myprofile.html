@@ -6,86 +6,79 @@ My Profile
 
 {% block content %}
   <div class="content">
-  <h1>Welcome {% if not user.is_anonymous %}{{ user.username }} {% endif %}!</h1>
-  {% if user.is_anonymous %}
-    <div>Please login <a href="{% url 'login' %}">here</a>.</div>
-  {% endif %}
-  	<!-- Begin Upload Accepted Proposal -->
-  {% if user %}
-    {% if user.is_current_year_student %}
-    <style>
-      .alert {
-        padding: 20px;
-        background-color: #f44336;
-        color: white;
-        width: 50vw;
+    <h1>Welcome{% if not user.is_anonymous %} {{ user.username }}{% endif %} to PSF!</h1>
+    {% if user.is_anonymous %}
+      <div>Please login <a href="{% url 'login' %}">here</a>.</div>
+    {% endif %}
+
+    {% if user %}
+      <a href="/accounts/change_password" class="pure-button pure-button-primary">Change Password</a>
+      {% if user.is_current_year_student %}
+      <style>
+        .alert {
+          padding: 20px;
+          background-color: #f44336;
+          color: white;
+          width: 50vw;
+          }
+        .info {
+          padding: 20px;
+          background-color: #000000;
+          color: white;
+          width: 50vw;
         }
-      .info {
-        padding: 20px;
-        background-color: #000000;
-        color: white;
-        width: 50vw;
-      }
-      .info-btn {
-        background: black;
-        color: white;
-      }
-    </style>
-    <div id='infoBox' style="display:none">
+        .info-btn {
+          background: black;
+          color: white;
+        }
+      </style>
+      <div id='infoBox' style="display:none">
         <div id='infoBoxText'></div>
         <div id='infoBtns'>
-          <button
-          class='pure-button'
-          style='display: none'
-          id='infoBtn1'
-          >
-            confirm
-          </button>
-          <button
-          class='pure-button'
-          style='display: none'
-          id='infoBtn2'
-          >
-            cancel
-          </button>
+          <button class='pure-button' style='display: none' id='infoBtn1'>Confirm</button>
+          <button class='pure-button' style='display: none' id='infoBtn2'>Cancel</button>
         </div>
-    </div>
-    <br>
-    <button name="upload-proposal"
-            class="pure-button pure-button-primary"
-            id='begin-upload-proposal-button'
-            onclick="document.querySelector('#upload-proposal').style.display='block';
-                     document.querySelector('#begin-upload-proposal-button').classList.remove('pure-button-primary');
-                     document.querySelector('#begin-upload-proposal-button').classList.add('pure-button-disabled')">
-    {% if user.student_profile.accepted_proposal_pdf %}
-      Re-upload Your Accepted Proposal
-    {% else %}
-      Upload Your Accepted Proposal
-     {% endif %}
-    </button>
-      <div id='upload-proposal' style="display: none">
-      <form class="pure-form" id='upload-proposal-form'
-            enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" id="proposalFileInput" name="accepted_proposal_pdf">
-      </form>
-      <button onclick="beforeUpload()" class="pure-button pure-button-primary" id="upload-proposal-button">Confirm</button>
-      <button onclick="document.querySelector('#upload-proposal').style.display='none'" class="pure-button">
-        Quit
+      </div>
+      <button name="upload-proposal"
+              class="pure-button pure-button-primary"
+              id='begin-upload-proposal-button'
+              onclick="document.querySelector('#upload-proposal').style.display='block';
+                      document.querySelector('#begin-upload-proposal-button').classList.remove('pure-button-primary');
+                      document.querySelector('#begin-upload-proposal-button').classList.add('pure-button-disabled')">
+        {% if user.student_profile.accepted_proposal_pdf %}
+          Re-upload Your Accepted Proposal
+        {% else %}
+          Upload Your Accepted Proposal
+        {% endif %}
       </button>
+      <div id='upload-proposal' style="display: none">
+        <form class="pure-form" id='upload-proposal-form'
+              enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="file" id="proposalFileInput" name="accepted_proposal_pdf">
+        </form>
+        <button onclick="beforeUpload()" class="pure-button pure-button-primary" id="upload-proposal-button">Confirm</button>
+        <button onclick="document.querySelector('#upload-proposal').style.display='none'" class="pure-button">Quit</button>
+      </div>
+      <div>
+        {% with profile=user.current_year_profile %}
+          {% for p in user.userprofile_set.all %}
+            <p>
+              <em>{% if p == profile %}Current Role - {% endif %}{{p.gsoc_year.gsoc_year}}:</em>
+              <strong>{% if p.role == 1 %}Suborg Admin
+              {% elif p.role == 2 %}Mentor
+              {% elif p.role == 3 %}Student{% endif %}</strong>
+              at <strong>{{ p.suborg_full_name.suborg_name }}</strong>
+              {% if p.role == 3 and p.proposal_confirmed %}
+                (<a href="/media/{{ p.accepted_proposal_pdf.name }}">View Proposal</a>)
+              {% endif %}
+            </p>
+          {% endfor %}
+        {% endwith %}
       </div>
       <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
       <script src="/static/js/proposal.js"></script>
       {% endif %}
-  {% endif %}
-</div>
-  	<!-- End Upload Accepted Proposal -->
-{% endblock %}
-
-{% block js %}
-<script>
-	grecaptcha.ready(function() {
-		grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'myprofile'});
-	});
-</script>
+    {% endif %}
+  </div>
 {% endblock %}

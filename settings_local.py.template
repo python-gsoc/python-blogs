@@ -51,9 +51,8 @@ ADMIN_EMAIL = 'gsoc-admins@python.org'
 
 # reCAPTCHA settings
 # update the `RECAPTCHA_PUBLIC_KEY` in `/static/js/recaptcha.js` manually
-RECAPTCHA_PRIVATE_KEY = '6LdAVqIUAAAAACv_tNPudwx_pD9dbjtwvr3WwQ9Y'
-RECAPTCHA_PUBLIC_KEY = '6LdAVqIUAAAAAAt6baSHpGXr1LvJ0n1aCl_oqukj'
-RECAPTCHA_THRESHOLD = 0.1
+RECAPTCHA_PRIVATE_KEY = '6LcL0q8UAAAAAFPz31u0Ce9gnbEjhFou19c4MhnQ'
+RECAPTCHA_PUBLIC_KEY = '6LcL0q8UAAAAALYynEklThsKgSVZ2B1kubc-Y6br'
 
 # google oauth client_config
 GOOGLE_API_SCOPES = [

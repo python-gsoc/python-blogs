@@ -48,6 +48,15 @@ def gen_uuid_str():
 NewsBlogConfig.__str__ = lambda self: self.app_title
 
 
+def current_year_profile(self):
+    gsoc_year = GsocYear.objects.first()
+    profile = self.userprofile_set.filter(gsoc_year=gsoc_year, role__in=[1, 2, 3])
+    return profile.first() if len(profile) > 0 else None
+
+
+auth.models.User.add_to_class('current_year_profile', current_year_profile)
+
+
 def has_proposal(self):
     try:
         proposal = self.student_profile().accepted_proposal_pdf
@@ -110,34 +119,6 @@ def get_root_comments(self):
 
 
 Article.add_to_class('get_root_comments', get_root_comments)
-
-
-def is_unclean(self):
-    unclean_texts = (
-        '<pre>',
-        '</pre>',
-        '&lt;',
-        '&gt;',
-        )
-    for _ in unclean_texts:
-        if _ in self.lead_in:
-            return True
-    return False
-
-
-Article.add_to_class('is_unclean', is_unclean)
-
-
-def clean_article_html(self):
-    self.lead_in = re.sub(r'<pre>', '<code>', self.lead_in)
-    self.lead_in = re.sub(r'<\/pre>', '</code>', self.lead_in)
-    self.lead_in = re.sub(r'&lt;', '<', self.lead_in)
-    self.lead_in = re.sub(r'&gt;', '>', self.lead_in)
-    self.lead_in = mark_safe(self.lead_in)
-    self.save()
-
-
-Article.add_to_class('clean_article_html', clean_article_html)
 
 
 # Models
@@ -486,6 +467,12 @@ class Event(models.Model):
         if not self.end_date:
             self.end_date = self.start_date
         super().save(*args, **kwargs)
+
+
+class BlogPostHistory(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    content = models.TextField(null=True, blank=True)
 
 
 class BlogPostDueDate(models.Model):
@@ -1098,11 +1085,17 @@ def decrease_blog_counter(sender, instance, **kwargs):
             up.save()
 
 
-# Clean lead_in HTML when new Article is created
-# @receiver(models.signals.post_save, sender=Article)
-# def clean_html(sender, instance, **kwargs):
-#     if instance.is_unclean():
-#         instance.clean_article_html()
+# Add ArticleReveiw object when new Article is created
+@receiver(models.signals.post_save, sender=Article)
+def add_review(sender, instance, **kwargs):
+    ar = ArticleReview.objects.filter(article=instance).all()
+    if not ar:
+        ArticleReview.objects.create(article=instance)
+
+    if ar:
+        ar = ar.first()
+        ar.is_reviewed = False
+        ar.save()
 
 
 # Add ArticleReveiw object when new Article is created
@@ -1116,3 +1109,9 @@ def add_review(sender, instance, **kwargs):
         ar = ar.first()
         ar.is_reviewed = False
         ar.save()
+
+
+# Add BlogPostHistory object when new Article is created
+@receiver(models.signals.post_save, sender=Article)
+def add_history(sender, instance, **kwargs):
+    BlogPostHistory.objects.create(article=instance, content=instance.lead_in)

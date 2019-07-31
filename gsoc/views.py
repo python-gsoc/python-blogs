@@ -1,5 +1,6 @@
 from gsoc import settings
 
+from .common.utils.memcached_stats import MemcachedStats
 from .forms import ProposalUploadForm
 from .models import (RegLink, ProposalTextValidator, Comment, ArticleReview,
                      GsocYear)
@@ -13,9 +14,11 @@ import uuid
 from django.contrib import messages
 from django.contrib.auth import decorators, password_validation, validators, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
 from django import shortcuts
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
+from django.core.cache import cache
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
@@ -51,9 +54,10 @@ def upload_file(request):
         'uploaded': 1,
         'fileName': filename,
         'url': fileurl
-    })
+        })
 
 # handle redirect to blogs
+
 
 def redirect_blogs_list(request):
     return HttpResponseRedirect(f'/')
@@ -67,6 +71,7 @@ def redirect_articles(request, blog_name, article_name):
     return HttpResponseRedirect(f'/{blog_name}/{article_name}/')
 
 # handle proposal upload
+
 
 def convert_pdf_to_txt(f):
     rsrcmgr = PDFResourceManager()
@@ -113,9 +118,7 @@ def scan_proposal(file):
 @decorators.login_required
 def after_login_view(request):
     user = request.user
-    if user.is_current_year_student() and not user.has_proposal():
-        return shortcuts.redirect('/myprofile')
-    return shortcuts.redirect('/')
+    return shortcuts.redirect('/myprofile')
 
 
 @decorators.login_required
@@ -262,29 +265,46 @@ def register_view(request):
         return shortcuts.render(request, 'registration/register.html', context)
 
 
+@decorators.login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return shortcuts.render(request, 'registration/change_password.html', {
+        'form': form
+        })
+
+
 def new_comment(request):
     if request.method == 'POST':
         # set environment variable `DISABLE_RECAPTCHA` to disable recaptcha
         # verification and delete the variable to enable recaptcha verification
         disable_recaptcha = os.getenv('DISABLE_RECAPTCHA', None)
 
+        flag = True
         if not disable_recaptcha:
             recaptcha_response = request.POST.get('g-recaptcha-response')
             url = 'https://www.google.com/recaptcha/api/siteverify'
             payload = {
                 'secret': settings.RECAPTCHA_PRIVATE_KEY,
                 'response': recaptcha_response
-            }
+                }
             data = urllib.parse.urlencode(payload).encode()
             req = urllib.request.Request(url, data=data)
 
             response = urllib.request.urlopen(req)
             result = json.loads(response.read().decode())
 
-        flag = True
-        if not disable_recaptcha:
-            flag = (result['success'] and result['action'] == 'comment'
-                    and result['score'] >= settings.RECAPTCHA_THRESHOLD)
+            flag = result['success']
 
         if flag:
             # if score greater than threshold allow to add
@@ -321,6 +341,13 @@ def new_comment(request):
                                  'reCAPTCHA verification failed.')
 
         redirect_path = request.POST.get('redirect')
+
+        mem = MemcachedStats()
+        keys = [_[3:] for _ in mem.keys()]
+        for key in keys:
+            if 'cache_page' in key or 'cache_header' in key:
+                print(key, cache.get(key))
+                cache.delete(key)
 
         if redirect_path:
             return redirect(redirect_path)
@@ -383,4 +410,3 @@ def publish_article(request, article_id):
         else:
             messages.error(request, 'User does not have permission to publish article')
     return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
-

@@ -1,23 +1,20 @@
 {% load cms_tags menu_tags sekizai_tags %}
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <title>Python GSoC - {% block title %}{% endblock %}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="{% block meta %}{% endblock %}Python's Google Summer of Code Blogs Page">
         <meta name="google-site-verification" content="EVShtJLdVKN58OupOAYPkH6QRA3i-J8q4ZEklgFiZhE" />
-        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous" >
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous" >
         <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css" >
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css" >
         <!--<![endif]-->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
             crossorigin="anonymous" >
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" >
         <link rel="stylesheet" href="/static/css/python-gsoc.css" >
-        <link rel="stylesheet" href="/static/css/side-menu.css" >
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous" async></script>
-        <script src='https://www.google.com/recaptcha/api.js?render={{ RECAPTCHA_SITE_KEY }}' async></script>
         {% load static %}
         <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
         {% block head %}{% endblock %}
@@ -48,7 +45,7 @@
                 {% if not user.is_authenticated %}
                     <div id=topnav>
                         <div class="pure-menu pure-menu-horizontal">
-                            <a href="/" class="pure-menu-heading pure-menu-link">Python-GSoC</a>
+                            <a href="https://python-gsoc.org" class="pure-menu-heading pure-menu-link">Python-GSoC</a>
                             <div class="login-container small-screen">
                                 <a href="{% url 'login' %}" class="login-button pure-button">Login</a>
                             </div>
@@ -115,9 +112,7 @@
         </div>
 
         {% render_block 'js' %}
-        <script src="/static/js/menu.js" async></script>
-        <script src="/static/js/gsoc.js" async></script>
-        <!-- <script src="/static/js/recaptcha.js"></script> -->
+        <script src="/static/js/python-gsoc.js" async></script>
         {% block js %}{% endblock %}
     </body>
 </html>
