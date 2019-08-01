@@ -1,0 +1,63 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+{% load static %}
+
+{% block submit_buttons_bottom %}
+    <div>
+        <h3 style="margin-bottom: 1em;">Set default role, suborg, gsoc year</h3>
+        <label for="default-role">Set Default Role</label>
+        <select id="default-role" style="margin-bottom: 1em;">
+            {% for role in roles %}
+                <option value={{role.0}}>{{role.1}}</option>
+            {% endfor %}
+        </select>
+        <button style="margin-bottom: 1em;" type="button" onclick="setRole();">Set Role</button>
+        <label for="default-suborg">Set Default Suborg</label>
+        <select id="default-suborg" style="margin-bottom: 1em;">
+            {% for suborg in suborgs %}
+                <option value={{suborg.id}}>{{suborg.suborg_name}}</option>
+            {% endfor %}
+        </select>
+        <button style="margin-bottom: 1em;" type="button" onclick="setSuborg();">Set Suborg</button>
+        <label for="default-year">Set Default Gsoc Year</label>
+        <select id="default-year" style="margin-bottom: 1em;">
+            {% for year in years %}
+                <option value={{year.id}}>{{year.gsoc_year}}</option>
+            {% endfor %}
+        </select>
+        <button style="margin-bottom: 1em;" type="button" onclick="setYear();">Set Year</button>
+    </div>
+    {% submit_row %}
+    <script>
+        setYear = () => {
+            for(var i=0;; i++) {
+                let select = document.getElementById(`id_reglinks-${i}-user_gsoc_year`);
+                if (select) {
+                    select.value = document.getElementById("default-year").value;
+                }
+                else
+                    break;
+            }
+        };
+        setSuborg = () => {
+            for(var i=0;; i++) {
+                let select = document.getElementById(`id_reglinks-${i}-user_suborg`);
+                if (select) {
+                    select.value = document.getElementById("default-suborg").value;
+                }
+                else
+                    break;
+            }
+        };
+        setRole = () => {
+            for(var i=0;; i++) {
+                let select = document.getElementById(`id_reglinks-${i}-user_role`);
+                if (select) {
+                    select.value = document.getElementById("default-role").value;
+                }
+                else
+                    break;
+            }
+        };
+    </script>
+{% endblock %}

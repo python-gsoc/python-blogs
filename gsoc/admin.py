@@ -1,6 +1,6 @@
 from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
                      BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails,
-                     GsocEndDate, Comment, SendEmail, BlogPostHistory)
+                     GsocEndDate, Comment, SendEmail, BlogPostHistory, GsocYear, SubOrg)
 from .forms import (UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm,
                     GsocEndDateForm)
 
@@ -375,6 +375,16 @@ class AddUserLogAdmin(admin.ModelAdmin):
     list_display = ('log_id', 'used_stat')
     readonly_fields = ('log_id', )
     inlines = (RegLinkInline, )
+    change_form_template = 'admin/adduserlog_change_form.html'
+
+    def changeform_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['years'] = GsocYear.objects.all()
+        extra_context['suborgs'] = SubOrg.objects.all()
+        extra_context['roles'] = [(0, 'Others'), (1, 'Suborg Admin'), (2, 'Mentor'), (3, 'Student')]
+        return super().changeform_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )
 
     def used_stat(self, obj):
         _all = len(RegLink.objects.filter(adduserlog=obj))
