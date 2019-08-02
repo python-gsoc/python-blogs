@@ -204,14 +204,6 @@ CMS_PERMISSION = True
 
 CMS_PLACEHOLDER_CONF = {}
 
-DATABASE_APPS_MAPPING = {
-    'auth': 'auth_db',
-    'admin': 'auth_db',
-    'sessions': 'auth_db',
-}
-
-DATABASE_ROUTERS = ['gsoc.router.DatabaseAppsRouter']
-
 MIGRATION_MODULES = {
 
 }
