@@ -344,6 +344,8 @@ def new_comment(request):
 
         redirect_path = request.POST.get('redirect')
 
+        cache.clear()
+
         # mem = MemcachedStats()
         # keys = [_[3:] for _ in mem.keys()]
         # for key in keys:
