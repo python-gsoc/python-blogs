@@ -23,6 +23,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import never_cache
 
 from aldryn_newsblog.models import Article
 
@@ -284,6 +285,7 @@ def change_password(request):
         })
 
 
+@never_cache
 def new_comment(request):
     if request.method == 'POST':
         # set environment variable `DISABLE_RECAPTCHA` to disable recaptcha
@@ -342,12 +344,12 @@ def new_comment(request):
 
         redirect_path = request.POST.get('redirect')
 
-        mem = MemcachedStats()
-        keys = [_[3:] for _ in mem.keys()]
-        for key in keys:
-            if 'cache_page' in key or 'cache_header' in key:
-                print(key, cache.get(key))
-                cache.delete(key)
+        # mem = MemcachedStats()
+        # keys = [_[3:] for _ in mem.keys()]
+        # for key in keys:
+        #     if 'cache_page' in key or 'cache_header' in key:
+        #         print(key, cache.get(key))
+        #         cache.delete(key)
 
         if redirect_path:
             return redirect(redirect_path)
