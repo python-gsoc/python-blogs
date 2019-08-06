@@ -121,6 +121,35 @@ def get_root_comments(self):
 Article.add_to_class('get_root_comments', get_root_comments)
 
 
+def is_unsafe(self):
+    unclean_texts = (
+        '<script',
+        '</script>',
+        '<iframe',
+        '</iframe>',
+        )
+    for _ in unclean_texts:
+        if _ in self.lead_in:
+            print('Unclean', _)
+            return True
+    return False
+
+
+Article.add_to_class('is_unsafe', is_unsafe)
+
+
+def clean_article_html(self):
+    self.lead_in = re.sub(r'<iframe', '&lt;iframe', self.lead_in)
+    self.lead_in = re.sub(r'<\/iframe>', '&lt;/iframe&gt;', self.lead_in)
+    self.lead_in = re.sub(r'<script', '&lt;script', self.lead_in)
+    self.lead_in = re.sub(r'<\/script>', '&lt;/script&gt;', self.lead_in)
+
+    self.save()
+
+
+Article.add_to_class('clean_article_html', clean_article_html)
+
+
 # Models
 
 class SubOrg(models.Model):
@@ -1071,6 +1100,13 @@ def create_send_reg_reminder_schedulers(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Comment)
 def send_comment_notification(sender, instance, **kwargs):
     instance.send_notifications()
+
+
+# Clean lead_in HTML when new Article is created
+@receiver(models.signals.post_save, sender=Article)
+def clean_html(sender, instance, **kwargs):
+    if instance.is_unsafe():
+        instance.clean_article_html()
 
 
 # Decrease Blog Counter when new Article is created
