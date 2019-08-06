@@ -151,7 +151,8 @@ INSTALLED_APPS = (
     'gsoc',
     'blogs_list',
     'suborg',
-    'debug_toolbar'
+    'debug_toolbar',
+    'django_bleach'
 )
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -371,3 +372,7 @@ RECEIVER = "limnoria"
 CMS_PAGE_CACHE = False
 
 ALDRYN_NEWSBLOG_DEFAULT_PUBLISHED = True
+
+BLEACH_ALLOWED_TAGS = ['p', 'b', 'i', 'u', 'em', 'strong', 'a', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5']
+BLEACH_STRIP_TAGS = False
+BLEACH_DEFAULT_WIDGET = 'djangocms_text_ckeditor.widgets.TextEditorWidget'
