@@ -373,6 +373,9 @@ CMS_PAGE_CACHE = False
 
 ALDRYN_NEWSBLOG_DEFAULT_PUBLISHED = True
 
-BLEACH_ALLOWED_TAGS = ['p', 'b', 'i', 'u', 'em', 'strong', 'a', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5']
+BLEACH_ALLOWED_TAGS = ['a', 'address', 'em', 'strong', 'b', 'i', 'big', 'small', 'sub', 'sup',
+                       'cite', 'code', 'img', 'ul', 'ol', 'li', 'dl', 'lh', 'dt', 'dd', 'br',
+                       'p', 'table', 'th', 'td', 'tr', 'pre', 'blockquote', 'nowiki', 'h1', 'h2',
+                       'h3', 'h4', 'h5', 'h6', 'hr', 'iframe']
 BLEACH_STRIP_TAGS = False
 BLEACH_DEFAULT_WIDGET = 'djangocms_text_ckeditor.widgets.TextEditorWidget'
