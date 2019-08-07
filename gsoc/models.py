@@ -127,15 +127,12 @@ Article.add_to_class('get_root_comments', get_root_comments)
 def save(self, *args, **kwargs):
     tags = settings.BLEACH_ALLOWED_TAGS
     attrs = bleach.sanitizer.ALLOWED_ATTRIBUTES
-    attrs['iframe'] = ['src', 'frameborder', 'allow', 'allowfullscreen']
-    print(attrs)
+    attrs['iframe'] = ['src', 'frameborder', 'allow', 'allowfullscreen', 'width', 'height']
     self.lead_in = bleach.clean(self.lead_in, tags=tags, attributes=attrs)
-    print(self.lead_in)
     soup = BeautifulSoup(self.lead_in, 'html5lib')
     for iframe_tag in soup.find_all('iframe'):
         _ = iframe_tag.attrs.get('src', None)
         if not(_ and "https://www.youtube.com/embed" in _):
-            print(f"\n\n\n\n\n\n{_}{tags}\n\n\n\n\n\n\n")
             iframe_text = str(iframe_tag)
             self.lead_in = self.lead_in.replace(iframe_text, bleach.clean(iframe_text))
 
