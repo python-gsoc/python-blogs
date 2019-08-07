@@ -18,6 +18,7 @@ djangocms-video>=2.1.1
 djangocms-audio>=1.1.0
 djangocms_history>=1.0.0
 aldryn-newsblog>=2.2.1
+django-bleach>=0.5.3
 
 #gsoc irc requirements
 fredirc==0.3.0
