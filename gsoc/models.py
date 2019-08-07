@@ -128,7 +128,10 @@ def save(self, *args, **kwargs):
     tags = settings.BLEACH_ALLOWED_TAGS
     attrs = bleach.sanitizer.ALLOWED_ATTRIBUTES
     attrs['iframe'] = ['src', 'frameborder', 'allow', 'allowfullscreen', 'width', 'height']
-    self.lead_in = bleach.clean(self.lead_in, tags=tags, attributes=attrs)
+    attrs['img'] = ['src', 'alt']
+    attrs['*'] = ['class', 'style']
+    styles = settings.BLEACH_ALLOWED_STYLES
+    self.lead_in = bleach.clean(self.lead_in, tags=tags, attributes=attrs, styles=styles)
     soup = BeautifulSoup(self.lead_in, 'html5lib')
     for iframe_tag in soup.find_all('iframe'):
         _ = iframe_tag.attrs.get('src', None)
