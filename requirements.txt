@@ -44,5 +44,5 @@ PyGithub>=1.43.7
 python-memcached
 pylibmc>=1.6.0 
 
-bleach
-beautifulsoup4
+bleach>=3.1.0
+beautifulsoup4>=4.8.0
