@@ -240,7 +240,7 @@ LOGGING_CONFIG = None
 if DEBUG:
     ERROR_LEVEL = 'INFO'
 else:
-    ERROR_LEVEL = 'WARNING'
+    ERROR_LEVEL = 'ERROR'
 
 ERROR_HANDLERS = ['file', 'mail_admins']
 
