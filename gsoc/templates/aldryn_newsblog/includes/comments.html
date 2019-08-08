@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="aldryn-newsblog-subcomments">
-        {% include "aldryn_newsblog/includes/comments.html" with comments=comment.replies.all parent=comment article=article user=user csrf_token=csrf_token only %}
+        {% include "aldryn_newsblog/includes/comments.html" with comments=comment.replies.all parent=comment article=article user=user csrf_token=csrf_token recaptcha_site_key=recaptcha_site_key only %}
     </div>
 {% endfor %}
 
@@ -70,7 +70,7 @@
         <span class="pure-form-message" id="remaining-chars-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}">1000 characters left</span>
     </fieldset>
 
-    <div class="g-recaptcha" data-sitekey="{{ RECAPTCHA_SITE_KEY }}" data-callback="enableSubmit_{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" style="margin-bottom: 0.75em;"></div>
+    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}" data-callback="enableSubmit_{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" style="margin-bottom: 0.75em;"></div>
 
     <input class="pure-button pure-button-primary pure-input-1" type="submit" value="Submit" id="submit-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}" disabled/>
 </form>
