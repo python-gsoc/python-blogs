@@ -5,6 +5,7 @@ import uuid
 import json
 import pickle
 import bleach
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
@@ -866,7 +867,9 @@ class Comment(models.Model):
             'article': self.article.title,
             'created_at': self.created_at.strftime('%I:%M %p, %d %B %Y'),
             'username': self.username,
-            'link': comment_link,
+            'link': urljoin(settings.INETLOCATION, comment_link),
+            'article_owner': self.article.owner.username,
+            'parent_comment_owner': self.parent.user.username
             }
         scheduler_data = build_send_mail_json(self.article.owner.email,
                                               template='comment_notification.html',
