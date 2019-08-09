@@ -563,3 +563,10 @@ class BlogPostHistoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(BlogPostHistory, BlogPostHistoryAdmin)
+
+
+class GsocYearAdmin(admin.ModelAdmin):
+    list_display = ('gsoc_year', )
+
+
+admin.site.register(GsocYear, GsocYearAdmin)
