@@ -151,7 +151,8 @@ INSTALLED_APPS = (
     'gsoc',
     'blogs_list',
     'suborg',
-    'debug_toolbar'
+    'debug_toolbar',
+    'django_simple_cookie_consent'
 )
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
