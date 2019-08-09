@@ -189,23 +189,28 @@ class SubOrgDetails(models.Model):
         )
 
     reason_for_participation = models.TextField(
-        verbose_name='Why does your org want to participate in Google Summer of Code?'
+        verbose_name='Why does your org want to participate in Google Summer of Code?',
+        null=True, blank=True
         )
     suborg_admin_email = models.EmailField(
         verbose_name='Suborg admin email'
         )
     mentors_student_engagement = models.TextField(
-        verbose_name='How will you keep mentors engaged with their students?'
+        verbose_name='How will you keep mentors engaged with their students?',
+        null=True, blank=True
         )
     students_on_schedule = models.TextField(
         verbose_name='How will you help your students stay '
-                     'on schedule to complete their projects?'
+                     'on schedule to complete their projects?',
+        null=True, blank=True
         )
     students_involvement_gsoc = models.TextField(
-        verbose_name='How will you get your students involved in your community during GSoC?'
+        verbose_name='How will you get your students involved in your community during GSoC?',
+        null=True, blank=True
         )
     students_involvement_after = models.TextField(
-        verbose_name='How will you keep students involved with your community after GSoC?'
+        verbose_name='How will you keep students involved with your community after GSoC?',
+        null=True, blank=True
         )
     past_gsoc_experience = models.BooleanField(
         verbose_name='Has your org been accepted as a mentor org '

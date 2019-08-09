@@ -487,9 +487,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
     list_filter = ('gsoc_year', 'changed')
     # fields = ('last_message', )
     readonly_fields = (
-        'gsoc_year', 'reason_for_participation', 'suborg_admin_email',
-        'mentors_student_engagement', 'students_on_schedule', 'students_involvement_gsoc',
-        'students_involvement_after', 'past_gsoc_experience', 'past_years',
+        'gsoc_year', 'suborg_admin_email', 'past_gsoc_experience', 'past_years',
         'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
         'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
         'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
@@ -500,16 +498,11 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
         (
             'Details', {
                 'fields': (
-                    'gsoc_year', 'reason_for_participation',
-                    'suborg_admin_email',
-                    'mentors_student_engagement', 'students_on_schedule',
-                    'students_involvement_gsoc',
-                    'students_involvement_after', 'past_gsoc_experience',
-                    'past_years',
+                    'gsoc_year', 'suborg_admin_email',
+                    'past_gsoc_experience', 'past_years',
                     'suborg_in_past', 'applied_but_not_selected',
-                    'year_of_start',
-                    'source_code', 'docs', 'anything_else', 'suborg_name',
-                    'description',
+                    'year_of_start', 'source_code', 'docs', 'anything_else',
+                    'suborg_name', 'description',
                     'logo', 'primary_os_license', 'ideas_list', 'chat',
                     'mailing_list', 'twitter_url',
                     'blog_url', 'link', 'changed', 'accepted',
