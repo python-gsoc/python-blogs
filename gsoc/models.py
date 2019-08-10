@@ -319,7 +319,7 @@ class SubOrgDetails(models.Model):
         template_data = {
             'suborg_name': suborg_name
             }
-        scheduler_data = build_send_mail_json(settings.ADMIN_EMAIL,
+        scheduler_data = build_send_mail_json(settings.ADMINS,
                                               template='suborg_application_notification.html',
                                               subject='Review new/updated SubOrg Application',
                                               template_data=template_data)
