@@ -3,7 +3,7 @@ from gsoc import settings
 from .common.utils.memcached_stats import MemcachedStats
 from .forms import ProposalUploadForm
 from .models import (RegLink, ProposalTextValidator, Comment, ArticleReview,
-                     GsocYear)
+                     GsocYear, ReaddUser)
 
 import io
 import os
@@ -416,3 +416,25 @@ def publish_article(request, article_id):
         else:
             messages.error(request, 'User does not have permission to publish article')
     return redirect(reverse('{}:article-detail'.format(a.app_config.namespace), args=[a.slug]))
+
+
+def readd_users(request, uuid):
+    if request.method == 'GET':
+        readds = ReaddUser.objects.filter(uuid=uuid)
+        email = request.GET.get('email')
+        context = {
+            "success": False
+        }
+        if len(readds) > 0:
+            readd = readds.first()
+            if email:
+                readd.readd_user_details(email)
+                context = {
+                    "success": True
+                }
+            else:
+                messages.error('Please provide your email')
+        else:
+            messages.error('Incorrect token, please use the correct token')
+    
+    return shortcuts.render(request, "readd.html", context)

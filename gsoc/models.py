@@ -350,6 +350,15 @@ class SubOrgDetails(models.Model):
                                  data=scheduler_data)
 
 
+class ReaddUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    uuid = models.CharField(max_length=100)
+
+    def readd_user_details(self, email):
+        self.user.email = email
+        self.user.save()
+
+
 class UserProfileManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(hidden=False)
@@ -428,6 +437,7 @@ class Builder(models.Model):
         ('build_pre_blog_reminders', 'build_pre_blog_reminders'),
         ('build_post_blog_reminders', 'build_post_blog_reminders'),
         ('build_revoke_student_perms', 'build_revoke_student_perms'),
+        ('build_remove_user_details', 'build_remove_user_details'),
         )
 
     category = models.CharField(max_length=40, choices=categories)

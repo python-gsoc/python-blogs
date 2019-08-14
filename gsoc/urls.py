@@ -22,10 +22,10 @@ urlpatterns = [
     url(r'^sitemap.xml', sitemap, {
         'sitemaps': {
             'blog_sitemaps': sitemaps.BlogListSitemap,
-        }
-    }),
+            }
+        }),
     url(r'^robots.txt', TemplateView.as_view(template_name="robots.txt",
-        content_type="text/plain"), name="robots_file"),
+                                             content_type="text/plain"), name="robots_file"),
     url(r'^favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico')),
 ]
 
@@ -84,4 +84,9 @@ urlpatterns += [
 # Upload images
 urlpatterns += [
     url(r'^upload/', gsoc.views.upload_file)
+]
+
+# Readd user details
+urlpatterns += [
+    url(r'^readd/(?P<uuid>[\w-]+)/', gsoc.views.readd_users, name='readd_users')
 ]

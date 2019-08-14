@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+Page Not Found
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    {% if success %}
+        <h2 class="content-head is-center">You are subscribed</h2>
+    {% else %}
+        <h2 class="content-head is-center">Subscribing failed</h2>
+    {% endif %}
+</div>
+{% endblock %}
