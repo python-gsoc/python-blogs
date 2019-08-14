@@ -222,6 +222,8 @@ def register_view(request):
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         password2 = request.POST.get('password2', '')
+        email_opt_in = request.POST.get('email_opt_in')
+        reminder_disabled = False if email_opt_in == 'on' else True
         info_valid = True
         registration_success = True
         if password != password2:
@@ -247,7 +249,7 @@ def register_view(request):
             info_valid = False
 
         if info_valid:
-            user = reglink.create_user(username=username)
+            user = reglink.create_user(username=username, reminder_disabled=reminder_disabled)
             user.set_password(password)
             user.save()
         else:

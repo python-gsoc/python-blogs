@@ -756,7 +756,7 @@ class RegLink(models.Model):
         timenow = timezone.now()
         return (not self.is_used) and self.created_at < timenow
 
-    def create_user(self, *args, is_staff=True, **kwargs):
+    def create_user(self, *args, is_staff=True, reminder_disabled=False, **kwargs):
         namespace = str(uuid.uuid4())
         email = kwargs.get('email', self.email)
         user, status = User.objects.get_or_create(*args, is_staff=is_staff,
@@ -764,7 +764,8 @@ class RegLink(models.Model):
         role = {k: v for v, k in UserProfile.ROLES}
         profile = UserProfile.objects.create(user=user, role=self.user_role,
                                              gsoc_year=self.user_gsoc_year,
-                                             suborg_full_name=self.user_suborg)
+                                             suborg_full_name=self.user_suborg,
+                                             reminder_disabled=reminder_disabled)
         if self.user_role != role.get('Student', 3):
             return user
 
