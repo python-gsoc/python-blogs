@@ -487,7 +487,8 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
     list_filter = ('gsoc_year', 'changed')
     # fields = ('last_message', )
     readonly_fields = (
-        'gsoc_year', 'suborg_admin_email', 'past_gsoc_experience', 'past_years',
+        'gsoc_year', 'suborg_admin_email', 'suborg_admin_2_email', 'suborg_admin_3_email',
+        'past_gsoc_experience', 'past_years',
         'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
         'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
         'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',

@@ -190,11 +190,24 @@ class SubOrgDetails(models.Model):
 
     reason_for_participation = models.TextField(
         verbose_name='Why does your org want to participate in Google Summer of Code?',
-        null=True, blank=True
+        null=True, blank=True,
         )
     suborg_admin_email = models.EmailField(
         verbose_name='Suborg admin email'
         )
+
+    suborg_admin_2_email = models.EmailField(
+        verbose_name='Suborg admin 2 email',
+        blank=True, null=True,
+        help_text='Fill this if there are other suborg admins other than you'
+        )
+    
+    suborg_admin_3_email = models.EmailField(
+        verbose_name='Suborg admin 3 email',
+        blank=True, null=True,
+        help_text='Fill this if there are other suborg admins other than you'
+        )
+
     mentors_student_engagement = models.TextField(
         verbose_name='How will you keep mentors engaged with their students?',
         null=True, blank=True
@@ -300,6 +313,20 @@ class SubOrgDetails(models.Model):
                                user_gsoc_year=self.gsoc_year,
                                email=self.suborg_admin_email,
                                send_notifications=False)
+
+        if self.suborg_admin_2_email:
+            RegLink.objects.create(user_role=1,
+                                   user_suborg=self.suborg,
+                                   user_gsoc_year=self.gsoc_year,
+                                   email=self.suborg_admin_2_email,
+                                   send_notifications=False)
+
+        if self.suborg_admin_3_email:
+            RegLink.objects.create(user_role=1,
+                                   user_suborg=self.suborg,
+                                   user_gsoc_year=self.gsoc_year,
+                                   email=self.suborg_admin_3_email,
+                                   send_notifications=False)
 
         s = Scheduler.objects.filter(command='update_site_template',
                                      data=json.dumps({'template': 'index.html'}),
