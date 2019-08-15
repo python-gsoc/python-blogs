@@ -306,14 +306,14 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
                     'hidden', 'reminder_disabled', 'current_blog_count')
     list_filter = ('hidden', 'reminder_disabled')
     readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'blog_link',
-                       'proposal_confirmed', 'current_blog_count')
+                       'proposal_confirmed', 'current_blog_count', 'github_handle')
     fieldsets = (
         ('Unhide', {
             'fields': ('hidden', 'reminder_disabled')
             }),
         ('User Profile Details', {
             'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'proposal_confirmed',
-                       'blog_link', 'current_blog_count')
+                       'blog_link', 'current_blog_count', 'github_handle')
             })
         )
 
