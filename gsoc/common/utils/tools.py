@@ -62,18 +62,34 @@ def render_site_template(template, context):
     return template.render(context)
 
 
-def push_site_template(file_path, content):
+def create_branch(target_branch, source_branch="master"):
+    g = Github(settings.GITHUB_ACCESS_TOKEN)
+    repo = g.get_repo(settings.STATIC_SITE_REPO)
+    sb = repo.get_branch(source_branch)
+    repo.create_git_ref(ref=f"refs/head/{target_branch}", sha=sb.commit.sha)
+    return target_branch
+
+
+def create_pull_request(source_branch, target_branch="master"):
+    g = Github(settings.GITHUB_ACCESS_TOKEN)
+    repo = g.get_repo(settings.STATIC_SITE_REPO)
+    repo.create_pull(
+        title="Site Template Update", body="", base=target_branch, head=source_branch
+    )
+
+
+def push_site_template(file_path, content, branch):
     content = content.encode()
     g = Github(settings.GITHUB_ACCESS_TOKEN)
     repo = g.get_repo(settings.STATIC_SITE_REPO)
     f = repo.get_contents(file_path)
-    repo.update_file(f.path, f"Update {file_path}", content, f.sha)
+    repo.update_file(f.path, f"Update {file_path}", content, f.sha, branch=branch)
 
 
-def push_images(file_path, content):
+def push_images(file_path, content, branch):
     g = Github(settings.GITHUB_ACCESS_TOKEN)
     repo = g.get_repo(settings.STATIC_SITE_REPO)
-    repo.create_file(file_path, f"Add {file_path} logo", content)
+    repo.create_file(file_path, f"Add {file_path} logo", content, branch=branch)
 
 
 def is_year(file_name):

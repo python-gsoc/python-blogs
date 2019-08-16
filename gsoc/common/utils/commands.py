@@ -1,5 +1,6 @@
 import json
 from smtplib import SMTPResponseException, SMTPSenderRefused
+from datetime import datetime
 
 from django.contrib.auth.models import User, Permission
 from django.conf import settings
@@ -21,6 +22,8 @@ from .tools import (
     push_site_template,
     archive_current_gsoc_files,
     push_images,
+    create_branch,
+    create_pull_request,
 )
 
 
@@ -128,6 +131,7 @@ def update_site_template(scheduler: Scheduler):
     try:
         template = json.loads(scheduler.data)["template"]
         gsoc_year = GsocYear.objects.first()
+        branch = "master"
         if template == "deadlines.html":
             context = {
                 "events": Event.objects.filter(timeline__gsoc_year=gsoc_year).all(),
@@ -142,13 +146,14 @@ def update_site_template(scheduler: Scheduler):
                 gsoc_year=gsoc_year, accepted=True
             ).all()
             suborg_list = []
+            branch = create_branch(str(datetime.now()))
             for suborg in suborgs:
                 f = open(suborg.logo.path, "rb")
                 lines = f.readlines()
                 content = b""
                 for line in lines:
                     content = content + line
-                push_images(suborg.logo.name, content)
+                push_images(suborg.logo.name, content, branch)
                 _ = {
                     "name": suborg.suborg.suborg_name,
                     "description": suborg.description,
@@ -167,7 +172,9 @@ def update_site_template(scheduler: Scheduler):
                 suborg_list.append(_)
             context = {"suborgs": suborg_list}
         content = render_site_template(template, context)
-        push_site_template(settings.GITHUB_FILE_PATH[template], content)
+        push_site_template(settings.GITHUB_FILE_PATH[template], content, branch)
+        if branch != "master":
+            create_pull_request(branch)
     except Exception as e:
         return str(e)
 
