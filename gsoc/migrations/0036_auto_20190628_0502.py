@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0035_auto_20190626_0437'),
-    ]
+    dependencies = [("gsoc", "0035_auto_20190626_0437")]
 
     operations = [
         migrations.AddField(
-            model_name='builder',
-            name='last_error',
+            model_name="builder",
+            name="last_error",
             field=models.TextField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
-            model_name='builder',
-            name='built',
+            model_name="builder",
+            name="built",
             field=models.BooleanField(default=None, null=True),
         ),
     ]

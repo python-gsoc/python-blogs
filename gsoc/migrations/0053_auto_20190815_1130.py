@@ -5,19 +5,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0052_userprofile_github_handle'),
-    ]
+    dependencies = [("gsoc", "0052_userprofile_github_handle")]
 
     operations = [
         migrations.AddField(
-            model_name='suborgdetails',
-            name='suborg_admin_2_email',
-            field=models.EmailField(blank=True, max_length=254, null=True, verbose_name='Suborg admin 2 email'),
+            model_name="suborgdetails",
+            name="suborg_admin_2_email",
+            field=models.EmailField(
+                blank=True,
+                max_length=254,
+                null=True,
+                verbose_name="Suborg admin 2 email",
+            ),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='suborg_admin_3_email',
-            field=models.EmailField(blank=True, max_length=254, null=True, verbose_name='Suborg admin 3 email'),
+            model_name="suborgdetails",
+            name="suborg_admin_3_email",
+            field=models.EmailField(
+                blank=True,
+                max_length=254,
+                null=True,
+                verbose_name="Suborg admin 3 email",
+            ),
         ),
     ]

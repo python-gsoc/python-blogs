@@ -9,21 +9,43 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('gsoc', '0050_auto_20190809_0529'),
+        ("gsoc", "0050_auto_20190809_0529"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReaddUser',
+            name="ReaddUser",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('uuid', models.CharField(max_length=100)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("uuid", models.CharField(max_length=100)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AlterField(
-            model_name='builder',
-            name='category',
-            field=models.CharField(choices=[('build_pre_blog_reminders', 'build_pre_blog_reminders'), ('build_post_blog_reminders', 'build_post_blog_reminders'), ('build_revoke_student_perms', 'build_revoke_student_perms'), ('build_remove_user_details', 'build_remove_user_details')], max_length=40),
+            model_name="builder",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("build_pre_blog_reminders", "build_pre_blog_reminders"),
+                    ("build_post_blog_reminders", "build_post_blog_reminders"),
+                    ("build_revoke_student_perms", "build_revoke_student_perms"),
+                    ("build_remove_user_details", "build_remove_user_details"),
+                ],
+                max_length=40,
+            ),
         ),
     ]

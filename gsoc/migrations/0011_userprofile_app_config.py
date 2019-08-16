@@ -8,14 +8,21 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aldryn_newsblog', '0016_auto_20180329_1417'),
-        ('gsoc', '0010_auto_20190324_2216'),
+        ("aldryn_newsblog", "0016_auto_20180329_1417"),
+        ("gsoc", "0010_auto_20190324_2216"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='app_config',
-            field=aldryn_apphooks_config.fields.AppHookConfigField(blank=True, help_text='When selecting a value, the form is reloaded to get the updated default', null=True, on_delete=django.db.models.deletion.CASCADE, to='aldryn_newsblog.NewsBlogConfig', verbose_name='Section'),
-        ),
+            model_name="userprofile",
+            name="app_config",
+            field=aldryn_apphooks_config.fields.AppHookConfigField(
+                blank=True,
+                help_text="When selecting a value, the form is reloaded to get the updated default",
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="aldryn_newsblog.NewsBlogConfig",
+                verbose_name="Section",
+            ),
+        )
     ]

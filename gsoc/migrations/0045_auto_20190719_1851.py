@@ -5,24 +5,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0044_auto_20190716_0700'),
-    ]
+    dependencies = [("gsoc", "0044_auto_20190716_0700")]
 
     operations = [
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='logo',
-            field=models.ImageField(help_text='Must be a 24-bit PNG of 256 x 256 pixels.', upload_to='logos/', verbose_name='Your organization logo'),
+            model_name="suborgdetails",
+            name="logo",
+            field=models.ImageField(
+                help_text="Must be a 24-bit PNG of 256 x 256 pixels.",
+                upload_to="logos/",
+                verbose_name="Your organization logo",
+            ),
         ),
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='past_gsoc_experience',
-            field=models.BooleanField(help_text='Mark the checkbox for yes', verbose_name='Has your org been accepted as a mentor org in Google Summer of Code before?'),
+            model_name="suborgdetails",
+            name="past_gsoc_experience",
+            field=models.BooleanField(
+                help_text="Mark the checkbox for yes",
+                verbose_name="Has your org been accepted as a mentor org in Google Summer of Code before?",
+            ),
         ),
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='suborg_in_past',
-            field=models.BooleanField(help_text='Mark the checkbox for yes', verbose_name='Was this as a Suborg?'),
+            model_name="suborgdetails",
+            name="suborg_in_past",
+            field=models.BooleanField(
+                help_text="Mark the checkbox for yes",
+                verbose_name="Was this as a Suborg?",
+            ),
         ),
     ]

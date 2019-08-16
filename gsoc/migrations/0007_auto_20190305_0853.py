@@ -7,37 +7,45 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0006_auto_20190219_1301'),
-    ]
+    dependencies = [("gsoc", "0006_auto_20190219_1301")]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='role',
-            field=models.IntegerField(choices=[(0, 'Others'), (1, 'Suborg Admin'), (2, 'Mentor'), (3, 'Student')], default=0),
+            model_name="userprofile",
+            name="role",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Others"),
+                    (1, "Suborg Admin"),
+                    (2, "Mentor"),
+                    (3, "Student"),
+                ],
+                default=0,
+            ),
         ),
-        migrations.RemoveField(
-            model_name='userprofile',
-            name='gsoc_year',
-        ),
+        migrations.RemoveField(model_name="userprofile", name="gsoc_year"),
         migrations.AddField(
-            model_name='userprofile',
-            name='gsoc_year',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='gsoc.GsocYear'),
+            model_name="userprofile",
+            name="gsoc_year",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="gsoc.GsocYear",
+            ),
         ),
-        migrations.RemoveField(
-            model_name='userprofile',
-            name='suborg_full_name',
-        ),
+        migrations.RemoveField(model_name="userprofile", name="suborg_full_name"),
         migrations.AddField(
-            model_name='userprofile',
-            name='suborg_full_name',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='gsoc.SubOrg'),
+            model_name="userprofile",
+            name="suborg_full_name",
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to="gsoc.SubOrg"
+            ),
         ),
         migrations.AlterField(
-            model_name='userprofile',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="userprofile",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

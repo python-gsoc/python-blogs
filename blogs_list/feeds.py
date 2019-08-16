@@ -21,7 +21,7 @@ def remove_control_characters(s):
 
 def get_request(language=None):
     request_factory = RequestFactory()
-    request = request_factory.get('/')
+    request = request_factory.get("/")
     request.session = {}
     request.LANGUAGE_CODE = language or settings.LANGUAGE_CODE
 
@@ -32,15 +32,15 @@ def get_request(language=None):
 
 
 class CorrectMimeTypeFeed(DefaultFeed):
-    content_type = 'application/xml; charset=utf-8'
+    content_type = "application/xml; charset=utf-8"
 
 
 class BlogsFeed(Feed):
     title = "GSoC@PSF Blogs"
-    link = '/blogs/'
-    feed_url = '/blogs/feed/'
+    link = "/blogs/"
+    feed_url = "/blogs/feed/"
     feed_type = CorrectMimeTypeFeed
-    description = 'Updates on different student blogs of GSoC@PSF'
+    description = "Updates on different student blogs of GSoC@PSF"
 
     def items(self):
         gsoc_year = GsocYear.objects.first()
@@ -73,13 +73,15 @@ class BlogsFeed(Feed):
 
     def item_guid(self, item):
         site = Site.objects.first()
-        return 'http://{}{}'.format(site.domain, self.item_link(item))
+        return "http://{}{}".format(site.domain, self.item_link(item))
 
     def item_guid_is_permalink(self, item):
         return True
 
     def item_link(self, item):
         section = item.app_config
-        p = Page.objects.get(application_namespace=section.namespace, publisher_is_draft=False)
-        url = '{}{}/'.format(p.get_absolute_url(), item.slug, '/')
+        p = Page.objects.get(
+            application_namespace=section.namespace, publisher_is_draft=False
+        )
+        url = "{}{}/".format(p.get_absolute_url(), item.slug, "/")
         return url

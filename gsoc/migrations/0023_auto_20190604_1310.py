@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0022_articlereview'),
-    ]
+    dependencies = [("gsoc", "0022_articlereview")]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='content',
-            field=models.CharField(max_length=255),
-        ),
+            model_name="comment", name="content", field=models.CharField(max_length=255)
+        )
     ]

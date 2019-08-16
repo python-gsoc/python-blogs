@@ -17,7 +17,7 @@ from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.cms_wizards import (
     NewsBlogArticleWizard,
     get_published_app_configs,
-    newsblog_article_wizard
+    newsblog_article_wizard,
 )
 
 from parler.forms import TranslatableModelForm
@@ -37,7 +37,7 @@ def user_has_add_permission(self, user, **kwargs):
 
     # Ensure user has permission to create articles.
     if user.student_profile() is not None:
-        add_perm = Permission.objects.filter(codename='add_article').first()
+        add_perm = Permission.objects.filter(codename="add_article").first()
         if add_perm in user.user_permissions.all():
             return True
 
@@ -60,10 +60,10 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
 
     class Meta:
         model = Article
-        fields = ['title', 'lead_in', 'app_config']
+        fields = ["title", "lead_in", "app_config"]
         # The natural widget for app_config is meant for normal Admin views and
         # contains JS to refresh the page on change. This is not wanted here.
-        widgets = {'app_config': forms.Select()}
+        widgets = {"app_config": forms.Select()}
 
     def __init__(self, **kwargs):
         super(CreateNewsBlogArticleForm, self).__init__(**kwargs)
@@ -79,18 +79,18 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
 
         app_config_choices = []
         for profile in userprofiles:
-            app_config_choices.append((profile.app_config.pk, profile.app_config.get_app_title()))
-
-        self.fields['app_config'] = forms.ChoiceField(
-            label=_('Section'),
-            required=True,
-            choices=app_config_choices
+            app_config_choices.append(
+                (profile.app_config.pk, profile.app_config.get_app_title())
             )
+
+        self.fields["app_config"] = forms.ChoiceField(
+            label=_("Section"), required=True, choices=app_config_choices
+        )
 
     def clean(self):
         cd = self.cleaned_data
-        app_config = NewsBlogConfig.objects.get(pk=self.cleaned_data['app_config'])
-        cd['app_config'] = app_config
+        app_config = NewsBlogConfig.objects.get(pk=self.cleaned_data["app_config"])
+        cd["app_config"] = app_config
         return cd
 
     def save(self, commit=True):
@@ -107,7 +107,7 @@ newsblog_article_wizard = NewsBlogArticleWizard(
     title=_(u"New news/blog article"),
     weight=200,
     form=CreateNewsBlogArticleForm,
-    description=_(u"Create a new news/blog article.")
+    description=_(u"Create a new news/blog article."),
 )
 
 wizard_pool.register(newsblog_article_wizard)

@@ -5,34 +5,41 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0031_auto_20190614_0630'),
-    ]
+    dependencies = [("gsoc", "0031_auto_20190614_0630")]
 
     operations = [
         migrations.AddField(
-            model_name='suborgdetails',
-            name='changed',
+            model_name="suborgdetails",
+            name="changed",
             field=models.BooleanField(default=None, null=True),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='last_message',
+            model_name="suborgdetails",
+            name="last_message",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='accepted',
+            model_name="suborgdetails",
+            name="accepted",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='applied_but_not_selected',
-            field=models.ManyToManyField(blank=True, related_name='applied_not_selected', to='gsoc.GsocYear', verbose_name='If your org has applied for GSoC before but not been accepted, select the years'),
+            model_name="suborgdetails",
+            name="applied_but_not_selected",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="applied_not_selected",
+                to="gsoc.GsocYear",
+                verbose_name="If your org has applied for GSoC before but not been accepted, select the years",
+            ),
         ),
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='past_years',
-            field=models.ManyToManyField(blank=True, to='gsoc.GsocYear', verbose_name='Which years did your org participate in GSoC?'),
+            model_name="suborgdetails",
+            name="past_years",
+            field=models.ManyToManyField(
+                blank=True,
+                to="gsoc.GsocYear",
+                verbose_name="Which years did your org participate in GSoC?",
+            ),
         ),
     ]

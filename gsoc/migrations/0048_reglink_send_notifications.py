@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0047_sendemail_activation_date'),
-    ]
+    dependencies = [("gsoc", "0047_sendemail_activation_date")]
 
     operations = [
         migrations.AddField(
-            model_name='reglink',
-            name='send_notifications',
+            model_name="reglink",
+            name="send_notifications",
             field=models.BooleanField(default=True),
-        ),
+        )
     ]

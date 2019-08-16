@@ -8,19 +8,42 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aldryn_newsblog', '0016_auto_20180329_1417'),
+        ("aldryn_newsblog", "0016_auto_20180329_1417"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('gsoc', '0021_auto_20190530_0622'),
+        ("gsoc", "0021_auto_20190530_0622"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ArticleReview',
+            name="ArticleReview",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_reviewed', models.BooleanField(default=False)),
-                ('article', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='aldryn_newsblog.Article')),
-                ('last_reviewed_by', models.ForeignKey(blank=True, limit_choices_to={'is_superuser': True}, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_reviewed", models.BooleanField(default=False)),
+                (
+                    "article",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="aldryn_newsblog.Article",
+                    ),
+                ),
+                (
+                    "last_reviewed_by",
+                    models.ForeignKey(
+                        blank=True,
+                        limit_choices_to={"is_superuser": True},
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-        ),
+        )
     ]

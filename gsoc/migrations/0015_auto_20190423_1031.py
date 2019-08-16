@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0014_auto_20190420_0140'),
-    ]
+    dependencies = [("gsoc", "0014_auto_20190420_0140")]
 
     operations = [
         migrations.AlterField(
-            model_name='userprofile',
-            name='accepted_proposal_pdf',
-            field=models.FileField(blank=True, null=True, upload_to='proposals/'),
-        ),
+            model_name="userprofile",
+            name="accepted_proposal_pdf",
+            field=models.FileField(blank=True, null=True, upload_to="proposals/"),
+        )
     ]

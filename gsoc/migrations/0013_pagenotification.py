@@ -9,19 +9,47 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('cms', '0022_auto_20180620_1551'),
-        ('gsoc', '0012_auto_20190418_2214'),
+        ("cms", "0022_auto_20180620_1551"),
+        ("gsoc", "0012_auto_20190418_2214"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PageNotification',
+            name="PageNotification",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message', models.TextField()),
-                ('page', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notifications', to='cms.Page')),
-                ('published_page', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notifications_for_published', to='cms.Page')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("message", models.TextField()),
+                (
+                    "page",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notifications",
+                        to="cms.Page",
+                    ),
+                ),
+                (
+                    "published_page",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notifications_for_published",
+                        to="cms.Page",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-        ),
+        )
     ]

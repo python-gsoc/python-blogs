@@ -7,18 +7,32 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('aldryn_newsblog', '0016_auto_20180329_1417'),
-        ('gsoc', '0048_reglink_send_notifications'),
+        ("aldryn_newsblog", "0016_auto_20180329_1417"),
+        ("gsoc", "0048_reglink_send_notifications"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BlogPostHistory',
+            name="BlogPostHistory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('content', models.TextField(blank=True, null=True)),
-                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='aldryn_newsblog.Article')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                ("content", models.TextField(blank=True, null=True)),
+                (
+                    "article",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="aldryn_newsblog.Article",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

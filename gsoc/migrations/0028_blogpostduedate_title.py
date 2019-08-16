@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0027_auto_20190608_1421'),
-    ]
+    dependencies = [("gsoc", "0027_auto_20190608_1421")]
 
     operations = [
         migrations.AddField(
-            model_name='blogpostduedate',
-            name='title',
-            field=models.CharField(default='Weekly Blog Post Due', max_length=100),
-        ),
+            model_name="blogpostduedate",
+            name="title",
+            field=models.CharField(default="Weekly Blog Post Due", max_length=100),
+        )
     ]

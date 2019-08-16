@@ -9,28 +9,44 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('gsoc', '0034_auto_20190623_1123'),
+        ("gsoc", "0034_auto_20190623_1123"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='suborgdetails',
-            name='last_updated_at',
+            model_name="suborgdetails",
+            name="last_updated_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='last_updated_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="suborgdetails",
+            name="last_updated_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='suborg',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='gsoc.SubOrg', verbose_name='Select your suborg, if you have applied before'),
+            model_name="suborgdetails",
+            name="suborg",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="gsoc.SubOrg",
+                verbose_name="Select your suborg, if you have applied before",
+            ),
         ),
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='suborg_name',
-            field=models.CharField(blank=True, max_length=80, null=True, verbose_name='If applying for the first time enter the name of your suborg'),
+            model_name="suborgdetails",
+            name="suborg_name",
+            field=models.CharField(
+                blank=True,
+                max_length=80,
+                null=True,
+                verbose_name="If applying for the first time enter the name of your suborg",
+            ),
         ),
     ]

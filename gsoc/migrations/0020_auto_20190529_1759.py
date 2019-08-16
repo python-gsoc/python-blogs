@@ -6,14 +6,17 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0019_auto_20190529_1656'),
-    ]
+    dependencies = [("gsoc", "0019_auto_20190529_1656")]
 
     operations = [
         migrations.AlterField(
-            model_name='blogpostduedate',
-            name='gsoc_year',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='gsoc.GsocYear'),
-        ),
+            model_name="blogpostduedate",
+            name="gsoc_year",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="gsoc.GsocYear",
+            ),
+        )
     ]

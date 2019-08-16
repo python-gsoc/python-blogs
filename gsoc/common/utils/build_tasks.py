@@ -142,7 +142,8 @@ def build_remove_user_details(builder):
             ReaddUser.objects.create(user=profile.user, uuid=_uuid)
             template_data = {
                 # TODO: change this after the view is created
-                "link": settings.INETLOCATION + "use reverse here"
+                "link": settings.INETLOCATION
+                + "use reverse here"
             }
             scheduler_data = build_send_mail_json(
                 email,
@@ -150,6 +151,6 @@ def build_remove_user_details(builder):
                 subject="Your personal details have been removed from our database",
                 template_data=template_data,
             )
-            Scheduler.objects.create(command='send_email' data=scheduler_data)
+            Scheduler.objects.create(command="send_email", data=scheduler_data)
     except Exception as e:
         return str(e)

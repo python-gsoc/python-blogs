@@ -22,7 +22,7 @@ register = template.Library()
 def time_zone(context, flag=0):
     gmtTime = "+00:00"
     localTime = tz.now()
-    utcTimeZone = pytz.timezone('UTC')
+    utcTimeZone = pytz.timezone("UTC")
     utcTime = datetime.datetime.now(tz=utcTimeZone)
     all_timezones = pytz.common_timezones
     TIME_ZONE = "UTC"
@@ -30,8 +30,8 @@ def time_zone(context, flag=0):
         timeZone = pytz.timezone(i)
         timeFromUTC = str(datetime.datetime.now(tz=timeZone))[-6:]
         time = datetime.datetime.now(tz=timeZone)
-        if(time.hour == localTime.hour):
-            if(abs(time.minute - localTime.minute) <= 1):
+        if time.hour == localTime.hour:
+            if abs(time.minute - localTime.minute) <= 1:
                 TIME_ZONE = i
                 gmtTime = timeFromUTC
                 break
