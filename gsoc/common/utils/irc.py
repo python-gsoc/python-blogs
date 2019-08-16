@@ -40,7 +40,7 @@ def parse_data(data):
     data = json.loads(data)
     chunk_size = 150
     chunks = [
-        data["message"][i : i + chunk_size]
+        data["message"][i:i + chunk_size]
         for i in range(0, len(data["message"]), chunk_size)
     ]
     num_chunks = len(chunks)
