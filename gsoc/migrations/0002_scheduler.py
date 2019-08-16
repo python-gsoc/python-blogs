@@ -5,19 +5,26 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0001_initial'),
-    ]
+    dependencies = [("gsoc", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Scheduler',
+            name="Scheduler",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('command', models.CharField(choices=[('send_emails', 'send_emails'), ('send_irc_msgs', 'send_irc_msgs')], max_length=20)),
-                ('data', models.CharField(max_length=1000)),
-                ('success', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "command",
+                    models.CharField(
+                        choices=[
+                            ("send_emails", "send_emails"),
+                            ("send_irc_msgs", "send_irc_msgs"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("data", models.CharField(max_length=1000)),
+                ("success", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
             ],
-        ),
+        )
     ]

@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0030_auto_20190614_0559'),
-    ]
+    dependencies = [("gsoc", "0030_auto_20190614_0559")]
 
     operations = [
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='accepted',
+            model_name="suborgdetails",
+            name="accepted",
             field=models.BooleanField(default=None, null=True),
-        ),
+        )
     ]

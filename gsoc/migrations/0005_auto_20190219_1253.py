@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0004_auto_20190219_1215'),
-    ]
+    dependencies = [("gsoc", "0004_auto_20190219_1215")]
 
     operations = [
         migrations.AlterField(
-            model_name='scheduler',
-            name='last_error',
+            model_name="scheduler",
+            name="last_error",
             field=models.TextField(default=None, null=True),
-        ),
+        )
     ]

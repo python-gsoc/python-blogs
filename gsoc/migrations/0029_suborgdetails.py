@@ -6,38 +6,145 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0028_blogpostduedate_title'),
-    ]
+    dependencies = [("gsoc", "0028_blogpostduedate_title")]
 
     operations = [
         migrations.CreateModel(
-            name='SubOrgDetails',
+            name="SubOrgDetails",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('reason_for_participation', models.TextField(verbose_name='Why does your org want to participate in Google Summer of Code?')),
-                ('suborg_admin_email', models.EmailField(max_length=254, verbose_name='Suborg admin email')),
-                ('mentors_student_engagement', models.TextField(verbose_name='How will you keep mentors engaged with their students?')),
-                ('students_on_schedule', models.TextField(verbose_name='How will you help your students stay on schedule to complete their projects?')),
-                ('students_involvement_gsoc', models.TextField(verbose_name='How will you get your students involved in your community during GSoC?')),
-                ('students_involvement_after', models.TextField(verbose_name='How will you keep students involved with your community after GSoC?')),
-                ('past_gsoc_experience', models.BooleanField(verbose_name='Has your org been accepted as a mentor org in Google Summer of Code before?')),
-                ('suborg_in_past', models.BooleanField(verbose_name='Was this as a Suborg?')),
-                ('year_of_start', models.IntegerField(verbose_name='What year was your project started?')),
-                ('source_code', models.URLField(verbose_name='Where does your source code live?')),
-                ('docs', models.URLField(verbose_name='Please provide the URL that points to the repository, GitHub organization, or a web page that describes how to get your source code')),
-                ('anything_else', models.TextField(blank=True, null=True, verbose_name='Anything else we should know (optional)')),
-                ('suborg_name', models.CharField(max_length=80, verbose_name='Name')),
-                ('description', models.TextField(verbose_name='A very short description of your organization')),
-                ('logo', models.ImageField(help_text='Must be a 24-bit PNG, minimum height 256 pixels.', upload_to='logos/', verbose_name='Your organization logo')),
-                ('primary_os_license', models.CharField(max_length=50, verbose_name='Primary Open Source License')),
-                ('ideas_list', models.TextField(help_text='Write the ideas one by one, separated with newlines.', verbose_name='Ideas List')),
-                ('applied_but_not_selected', models.ManyToManyField(null=True, related_name='applied_not_selected', to='gsoc.GsocYear', verbose_name='If your org has applied for GSoC before but not been accepted, select the years')),
-                ('gsoc_year', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='suborg_details', to='gsoc.GsocYear')),
-                ('past_years', models.ManyToManyField(null=True, to='gsoc.GsocYear', verbose_name='Which years did your org participate in GSoC?')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "reason_for_participation",
+                    models.TextField(
+                        verbose_name="Why does your org want to participate in Google Summer of Code?"
+                    ),
+                ),
+                (
+                    "suborg_admin_email",
+                    models.EmailField(
+                        max_length=254, verbose_name="Suborg admin email"
+                    ),
+                ),
+                (
+                    "mentors_student_engagement",
+                    models.TextField(
+                        verbose_name="How will you keep mentors engaged with their students?"
+                    ),
+                ),
+                (
+                    "students_on_schedule",
+                    models.TextField(
+                        verbose_name="How will you help your students stay on schedule to complete their projects?"
+                    ),
+                ),
+                (
+                    "students_involvement_gsoc",
+                    models.TextField(
+                        verbose_name="How will you get your students involved in your community during GSoC?"
+                    ),
+                ),
+                (
+                    "students_involvement_after",
+                    models.TextField(
+                        verbose_name="How will you keep students involved with your community after GSoC?"
+                    ),
+                ),
+                (
+                    "past_gsoc_experience",
+                    models.BooleanField(
+                        verbose_name="Has your org been accepted as a mentor org in Google Summer of Code before?"
+                    ),
+                ),
+                (
+                    "suborg_in_past",
+                    models.BooleanField(verbose_name="Was this as a Suborg?"),
+                ),
+                (
+                    "year_of_start",
+                    models.IntegerField(
+                        verbose_name="What year was your project started?"
+                    ),
+                ),
+                (
+                    "source_code",
+                    models.URLField(verbose_name="Where does your source code live?"),
+                ),
+                (
+                    "docs",
+                    models.URLField(
+                        verbose_name="Please provide the URL that points to the repository, GitHub organization, or a web page that describes how to get your source code"
+                    ),
+                ),
+                (
+                    "anything_else",
+                    models.TextField(
+                        blank=True,
+                        null=True,
+                        verbose_name="Anything else we should know (optional)",
+                    ),
+                ),
+                ("suborg_name", models.CharField(max_length=80, verbose_name="Name")),
+                (
+                    "description",
+                    models.TextField(
+                        verbose_name="A very short description of your organization"
+                    ),
+                ),
+                (
+                    "logo",
+                    models.ImageField(
+                        help_text="Must be a 24-bit PNG, minimum height 256 pixels.",
+                        upload_to="logos/",
+                        verbose_name="Your organization logo",
+                    ),
+                ),
+                (
+                    "primary_os_license",
+                    models.CharField(
+                        max_length=50, verbose_name="Primary Open Source License"
+                    ),
+                ),
+                (
+                    "ideas_list",
+                    models.TextField(
+                        help_text="Write the ideas one by one, separated with newlines.",
+                        verbose_name="Ideas List",
+                    ),
+                ),
+                (
+                    "applied_but_not_selected",
+                    models.ManyToManyField(
+                        null=True,
+                        related_name="applied_not_selected",
+                        to="gsoc.GsocYear",
+                        verbose_name="If your org has applied for GSoC before but not been accepted, select the years",
+                    ),
+                ),
+                (
+                    "gsoc_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="suborg_details",
+                        to="gsoc.GsocYear",
+                    ),
+                ),
+                (
+                    "past_years",
+                    models.ManyToManyField(
+                        null=True,
+                        to="gsoc.GsocYear",
+                        verbose_name="Which years did your org participate in GSoC?",
+                    ),
+                ),
             ],
-            options={
-                'verbose_name_plural': 'Suborg Details',
-            },
-        ),
+            options={"verbose_name_plural": "Suborg Details"},
+        )
     ]

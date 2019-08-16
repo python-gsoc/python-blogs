@@ -6,23 +6,36 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0023_auto_20190604_1310'),
-    ]
+    dependencies = [("gsoc", "0023_auto_20190604_1310")]
 
     operations = [
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('timeline', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='gsoc.Timeline')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField(blank=True, null=True)),
+                (
+                    "timeline",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="gsoc.Timeline",
+                    ),
+                ),
             ],
         ),
         migrations.AlterModelOptions(
-            name='blogpostduedate',
-            options={'ordering': ['date']},
+            name="blogpostduedate", options={"ordering": ["date"]}
         ),
     ]

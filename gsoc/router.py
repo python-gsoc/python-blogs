@@ -1,4 +1,4 @@
-class DatabaseAppsRouter():
+class DatabaseAppsRouter:
 
     """
     def db_for_read(self, model, **hints):

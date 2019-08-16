@@ -5,19 +5,17 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0040_auto_20190703_0617'),
-    ]
+    dependencies = [("gsoc", "0040_auto_20190703_0617")]
 
     operations = [
         migrations.RenameField(
-            model_name='suborgdetails',
-            old_name='last_updated_at',
-            new_name='last_reviewed_at',
+            model_name="suborgdetails",
+            old_name="last_updated_at",
+            new_name="last_reviewed_at",
         ),
         migrations.RenameField(
-            model_name='suborgdetails',
-            old_name='last_updated_by',
-            new_name='last_reviewed_by',
+            model_name="suborgdetails",
+            old_name="last_updated_by",
+            new_name="last_reviewed_by",
         ),
     ]

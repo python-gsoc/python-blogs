@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0033_auto_20190623_0751'),
-    ]
+    dependencies = [("gsoc", "0033_auto_20190623_0751")]
 
     operations = [
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='chat',
+            model_name="suborgdetails",
+            name="chat",
             field=models.CharField(blank=True, max_length=80, null=True),
         ),
         migrations.AlterField(
-            model_name='suborgdetails',
-            name='mailing_list',
+            model_name="suborgdetails",
+            name="mailing_list",
             field=models.CharField(blank=True, max_length=80, null=True),
         ),
     ]

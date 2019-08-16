@@ -12,13 +12,15 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import logging.config
 import os
+
 try:
     from settings_local import *
 except ImportError:
-    raise Exception('Missing settings_local.py. Did you create it from the template?')
+    raise Exception("Missing settings_local.py. Did you create it from the template?")
 
 
-def gettext(s): return s
+def gettext(s):
+    return s
 
 
 DATA_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -29,19 +31,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-ALLOWED_HOSTS = ['*']
-INTERNAL_IPS = ('127.0.0.1',)
+ALLOWED_HOSTS = ["*"]
+INTERNAL_IPS = ("127.0.0.1",)
 
-INETLOCATION = 'https://blogs.python-gsoc.org'
+INETLOCATION = "https://blogs.python-gsoc.org"
 # Application definition
-ROOT_URLCONF = 'gsoc.urls'
+ROOT_URLCONF = "gsoc.urls"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = "en"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -52,181 +54,172 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
-STATIC_ROOT = os.path.join(DATA_DIR, 'static')
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(DATA_DIR, "media")
+STATIC_ROOT = os.path.join(DATA_DIR, "static")
 
-PROPOSALS_PATH = 'proposals/'
+PROPOSALS_PATH = "proposals/"
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'gsoc', 'static'),
-)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "gsoc", "static"),)
 SITE_ID = 1
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'gsoc', 'templates'),
-            os.path.join(BASE_DIR, 'blogs_list', 'templates'),
-            os.path.join(BASE_DIR, 'suborg', 'templates'),
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            os.path.join(BASE_DIR, "gsoc", "templates"),
+            os.path.join(BASE_DIR, "blogs_list", "templates"),
+            os.path.join(BASE_DIR, "suborg", "templates"),
+        ],
+        "OPTIONS": {
+            "context_processors": [
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.template.context_processors.media",
+                "django.template.context_processors.csrf",
+                "django.template.context_processors.tz",
+                "sekizai.context_processors.sekizai",
+                "django.template.context_processors.static",
+                "cms.context_processors.cms_settings",
+                "gsoc.context_processors.recaptcha_site_key",
             ],
-        'OPTIONS': {
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.template.context_processors.media',
-                'django.template.context_processors.csrf',
-                'django.template.context_processors.tz',
-                'sekizai.context_processors.sekizai',
-                'django.template.context_processors.static',
-                'cms.context_processors.cms_settings',
-                'gsoc.context_processors.recaptcha_site_key',
-                ],
-            'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-                ],
-            },
+            "loaders": [
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+            ],
         },
+    }
 ]
 
 MIDDLEWARE = (
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'cms.middleware.utils.ApphookReloadMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'cms.middleware.user.CurrentUserMiddleware',
-    'cms.middleware.page.CurrentPageMiddleware',
-    'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "cms.middleware.utils.ApphookReloadMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "cms.middleware.user.CurrentUserMiddleware",
+    "cms.middleware.page.CurrentPageMiddleware",
+    "cms.middleware.toolbar.ToolbarMiddleware",
+    "cms.middleware.language.LanguageCookieMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
 )
 
 INSTALLED_APPS = (
-    'djangocms_admin_style',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.admin',
-    'django.contrib.sites',
-    'django.contrib.sitemaps',
-    'django.contrib.staticfiles',
-    'django.contrib.messages',
-    'cms',
-    'menus',
-    'treebeard',
-    'sekizai',
-    'djangocms_text_ckeditor',
-    'djangocms_history',
-    'easy_thumbnails',
-    'filer',
-    'djangocms_audio',
-    'djangocms_video',
-    'djangocms_file',
-    'djangocms_picture',
-    'djangocms_column',
-    'djangocms_link',
-    'djangocms_style',
-    'djangocms_snippet',
-    'aldryn_apphooks_config',
-    'aldryn_categories',
-    'aldryn_common',
-    'aldryn_newsblog',
-    'aldryn_people',
-    'aldryn_translation_tools',
-    'parler',
-    'sortedm2m',
-    'taggit',
-    'gsoc',
-    'blogs_list',
-    'suborg',
-    'debug_toolbar'
+    "djangocms_admin_style",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.admin",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
+    "django.contrib.staticfiles",
+    "django.contrib.messages",
+    "cms",
+    "menus",
+    "treebeard",
+    "sekizai",
+    "djangocms_text_ckeditor",
+    "djangocms_history",
+    "easy_thumbnails",
+    "filer",
+    "djangocms_audio",
+    "djangocms_video",
+    "djangocms_file",
+    "djangocms_picture",
+    "djangocms_column",
+    "djangocms_link",
+    "djangocms_style",
+    "djangocms_snippet",
+    "aldryn_apphooks_config",
+    "aldryn_categories",
+    "aldryn_common",
+    "aldryn_newsblog",
+    "aldryn_people",
+    "aldryn_translation_tools",
+    "parler",
+    "sortedm2m",
+    "taggit",
+    "gsoc",
+    "blogs_list",
+    "suborg",
+    "debug_toolbar",
+    "django_simple_cookie_consent",
 )
 THUMBNAIL_PROCESSORS = (
-    'easy_thumbnails.processors.colorspace',
-    'easy_thumbnails.processors.autocrop',
+    "easy_thumbnails.processors.colorspace",
+    "easy_thumbnails.processors.autocrop",
     # 'easy_thumbnails.processors.scale_and_crop',
-    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
-    'easy_thumbnails.processors.filters',
-    'easy_thumbnails.processors.background',
+    "filer.thumbnail_processors.scale_and_crop_with_subject_location",
+    "easy_thumbnails.processors.filters",
+    "easy_thumbnails.processors.background",
 )
 
 LANGUAGES = (
     # Customize this
-    ('en', gettext('en')),
+    ("en", gettext("en")),
 )
 
 CMS_LANGUAGES = {
     # Customize this
     1: [
         {
-            'code': 'en',
-            'name': gettext('en'),
-            'redirect_on_fallback': True,
-            'public': True,
-            'hide_untranslated': False,
-            },
-        ],
-    'default': {
-        'redirect_on_fallback': True,
-        'public': True,
-        'hide_untranslated': False,
-        },
+            "code": "en",
+            "name": gettext("en"),
+            "redirect_on_fallback": True,
+            "public": True,
+            "hide_untranslated": False,
+        }
+    ],
+    "default": {
+        "redirect_on_fallback": True,
+        "public": True,
+        "hide_untranslated": False,
+    },
 }
 
 CMS_TEMPLATES = (
     # Customize this
-    ('fullwidth.html', 'Fullwidth'),
-    ('sidebar_left.html', 'Sidebar Left'),
-    ('sidebar_right.html', 'Sidebar Right'),
-    ('homepage.html', 'Homepage'),
-    ('gettingstarted.html', 'Getting Started'),
-    ('ideas.html', 'Project Ideas'),
-    ('mentors.html', 'Mentors'),
-    ('schedule.html', 'Schedule'),
-    ('students.html', 'Students'),
-    ('contact.html', 'Contact'),
-    ('myprofile.html', 'My Profile')
+    ("fullwidth.html", "Fullwidth"),
+    ("sidebar_left.html", "Sidebar Left"),
+    ("sidebar_right.html", "Sidebar Right"),
+    ("homepage.html", "Homepage"),
+    ("gettingstarted.html", "Getting Started"),
+    ("ideas.html", "Project Ideas"),
+    ("mentors.html", "Mentors"),
+    ("schedule.html", "Schedule"),
+    ("students.html", "Students"),
+    ("contact.html", "Contact"),
+    ("myprofile.html", "My Profile"),
 )
 
 CMS_PERMISSION = True
 
 CMS_PLACEHOLDER_CONF = {}
 
-MIGRATION_MODULES = {
-
-}
+MIGRATION_MODULES = {}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-        },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-        },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-        },
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LOGIN_REDIRECT_URL = '/after-login/'
+LOGIN_REDIRECT_URL = "/after-login/"
 
 # AUTH_USER_MODEL = 'gsoc.User'
 
@@ -238,86 +231,68 @@ LOGIN_REDIRECT_URL = '/after-login/'
 LOGGING_CONFIG = None
 
 if DEBUG:
-    ERROR_LEVEL = 'INFO'
+    ERROR_LEVEL = "INFO"
 else:
-    ERROR_LEVEL = 'ERROR'
+    ERROR_LEVEL = "ERROR"
 
-ERROR_HANDLERS = ['file', 'mail_admins']
+ERROR_HANDLERS = ["file", "mail_admins"]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': ('%(levelname)s %(asctime)s %(process)d '
-                       '%(thread)d %(filename)s %(module)s %(funcName)s '
-                       '%(lineno)d %(message)s')
-            },
-        'simple': {
-            'format': '%(levelname)s: %(message)s'
-            },
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": (
+                "%(levelname)s %(asctime)s %(process)d "
+                "%(thread)d %(filename)s %(module)s %(funcName)s "
+                "%(lineno)d %(message)s"
+            )
         },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-            }
+        "simple": {"format": "%(levelname)s: %(message)s"},
+    },
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-            },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/pygsoc.log'),
-            'formatter': 'verbose',
-            'when': 'midnight',
-            'backupCount': 5,
-            'encoding': 'utf-8',
-            },
-        'access_logs': {
-            'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/access.log'),
-            'formatter': 'simple',
-            'when': 'midnight',
-            'backupCount': 7,
-            'encoding': 'utf-8',
-            },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'include_html': True
-            },
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/pygsoc.log"),
+            "formatter": "verbose",
+            "when": "midnight",
+            "backupCount": 5,
+            "encoding": "utf-8",
         },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-            },
-        'django.server': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-            },
-        'django.db': {
-            'handlers': ['file'],
-            'level': 'WARNING',
-            'propagate': False,
-            },
-        'django.security.DisallowedHost': {
-            'handlers': ['file'],
-            'propagate': False,
-            },
+        "access_logs": {
+            "level": "INFO",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/access.log"),
+            "formatter": "simple",
+            "when": "midnight",
+            "backupCount": 7,
+            "encoding": "utf-8",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        },
+    },
+    "loggers": {
+        "django": {"handlers": ["file"], "level": "INFO", "propagate": True},
+        "django.server": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.db": {"handlers": ["file"], "level": "WARNING", "propagate": False},
+        "django.security.DisallowedHost": {"handlers": ["file"], "propagate": False},
         # Catch All Logger -- Captures any other logging
-        '': {
-            'handlers': ERROR_HANDLERS,
-            'level': ERROR_LEVEL,
-            }
-        }
+        "": {"handlers": ERROR_HANDLERS, "level": ERROR_LEVEL},
+    },
 }
 logging.config.dictConfig(LOGGING)
 
@@ -326,40 +301,95 @@ logging.config.dictConfig(LOGGING)
 RUNCRON_NUM_WORKERS = 5
 RUNCRON_TIMEOUT = 10
 
-DJANGOCMS_AUDIO_ALLOWED_EXTENSIONS = ['mp3', 'ogg', 'wav']
-DJANGOCMS_VIDEO_ALLOWED_EXTENSIONS = ['mp4', 'webm', 'ogv']
+DJANGOCMS_AUDIO_ALLOWED_EXTENSIONS = ["mp3", "ogg", "wav"]
+DJANGOCMS_VIDEO_ALLOWED_EXTENSIONS = ["mp4", "webm", "ogv"]
 
 # Ckeditor settings
 
 CKEDITOR_SETTINGS = {
-    'disableNativeSpellChecker': False,
-    'language': '{{ language }}',
-    'extraPlugins': 'button,clipboard,dialog,dialogui,image2,lineutils,notification,toolbar,widget,widgetselection,youtube,codesnippet,notificationaggregator,filetools,uploadwidget,uploadfile,uploadimage',
-    'uploadUrl': '/upload/',
-    'toolbar': [
-        {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste',
-                                        'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
-        {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt']},
+    "disableNativeSpellChecker": False,
+    "language": "{{ language }}",
+    "extraPlugins": (
+        "button,clipboard,dialog,dialogui,image2,lineutils,notification,"
+        "toolbar,widget,widgetselection,youtube,codesnippet,notificationaggregator,"
+        "filetools,uploadwidget,uploadfile,uploadimage"
+    ),
+    "uploadUrl": "/upload/",
+    "toolbar": [
+        {
+            "name": "clipboard",
+            "items": [
+                "Cut",
+                "Copy",
+                "Paste",
+                "PasteText",
+                "PasteFromWord",
+                "-",
+                "Undo",
+                "Redo",
+            ],
+        },
+        {
+            "name": "editing",
+            "items": ["Find", "Replace", "-", "SelectAll", "-", "Scayt"],
+        },
         # ['cmsplugins', 'cmswidget'],
-        {'name': 'settings', 'items': ['Source', 'ShowBlocks', 'Maximize']},
-        '/',
-        {'name': 'basicstyles',
-         'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting',
-                   'RemoveFormat']},
-        {'name': 'paragraph',
-         'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
-                   'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
-        {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
-        {'name': 'insert', 'items': ['Table', 'HorizontalRule',
-                                     'Smiley', 'SpecialChar', 'PageBreak', 'Image', 'Youtube', 'CodeSnippet']},
-        '/',
-        {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
-        {'name': 'colors', 'items': ['TextColor', 'BGColor']},
-        ],
-    'toolbarCanCollapse': False,
+        {"name": "settings", "items": ["Source", "ShowBlocks", "Maximize"]},
+        "/",
+        {
+            "name": "basicstyles",
+            "items": [
+                "Bold",
+                "Italic",
+                "Underline",
+                "Strike",
+                "Subscript",
+                "Superscript",
+                "-",
+                "CopyFormatting",
+                "RemoveFormat",
+            ],
+        },
+        {
+            "name": "paragraph",
+            "items": [
+                "NumberedList",
+                "BulletedList",
+                "-",
+                "Outdent",
+                "Indent",
+                "-",
+                "Blockquote",
+                "CreateDiv",
+                "-",
+                "JustifyLeft",
+                "JustifyCenter",
+                "JustifyRight",
+                "JustifyBlock",
+            ],
+        },
+        {"name": "links", "items": ["Link", "Unlink", "Anchor"]},
+        {
+            "name": "insert",
+            "items": [
+                "Table",
+                "HorizontalRule",
+                "Smiley",
+                "SpecialChar",
+                "PageBreak",
+                "Image",
+                "Youtube",
+                "CodeSnippet",
+            ],
+        },
+        "/",
+        {"name": "styles", "items": ["Styles", "Format", "Font", "FontSize"]},
+        {"name": "colors", "items": ["TextColor", "BGColor"]},
+    ],
+    "toolbarCanCollapse": False,
 }
 
-TEXT_ADDITIONAL_TAGS = ('iframe',)
+TEXT_ADDITIONAL_TAGS = ("iframe",)
 
 # IRC CommandBot settings
 
@@ -372,33 +402,122 @@ CMS_PAGE_CACHE = False
 
 ALDRYN_NEWSBLOG_DEFAULT_PUBLISHED = True
 
-BLEACH_ALLOWED_TAGS = ['a', 'address', 'em', 'strong', 'b', 'i', 'big', 'small', 'sub', 'sup',
-                       'cite', 'code', 'img', 'ul', 'ol', 'li', 'dl', 'lh', 'dt', 'dd', 'br',
-                       'p', 'table', 'th', 'td', 'tr', 'pre', 'blockquote', 'nowiki', 'h1', 'h2',
-                       'h3', 'h4', 'h5', 'h6', 'hr', 'iframe', 'div', 's', 'u', 'span', 'tbody']
+BLEACH_ALLOWED_TAGS = [
+    "a",
+    "address",
+    "em",
+    "strong",
+    "b",
+    "i",
+    "big",
+    "small",
+    "sub",
+    "sup",
+    "cite",
+    "code",
+    "img",
+    "ul",
+    "ol",
+    "li",
+    "dl",
+    "lh",
+    "dt",
+    "dd",
+    "br",
+    "p",
+    "table",
+    "th",
+    "td",
+    "tr",
+    "pre",
+    "blockquote",
+    "nowiki",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "hr",
+    "iframe",
+    "div",
+    "s",
+    "u",
+    "span",
+    "tbody",
+]
 
-BLEACH_ALLOWED_STYLES = ['background', 'background-attachment', 'background-color',
-                         'background-image',
-                         'background-position', 'background-repeat', 'border', 'border-bottom',
-                         'border-bottom-color', 'border-bottom-style', 'border-bottom-width',
-                         'border-color', 'border-left', 'border-left-color',
-                         'border-left-style', 'border-left-width', 'border-right',
-                         'border-right-color',
-                         'border-right-style', 'border-right-width', 'border-style', 'border-top',
-                         'border-top-color',
-                         'border-top-style', 'border-top-width', 'border-width', 'clear', 'clip',
-                         'color', 'cursor',
-                         'display', 'filter', 'float', 'font', 'font-family', 'font-size',
-                         'font-variant', 'font-weight',
-                         'height', 'left', 'letter-spacing', 'line-height', 'list-style',
-                         'list-style-image',
-                         'list-style-position', 'list-style-type', 'margin', 'margin-bottom',
-                         'margin-left', 'margin-right',
-                         'margin-top', 'overflow', 'padding', 'padding-bottom', 'padding-left',
-                         'padding-right',
-                         'padding-top', 'page-break-after', 'page-break-before', 'position',
-                         'stroke-dasharray',
-                         'stroke-dashoffset', 'stroke-width', 'text-align', 'text-decoration',
-                         'text-indent',
-                         'text-transform', 'top', 'vertical-align', 'visibility', 'width',
-                         'z-index']
+BLEACH_ALLOWED_STYLES = [
+    "background",
+    "background-attachment",
+    "background-color",
+    "background-image",
+    "background-position",
+    "background-repeat",
+    "border",
+    "border-bottom",
+    "border-bottom-color",
+    "border-bottom-style",
+    "border-bottom-width",
+    "border-color",
+    "border-left",
+    "border-left-color",
+    "border-left-style",
+    "border-left-width",
+    "border-right",
+    "border-right-color",
+    "border-right-style",
+    "border-right-width",
+    "border-style",
+    "border-top",
+    "border-top-color",
+    "border-top-style",
+    "border-top-width",
+    "border-width",
+    "clear",
+    "clip",
+    "color",
+    "cursor",
+    "display",
+    "filter",
+    "float",
+    "font",
+    "font-family",
+    "font-size",
+    "font-variant",
+    "font-weight",
+    "height",
+    "left",
+    "letter-spacing",
+    "line-height",
+    "list-style",
+    "list-style-image",
+    "list-style-position",
+    "list-style-type",
+    "margin",
+    "margin-bottom",
+    "margin-left",
+    "margin-right",
+    "margin-top",
+    "overflow",
+    "padding",
+    "padding-bottom",
+    "padding-left",
+    "padding-right",
+    "padding-top",
+    "page-break-after",
+    "page-break-before",
+    "position",
+    "stroke-dasharray",
+    "stroke-dashoffset",
+    "stroke-width",
+    "text-align",
+    "text-decoration",
+    "text-indent",
+    "text-transform",
+    "top",
+    "vertical-align",
+    "visibility",
+    "width",
+    "z-index",
+]

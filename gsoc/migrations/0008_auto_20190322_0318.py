@@ -9,34 +9,53 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('gsoc', '0007_auto_20190305_0853'),
+        ("gsoc", "0007_auto_20190305_0853"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UserDetails',
+            name="UserDetails",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('deactivation_date', models.DateTimeField(blank=True, null=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("deactivation_date", models.DateTimeField(blank=True, null=True)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'verbose_name_plural': 'User details',
-            },
+            options={"verbose_name_plural": "User details"},
         ),
         migrations.AddField(
-            model_name='scheduler',
-            name='activation_date',
+            model_name="scheduler",
+            name="activation_date",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='userprofile',
-            name='accepted_proposal_pdf',
-            field=models.FileField(blank=True, null=True, upload_to=''),
+            model_name="userprofile",
+            name="accepted_proposal_pdf",
+            field=models.FileField(blank=True, null=True, upload_to=""),
         ),
         migrations.AlterField(
-            model_name='scheduler',
-            name='command',
-            field=models.CharField(choices=[('send_email', 'send_email'), ('send_irc_msg', 'send_irc_msg'), ('deactivate_user', 'deactivate_user')], max_length=20),
+            model_name="scheduler",
+            name="command",
+            field=models.CharField(
+                choices=[
+                    ("send_email", "send_email"),
+                    ("send_irc_msg", "send_irc_msg"),
+                    ("deactivate_user", "deactivate_user"),
+                ],
+                max_length=20,
+            ),
         ),
     ]

@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0011_userprofile_app_config'),
-    ]
+    dependencies = [("gsoc", "0011_userprofile_app_config")]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='hidden',
+            model_name="userprofile",
+            name="hidden",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='scheduler',
-            name='last_error',
+            model_name="scheduler",
+            name="last_error",
             field=models.TextField(blank=True, default=None, null=True),
         ),
     ]

@@ -5,39 +5,37 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0029_suborgdetails'),
-    ]
+    dependencies = [("gsoc", "0029_suborgdetails")]
 
     operations = [
         migrations.AddField(
-            model_name='suborgdetails',
-            name='accepted',
+            model_name="suborgdetails",
+            name="accepted",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='blog_url',
+            model_name="suborgdetails",
+            name="blog_url",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='chat',
+            model_name="suborgdetails",
+            name="chat",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='link',
-            field=models.URLField(blank=True, null=True, verbose_name='Any other link'),
+            model_name="suborgdetails",
+            name="link",
+            field=models.URLField(blank=True, null=True, verbose_name="Any other link"),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='mailing_list',
+            model_name="suborgdetails",
+            name="mailing_list",
             field=models.EmailField(blank=True, max_length=254, null=True),
         ),
         migrations.AddField(
-            model_name='suborgdetails',
-            name='twitter_url',
+            model_name="suborgdetails",
+            name="twitter_url",
             field=models.URLField(blank=True, null=True),
         ),
     ]

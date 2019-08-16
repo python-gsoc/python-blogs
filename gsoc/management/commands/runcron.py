@@ -10,37 +10,37 @@ from gsoc.common.utils.tools import send_mail
 
 
 class Command(BaseCommand):
-    help = 'Run the cron command to process items such as sending scheduled emails etc.'
-    tasks = ['build_items', 'process_items']
-    requires_system_checks = False   # for debugging
+    help = "Run the cron command to process items such as sending scheduled emails etc."
+    tasks = ["build_items", "process_items"]
+    requires_system_checks = False  # for debugging
 
     # cleanup sessions
     # Session.objects.all().delete()
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'task',
-            nargs='?',
+            "task",
+            nargs="?",
             choices=self.tasks,
             type=str,
-            help='The task which will be started'
-            )
+            help="The task which will be started",
+        )
         parser.add_argument(
-            '-t',
-            '--timeout',
-            nargs='?',
+            "-t",
+            "--timeout",
+            nargs="?",
             default=settings.RUNCRON_TIMEOUT,
             type=int,
-            help='Set timeout'
-            )
+            help="Set timeout",
+        )
         parser.add_argument(
-            '-n',
-            '--num_workers',
-            nargs='?',
+            "-n",
+            "--num_workers",
+            nargs="?",
             default=settings.RUNCRON_NUM_WORKERS,
             type=int,
-            help='Set number of workers'
-            )
+            help="Set number of workers",
+        )
 
     def build_items(self, options):
         # build tasks
@@ -50,99 +50,122 @@ class Command(BaseCommand):
         builders = x | y
 
         if len(builders) is 0:
-            self.stdout.write(self.style.SUCCESS('No build tasks'), ending='\n')
+            self.stdout.write(self.style.SUCCESS("No build tasks"), ending="\n")
         else:
             for builder in builders:
-                self.stdout.write('Running build task {}:{}'
-                                  .format(builder.category, builder.pk), ending='\n')
+                self.stdout.write(
+                    "Running build task {}:{}".format(builder.category, builder.pk),
+                    ending="\n",
+                )
                 err = getattr(build_tasks, builder.category)(builder)
                 if not err:
-                    self.stdout.write(self.style
-                                      .SUCCESS('Finished build task {}:{}'
-                                               .format(builder.category, builder.pk)),
-                                      ending='\n')
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            "Finished build task {}:{}".format(
+                                builder.category, builder.pk
+                            )
+                        ),
+                        ending="\n",
+                    )
                     builder.built = True
                     builder.save()
 
                 else:
                     self.stdout.write(
                         self.style.ERROR(
-                            'Build task {}:{} failed with error: {}' .format(
-                                builder.category,
-                                builder.pk,
-                                err)),
-                        ending='\n')
+                            "Build task {}:{} failed with error: {}".format(
+                                builder.category, builder.pk, err
+                            )
+                        ),
+                        ending="\n",
+                    )
                     builder.built = False
                     builder.last_error = err
                     builder.save()
-                    send_mail(settings.ADMINS,
-                              'Exception on runcron build_items',
-                              'cron_error.html',
-                              {
-                                  'message': err,
-                                  'time': today,
-                              })
+                    send_mail(
+                        settings.ADMINS,
+                        "Exception on runcron build_items",
+                        "cron_error.html",
+                        {"message": err, "time": today},
+                    )
 
     def handle_process(self, scheduler):
         today = timezone.now()
-        self.stdout.write('Running command {}:{}'
-                          .format(scheduler.command, scheduler.id), ending='\n')
+        self.stdout.write(
+            "Running command {}:{}".format(scheduler.command, scheduler.id), ending="\n"
+        )
         err = getattr(commands, scheduler.command)(scheduler)
         if not err:
-            self.stdout.write(self.style
-                              .SUCCESS('Finished command {}:{}'
-                                       .format(scheduler.command, scheduler.id)),
-                              ending='\n')
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Finished command {}:{}".format(scheduler.command, scheduler.id)
+                ),
+                ending="\n",
+            )
             scheduler.success = True
             scheduler.save()
 
         else:
             self.stdout.write(
                 self.style.ERROR(
-                    'Command {}:{} failed with error: {}' .format(
-                        scheduler.command,
-                        scheduler.id,
-                        err)),
-                ending='\n')
+                    "Command {}:{} failed with error: {}".format(
+                        scheduler.command, scheduler.id, err
+                    )
+                ),
+                ending="\n",
+            )
             scheduler.success = False
             scheduler.last_error = err
             scheduler.save()
-            send_mail(settings.ADMINS,
-                      'Exception on runcron process_items',
-                      'cron_error.html',
-                      {
-                          'message': err,
-                          'time': today,
-                      })
+            send_mail(
+                settings.ADMINS,
+                "Exception on runcron process_items",
+                "cron_error.html",
+                {"message": err, "time": today},
+            )
 
     def process_items(self, options):
         today = timezone.now()
 
         # custom handlers
-        irc_schedulers_1 = Scheduler.objects.filter(success=None, command='send_irc_msg',
-                                                    activation_date=None)
-        irc_schedulers_2 = Scheduler.objects.filter(success=None, command='send_irc_msg',
-                                                    activation_date__lte=today)
+        irc_schedulers_1 = Scheduler.objects.filter(
+            success=None, command="send_irc_msg", activation_date=None
+        )
+        irc_schedulers_2 = Scheduler.objects.filter(
+            success=None, command="send_irc_msg", activation_date__lte=today
+        )
         irc_schedulers = irc_schedulers_1 | irc_schedulers_2
         if len(irc_schedulers) is 0:
-            self.stdout.write(self.style.SUCCESS('No scheduled send_irc_msg tasks'), ending='\n')
+            self.stdout.write(
+                self.style.SUCCESS("No scheduled send_irc_msg tasks"), ending="\n"
+            )
         else:
-            self.stdout.write(self.style.SUCCESS('Sending {} scheduled irc message(s)'
-                                                 .format(len(irc_schedulers))), ending='\n')
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Sending {} scheduled irc message(s)".format(len(irc_schedulers))
+                ),
+                ending="\n",
+            )
             commands.send_irc_msgs(irc_schedulers)
-            self.stdout.write(self.style.SUCCESS('Sent {} irc message(s)'
-                                                 .format(len(irc_schedulers))), ending='\n')
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Sent {} irc message(s)".format(len(irc_schedulers))
+                ),
+                ending="\n",
+            )
 
-        template_schedulers_1 = Scheduler.objects.filter(success=None,
-                                                         command='update_site_template',
-                                                         activation_date=None).all()
-        template_schedulers_2 = Scheduler.objects.filter(success=None,
-                                                         command='update_site_template',
-                                                         activation_date__lte=today).all()
+        template_schedulers_1 = Scheduler.objects.filter(
+            success=None, command="update_site_template", activation_date=None
+        ).all()
+        template_schedulers_2 = Scheduler.objects.filter(
+            success=None, command="update_site_template", activation_date__lte=today
+        ).all()
         template_schedulers = template_schedulers_1 | template_schedulers_2
         if len(template_schedulers) is 0:
-            self.stdout.write(self.style.SUCCESS('No scheduled update_site_template tasks'),
-                              ending='\n')
+            self.stdout.write(
+                self.style.SUCCESS("No scheduled update_site_template tasks"),
+                ending="\n",
+            )
         else:
             for scheduler in template_schedulers:
                 self.handle_process(scheduler)
@@ -155,17 +178,21 @@ class Command(BaseCommand):
         threads = []
         if len(schedulers) is not 0:
             try:
-                executor = ThreadPoolExecutor(max_workers=options['num_workers'])
-                executor.map(self.handle_process, schedulers, timeout=options['timeout'])
+                executor = ThreadPoolExecutor(max_workers=options["num_workers"])
+                executor.map(
+                    self.handle_process, schedulers, timeout=options["timeout"]
+                )
             except TimeoutError as e:
-                self.stdout.write(self.style.ERROR('Time limit exceeded'), ending='\n')
+                self.stdout.write(self.style.ERROR("Time limit exceeded"), ending="\n")
 
         else:
-            self.stdout.write(self.style.SUCCESS('No more scheduled tasks'), ending='\n')
+            self.stdout.write(
+                self.style.SUCCESS("No more scheduled tasks"), ending="\n"
+            )
 
     def handle(self, *args, **options):
-        if options['task']:
-            getattr(self, options['task'])(options)
+        if options["task"]:
+            getattr(self, options["task"])(options)
         else:
             self.build_items(options)
             self.process_items(options)

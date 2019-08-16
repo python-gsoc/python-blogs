@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0016_comment'),
-    ]
+    dependencies = [("gsoc", "0016_comment")]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='proposal_confirmed',
+            model_name="userprofile",
+            name="proposal_confirmed",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

@@ -1,8 +1,31 @@
-from .models import (UserProfile, RegLink, UserDetails, Scheduler, PageNotification, AddUserLog,
-                     BlogPostDueDate, Builder, Timeline, ArticleReview, Event, SubOrgDetails,
-                     GsocEndDate, Comment, SendEmail, BlogPostHistory, GsocYear, SubOrg)
-from .forms import (UserProfileForm, UserDetailsForm, RegLinkForm, BlogPostDueDateForm, EventForm,
-                    GsocEndDateForm)
+from .models import (
+    UserProfile,
+    RegLink,
+    UserDetails,
+    Scheduler,
+    PageNotification,
+    AddUserLog,
+    BlogPostDueDate,
+    Builder,
+    Timeline,
+    ArticleReview,
+    Event,
+    SubOrgDetails,
+    GsocEndDate,
+    Comment,
+    SendEmail,
+    BlogPostHistory,
+    GsocYear,
+    SubOrg,
+)
+from .forms import (
+    UserProfileForm,
+    UserDetailsForm,
+    RegLinkForm,
+    BlogPostDueDateForm,
+    EventForm,
+    GsocEndDateForm,
+)
 
 
 from django.contrib.auth.models import User
@@ -51,9 +74,9 @@ def article_get_form():
         nonlocal ori_readonly_fields, ori_fieldsets
         is_request_by_student = request.user.student_profile() is not None
         if ori_readonly_fields is None:
-            ori_readonly_fields = getattr(self, 'readonly_fields', ()) or ()
+            ori_readonly_fields = getattr(self, "readonly_fields", ()) or ()
         if ori_fieldsets is None:
-            ori_fieldsets = getattr(self, 'fieldsets', ()) or ()
+            ori_fieldsets = getattr(self, "fieldsets", ()) or ()
         self.readonly_fields = ori_readonly_fields
         self.fieldsets = ori_fieldsets
         # self.actions = None
@@ -61,34 +84,40 @@ def article_get_form():
         if is_request_by_student:
             self.actions = None
             self.fieldsets = (
-                (None, {
-                    'fields': (
-                        'title',
-                        'publishing_date',
-                        'is_published',
-                        'is_featured',
-                        'featured_image',
-                        'lead_in',
-                        )}),
+                (
+                    None,
+                    {
+                        "fields": (
+                            "title",
+                            "publishing_date",
+                            "is_published",
+                            "is_featured",
+                            "featured_image",
+                            "lead_in",
+                        )
+                    },
+                ),
                 # (_('Meta Options'),
                 #  {'classes': ('collapse',),
                 #   'fields':()}),
-                (_('Advanced Settings'),
-                    {'classes': ('collapse',),
-                     'fields': ('app_config',)}),
-                )
+                (
+                    _("Advanced Settings"),
+                    {"classes": ("collapse",), "fields": ("app_config",)},
+                ),
+            )
             self.readonly_fields = (
-                'author',
-                'publishing_date',
-                'is_featured',
-                'featured_image',
-                'slug',
-                'meta_title',
-                'meta_description',
-                'meta_keywords',
-                'owner',
-                )
+                "author",
+                "publishing_date",
+                "is_featured",
+                "featured_image",
+                "slug",
+                "meta_title",
+                "meta_description",
+                "meta_keywords",
+                "owner",
+            )
         return form
+
     return return_func
 
 
@@ -99,20 +128,34 @@ def Article_change_view(self, request, object_id, *args, **kwargs):
     try:
         original_article = Article.objects.get(pk=object_id)
     except Article.DoesNotExist:
-        return super(ArticleAdmin, self).change_view(request, object_id, *args, **kwargs)
+        return super(ArticleAdmin, self).change_view(
+            request, object_id, *args, **kwargs
+        )
     if is_student_request:
         timenow = original_article.publishing_date
         try:
             person = Person.objects.get(user=request.user)
-            post_data['author'] = person.pk
+            post_data["author"] = person.pk
         except Person.DoesNotExist:
             person = Person.objects.create(user=request.user)
-            post_data['author'] = person.pk
-        post_data['publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
-        post_data['initial-publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
-        post_data['publishing_date_1'] = f'{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}'
-        post_data['initial-publishing_date_1'] = f'{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}'
-        post_data['owner'] = request.user.pk
+            post_data["author"] = person.pk
+        post_data["publishing_date_0"] = (
+            f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
+            f"{str(timenow.day).zfill(2)}"
+        )
+        post_data["initial-publishing_date_0"] = (
+            f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
+            f"{str(timenow.day).zfill(2)}"
+        )
+        post_data["publishing_date_1"] = (
+            f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
+            f"{str(timenow.second).zfill(2)}"
+        )
+        post_data["initial-publishing_date_1"] = (
+            f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
+            f"{str(timenow.second).zfill(2)}"
+        )
+        post_data["owner"] = request.user.pk
     request.GET = data
     request.POST = post_data
     return super(ArticleAdmin, self).change_view(request, object_id, *args, **kwargs)
@@ -124,31 +167,43 @@ def Article_add_view(self, request, *args, **kwargs):
     post_data = request.POST.copy()
     try:
         person = Person.objects.get(user=request.user)
-        data['author'] = person.pk
+        data["author"] = person.pk
     except Person.DoesNotExist:
         pass
     if is_student_request:
         timenow = timezone.now()
         try:
             person = Person.objects.get(user=request.user)
-            post_data['author'] = person.pk
+            post_data["author"] = person.pk
         except Person.DoesNotExist:
             person = Person.objects.create(user=request.user)
-            post_data['author'] = person.pk
+            post_data["author"] = person.pk
 
-        post_data['publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
-        post_data['initial-publishing_date_0'] = f'{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}'
-        post_data['publishing_date_1'] = f'{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}'
-        post_data['initial-publishing_date_1'] = f'{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}'
-        post_data['owner'] = request.user.pk
-        post_data['slug'] = ''
-        post_data['meta_title'] = ''
-        post_data['meta_description'] = ''
-        post_data['meta_keywords'] = ''
-        post_data['tags'] = ''
-        post_data['related'] = ''
-        post_data['featured_image'] = ''
-        post_data['is_featured'] = ''
+        post_data["publishing_date_0"] = (
+            f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
+            f"{str(timenow.day).zfill(2)}"
+        )
+        post_data["initial-publishing_date_0"] = (
+            f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
+            f"{str(timenow.day).zfill(2)}"
+        )
+        post_data["publishing_date_1"] = (
+            f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
+            f"{str(timenow.second).zfill(2)}"
+        )
+        post_data["initial-publishing_date_1"] = (
+            f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
+            f"{str(timenow.second).zfill(2)}"
+        )
+        post_data["owner"] = request.user.pk
+        post_data["slug"] = ""
+        post_data["meta_title"] = ""
+        post_data["meta_description"] = ""
+        post_data["meta_keywords"] = ""
+        post_data["tags"] = ""
+        post_data["related"] = ""
+        post_data["featured_image"] = ""
+        post_data["is_featured"] = ""
     request.GET = data
     request.POST = post_data
     return super(ArticleAdmin, self).add_view(request, *args, **kwargs)
@@ -233,45 +288,51 @@ def send_reminder(self, request, queryset):
         reglink.create_reminder(trigger_time=timezone.now())
 
 
-send_reminder.short_description = 'Send reminders'
+send_reminder.short_description = "Send reminders"
 
 
 class RegLinkAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('url', 'is_sent',
-                           'adduserlog', 'has_scheduler', 'has_reminder')}),
-        ("Configure user to be registered",
-            {'fields': (
-                "user_role",
-                "user_suborg",
-                "user_gsoc_year",
-                "email",
-                )}),
-        )
+        (
+            None,
+            {
+                "fields": (
+                    "url",
+                    "is_sent",
+                    "adduserlog",
+                    "has_scheduler",
+                    "has_reminder",
+                )
+            },
+        ),
+        (
+            "Configure user to be registered",
+            {"fields": ("user_role", "user_suborg", "user_gsoc_year", "email")},
+        ),
+    )
     readonly_fields = (
-        'url',
-        'adduserlog',
-        'is_sent',
-        'adduserlog',
-        'has_scheduler',
-        'has_reminder'
-        )
-    list_display = ('reglink_id', 'email', 'is_used', 'is_sent', 'has_reminder', 'created_at')
-    list_filter = [
-        'is_used',
-        'created_at',
-        ]
+        "url",
+        "adduserlog",
+        "is_sent",
+        "adduserlog",
+        "has_scheduler",
+        "has_reminder",
+    )
+    list_display = (
+        "reglink_id",
+        "email",
+        "is_used",
+        "is_sent",
+        "has_reminder",
+        "created_at",
+    )
+    list_filter = ["is_used", "created_at"]
     actions = [send_reminder]
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = self.readonly_fields
         if obj and obj.is_used:
-            readonly_fields += (
-                "user_role",
-                "user_suborg",
-                "user_gsoc_year",
-                'email',
-                )
+            readonly_fields += ("user_role", "user_suborg", "user_gsoc_year", "email")
 
         return readonly_fields
 
@@ -281,41 +342,65 @@ admin.site.register(RegLink, RegLinkAdmin)
 
 def rerun_scheduler(self, request, queryset):
     for scheduler in queryset:
-        Scheduler.objects.create(command=scheduler.command,
-                                 data=scheduler.data)
+        Scheduler.objects.create(command=scheduler.command, data=scheduler.data)
 
 
-rerun_scheduler.short_description = 'Rerun schedulers'
+rerun_scheduler.short_description = "Rerun schedulers"
 
 
 class SchedulerAdmin(admin.ModelAdmin):
-    list_display = ('command', 'short_data', 'success', 'last_error', 'created')
-    list_filter = ('command', 'success')
-    sortable_by = ('created', 'last_error')
+    list_display = ("command", "short_data", "success", "last_error", "created")
+    list_filter = ("command", "success")
+    sortable_by = ("created", "last_error")
     actions = [rerun_scheduler]
 
     def short_data(self, obj):
-        return '{}...'.format(obj.data[:50])
+        return "{}...".format(obj.data[:50])
 
 
 admin.site.register(Scheduler, SchedulerAdmin)
 
 
 class HiddenUserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'email', 'gsoc_year', 'suborg_full_name', 'proposal_confirmed',
-                    'hidden', 'reminder_disabled', 'current_blog_count')
-    list_filter = ('hidden', 'reminder_disabled')
-    readonly_fields = ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'blog_link',
-                       'proposal_confirmed', 'current_blog_count')
+    list_display = (
+        "user",
+        "email",
+        "gsoc_year",
+        "suborg_full_name",
+        "proposal_confirmed",
+        "hidden",
+        "reminder_disabled",
+        "current_blog_count",
+    )
+    list_filter = ("hidden", "reminder_disabled")
+    readonly_fields = (
+        "user",
+        "role",
+        "gsoc_year",
+        "accepted_proposal_pdf",
+        "blog_link",
+        "proposal_confirmed",
+        "current_blog_count",
+        "github_handle",
+    )
     fieldsets = (
-        ('Unhide', {
-            'fields': ('hidden', 'reminder_disabled')
-            }),
-        ('User Profile Details', {
-            'fields': ('user', 'role', 'gsoc_year', 'accepted_proposal_pdf', 'proposal_confirmed',
-                       'blog_link', 'current_blog_count')
-            })
-        )
+        ("Unhide", {"fields": ("hidden", "reminder_disabled")}),
+        (
+            "User Profile Details",
+            {
+                "fields": (
+                    "user",
+                    "role",
+                    "gsoc_year",
+                    "accepted_proposal_pdf",
+                    "proposal_confirmed",
+                    "blog_link",
+                    "current_blog_count",
+                    "github_handle",
+                )
+            },
+        ),
+    )
 
     def blog_link(self, obj):
         ns = obj.app_config.namespace
@@ -334,8 +419,8 @@ admin.site.register(UserProfile, HiddenUserProfileAdmin)
 
 
 class PageNotificationAdmin(admin.ModelAdmin):
-    list_display = ('message', 'user', 'page')
-    list_filter = ('user', 'page')
+    list_display = ("message", "user", "page")
+    list_filter = ("user", "page")
 
     def save_model(self, request, obj, form, change):
         obj.user = request.user
@@ -343,22 +428,19 @@ class PageNotificationAdmin(admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         if request.user.is_superuser:
-            fieldsets = (
-                (None, {
-                    'fields': ('user', 'page', 'message')
-                    }), )
+            fieldsets = ((None, {"fields": ("user", "page", "message")}),)
         else:
-            fieldsets = ((None, {'fields': ('page', 'message')}), )
+            fieldsets = ((None, {"fields": ("page", "message")}),)
 
         return fieldsets
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "page":
-            kwargs['queryset'] = Page.objects.filter(publisher_is_draft=True)
+            kwargs["queryset"] = Page.objects.filter(publisher_is_draft=True)
             if not request.user.is_superuser:
                 pp = PagePermission.objects.filter(user=request.user)
                 pages = [_.page.pk for _ in pp]
-                kwargs['queryset'] = kwargs['queryset'].filter(pk__in=pages)
+                kwargs["queryset"] = kwargs["queryset"].filter(pk__in=pages)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -372,24 +454,29 @@ class RegLinkInline(admin.TabularInline):
 
 
 class AddUserLogAdmin(admin.ModelAdmin):
-    list_display = ('log_id', 'used_stat')
-    readonly_fields = ('log_id', )
-    inlines = (RegLinkInline, )
-    change_form_template = 'admin/adduserlog_change_form.html'
+    list_display = ("log_id", "used_stat")
+    readonly_fields = ("log_id",)
+    inlines = (RegLinkInline,)
+    change_form_template = "admin/adduserlog_change_form.html"
 
-    def changeform_view(self, request, object_id, form_url='', extra_context=None):
+    def changeform_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
-        extra_context['years'] = GsocYear.objects.all()
-        extra_context['suborgs'] = SubOrg.objects.all()
-        extra_context['roles'] = [(0, 'Others'), (1, 'Suborg Admin'), (2, 'Mentor'), (3, 'Student')]
+        extra_context["years"] = GsocYear.objects.all()
+        extra_context["suborgs"] = SubOrg.objects.all()
+        extra_context["roles"] = [
+            (0, "Others"),
+            (1, "Suborg Admin"),
+            (2, "Mentor"),
+            (3, "Student"),
+        ]
         return super().changeform_view(
-            request, object_id, form_url, extra_context=extra_context,
+            request, object_id, form_url, extra_context=extra_context
         )
 
     def used_stat(self, obj):
         _all = len(RegLink.objects.filter(adduserlog=obj))
         _used = len(RegLink.objects.filter(adduserlog=obj, is_used=True))
-        return '{}/{}'.format(_used, _all)
+        return "{}/{}".format(_used, _all)
 
 
 admin.site.register(AddUserLog, AddUserLogAdmin)
@@ -397,21 +484,20 @@ admin.site.register(AddUserLog, AddUserLogAdmin)
 
 def rerun_builder(self, request, queryset):
     for builder in queryset:
-        Builder.objects.create(category=builder.category,
-                               data=builder.data)
+        Builder.objects.create(category=builder.category, data=builder.data)
 
 
-rerun_builder.short_description = 'Rerun builders'
+rerun_builder.short_description = "Rerun builders"
 
 
 class BuilderAdmin(admin.ModelAdmin):
-    list_display = ('category', 'short_data', 'built', 'last_error')
-    list_filter = ('category', 'built')
-    sortable_by = ('last_error')
+    list_display = ("category", "short_data", "built", "last_error")
+    list_filter = ("category", "built")
+    sortable_by = "last_error"
     actions = [rerun_builder]
 
     def short_data(self, obj):
-        return '{}...'.format(obj.data[:50])
+        return "{}...".format(obj.data[:50])
 
 
 admin.site.register(Builder, BuilderAdmin)
@@ -433,8 +519,8 @@ class GsocEndDateInline(admin.TabularInline):
 
 
 class TimelineAdmin(admin.ModelAdmin):
-    list_display = ('gsoc_year', )
-    exclude = ('calendar_id', )
+    list_display = ("gsoc_year",)
+    exclude = ("calendar_id",)
     inlines = (BlogPostDueDateInline, EventInline, GsocEndDateInline)
 
 
@@ -442,10 +528,23 @@ admin.site.register(Timeline, TimelineAdmin)
 
 
 class ArticleReviewAdmin(admin.ModelAdmin):
-    list_display = ('article', 'author', 'article_link', 'is_reviewed', 'last_reviewed_by')
-    list_filter = ('last_reviewed_by', 'is_reviewed')
-    fields = ('article', 'author', 'article_link', 'lead', 'is_reviewed', 'last_reviewed_by')
-    change_form_template = 'admin/article_review_change_form.html'
+    list_display = (
+        "article",
+        "author",
+        "article_link",
+        "is_reviewed",
+        "last_reviewed_by",
+    )
+    list_filter = ("last_reviewed_by", "is_reviewed")
+    fields = (
+        "article",
+        "author",
+        "article_link",
+        "lead",
+        "is_reviewed",
+        "last_reviewed_by",
+    )
+    change_form_template = "admin/article_review_change_form.html"
 
     def lead(self, obj):
         return obj.article.lead_in
@@ -454,8 +553,10 @@ class ArticleReviewAdmin(admin.ModelAdmin):
         return obj.article.owner
 
     def article_link(self, obj):
-        url = reverse('{}:article-detail'.format(obj.article.app_config.namespace),
-                       args=[obj.article.slug])
+        url = reverse(
+            "{}:article-detail".format(obj.article.app_config.namespace),
+            args=[obj.article.slug],
+        )
         return mark_safe('<a href="{}" target="_blank">Goto Article</a>'.format(url))
 
     def has_add_permission(self, request, obj=None):
@@ -469,8 +570,8 @@ admin.site.register(ArticleReview, ArticleReviewAdmin)
 
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'start_date', 'end_date')
-    fields = ('title', 'start_date', 'end_date', 'timeline', 'calendar_link')
+    list_display = ("title", "start_date", "end_date")
+    fields = ("title", "start_date", "end_date", "timeline", "calendar_link")
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -483,44 +584,76 @@ admin.site.register(Event, EventAdmin)
 
 
 class SubOrgDetailsAdmin(admin.ModelAdmin):
-    list_display = ('suborg_name', 'gsoc_year', 'changed', 'accepted')
-    list_filter = ('gsoc_year', 'changed')
+    list_display = ("suborg_name", "gsoc_year", "changed", "accepted")
+    list_filter = ("gsoc_year", "changed")
     # fields = ('last_message', )
     readonly_fields = (
-        'gsoc_year', 'reason_for_participation', 'suborg_admin_email',
-        'mentors_student_engagement', 'students_on_schedule', 'students_involvement_gsoc',
-        'students_involvement_after', 'past_gsoc_experience', 'past_years',
-        'suborg_in_past', 'applied_but_not_selected', 'year_of_start',
-        'source_code', 'docs', 'anything_else', 'suborg_name', 'description',
-        'logo', 'primary_os_license', 'ideas_list', 'chat', 'mailing_list', 'twitter_url',
-        'blog_url', 'link', 'accepted', 'changed', 'last_reviewed_at', 'last_reviewed_by',
-        'created_at', 'updated_at',
+        "gsoc_year",
+        "suborg_admin_email",
+        "suborg_admin_2_email",
+        "suborg_admin_3_email",
+        "past_gsoc_experience",
+        "past_years",
+        "suborg_in_past",
+        "applied_but_not_selected",
+        "year_of_start",
+        "source_code",
+        "docs",
+        "anything_else",
+        "suborg_name",
+        "description",
+        "logo",
+        "primary_os_license",
+        "ideas_list",
+        "chat",
+        "mailing_list",
+        "twitter_url",
+        "blog_url",
+        "link",
+        "accepted",
+        "changed",
+        "last_reviewed_at",
+        "last_reviewed_by",
+        "created_at",
+        "updated_at",
     )
     fieldsets = (
         (
-            'Details', {
-                'fields': (
-                    'gsoc_year', 'reason_for_participation',
-                    'suborg_admin_email',
-                    'mentors_student_engagement', 'students_on_schedule',
-                    'students_involvement_gsoc',
-                    'students_involvement_after', 'past_gsoc_experience',
-                    'past_years',
-                    'suborg_in_past', 'applied_but_not_selected',
-                    'year_of_start',
-                    'source_code', 'docs', 'anything_else', 'suborg_name',
-                    'description',
-                    'logo', 'primary_os_license', 'ideas_list', 'chat',
-                    'mailing_list', 'twitter_url',
-                    'blog_url', 'link', 'changed', 'accepted',
-                    'last_reviewed_at', 'last_reviewed_by',
-                    'created_at', 'updated_at',
+            "Details",
+            {
+                "fields": (
+                    "gsoc_year",
+                    "suborg_admin_email",
+                    "past_gsoc_experience",
+                    "past_years",
+                    "suborg_in_past",
+                    "applied_but_not_selected",
+                    "year_of_start",
+                    "source_code",
+                    "docs",
+                    "anything_else",
+                    "suborg_name",
+                    "description",
+                    "logo",
+                    "primary_os_license",
+                    "ideas_list",
+                    "chat",
+                    "mailing_list",
+                    "twitter_url",
+                    "blog_url",
+                    "link",
+                    "changed",
+                    "accepted",
+                    "last_reviewed_at",
+                    "last_reviewed_by",
+                    "created_at",
+                    "updated_at",
                 )
-            }
+            },
         ),
-        ('Review', {'fields': ('last_message', )})
+        ("Review", {"fields": ("last_message",)}),
     )
-    change_form_template = 'admin/suborg_details_change_form.html'
+    change_form_template = "admin/suborg_details_change_form.html"
 
     def save_model(self, request, obj, form, change):
         obj.changed = False
@@ -537,7 +670,7 @@ admin.site.register(SubOrgDetails, SubOrgDetailsAdmin)
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('username', 'article', 'content')
+    list_display = ("username", "article", "content")
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -547,8 +680,8 @@ admin.site.register(Comment, CommentAdmin)
 
 
 class SendEmailAdmin(admin.ModelAdmin):
-    list_display = ('to', 'to_group', 'subject')
-    exclude = ('scheduler', )
+    list_display = ("to", "to_group", "subject")
+    exclude = ("scheduler",)
 
     def has_change_permission(self, request, obj=None):
         return False
@@ -558,9 +691,9 @@ admin.site.register(SendEmail, SendEmailAdmin)
 
 
 class BlogPostHistoryAdmin(admin.ModelAdmin):
-    list_display = ('article', 'timestamp')
-    list_filter = ('article', )
-    fields = ('article', 'content_safe', 'timestamp')
+    list_display = ("article", "timestamp")
+    list_filter = ("article",)
+    fields = ("article", "content_safe", "timestamp")
 
     def has_change_permission(self, request, obj=None):
         return False
@@ -570,3 +703,10 @@ class BlogPostHistoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(BlogPostHistory, BlogPostHistoryAdmin)
+
+
+class GsocYearAdmin(admin.ModelAdmin):
+    list_display = ("gsoc_year",)
+
+
+admin.site.register(GsocYear, GsocYearAdmin)

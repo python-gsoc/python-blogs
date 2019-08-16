@@ -5,19 +5,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0002_scheduler'),
-    ]
+    dependencies = [("gsoc", "0002_scheduler")]
 
     operations = [
         migrations.AlterField(
-            model_name='scheduler',
-            name='command',
-            field=models.CharField(choices=[('send_email', 'send_email'), ('send_irc_msg', 'send_irc_msg')], max_length=20),
+            model_name="scheduler",
+            name="command",
+            field=models.CharField(
+                choices=[
+                    ("send_email", "send_email"),
+                    ("send_irc_msg", "send_irc_msg"),
+                ],
+                max_length=20,
+            ),
         ),
         migrations.AlterField(
-            model_name='scheduler',
-            name='data',
-            field=models.TextField(),
+            model_name="scheduler", name="data", field=models.TextField()
         ),
     ]

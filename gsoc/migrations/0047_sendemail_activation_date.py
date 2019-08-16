@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0046_sendemail'),
-    ]
+    dependencies = [("gsoc", "0046_sendemail")]
 
     operations = [
         migrations.AddField(
-            model_name='sendemail',
-            name='activation_date',
+            model_name="sendemail",
+            name="activation_date",
             field=models.DateTimeField(blank=True, null=True),
-        ),
+        )
     ]

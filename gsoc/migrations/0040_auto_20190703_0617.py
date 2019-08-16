@@ -5,14 +5,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0039_gsocenddate'),
-    ]
+    dependencies = [("gsoc", "0039_gsocenddate")]
 
     operations = [
         migrations.AlterField(
-            model_name='builder',
-            name='category',
-            field=models.CharField(choices=[('build_pre_blog_reminders', 'build_pre_blog_reminders'), ('build_post_blog_reminders', 'build_post_blog_reminders'), ('build_revoke_student_perms', 'build_revoke_student_perms')], max_length=40),
-        ),
+            model_name="builder",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("build_pre_blog_reminders", "build_pre_blog_reminders"),
+                    ("build_post_blog_reminders", "build_post_blog_reminders"),
+                    ("build_revoke_student_perms", "build_revoke_student_perms"),
+                ],
+                max_length=40,
+            ),
+        )
     ]

@@ -5,33 +5,37 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gsoc', '0025_auto_20190607_1004'),
-    ]
+    dependencies = [("gsoc", "0025_auto_20190607_1004")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='link',
-        ),
+        migrations.RemoveField(model_name="event", name="link"),
         migrations.AddField(
-            model_name='blogpostduedate',
-            name='event_id',
+            model_name="blogpostduedate",
+            name="event_id",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='event',
-            name='event_id',
+            model_name="event",
+            name="event_id",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='timeline',
-            name='calendar_id',
+            model_name="timeline",
+            name="calendar_id",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='scheduler',
-            name='command',
-            field=models.CharField(choices=[('send_email', 'send_email'), ('send_irc_msg', 'send_irc_msg'), ('deactivate_user', 'deactivate_user'), ('send_reg_reminder', 'send_reg_reminder'), ('add_blog_counter', 'add_blog_counter')], max_length=40),
+            model_name="scheduler",
+            name="command",
+            field=models.CharField(
+                choices=[
+                    ("send_email", "send_email"),
+                    ("send_irc_msg", "send_irc_msg"),
+                    ("deactivate_user", "deactivate_user"),
+                    ("send_reg_reminder", "send_reg_reminder"),
+                    ("add_blog_counter", "add_blog_counter"),
+                ],
+                max_length=40,
+            ),
         ),
     ]
