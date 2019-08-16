@@ -1,9 +1,9 @@
 import json
 from smtplib import SMTPResponseException, SMTPSenderRefused
-from datetime import datetime
 
 from django.contrib.auth.models import User, Permission
 from django.conf import settings
+from django.utils import timezone
 
 from .irc import send_message
 
@@ -146,7 +146,8 @@ def update_site_template(scheduler: Scheduler):
                 gsoc_year=gsoc_year, accepted=True
             ).all()
             suborg_list = []
-            branch = create_branch(str(datetime.now()))
+            branch_name = str(timezone.now().timestamp()).replace('.', '-')
+            branch = create_branch(f'update-template-{branch_name}')
             for suborg in suborgs:
                 f = open(suborg.logo.path, "rb")
                 lines = f.readlines()

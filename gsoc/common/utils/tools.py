@@ -66,7 +66,7 @@ def create_branch(target_branch, source_branch="master"):
     g = Github(settings.GITHUB_ACCESS_TOKEN)
     repo = g.get_repo(settings.STATIC_SITE_REPO)
     sb = repo.get_branch(source_branch)
-    repo.create_git_ref(ref=f"refs/head/{target_branch}", sha=sb.commit.sha)
+    repo.create_git_ref(ref=f"refs/heads/{target_branch}", sha=sb.commit.sha)
     return target_branch
 
 
