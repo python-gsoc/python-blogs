@@ -179,18 +179,22 @@ def Article_add_view(self, request, *args, **kwargs):
             person = Person.objects.create(user=request.user)
             post_data["author"] = person.pk
 
-        post_data[
-            "publishing_date_0"
-        ] = f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}"
-        post_data[
-            "initial-publishing_date_0"
-        ] = f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-{str(timenow.day).zfill(2)}"
-        post_data[
-            "publishing_date_1"
-        ] = f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}"
-        post_data[
-            "initial-publishing_date_1"
-        ] = f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:{str(timenow.second).zfill(2)}"
+        post_data["publishing_date_0"] = (
+            f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
+            f"{str(timenow.day).zfill(2)}"
+        )
+        post_data["initial-publishing_date_0"] = (
+            f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
+            f"{str(timenow.day).zfill(2)}"
+        )
+        post_data["publishing_date_1"] = (
+            f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
+            f"{str(timenow.second).zfill(2)}"
+        )
+        post_data["initial-publishing_date_1"] = (
+            f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
+            f"{str(timenow.second).zfill(2)}"
+        )
         post_data["owner"] = request.user.pk
         post_data["slug"] = ""
         post_data["meta_title"] = ""
