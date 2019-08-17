@@ -124,8 +124,7 @@ def update_robots_file(repo, current_year):
 
 
 def archive_current_gsoc_files(current_year):
-    # g = Github(settings.GITHUB_ACCESS_TOKEN)
-    g = Github("sounak98", "Soun@k1998_1965")
+    g = Github(settings.GITHUB_ACCESS_TOKEN)
     repo = g.get_repo(settings.STATIC_SITE_REPO)
     files = get_files(repo)
     update_robots_file(repo, current_year)
