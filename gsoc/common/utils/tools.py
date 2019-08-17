@@ -17,7 +17,7 @@ def build_send_mail_json(
         raise TypeError(
             "send_to must be a sequence of email addresses "
             "or one email address as str!"
-            )
+        )
     return json.dumps(locals())
 
 
@@ -28,7 +28,7 @@ def build_send_reminder_json(
         raise TypeError(
             "send_to must be a sequence of email addresses "
             "or one email address as str!"
-            )
+        )
     return json.dumps(locals())
 
 
@@ -48,7 +48,7 @@ def send_mail(send_to, subject, template, context={}):
         from_email=settings.SERVER_EMAIL,
         reply_to=settings.REPLY_EMAIL,
         to=send_to,
-        )
+    )
     send_email.content_subtype = "html"
     send_email.send()
 
@@ -75,7 +75,7 @@ def create_pull_request(source_branch, target_branch="master"):
     repo = g.get_repo(settings.STATIC_SITE_REPO)
     repo.create_pull(
         title="Site Template Update", body="", base=target_branch, head=source_branch
-        )
+    )
 
 
 def push_site_template(file_path, content, branch):
@@ -125,14 +125,16 @@ def update_robots_file(repo, current_year):
 
 def archive_current_gsoc_files(current_year):
     # g = Github(settings.GITHUB_ACCESS_TOKEN)
-    g = Github('sounak98', 'Soun@k1998_1965')
+    g = Github("sounak98", "Soun@k1998_1965")
     repo = g.get_repo(settings.STATIC_SITE_REPO)
     files = get_files(repo)
     update_robots_file(repo, current_year)
     for file in files:
         decoded_content = file.decoded_content
-        if file.path.split('.')[-1] == "html":
-            decoded_content = decoded_content.replace(b"</body>", b"""
+        if file.path.split(".")[-1] == "html":
+            decoded_content = decoded_content.replace(
+                b"</body>",
+                b"""
                 <style>
                 .modalDialog {
                     position: fixed;
@@ -210,18 +212,19 @@ def archive_current_gsoc_files(current_year):
                 }
                 </script>
                 </body>
-            """)
+            """,
+            )
         print(decoded_content)
         try:
             repo.create_file(
                 f"{current_year}/{file.path}",
                 f"Archive GSoC {current_year} files",
                 decoded_content,
-                )
+            )
         except Exception as e:
             repo.update_file(
                 f"{current_year}/{file.path}",
                 f"Archive GSoC {current_year} files",
                 file.content,
                 decoded_content,
-                )
+            )
