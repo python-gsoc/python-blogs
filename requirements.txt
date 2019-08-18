@@ -5,7 +5,7 @@ django~=2.1.10
 django-debug-toolbar>=1.11
 
 #django cms
-django-cms~=3.6.0
+django-cms==3.7.0rc1
 djangocms-text-ckeditor>=3.7.0
 djangocms-file>=2.2.0
 djangocms-column>=1.9.0
