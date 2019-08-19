@@ -55,9 +55,7 @@ urlpatterns += i18n_patterns(
 if settings.DEBUG:
     import debug_toolbar
 
-    urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    urlpatterns = [url(r"^__debug__/", include(debug_toolbar.urls))] + urlpatterns
     urlpatterns = (
         [
             url(
@@ -114,6 +112,4 @@ urlpatterns += [
     url(r"^readd/(?P<uuid>[\w-]+)/", gsoc.views.readd_users, name="readd_users")
 ]
 
-urlpatterns += [
-    url(r"^test/", gsoc.views.test, name="test")
-]
+urlpatterns += [url(r"^test/", gsoc.views.test, name="test")]

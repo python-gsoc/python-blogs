@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
 from django.template import RequestContext
+from django.core.cache import cache
 
 from gsoc.models import UserProfile, GsocYear
 
@@ -45,12 +46,14 @@ class BlogsFeed(Feed):
     description = "Updates on different student blogs of GSoC@PSF"
 
     def items(self):
-        gsoc_year = GsocYear.objects.first()
-        ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
-        articles = []
-        for up in ups:
-            section = up.app_config
-            articles.extend(list(section.article_set.all()))
+        articles = cache.get("articles_feed")
+        if articles is None:
+            gsoc_year = GsocYear.objects.first()
+            ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
+            articles = []
+            for up in ups:
+                section = up.app_config
+                articles.extend(list(section.article_set.all()))
         return articles
 
     def item_author_name(self, item):
