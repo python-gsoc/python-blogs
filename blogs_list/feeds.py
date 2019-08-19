@@ -74,7 +74,7 @@ class BlogsFeed(Feed):
 
     def item_guid(self, item):
         site = Site.objects.first()
-        return "http://{}{}".format(site.domain, self.item_link(item))
+        return "https://{}{}".format(site.domain, self.item_link(item))
 
     def item_guid_is_permalink(self, item):
         return True
