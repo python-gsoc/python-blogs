@@ -37,7 +37,7 @@ class CorrectMimeTypeFeed(DefaultFeed):
 
 class BlogsFeed(Feed):
     gsoc_year = GsocYear.objects.first()
-    title = gsoc_year+"GSoC@PSF Blogs"
+    title = "GSoC "+str(gsoc_year)+" PSF Blogs"
     link = "/blogs/"
     feed_url = "/blogs/feed/"
     feed_type = CorrectMimeTypeFeed
