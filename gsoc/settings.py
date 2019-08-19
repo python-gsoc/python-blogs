@@ -521,3 +521,5 @@ BLEACH_ALLOWED_STYLES = [
     "width",
     "z-index",
 ]
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
