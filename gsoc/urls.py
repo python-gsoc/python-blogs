@@ -3,7 +3,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from cms.sitemaps import CMSSitemap
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, path
+from django.conf.urls import url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
@@ -55,8 +56,7 @@ if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns = [
-        # For django versions before 2.0:
-        url(r"^__debug__/", include(debug_toolbar.urls))
+        url(r'^__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
     urlpatterns = (
         [
@@ -112,4 +112,8 @@ urlpatterns += [url(r"^upload/", gsoc.views.upload_file)]
 # Readd user details
 urlpatterns += [
     url(r"^readd/(?P<uuid>[\w-]+)/", gsoc.views.readd_users, name="readd_users")
+]
+
+urlpatterns += [
+    url(r"^test/", gsoc.views.test, name="test")
 ]

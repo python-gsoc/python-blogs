@@ -32,7 +32,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 ALLOWED_HOSTS = ["*"]
-INTERNAL_IPS = ("127.0.0.1",)
 
 INETLOCATION = "https://blogs.python-gsoc.org"
 # Application definition
@@ -96,8 +95,8 @@ TEMPLATES = [
 ]
 
 MIDDLEWARE = (
-    "django.middleware.cache.UpdateCacheMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",
     "cms.middleware.utils.ApphookReloadMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -153,6 +152,7 @@ INSTALLED_APPS = (
     "suborg",
     "debug_toolbar",
     "django_simple_cookie_consent",
+    "cachalot",
 )
 THUMBNAIL_PROCESSORS = (
     "easy_thumbnails.processors.colorspace",
@@ -521,3 +521,4 @@ BLEACH_ALLOWED_STYLES = [
     "width",
     "z-index",
 ]
+
