@@ -54,6 +54,7 @@ class BlogsFeed(Feed):
             for up in ups:
                 section = up.app_config
                 articles.extend(list(section.article_set.all()))
+            cache.set("articles_feed", articles)
         return articles
 
     def item_author_name(self, item):
