@@ -49,4 +49,4 @@ beautifulsoup4>=4.8.0
 
 django-simple-cookie-consent>=0.1.1
 
-mysqlclient
+mysqlclient>=1.4.4
