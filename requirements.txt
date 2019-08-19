@@ -50,3 +50,4 @@ beautifulsoup4>=4.8.0
 django-simple-cookie-consent>=0.1.1
 
 mysqlclient>=1.4.4
+importlib-resources>=1.0.2
