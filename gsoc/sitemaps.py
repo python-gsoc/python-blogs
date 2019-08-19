@@ -11,6 +11,7 @@ from cms.models import Page
 
 class BlogListSitemap(Sitemap):
     priority = 0.5
+    protocol = "https"
 
     def items(self):
         urls = ["/"]
