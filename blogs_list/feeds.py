@@ -46,7 +46,7 @@ class BlogsFeed(Feed):
     description = "Updates on different student blogs of GSoC@PSF"
 
     def items(self):
-        articles = cache.get('articles_feed')
+        articles = cache.get("articles_feed")
         if articles is None:
             gsoc_year = GsocYear.objects.first()
             ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()

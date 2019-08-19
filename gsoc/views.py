@@ -461,6 +461,10 @@ def readd_users(request, uuid):
             messages.error("Incorrect token, please use the correct token")
 
     return shortcuts.render(request, "readd.html", context)
+
+
 from django.http import HttpResponse
+
+
 def test(request):
-   return HttpResponse("{}".format(request.META['REMOTE_ADDR']))
+    return HttpResponse("{}".format(request.META["REMOTE_ADDR"]))
