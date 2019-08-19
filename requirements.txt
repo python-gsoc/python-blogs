@@ -51,3 +51,4 @@ django-simple-cookie-consent>=0.1.1
 
 mysqlclient>=1.4.4
 importlib-resources>=1.0.2
+django-cachalot>=2.1.0
