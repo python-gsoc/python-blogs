@@ -36,10 +36,11 @@ class CorrectMimeTypeFeed(DefaultFeed):
 
 
 class BlogsFeed(Feed):
+
     gsoc_year = GsocYear.objects.first()
-    title = "GSoC "+str(gsoc_year)+" PSF Blogs"
-    link = "/blogs/"
-    feed_url = "/blogs/feed/"
+    title = f"GSoC {gsoc_year} PSF Blogs"
+    link = settings.INETLOCATION
+    feed_url = f"{settings.INETLOCATION}/feed/"
     feed_type = CorrectMimeTypeFeed
     description = "Updates on different student blogs of GSoC@PSF"
 
@@ -74,15 +75,16 @@ class BlogsFeed(Feed):
 
     def item_guid(self, item):
         site = Site.objects.first()
-        return "https://{}{}".format(site.domain, self.item_link(item))
+        return self.item_link(item)
 
     def item_guid_is_permalink(self, item):
         return True
 
     def item_link(self, item):
+        site = Site.objects.first()
         section = item.app_config
         p = Page.objects.get(
             application_namespace=section.namespace, publisher_is_draft=False
         )
-        url = "{}{}/".format(p.get_absolute_url(), item.slug, "/")
+        url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug, "/")
         return url
