@@ -42,34 +42,37 @@ class CorrectMimeTypeFeed(DefaultFeed):
     def add_root_elements(self, handler):
         super(CorrectMimeTypeFeed, self).add_root_elements(handler)
         if self.feed["page"] is not None:
-            print(self.feed["page"], self.feed["last_page"])
-            if self.feed["page"] >= 1 and self.feed["page"] <= self.feed["last_page"]:
-                handler.addQuickElement(
-                    "link",
-                    "",
-                    {
-                        "rel": "current",
-                        "href": f"{self.feed['feed_url']}?p={self.feed['page']}",
-                    },
-                )
-                if self.feed["page"] > 1:
+            if not self.feed["show_all_articles"]:
+                if (
+                    self.feed["page"] >= 1
+                    and self.feed["page"] <= self.feed["last_page"]
+                ):
                     handler.addQuickElement(
                         "link",
                         "",
                         {
-                            "rel": "previous",
-                            "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}",
+                            "rel": "current",
+                            "href": f"{self.feed['feed_url']}?p={self.feed['page']}",
                         },
                     )
-                if self.feed["page"] < self.feed["last_page"]:
-                    handler.addQuickElement(
-                        "link",
-                        "",
-                        {
-                            "rel": "next",
-                            "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}",
-                        },
-                    )
+                    if self.feed["page"] > 1:
+                        handler.addQuickElement(
+                            "link",
+                            "",
+                            {
+                                "rel": "previous",
+                                "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}",
+                            },
+                        )
+                    if self.feed["page"] < self.feed["last_page"]:
+                        handler.addQuickElement(
+                            "link",
+                            "",
+                            {
+                                "rel": "next",
+                                "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}",
+                            },
+                        )
 
 
 class BlogsFeed(Feed):
@@ -82,11 +85,20 @@ class BlogsFeed(Feed):
     description = "Updates on different student blogs of GSoC@PSF"
 
     def get_object(self, request):
-        self.page = int(request.GET.get("p", 1))
         articles_all = cache.get("articles_all")
         if articles_all is None:
             articles_all = list(Article.objects.order_by("-publishing_date").all())
             cache.set("articles_all", articles_all)
+
+        page = request.GET.get("p", 1)
+        if page == "all":
+            self.page = None
+            self.last_page = None
+            self.show_all_articles = True
+            return articles_all
+
+        self.show_all_articles = False
+        self.page = int(page)
         count = len(articles_all)
         self.last_page = count < self.page * 15 and count >= (self.page - 1) * 15
         self.last_page = math.ceil(count / 15)
@@ -99,7 +111,11 @@ class BlogsFeed(Feed):
             raise ObjectDoesNotExist
 
     def feed_extra_kwargs(self, obj):
-        return {"page": self.page, "last_page": self.last_page}
+        return {
+            "page": self.page,
+            "last_page": self.last_page,
+            "show_all_articles": self.show_all_articles,
+        }
 
     def items(self, obj):
         return obj
