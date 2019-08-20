@@ -68,7 +68,7 @@ class CorrectMimeTypeFeed(DefaultFeed):
                             "link",
                             "",
                             {
-                                "rel": "prev-archive",
+                                "rel": "previous",
                                 "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}",
                             },
                         )
@@ -77,7 +77,7 @@ class CorrectMimeTypeFeed(DefaultFeed):
                             "link",
                             "",
                             {
-                                "rel": "next-archive",
+                                "rel": "next",
                                 "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}",
                             },
                         )
