@@ -7,10 +7,12 @@ from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
 from django.template import RequestContext
 from django.core.cache import cache
+from django.http import HttpResponseNotFound
 
 from gsoc.models import UserProfile, GsocYear
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
+from aldryn_newsblog.models import Article
 
 from cms.models import Page, Site
 from cms.plugin_rendering import ContentRenderer
@@ -45,17 +47,20 @@ class BlogsFeed(Feed):
     feed_type = CorrectMimeTypeFeed
     description = "Updates on different student blogs of GSoC@PSF"
 
-    def items(self):
-        articles = cache.get("articles_feed")
-        if articles is None:
-            gsoc_year = GsocYear.objects.first()
-            ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
-            articles = []
-            for up in ups:
-                section = up.app_config
-                articles.extend(list(section.article_set.all()))
-            cache.set("articles_feed", articles)
+    def get_object(self, request):
+        page = int(request.GET.get('p', 1))
+        articles_all = cache.get("articles_all")
+        if articles_all is None:
+            articles_all = list(Article.objects.order_by('-publishing_date').all())
+            cache.set("articles_all", articles_all)
+        count = len(articles_all)
+        start_index = (page - 1) * 15
+        end_index = page * 15
+        articles = list(articles_all[start_index:end_index])
         return articles
+
+    def items(self, obj):
+        return obj
 
     def item_author_name(self, item):
         return item.owner.username
