@@ -152,7 +152,6 @@ INSTALLED_APPS = (
     "suborg",
     "debug_toolbar",
     "django_simple_cookie_consent",
-    "cachalot",
 )
 THUMBNAIL_PROCESSORS = (
     "easy_thumbnails.processors.colorspace",
@@ -523,3 +522,11 @@ BLEACH_ALLOWED_STYLES = [
 ]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'mem_cache',
+    }
+}
+
