@@ -44,20 +44,32 @@ class CorrectMimeTypeFeed(DefaultFeed):
         if self.feed["page"] is not None:
             print(self.feed["page"], self.feed["last_page"])
             if self.feed["page"] >= 1 and self.feed["page"] <= self.feed["last_page"]:
-                handler.addQuickElement("link", "", {
-                    "rel": "current",
-                    "href": f"{self.feed['feed_url']}?p={self.feed['page']}"
-                })
+                handler.addQuickElement(
+                    "link",
+                    "",
+                    {
+                        "rel": "current",
+                        "href": f"{self.feed['feed_url']}?p={self.feed['page']}",
+                    },
+                )
                 if self.feed["page"] > 1:
-                    handler.addQuickElement("link", "", {
-                        "rel": "previous",
-                        "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}"
-                    })
+                    handler.addQuickElement(
+                        "link",
+                        "",
+                        {
+                            "rel": "previous",
+                            "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}",
+                        },
+                    )
                 if self.feed["page"] < self.feed["last_page"]:
-                    handler.addQuickElement("link", "", {
-                        "rel": "next",
-                        "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}"
-                    })
+                    handler.addQuickElement(
+                        "link",
+                        "",
+                        {
+                            "rel": "next",
+                            "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}",
+                        },
+                    )
 
 
 class BlogsFeed(Feed):
@@ -73,7 +85,7 @@ class BlogsFeed(Feed):
         self.page = int(request.GET.get("p", 1))
         articles_all = cache.get("articles_all")
         if articles_all is None:
-            articles_all = list(Article.objects.order_by('-publishing_date').all())
+            articles_all = list(Article.objects.order_by("-publishing_date").all())
             cache.set("articles_all", articles_all)
         count = len(articles_all)
         self.last_page = count < self.page * 15 and count >= (self.page - 1) * 15
@@ -87,10 +99,7 @@ class BlogsFeed(Feed):
             raise ObjectDoesNotExist
 
     def feed_extra_kwargs(self, obj):
-        return {
-            "page": self.page,
-            "last_page": self.last_page
-        }
+        return {"page": self.page, "last_page": self.last_page}
 
     def items(self, obj):
         return obj
