@@ -3,6 +3,7 @@ import unicodedata
 
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import DefaultFeed
+from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
@@ -50,10 +51,7 @@ class CorrectMimeTypeFeed(DefaultFeed):
                     handler.addQuickElement(
                         "link",
                         "",
-                        {
-                            "rel": "first",
-                            "href": f"{self.feed['feed_url']}?p=1",
-                        },
+                        {"rel": "first", "href": f"{self.feed['feed_url']}?p=1"},
                     )
                     handler.addQuickElement(
                         "link",
@@ -91,12 +89,19 @@ class BlogsFeed(Feed):
     feed_url = f"{settings.INETLOCATION}/feed/"
     feed_type = CorrectMimeTypeFeed
     description = "Updates on different student blogs of GSoC@PSF"
+    year = GsocYear.objects.first().gsoc_year
 
     def get_object(self, request):
-        articles_all = cache.get("articles_all")
-        if articles_all is None:
-            articles_all = list(Article.objects.order_by("-publishing_date").all())
-            cache.set("articles_all", articles_all)
+        year = int(request.GET.get("y", self.year))
+        year_start = timezone.datetime(year, 1, 1)
+        year_end = timezone.datetime(year, 12, 31)
+        articles_all = list(
+            Article.objects.filter(
+                publishing_date__gte=year_start, publishing_date__lte=year_end
+            )
+            .order_by("-publishing_date")
+            .all()
+        )
 
         page = request.GET.get("p", 1)
         if page == "all":
