@@ -65,8 +65,10 @@ class CorrectMimeTypeFeed(DefaultFeed):
                         "",
                         {
                             "rel": "last",
-                            "href": (f"{self.feed['feed_url']}?y={self.feed['year']}"
-                                     f"&p={self.feed['last_page']}"),
+                            "href": (
+                                f"{self.feed['feed_url']}?y={self.feed['year']}"
+                                f"&p={self.feed['last_page']}"
+                            ),
                         },
                     )
                     if self.feed["page"] > 1:
@@ -75,8 +77,10 @@ class CorrectMimeTypeFeed(DefaultFeed):
                             "",
                             {
                                 "rel": "previous",
-                                "href": (f"{self.feed['feed_url']}?y={self.feed['year']}"
-                                         f"&p={self.feed['page'] - 1}"),
+                                "href": (
+                                    f"{self.feed['feed_url']}?y={self.feed['year']}"
+                                    f"&p={self.feed['page'] - 1}"
+                                ),
                             },
                         )
                     if self.feed["page"] < self.feed["last_page"]:
@@ -85,8 +89,10 @@ class CorrectMimeTypeFeed(DefaultFeed):
                             "",
                             {
                                 "rel": "next",
-                                "href": (f"{self.feed['feed_url']}?y={self.feed['year']}"
-                                         f"&p={self.feed['page'] + 1}"),
+                                "href": (
+                                    f"{self.feed['feed_url']}?y={self.feed['year']}"
+                                    f"&p={self.feed['page'] + 1}"
+                                ),
                             },
                         )
 
@@ -194,7 +200,9 @@ class ArticlesFeed(Feed):
 
     def description(self):
         page = Title.objects.get(slug=self.blog_slug, publisher_is_draft=False).page
-        return f"Updates on different articles published on {page.application_namespace}"
+        return (
+            f"Updates on different articles published on {page.application_namespace}"
+        )
 
     def feed_url(self, obj):
         return f"{settings.INETLOCATION}/{self.blog_slug}/feed/"
@@ -205,10 +213,10 @@ class ArticlesFeed(Feed):
         section = NewsBlogConfig.objects.get(namespace=page.application_namespace)
         articles = list(section.article_set.all())
         return articles
-    
+
     def items(self, obj):
         return obj
-    
+
     def item_author_name(self, item):
         return item.owner.username
 
