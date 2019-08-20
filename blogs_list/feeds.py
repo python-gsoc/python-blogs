@@ -92,7 +92,6 @@ class BlogsFeed(Feed):
     gsoc_year = GsocYear.objects.first()
     title = f"GSoC {gsoc_year} PSF Blogs"
     link = settings.INETLOCATION
-    feed_url = f"{settings.INETLOCATION}/feed/"
     feed_type = CorrectMimeTypeFeed
     description = "Updates on different student blogs of GSoC@PSF"
     year = GsocYear.objects.first().gsoc_year
@@ -137,6 +136,9 @@ class BlogsFeed(Feed):
             "year": self.year,
         }
 
+    def feed_url(self, obj):
+        return f"{settings.INETLOCATION}/feed/?y={self.year}&p={self.page}"
+
     def items(self, obj):
         return obj
 
@@ -175,3 +177,6 @@ class BlogsFeed(Feed):
         )
         url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug, "/")
         return url
+
+
+import aldryn_newsblog.feeds
