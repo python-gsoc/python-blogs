@@ -51,14 +51,18 @@ class CorrectMimeTypeFeed(DefaultFeed):
                     handler.addQuickElement(
                         "link",
                         "",
-                        {"rel": "first", "href": f"{self.feed['feed_url']}?p=1"},
+                        {
+                            "rel": "first",
+                            "href": f"{self.feed['feed_url']}?y={self.feed['year']}&p=1",
+                        },
                     )
                     handler.addQuickElement(
                         "link",
                         "",
                         {
                             "rel": "last",
-                            "href": f"{self.feed['feed_url']}?p={self.feed['last_page']}",
+                            "href": (f"{self.feed['feed_url']}?y={self.feed['year']}"
+                                     f"&p={self.feed['last_page']}"),
                         },
                     )
                     if self.feed["page"] > 1:
@@ -67,7 +71,8 @@ class CorrectMimeTypeFeed(DefaultFeed):
                             "",
                             {
                                 "rel": "previous",
-                                "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}",
+                                "href": (f"{self.feed['feed_url']}?y={self.feed['year']}"
+                                         f"&p={self.feed['page'] - 1}"),
                             },
                         )
                     if self.feed["page"] < self.feed["last_page"]:
@@ -76,7 +81,8 @@ class CorrectMimeTypeFeed(DefaultFeed):
                             "",
                             {
                                 "rel": "next",
-                                "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}",
+                                "href": (f"{self.feed['feed_url']}?y={self.feed['year']}"
+                                         f"&p={self.feed['page'] + 1}"),
                             },
                         )
 
@@ -128,6 +134,7 @@ class BlogsFeed(Feed):
             "page": self.page,
             "last_page": self.last_page,
             "show_all_articles": self.show_all_articles,
+            "year": self.year,
         }
 
     def items(self, obj):
