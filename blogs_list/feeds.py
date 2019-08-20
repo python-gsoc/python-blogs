@@ -17,7 +17,7 @@ from gsoc.models import UserProfile, GsocYear
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.models import Article
 
-from cms.models import Page, Site
+from cms.models import Page, Site, Title
 from cms.plugin_rendering import ContentRenderer
 
 
@@ -35,6 +35,10 @@ def get_request(language=None):
     request.current_page = None
     request.user = AnonymousUser()
     return request
+
+
+class BaseCorrectMimeTypeFeed(DefaultFeed):
+    content_type = "application/xml; charset=utf-8"
 
 
 class CorrectMimeTypeFeed(DefaultFeed):
@@ -89,12 +93,11 @@ class CorrectMimeTypeFeed(DefaultFeed):
 
 class BlogsFeed(Feed):
 
-    gsoc_year = GsocYear.objects.first()
-    title = f"GSoC {gsoc_year} PSF Blogs"
+    year = GsocYear.objects.first().gsoc_year
+    title = f"GSoC {year} PSF Blogs"
     link = settings.INETLOCATION
     feed_type = CorrectMimeTypeFeed
     description = "Updates on different student blogs of GSoC@PSF"
-    year = GsocYear.objects.first().gsoc_year
 
     def get_object(self, request):
         year = int(request.GET.get("y", self.year))
@@ -179,4 +182,65 @@ class BlogsFeed(Feed):
         return url
 
 
-import aldryn_newsblog.feeds
+class ArticlesFeed(Feed):
+
+    year = GsocYear.objects.first().gsoc_year
+    link = settings.INETLOCATION
+    feed_type = BaseCorrectMimeTypeFeed
+
+    def title(self):
+        page = Title.objects.get(slug=self.blog_slug, publisher_is_draft=False).page
+        return f"Articles on {page.application_namespace}"
+
+    def description(self):
+        page = Title.objects.get(slug=self.blog_slug, publisher_is_draft=False).page
+        return f"Updates on different articles published on {page.application_namespace}"
+
+    def feed_url(self, obj):
+        return f"{settings.INETLOCATION}/{self.blog_slug}/feed/"
+
+    def get_object(self, request, blog_slug):
+        self.blog_slug = blog_slug
+        page = Title.objects.get(slug=blog_slug, publisher_is_draft=False).page
+        section = NewsBlogConfig.objects.get(namespace=page.application_namespace)
+        articles = list(section.article_set.all())
+        return articles
+    
+    def items(self, obj):
+        return obj
+    
+    def item_author_name(self, item):
+        return item.owner.username
+
+    def item_author_email(self, item):
+        return item.owner.email
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        if not item.lead_in:
+            request = get_request()
+            c = ContentRenderer(request)
+            html = c.render_placeholder(item.content, RequestContext(request))
+            return remove_control_characters(html)
+        return item.lead_in
+
+    def item_pubdate(self, item):
+        return item.publishing_date
+
+    def item_guid(self, item):
+        site = Site.objects.first()
+        return self.item_link(item)
+
+    def item_guid_is_permalink(self, item):
+        return True
+
+    def item_link(self, item):
+        site = Site.objects.first()
+        section = item.app_config
+        p = Page.objects.get(
+            application_namespace=section.namespace, publisher_is_draft=False
+        )
+        url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug, "/")
+        return url
