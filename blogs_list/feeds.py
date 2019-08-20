@@ -1,3 +1,4 @@
+import math
 import unicodedata
 
 from django.contrib.syndication.views import Feed
@@ -7,6 +8,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
 from django.template import RequestContext
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 
 from gsoc.models import UserProfile, GsocYear
@@ -37,6 +39,26 @@ def get_request(language=None):
 class CorrectMimeTypeFeed(DefaultFeed):
     content_type = "application/xml; charset=utf-8"
 
+    def add_root_elements(self, handler):
+        super(CorrectMimeTypeFeed, self).add_root_elements(handler)
+        if self.feed["page"] is not None:
+            print(self.feed["page"], self.feed["last_page"])
+            if self.feed["page"] >= 1 and self.feed["page"] <= self.feed["last_page"]:
+                handler.addQuickElement("link", "", {
+                    "rel": "current",
+                    "href": f"{self.feed['feed_url']}?p={self.feed['page']}"
+                })
+                if self.feed["page"] > 1:
+                    handler.addQuickElement("link", "", {
+                        "rel": "previous",
+                        "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}"
+                    })
+                if self.feed["page"] < self.feed["last_page"]:
+                    handler.addQuickElement("link", "", {
+                        "rel": "next",
+                        "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}"
+                    })
+
 
 class BlogsFeed(Feed):
 
@@ -48,16 +70,27 @@ class BlogsFeed(Feed):
     description = "Updates on different student blogs of GSoC@PSF"
 
     def get_object(self, request):
-        page = int(request.GET.get('p', 1))
+        self.page = int(request.GET.get("p", 1))
         articles_all = cache.get("articles_all")
         if articles_all is None:
             articles_all = list(Article.objects.order_by('-publishing_date').all())
             cache.set("articles_all", articles_all)
         count = len(articles_all)
-        start_index = (page - 1) * 15
-        end_index = page * 15
-        articles = list(articles_all[start_index:end_index])
-        return articles
+        self.last_page = count < self.page * 15 and count >= (self.page - 1) * 15
+        self.last_page = math.ceil(count / 15)
+        start_index = (self.page - 1) * 15
+        end_index = self.page * 15
+        if self.page >= 1 and self.page <= self.last_page:
+            articles = list(articles_all[start_index:end_index])
+            return articles
+        else:
+            raise ObjectDoesNotExist
+
+    def feed_extra_kwargs(self, obj):
+        return {
+            "page": self.page,
+            "last_page": self.last_page
+        }
 
     def items(self, obj):
         return obj
