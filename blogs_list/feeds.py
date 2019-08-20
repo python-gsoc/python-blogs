@@ -51,8 +51,16 @@ class CorrectMimeTypeFeed(DefaultFeed):
                         "link",
                         "",
                         {
-                            "rel": "current",
-                            "href": f"{self.feed['feed_url']}?p={self.feed['page']}",
+                            "rel": "first",
+                            "href": f"{self.feed['feed_url']}?p=1",
+                        },
+                    )
+                    handler.addQuickElement(
+                        "link",
+                        "",
+                        {
+                            "rel": "last",
+                            "href": f"{self.feed['feed_url']}?p={self.feed['last_page']}",
                         },
                     )
                     if self.feed["page"] > 1:
