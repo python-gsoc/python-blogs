@@ -7,7 +7,10 @@ Blogs
 {% block content %}
     {% for blogset in blogsets %}
         <div class="content-blog">
-            <h2 class="content-head content-head">GSoC {{ blogset.0 }}</h2>
+            <h2 class="content-head content-head">
+                GSoC {{ blogset.0 }}
+                <a href="/feed/?y={{ blogset.0 }}"><i class="fa fa-rss-square"></i></a>
+            </h2>
             <div class="pure-g blog-list">
                 {% for blog in blogset.1 %}
                     <div class="pure-u-1 pure-u-sm-1-2 pure-u-md-1-3 pure-u-lg-1-4 pure-u-xl-1-5 card-container">
