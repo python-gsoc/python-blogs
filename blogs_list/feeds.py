@@ -1,3 +1,4 @@
+import math
 import unicodedata
 
 from django.contrib.syndication.views import Feed
@@ -7,10 +8,13 @@ from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
 from django.template import RequestContext
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseNotFound
 
 from gsoc.models import UserProfile, GsocYear
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
+from aldryn_newsblog.models import Article
 
 from cms.models import Page, Site
 from cms.plugin_rendering import ContentRenderer
@@ -35,6 +39,41 @@ def get_request(language=None):
 class CorrectMimeTypeFeed(DefaultFeed):
     content_type = "application/xml; charset=utf-8"
 
+    def add_root_elements(self, handler):
+        super(CorrectMimeTypeFeed, self).add_root_elements(handler)
+        if self.feed["page"] is not None:
+            if not self.feed["show_all_articles"]:
+                if (
+                    self.feed["page"] >= 1
+                    and self.feed["page"] <= self.feed["last_page"]
+                ):
+                    handler.addQuickElement(
+                        "link",
+                        "",
+                        {
+                            "rel": "current",
+                            "href": f"{self.feed['feed_url']}?p={self.feed['page']}",
+                        },
+                    )
+                    if self.feed["page"] > 1:
+                        handler.addQuickElement(
+                            "link",
+                            "",
+                            {
+                                "rel": "previous",
+                                "href": f"{self.feed['feed_url']}?p={self.feed['page'] - 1}",
+                            },
+                        )
+                    if self.feed["page"] < self.feed["last_page"]:
+                        handler.addQuickElement(
+                            "link",
+                            "",
+                            {
+                                "rel": "next",
+                                "href": f"{self.feed['feed_url']}?p={self.feed['page'] + 1}",
+                            },
+                        )
+
 
 class BlogsFeed(Feed):
 
@@ -45,17 +84,41 @@ class BlogsFeed(Feed):
     feed_type = CorrectMimeTypeFeed
     description = "Updates on different student blogs of GSoC@PSF"
 
-    def items(self):
-        articles = cache.get("articles_feed")
-        if articles is None:
-            gsoc_year = GsocYear.objects.first()
-            ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
-            articles = []
-            for up in ups:
-                section = up.app_config
-                articles.extend(list(section.article_set.all()))
-            cache.set("articles_feed", articles)
-        return articles
+    def get_object(self, request):
+        articles_all = cache.get("articles_all")
+        if articles_all is None:
+            articles_all = list(Article.objects.order_by("-publishing_date").all())
+            cache.set("articles_all", articles_all)
+
+        page = request.GET.get("p", 1)
+        if page == "all":
+            self.page = None
+            self.last_page = None
+            self.show_all_articles = True
+            return articles_all
+
+        self.show_all_articles = False
+        self.page = int(page)
+        count = len(articles_all)
+        self.last_page = count < self.page * 15 and count >= (self.page - 1) * 15
+        self.last_page = math.ceil(count / 15)
+        start_index = (self.page - 1) * 15
+        end_index = self.page * 15
+        if self.page >= 1 and self.page <= self.last_page:
+            articles = list(articles_all[start_index:end_index])
+            return articles
+        else:
+            raise ObjectDoesNotExist
+
+    def feed_extra_kwargs(self, obj):
+        return {
+            "page": self.page,
+            "last_page": self.last_page,
+            "show_all_articles": self.show_all_articles,
+        }
+
+    def items(self, obj):
+        return obj
 
     def item_author_name(self, item):
         return item.owner.username
