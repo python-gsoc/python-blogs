@@ -85,6 +85,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "cms.context_processors.cms_settings",
                 "gsoc.context_processors.recaptcha_site_key",
+                "gsoc.context_processors.blog_slug",
             ],
             "loaders": [
                 "django.template.loaders.filesystem.Loader",
