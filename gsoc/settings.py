@@ -525,9 +525,8 @@ BLEACH_ALLOWED_STYLES = [
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'mem_cache',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "mem_cache",
     }
 }
-

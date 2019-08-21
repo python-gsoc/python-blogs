@@ -198,9 +198,7 @@ class ArticlesFeed(Feed):
         return f"Articles on {self.blog_title}"
 
     def description(self):
-        return (
-            f"Updates on different articles published on {self.blog_title}"
-        )
+        return f"Updates on different articles published on {self.blog_title}"
 
     def feed_url(self, obj):
         return f"{settings.INETLOCATION}/en/feed/{self.blog_slug}/"

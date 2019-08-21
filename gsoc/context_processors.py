@@ -12,12 +12,14 @@ def recaptcha_site_key(request):
 
 
 def blog_slug(request):
-    if hasattr(request, 'current_app'):
+    if hasattr(request, "current_app"):
         namespace = request.current_app
         try:
-            page = Page.objects.get(application_namespace=namespace, publisher_is_draft=False)
+            page = Page.objects.get(
+                application_namespace=namespace, publisher_is_draft=False
+            )
             slug = Title.objects.get(page=page).slug
-            feed_url = reverse('blogs_list:blog_feed', kwargs={'blog_slug':slug})
+            feed_url = reverse("blogs_list:blog_feed", kwargs={"blog_slug": slug})
             return {"feed_url": feed_url}
         except Exception as e:
             return {}
