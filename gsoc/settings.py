@@ -85,6 +85,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "cms.context_processors.cms_settings",
                 "gsoc.context_processors.recaptcha_site_key",
+                "gsoc.context_processors.blog_slug",
             ],
             "loaders": [
                 "django.template.loaders.filesystem.Loader",
@@ -524,9 +525,8 @@ BLEACH_ALLOWED_STYLES = [
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'mem_cache',
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "mem_cache",
     }
 }
-

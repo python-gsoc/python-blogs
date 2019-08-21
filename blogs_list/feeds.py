@@ -195,22 +195,19 @@ class ArticlesFeed(Feed):
     feed_type = BaseCorrectMimeTypeFeed
 
     def title(self):
-        page = Title.objects.get(slug=self.blog_slug, publisher_is_draft=False).page
-        return f"Articles on {page.application_namespace}"
+        return f"Articles on {self.blog_title}"
 
     def description(self):
-        page = Title.objects.get(slug=self.blog_slug, publisher_is_draft=False).page
-        return (
-            f"Updates on different articles published on {page.application_namespace}"
-        )
+        return f"Updates on different articles published on {self.blog_title}"
 
     def feed_url(self, obj):
-        return f"{settings.INETLOCATION}/{self.blog_slug}/feed/"
+        return f"{settings.INETLOCATION}/en/feed/{self.blog_slug}/"
 
     def get_object(self, request, blog_slug):
         self.blog_slug = blog_slug
         page = Title.objects.get(slug=blog_slug, publisher_is_draft=False).page
         section = NewsBlogConfig.objects.get(namespace=page.application_namespace)
+        self.blog_title = section.app_title
         articles = list(section.article_set.all())
         return articles
 
