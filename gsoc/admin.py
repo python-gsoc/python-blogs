@@ -380,7 +380,6 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "accepted_proposal_pdf",
         "blog_link",
         "proposal_confirmed",
-        "current_blog_count",
         "github_handle",
     )
     fieldsets = (
