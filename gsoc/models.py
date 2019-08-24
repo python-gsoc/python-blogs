@@ -1029,7 +1029,7 @@ class Comment(models.Model):
         template_data = {
             "article": self.article.title,
             "created_at": self.created_at.strftime("%I:%M %p, %d %B %Y"),
-            "username": self.username,
+            #"username": self.username,
             "link": urljoin(settings.INETLOCATION, comment_link),
             "article_owner": self.article.owner.username,
             "parent_comment_owner": self.parent.user.username,
