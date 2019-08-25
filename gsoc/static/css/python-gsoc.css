@@ -279,13 +279,13 @@ html.cms-toolbar-expanded > #layout {
 /* Alternate coloured ribbon */
 .ribbon {
     background: #16536e;
-    color: #aaaaaa;
+    color: #ebebeb;
 
     padding: 1em 1em 3em;
 }
 
 .ribbon a:link {
-    color: white;
+    color: #73ffff;
 }
 
 .ribbon a:visited {
@@ -327,7 +327,7 @@ html.cms-toolbar-expanded > #layout {
 
 /* This is the class used for the content sub-headers (<h3>) */
 .content-subhead {
-    color: #489eba;
+    color: #295E70;
 }
 .content-subhead i {
     margin-right: 7px;
