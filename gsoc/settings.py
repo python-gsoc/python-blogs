@@ -191,13 +191,6 @@ CMS_TEMPLATES = (
     ("fullwidth.html", "Fullwidth"),
     ("sidebar_left.html", "Sidebar Left"),
     ("sidebar_right.html", "Sidebar Right"),
-    ("homepage.html", "Homepage"),
-    ("gettingstarted.html", "Getting Started"),
-    ("ideas.html", "Project Ideas"),
-    ("mentors.html", "Mentors"),
-    ("schedule.html", "Schedule"),
-    ("students.html", "Students"),
-    ("contact.html", "Contact"),
     ("myprofile.html", "My Profile"),
 )
 
