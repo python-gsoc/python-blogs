@@ -1030,7 +1030,7 @@ class Comment(models.Model):
         template_data = {
             "article": self.article.title,
             "created_at": self.created_at.strftime("%I:%M %p, %d %B %Y"),
-            #"username": self.username,
+            # "username": self.username,
             "link": urljoin(settings.INETLOCATION, comment_link),
             "article_owner": self.article.owner.username,
             "parent_comment_owner": self.parent.user.username,
@@ -1320,19 +1320,6 @@ def add_review(sender, instance, **kwargs):
         ar = ar.first()
         ar.is_reviewed = False
         ar.save()
-
-
-# # Add ArticleReveiw object when new Article is created
-# @receiver(models.signals.post_save, sender=Article)
-# def add_review(sender, instance, **kwargs):
-#     ar = ArticleReview.objects.filter(article=instance).all()
-#     if not ar:
-#         ArticleReview.objects.create(article=instance)
-
-#     if ar:
-#         ar = ar.first()
-#         ar.is_reviewed = False
-#         ar.save()
 
 
 # Add BlogPostHistory object when new Article is created
