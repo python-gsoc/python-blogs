@@ -99,14 +99,19 @@ class CorrectMimeTypeFeed(DefaultFeed):
 
 class BlogsFeed(Feed):
 
-    year = GsocYear.objects.first().gsoc_year
-    title = f"GSoC {year} PSF Blogs"
     link = settings.INETLOCATION
     feed_type = CorrectMimeTypeFeed
     description = "Updates on different student blogs of GSoC@PSF"
 
     def get_object(self, request):
-        year = int(request.GET.get("y", self.year))
+        current_year = GsocYear.objects.first().gsoc_year
+        gsoc_year = int(request.GET.get("y", current_year))
+        year_qs = GsocYear.objects.filter(gsoc_year=gsoc_year)
+        if len(year_qs) == 0:
+            raise ObjectDoesNotExist
+        else:
+            self.year = year_qs.first()
+        self.title = f"GSoC {self.year} PSF Blogs"
         year_start = timezone.datetime(year, 1, 1)
         year_end = timezone.datetime(year, 12, 31)
         articles_all = list(
