@@ -105,15 +105,18 @@ class BlogsFeed(Feed):
 
     def get_object(self, request):
         current_year = GsocYear.objects.first().gsoc_year
-        gsoc_year = int(request.GET.get("y", current_year))
+        try:
+            gsoc_year = int(request.GET.get("y", current_year))
+        except ValueError:
+            raise ObjectDoesNotExist
         year_qs = GsocYear.objects.filter(gsoc_year=gsoc_year)
         if len(year_qs) == 0:
             raise ObjectDoesNotExist
         else:
-            self.year = year_qs.first()
+            self.year = year_qs.first().gsoc_year
         self.title = f"GSoC {self.year} PSF Blogs"
-        year_start = timezone.datetime(year, 1, 1)
-        year_end = timezone.datetime(year, 12, 31)
+        year_start = timezone.datetime(self.year, 1, 1)
+        year_end = timezone.datetime(self.year, 12, 31)
         articles_all = list(
             Article.objects.filter(
                 publishing_date__gte=year_start, publishing_date__lte=year_end
@@ -130,7 +133,10 @@ class BlogsFeed(Feed):
             return articles_all
 
         self.show_all_articles = False
-        self.page = int(page)
+        try:
+            self.page = int(page)
+        except ValueError:
+            raise ObjectDoesNotExist
         count = len(articles_all)
         self.last_page = count < self.page * 15 and count >= (self.page - 1) * 15
         self.last_page = math.ceil(count / 15)
