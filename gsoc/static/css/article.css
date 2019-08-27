@@ -61,13 +61,13 @@ article > heading {
 .aldryn-newsblog-pagination > ul > li {
     padding: 5px 15px;
     float: left;
-    background: lightseagreen;
+    background: #E0FFF1;
 }
 
 .aldryn-newsblog-pagination > ul > li:first-child {
     border-radius: 30px 0 0 30px;
     padding-left: 20px;
-}
+}   
 
 .aldryn-newsblog-pagination > ul > li:last-child {
     border-radius: 0 30px 30px 0;
@@ -76,7 +76,7 @@ article > heading {
 
 .aldryn-newsblog-pagination > ul > li a {
     text-decoration: none;
-    color: white;
+    color: #4760FF;
 }
 
 .aldryn-newsblog-pager {
@@ -94,7 +94,7 @@ article > heading {
 .aldryn-newsblog-pager > ul > li {
     padding: 5px 15px;
     float: left;
-    background: lightseagreen;
+    background: #E0FFF1;
 }
 
 .aldryn-newsblog-pager > ul > li:first-child {
@@ -109,7 +109,7 @@ article > heading {
 
 .aldryn-newsblog-pager > ul > li a {
     text-decoration: none;
-    color: white;
+    color: #4760FF;
 }
 
 .aldryn-newsblog-comments {
