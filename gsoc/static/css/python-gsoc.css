@@ -1,5 +1,5 @@
 body {
-    color: #777;
+    color: #666;
 }
 
 .pure-img-responsive {
@@ -262,7 +262,8 @@ h4,
 h5,
 h6,
 label {
-    color: #489eba;
+    /* color: #489eba; */
+    color: #295E70;
 }
 
 html.cms-toolbar-expanded > #layout {
