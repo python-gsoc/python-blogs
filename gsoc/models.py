@@ -985,7 +985,7 @@ class RegLink(models.Model):
             self.email,
             template="invite.html",
             subject=subject,
-            template_data=template_data    
+            template_data=template_data,
         )
         s = Scheduler.objects.create(
             command="send_email", activation_date=trigger_time, data=scheduler_data
