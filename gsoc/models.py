@@ -963,21 +963,29 @@ class RegLink(models.Model):
     def create_scheduler(self, trigger_time=timezone.now()):
         validate_email(self.email)
         role = {0: "Others", 1: "Suborg Admin", 2: "Mentor", 3: "Student"}
-        scheduler_data = build_send_mail_json(
-            self.email,
-            template="invite.html",
-            subject=(
+        template_data = {
+            "register_link": settings.INETLOCATION + self.url,
+            "role": self.user_role,
+            "gsoc_year": self.user_gsoc_year.gsoc_year,
+        }
+        if self.user_role == 0:
+            subject = (
+                f"You have been invited to join for GSoC "
+                f"{self.user_gsoc_year.gsoc_year} with PSF"
+            )
+        else:
+            subject = (
                 f"You have been invited to join "
                 f"{self.user_suborg.suborg_name.strip()}"
                 f" as a {role[self.user_role]} for GSoC "
                 f"{self.user_gsoc_year.gsoc_year} with PSF"
-            ),
-            template_data={
-                "register_link": settings.INETLOCATION + self.url,
-                "role": self.user_role,
-                "gsoc_year": self.user_gsoc_year.gsoc_year,
-                "suborg": self.user_suborg.suborg_name.strip(),
-            },
+            )
+            template_data["suborg"] = self.user_suborg.suborg_name.strip()
+        scheduler_data = build_send_mail_json(
+            self.email,
+            template="invite.html",
+            subject=subject,
+            template_data=template_data    
         )
         s = Scheduler.objects.create(
             command="send_email", activation_date=trigger_time, data=scheduler_data
