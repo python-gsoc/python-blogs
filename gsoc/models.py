@@ -1041,7 +1041,6 @@ class Comment(models.Model):
             # "username": self.username,
             "link": urljoin(settings.INETLOCATION, comment_link),
             "article_owner": self.article.owner.username,
-            "parent_comment_owner": self.parent.user.username,
         }
         scheduler_data = build_send_mail_json(
             self.article.owner.email,
@@ -1052,6 +1051,7 @@ class Comment(models.Model):
         Scheduler.objects.create(command="send_email", data=scheduler_data)
 
         if self.parent and self.parent.user:
+            template_data["parent_comment_owner"] = self.parent.username
             scheduler_data = build_send_mail_json(
                 self.parent.user.email,
                 template="comment_reply_notification.html",
