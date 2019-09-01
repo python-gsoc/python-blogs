@@ -61,9 +61,9 @@
 
     <fieldset class="pure-group">
         {% if user.is_authenticated %}
-            <input type="text" name="username" value="{{ user.username }}" class="pure-input-1" disabled />
+            <input type="text" name="username" value="{{ user.username }}" class="pure-input-1" maxlength="50" disabled />
         {% else %}
-            <input type="text" name="username" placeholder="Username" class="pure-input-1" required />
+            <input type="text" name="username" placeholder="Username" class="pure-input-1" maxlength="50" required />
         {% endif %}
         <textarea name="comment" placeholder="Comment" class="pure-input-1" id="comment-textarea-{% if parent %}{{ parent.pk }}{% else %}root{% endif %}"
          maxlength="1000" onkeyup="updateCharCount({% if parent %}{{ parent.pk }}{% else %}'root'{% endif %});" required></textarea>
