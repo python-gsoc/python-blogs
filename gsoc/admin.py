@@ -94,6 +94,7 @@ def article_get_form():
                             "is_featured",
                             "featured_image",
                             "lead_in",
+                            "is_published",
                         )
                     },
                 ),
