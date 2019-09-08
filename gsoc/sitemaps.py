@@ -23,7 +23,7 @@ class BlogListSitemap(Sitemap):
                 )
                 urls.append(p.get_absolute_url())
                 articles = Article.objects.filter(app_config=blog).all()
-                for i in range(len(articles) // 5):
+                for i in range((len(articles)-1) // 5):
                     urls.append(f"{p.get_absolute_url()}?page={i + 2}")
                 for article in articles:
                     urls.append(f"{p.get_absolute_url()}{article.slug}/")
