@@ -1,11 +1,11 @@
 #django
-django>=2.2
+django~=2.2.0
 
 #django debug
 django-debug-toolbar>=1.11
 
 #django cms
-django-cms==3.7.0rc2
+django-cms~=3.7.0
 djangocms-text-ckeditor>=3.7.0
 djangocms-file>=2.2.0
 djangocms-column>=1.9.0
