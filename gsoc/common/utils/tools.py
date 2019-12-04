@@ -213,7 +213,6 @@ def archive_current_gsoc_files(current_year):
                 </body>
             """,
             )
-        print(decoded_content)
         try:
             repo.create_file(
                 f"{current_year}/{file.path}",
