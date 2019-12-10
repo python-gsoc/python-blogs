@@ -1,34 +1,29 @@
-{% extends "aldryn_newsblog/base.html" %}
-{% load i18n cms_tags apphooks_config_tags %}
+{% extends "aldryn_newsblog/base.html" %} {% load i18n cms_tags apphooks_config_tags %} {% block title %}{{ article.title }} - {{ block.super }}{% endblock %} {% block meta %}{{ article.title }} - {{ article.app_config.namespace }} - {% endblock %} {%
+block breadcrumb %}{% endblock %} {% block newsblog_content %}
+<div class="aldryn-newsblog-detail">
+    {% include "aldryn_newsblog/includes/article.html" with detail_view="true" %}
+</div>
+{% static_placeholder "newsblog_social" %}
 
-{% block title %}{{ article.title }} - {{ block.super }}{% endblock %}
-{% block meta %}{{ article.title }} - {{ article.app_config.namespace }} - {% endblock %}
+<div class="aldryn-newsblog-pager">
+    <ul class="pager">
+        {% if prev_article %}
+        <li class="previous"><a href="{{ prev_article.get_absolute_url }}"><span aria-hidden="true">&larr;</span> {% trans "Previous" %}</a></li>
+        {% else %}
+        <li class="previous"><span class="text-muted"><span aria-hidden="true">&larr;</span> {% trans "Previous" %}</span>
+        </li>
+        {% endif %}
+        <li><span class="pager-back"><a href="{% namespace_url "article-list" %}">{% trans "Overview" %}</a></span></li>
+        {% if next_article %}
+        <li class="next"><a href="{{ next_article.get_absolute_url }}">{% trans "Next" %} <span aria-hidden="true">&rarr;</span></a></li>
+        {% else %}
+        <li class="next"><span class="text-muted">{% trans "Next" %} <span aria-hidden="true">&rarr;</span></span>
+        </li>
+        {% endif %}
+    </ul>
+</div>
 
-{% block breadcrumb %}{% endblock %}
-
-{% block newsblog_content %}
-    <div class="aldryn-newsblog-detail">
-        {% include "aldryn_newsblog/includes/article.html" with detail_view="true" %}
-    </div>
-    {% static_placeholder "newsblog_social" %}
-
-    <div class="aldryn-newsblog-pager">
-        <ul class="pager">
-            {% if prev_article %}
-                <li class="previous"><a href="{{ prev_article.get_absolute_url }}"><span aria-hidden="true">&larr;</span> {% trans "Previous" %}</a></li>
-            {% else %}
-                <li class="previous"><span class="text-muted"><span aria-hidden="true">&larr;</span> {% trans "Previous" %}</span></li>
-            {% endif %}
-            <li><span class="pager-back"><a href="{% namespace_url "article-list" %}">{% trans "Overview" %}</a></span></li>
-            {% if next_article %}
-                <li class="next"><a href="{{ next_article.get_absolute_url }}">{% trans "Next" %} <span aria-hidden="true">&rarr;</span></a></li>
-            {% else %}
-                <li class="next"><span class="text-muted">{% trans "Next" %} <span aria-hidden="true">&rarr;</span></span></li>
-            {% endif %}
-        </ul>
-    </div>
-
-    <div class="aldryn-newsblog-comments">
-        {% include "aldryn_newsblog/includes/comments.html" with comments=article.get_root_comments article=article user=user csrf_token=csrf_token recaptcha_site_key=recaptcha_site_key only %}
-    </div>
+<div class="aldryn-newsblog-comments">
+    {% include "aldryn_newsblog/includes/comments.html" with comments=article.get_root_comments article=article user=user csrf_token=csrf_token recaptcha_site_key=recaptcha_site_key only %}
+</div>
 {% endblock %}

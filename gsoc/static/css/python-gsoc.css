@@ -7,9 +7,11 @@ body {
     height: auto;
 }
 
+
 /*
 Add transition to containers so they can push in and out.
 */
+
 #layout,
 #menu,
 .menu-link {
@@ -20,25 +22,31 @@ Add transition to containers so they can push in and out.
     transition: all 0.2s ease-out;
 }
 
+
 /*
 This is the parent `<div>` that contains the menu and the content area.
 */
+
 #layout {
     position: relative;
     left: 0;
     padding-left: 0;
 }
-    #layout.active #menu {
-        left: 150px;
-        width: 150px;
-    }
 
-    #layout.active .menu-link {
-        left: 150px;
-    }
+#layout.active #menu {
+    left: 150px;
+    width: 150px;
+}
+
+#layout.active .menu-link {
+    left: 150px;
+}
+
+
 /*
 The content `<div>` is where all your content goes.
 */
+
 .content {
     margin: 0 auto;
     padding: 0 2em;
@@ -56,23 +64,25 @@ The content `<div>` is where all your content goes.
 }
 
 .header {
-     margin: 0;
-     color: #333;
-     text-align: center;
-     padding: 2.5em 2em 0;
-     border-bottom: 1px solid #eee;
- }
-    .header h1 {
-        margin: 0.2em 0;
-        font-size: 3em;
-        font-weight: 300;
-    }
-     .header h2 {
-        font-weight: 300;
-        color: #ccc;
-        padding: 0;
-        margin-top: 0;
-    }
+    margin: 0;
+    color: #333;
+    text-align: center;
+    padding: 2.5em 2em 0;
+    border-bottom: 1px solid #eee;
+}
+
+.header h1 {
+    margin: 0.2em 0;
+    font-size: 3em;
+    font-weight: 300;
+}
+
+.header h2 {
+    font-weight: 300;
+    color: #ccc;
+    padding: 0;
+    margin-top: 0;
+}
 
 .content-subhead {
     margin: 50px 0 20px 0;
@@ -81,162 +91,186 @@ The content `<div>` is where all your content goes.
 }
 
 
-
 /*
 The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
 appears on the left side of the page.
 */
 
 #menu {
-    margin-left: -150px; /* "#menu" width */
+    margin-left: -150px;
+    /* "#menu" width */
     width: 150px;
     position: fixed;
     top: 46px;
     left: 0;
     bottom: 0;
-    z-index: 1000; /* so the menu or its navicon stays above all content */
+    z-index: 1000;
+    /* so the menu or its navicon stays above all content */
     background: #191818;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
-    /*
+
+
+/*
     All anchors inside the menu should be styled like this.
     */
-    #menu a {
-        color: #999;
-        border: none;
-        padding: 0.6em 0 0.6em 0.6em;
-    }
 
-    /*
+#menu a {
+    color: #999;
+    border: none;
+    padding: 0.6em 0 0.6em 0.6em;
+}
+
+
+/*
     Remove all background/borders, since we are applying them to #menu.
     */
-     #menu .pure-menu,
-     #menu .pure-menu ul {
-        border: none;
-        background: transparent;
-    }
 
-    /*
+#menu .pure-menu,
+#menu .pure-menu ul {
+    border: none;
+    background: transparent;
+}
+
+
+/*
     Add that light border to separate items into groups.
     */
-    #menu .pure-menu ul,
-    #menu .pure-menu .menu-item-divided {
-        border-top: 1px solid #333;
-    }
-        /*
+
+#menu .pure-menu ul,
+#menu .pure-menu .menu-item-divided {
+    border-top: 1px solid #333;
+}
+
+
+/*
         Change color of the anchor links on hover/focus.
         */
-        #menu .pure-menu li a:hover,
-        #menu .pure-menu li a:focus {
-            background: #333;
-        }
 
-    /*
+#menu .pure-menu li a:hover,
+#menu .pure-menu li a:focus {
+    background: #333;
+}
+
+
+/*
     This styles the selected menu item `<li>`.
     */
-    #menu .pure-menu-selected,
-    #menu .pure-menu-heading {
-        background: #1f8dd6;
-    }
-        /*
+
+#menu .pure-menu-selected,
+#menu .pure-menu-heading {
+    background: #1f8dd6;
+}
+
+
+/*
         This styles a link within a selected menu item `<li>`.
         */
-        #menu .pure-menu-selected a {
-            color: #fff;
-        }
 
-    /*
+#menu .pure-menu-selected a {
+    color: #fff;
+}
+
+
+/*
     This styles the menu heading.
     */
-    #menu .pure-menu-heading {
-        font-size: 110%;
-        color: #fff;
-        margin: 0;
-    }
+
+#menu .pure-menu-heading {
+    font-size: 110%;
+    color: #fff;
+    margin: 0;
+}
+
 
 /* -- Dynamic Button For Responsive Menu -------------------------------------*/
+
 
 /*
 The button to open/close the Menu is custom-made and not part of Pure. Here's
 how it works:
 */
 
+
 /*
 `.menu-link` represents the responsive menu toggle that shows/hides on
 small screens.
 */
+
 .menu-link {
     position: fixed;
-    display: block; /* show this only on small screens */
+    display: block;
+    /* show this only on small screens */
     top: 46px;
-    left: 0; /* "#menu width" */
+    left: 0;
+    /* "#menu width" */
     background: #000;
-    background: rgba(0,0,0,0.7);
-    font-size: 10px; /* change this value to increase/decrease button size */
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 10px;
+    /* change this value to increase/decrease button size */
     z-index: 10;
     width: 2em;
     height: auto;
     padding: 2.1em 1.6em;
 }
 
-    .menu-link:hover,
-    .menu-link:focus {
-        background: #000;
-    }
+.menu-link:hover,
+.menu-link:focus {
+    background: #000;
+}
 
-    .menu-link span {
-        position: relative;
-        display: block;
-    }
+.menu-link span {
+    position: relative;
+    display: block;
+}
 
-    .menu-link span,
-    .menu-link span:before,
-    .menu-link span:after {
-        background-color: #fff;
-        width: 100%;
-        height: 0.2em;
-    }
+.menu-link span,
+.menu-link span:before,
+.menu-link span:after {
+    background-color: #fff;
+    width: 100%;
+    height: 0.2em;
+}
 
-        .menu-link span:before,
-        .menu-link span:after {
-            position: absolute;
-            margin-top: -0.6em;
-            content: " ";
-        }
+.menu-link span:before,
+.menu-link span:after {
+    position: absolute;
+    margin-top: -0.6em;
+    content: " ";
+}
 
-        .menu-link span:after {
-            margin-top: 0.6em;
-        }
+.menu-link span:after {
+    margin-top: 0.6em;
+}
 
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 
+
 /*
 Hides the menu at `48em`, but modify this based on your app's needs.
 */
-@media (min-width: 50em) {
 
+@media (min-width: 50em) {
     .header,
     .content {
         padding-left: 2em;
         padding-right: 2em;
     }
-
     #layout {
-        padding-left: 150px; /* left col width "#menu" */
+        padding-left: 150px;
+        /* left col width "#menu" */
         left: 0;
     }
     #menu {
         left: 150px;
     }
-
     .menu-link {
         position: fixed;
         left: 150px;
         display: none;
     }
-
     #layout.active .menu-link {
         left: 150px;
     }
@@ -266,22 +300,23 @@ label {
     color: #295E70;
 }
 
-html.cms-toolbar-expanded > #layout {
+html.cms-toolbar-expanded>#layout {
     margin-top: 46px;
 }
 
 .warning {
-    background:  wheat;
+    background: wheat;
     color: #16536e;
     padding-left: 2em;
     padding-right: 2em;
 }
 
+
 /* Alternate coloured ribbon */
+
 .ribbon {
     background: #16536e;
     color: #ebebeb;
-
     padding: 1em 1em 3em;
 }
 
@@ -301,19 +336,24 @@ html.cms-toolbar-expanded > #layout {
     color: red;
 }
 
+
 /* Menu */
+
 .custom-restricted-width {
     display: inline-block;
 }
 
 #menu .pure-menu-heading {
-    background-color:  #16536e;
+    background-color: #16536e;
 }
+
 #menu .pure-menu-selected {
     background-color: #489eba;
 }
 
+
 /* This is the class used for the main content headers (<h2>) */
+
 .content-head {
     font-weight: 400;
     text-transform: uppercase;
@@ -321,15 +361,20 @@ html.cms-toolbar-expanded > #layout {
     margin: 1em 0;
 }
 
+
 /* This is a modifier class used when the content-head is inside a ribbon */
+
 .content-head-ribbon {
     color: white;
 }
 
+
 /* This is the class used for the content sub-headers (<h3>) */
+
 .content-subhead {
     color: #295E70;
 }
+
 .content-subhead i {
     margin-right: 7px;
 }
@@ -346,20 +391,24 @@ html.cms-toolbar-expanded > #layout {
     max-height: 150px;
 }
 
+
 /* Org status bars */
+
 div.ok {
-	border-bottom: 2px solid #8aab00;
+    border-bottom: 2px solid #8aab00;
 }
 
 div.waiting {
-	border-bottom: 2px solid #fecb01;
+    border-bottom: 2px solid #fecb01;
 }
 
 div.problem {
-	border-bottom: 2px solid #b44601;
+    border-bottom: 2px solid #b44601;
 }
 
+
 /* Notification */
+
 .notification {
     margin-bottom: 0 !important;
 }
@@ -378,7 +427,9 @@ div.problem {
     padding: 1em 2em;
 }
 
+
 /* Login Bar */
+
 #topnav {
     position: fixed;
     left: 0;
@@ -393,7 +444,7 @@ div.problem {
 
 .login-container {
     display: inline-block;
-    float: right; 
+    float: right;
 }
 
 .pure-form {
@@ -408,15 +459,12 @@ div.problem {
     .large-screen {
         display: none;
     }
-
     .small-screen {
         display: block;
     }
-
     .menu-toggle {
         display: inline-block !important;
     }
-
     .small-screen .login-button {
         margin: 5px;
     }
@@ -451,7 +499,6 @@ div.problem {
     background: #eee;
     text-align: center;
     text-decoration: none !important;
-
     -webkit-transition: all 0.1s ease-out;
     -moz-transition: all 0.1s ease-out;
     -ms-transition: all 0.1s ease-out;
@@ -523,13 +570,34 @@ div.problem {
 }
 
 pre {
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap;
+    /* css-3 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -pre-wrap;
+    /* Opera 4-6 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */
 }
 
 .rss-icon {
     color: #f26522;
+}
+
+.title-n-menu {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    /* align-items: center; */
+}
+
+@media (max-width: 48em) {
+    .title-n-menu {
+        justify-content: flex-start;
+        /* justify-content: unset; */
+        /* display: unset; */
+        /* float: right; */
+    }
 }
