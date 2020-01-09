@@ -641,7 +641,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
                     "mailing_list",
                     "twitter_url",
                     "blog_url",
-                    "link",
+                    "homepage",
                     "changed",
                     "accepted",
                     "last_reviewed_at",
