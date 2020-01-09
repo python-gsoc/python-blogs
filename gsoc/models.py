@@ -302,7 +302,7 @@ class SubOrgDetails(models.Model):
     mailing_list = models.CharField(max_length=80, null=True, blank=True)
     twitter_url = models.URLField(null=True, blank=True)
     blog_url = models.URLField(null=True, blank=True)
-    #link = models.URLField(null=True, blank=True, verbose_name="Any other link")
+    link = models.URLField(null=True, blank=True, verbose_name="Homepage")
 
     last_message = models.TextField(null=True, blank=True)
     last_reviewed_at = models.DateTimeField(null=True, blank=True)
