@@ -106,7 +106,7 @@ class SubOrgApplicationForm(forms.ModelForm):
             cd.get("mailing_list", None),
             cd.get("twitter_url", None),
             cd.get("blog_url", None),
-            cd.get("link", None),
+            cd.get("homepage", None),
         ]
 
         contact = list(filter(lambda a: a is not None, contact))
