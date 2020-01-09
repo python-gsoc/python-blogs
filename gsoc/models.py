@@ -1230,7 +1230,10 @@ def event_publish_to_github_pages(sender, instance, **kwargs):
 # Delete Event from Calendar when obj is deleted
 @receiver(models.signals.pre_delete, sender=Event)
 def event_delete_from_calendar(sender, instance, **kwargs):
-    instance.delete_from_calendar()
+    try:
+        instance.delete_from_calendar()
+    except Exception:
+        pass
 
 
 # Add respective Schedulers and Builders
@@ -1282,7 +1285,10 @@ def duedate_publish_to_github_pages(sender, instance, **kwargs):
 # Delete BlogPostDueDate from Calendar when obj is deleted
 @receiver(models.signals.pre_delete, sender=BlogPostDueDate)
 def due_date_delete_from_calendar(sender, instance, **kwargs):
-    instance.delete_from_calendar()
+    try:
+        instance.delete_from_calendar()
+    except Exception:
+        pass
 
 
 # Add Send RegLink Schedulers when RegLink is created
