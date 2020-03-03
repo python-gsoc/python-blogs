@@ -896,8 +896,8 @@ class RegLink(models.Model):
         )
         if not status:
             profiles = user.userprofile_set.all()
-            for _ in profiles:
-                github_handle = profile.github_handle
+        #    for _ in profiles:
+        #        github_handle = profile.github_handle
 
         role = {k: v for v, k in UserProfile.ROLES}
         profile = UserProfile.objects.create(
