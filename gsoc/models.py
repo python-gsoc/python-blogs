@@ -451,6 +451,7 @@ class UserProfile(models.Model):
     reminder_disabled = models.BooleanField(default=False)
     current_blog_count = models.IntegerField(default=0)
     github_handle = models.TextField(null=True, blank=True, max_length=100)
+    gsoc_invited = models.BooleanField(default=False)
 
     objects = UserProfileManager()
     all_objects = models.Manager()
