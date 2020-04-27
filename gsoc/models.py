@@ -456,6 +456,13 @@ class UserProfile(models.Model):
     objects = UserProfileManager()
     all_objects = models.Manager()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['suborg_full_name', 'user',
+                                            'gsoc_year'],
+                                    name='unique_draft_user')
+        ]
+
     def confirm_proposal(self):
         self.proposal_confirmed = True
         self.save()
