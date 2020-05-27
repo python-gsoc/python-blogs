@@ -1,4 +1,4 @@
 {
     "disable": ["html"],
-    "ignore": ["docs/"]
+    "ignore": ["docs/", "gsoc/static/"]
 } 
