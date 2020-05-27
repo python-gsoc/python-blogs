@@ -22,7 +22,7 @@ from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
 from cms.models import Page
 
-from gsoc.models import ArticleReview
+from gsoc.models import ArticleReview, UserProfile
 
 
 def add_admin_menu(self):
@@ -50,6 +50,11 @@ def add_admin_menu(self):
                 )
 
         user = getattr(self.request, "user", None)
+
+        if user:
+            user_profile = UserProfile.objects.filter(user=user)[0]
+            role = user_profile.get_role_display()
+            # role is 'Others', 'Suborg Admin', 'Mentor', or 'Student'
 
         # admin
         self._admin_menu.add_sideframe_item(
@@ -83,7 +88,7 @@ def add_admin_menu(self):
                 on_close=None,
             )
 
-        if user:
+        if user and role != 'Student':
             self._admin_menu.add_link_item(
                 _("New Suborg Application"), reverse("suborg:register_suborg")
             )
