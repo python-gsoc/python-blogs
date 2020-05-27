@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm project.db
 rm users.db
 python manage.py migrate --database default 
