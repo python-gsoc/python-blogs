@@ -1,3 +1,4 @@
 {
-    "disable": ["html"]
+    "disable": ["html"],
+    "ignore": ["docs"]
 } 
