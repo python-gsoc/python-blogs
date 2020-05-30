@@ -132,7 +132,6 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'filer',
     
-    'easy_thumbnails',
     'djangocms_bootstrap4',
     'djangocms_bootstrap4.contrib.bootstrap4_alerts',
     'djangocms_bootstrap4.contrib.bootstrap4_badge',
