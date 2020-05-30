@@ -95,7 +95,7 @@ TEMPLATES = [
     }
 ]
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "cms.middleware.utils.ApphookReloadMiddleware",
@@ -111,56 +111,73 @@ MIDDLEWARE = (
     "cms.middleware.toolbar.ToolbarMiddleware",
     "cms.middleware.language.LanguageCookieMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
-)
+]
 
-INSTALLED_APPS = (
-    "djangocms_admin_style",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.admin",
-    "django.contrib.sites",
-    "django.contrib.sitemaps",
-    "django.contrib.staticfiles",
-    "django.contrib.messages",
-    "cms",
-    "menus",
-    "treebeard",
-    "sekizai",
-    "djangocms_text_ckeditor",
-    "djangocms_history",
-    "easy_thumbnails",
-    "filer",
-    "djangocms_audio",
-    "djangocms_video",
-    "djangocms_file",
-    "djangocms_picture",
-#    "djangocms_column",
-    "djangocms_link",
-    "djangocms_style",
-    "djangocms_snippet",
-    "aldryn_apphooks_config",
-    "aldryn_categories",
-    "aldryn_common",
-    "aldryn_newsblog",
-    "aldryn_people",
-    "aldryn_translation_tools",
-    "parler",
-    "sortedm2m",
-    "taggit",
-    "gsoc",
-    "blogs_list",
-    "suborg",
-    "debug_toolbar",
-    "django_simple_cookie_consent",
-)
+INSTALLED_APPS = [
+    'djangocms_admin_style',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.admin',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
+    'django.contrib.staticfiles',
+    'django.contrib.messages',
+    'cms',
+    'menus',
+    'sekizai',
+    'treebeard',    
+    'djangocms_text_ckeditor',
+    'djangocms_history',
+    'easy_thumbnails',
+    'filer',
+    
+    'easy_thumbnails',
+    'djangocms_bootstrap4',
+    'djangocms_bootstrap4.contrib.bootstrap4_alerts',
+    'djangocms_bootstrap4.contrib.bootstrap4_badge',
+    'djangocms_bootstrap4.contrib.bootstrap4_card',
+    'djangocms_bootstrap4.contrib.bootstrap4_carousel',
+    'djangocms_bootstrap4.contrib.bootstrap4_collapse',
+    'djangocms_bootstrap4.contrib.bootstrap4_content',
+    'djangocms_bootstrap4.contrib.bootstrap4_grid',
+    'djangocms_bootstrap4.contrib.bootstrap4_jumbotron',
+    'djangocms_bootstrap4.contrib.bootstrap4_link',
+    'djangocms_bootstrap4.contrib.bootstrap4_listgroup',
+    'djangocms_bootstrap4.contrib.bootstrap4_media',
+    'djangocms_bootstrap4.contrib.bootstrap4_picture',
+    'djangocms_bootstrap4.contrib.bootstrap4_tabs',
+    'djangocms_bootstrap4.contrib.bootstrap4_utilities', 
+    'djangocms_file',
+    'djangocms_icon',
+    'djangocms_link',
+    'djangocms_picture',    
+    'djangocms_style',
+    'djangocms_snippet',
+    'djangocms_googlemap',
+    'djangocms_video',
+    
+    'djangocms_audio',
+    'aldryn_apphooks_config',
+    'aldryn_categories',
+    'aldryn_common',
+    'aldryn_newsblog',
+    'aldryn_people',
+    'aldryn_translation_tools',
+    'parler',
+    'sortedm2m',
+    'taggit',
+    'gsoc',
+    'blogs_list',
+    'suborg',
+    'debug_toolbar',
+    'django_simple_cookie_consent',
+]
 THUMBNAIL_PROCESSORS = (
-    "easy_thumbnails.processors.colorspace",
-    "easy_thumbnails.processors.autocrop",
-    # 'easy_thumbnails.processors.scale_and_crop',
-    "filer.thumbnail_processors.scale_and_crop_with_subject_location",
-    "easy_thumbnails.processors.filters",
-    "easy_thumbnails.processors.background",
+		'easy_thumbnails.processors.colorspace',
+		'easy_thumbnails.processors.autocrop',
+		'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+		'easy_thumbnails.processors.filters'
 )
 
 LANGUAGES = (
@@ -194,6 +211,8 @@ CMS_TEMPLATES = (
     ("myprofile.html", "My Profile"),
 )
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 CMS_PERMISSION = True
 
 CMS_PLACEHOLDER_CONF = {}
@@ -204,12 +223,18 @@ MIGRATION_MODULES = {}
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+	{
+		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+	},
 ]
 
 LOGIN_REDIRECT_URL = "/after-login/"
