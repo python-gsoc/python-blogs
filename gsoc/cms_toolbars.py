@@ -51,11 +51,6 @@ def add_admin_menu(self):
 
         user = getattr(self.request, "user", None)
 
-        if user:
-            user_profile = UserProfile.objects.filter(user=user)[0]
-            role = user_profile.get_role_display()
-            # role is 'Others', 'Suborg Admin', 'Mentor', or 'Student'
-
         # admin
         self._admin_menu.add_sideframe_item(
             _("Administration"), url=admin_reverse("index")
@@ -88,7 +83,7 @@ def add_admin_menu(self):
                 on_close=None,
             )
 
-        if user and role != 'Student':
+        if user and not user.is_current_year_student():
             self._admin_menu.add_link_item(
                 _("New Suborg Application"), reverse("suborg:register_suborg")
             )
