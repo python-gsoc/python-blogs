@@ -1,0 +1,14 @@
+{% load i18n apphooks_config_tags cms_tags sekizai_tags staticfiles thumbnail %}
+
+<div class="dropdown">
+    <div class="dropdown-select">
+        <button onclick="myFunction()" class="dropbtn"><p id="drop-button">Go to blog..</p><div class="arrow"></div></button>
+
+    </div>
+    <div id="myDropdown" class="dropdown-content">
+        {% for article in article_list %}
+        <a href="#{{article.title}}">{% render_model article 'title' %}</a>{% empty %}
+        <div class="notification-box-light"><span>{% trans "No blogs yet." %}</span></div>
+        {% endfor %}
+    </div>
+</div>

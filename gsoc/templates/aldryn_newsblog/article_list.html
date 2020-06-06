@@ -1,23 +1,21 @@
-{% extends "aldryn_newsblog/base.html" %}
-{% load i18n apphooks_config_tags cms_tags %}
-
-{% block meta %}{% page_attribute "page_title" %} - {% endblock %}
-
-{% block newsblog_content %}
+{% extends "aldryn_newsblog/base.html" %} {% load i18n apphooks_config_tags cms_tags %} {% block meta %}{% page_attribute "page_title" %} - {% endblock %} {% block newsblog_content %}
+<div class="title-n-menu">
     <h2 class="content-head content-head">
         {% page_attribute "page_title" %}
         <a class="rss-icon" href="{{ feed_url }}"><i class="fa fa-rss-square"></i></a>
     </h2>
-    
-    <div class="aldryn-newsblog-list">
-        {% for article in article_list %}
-            {% include "aldryn_newsblog/includes/article.html" %}
-        {% empty %}
-            <div class="notification-box-light"><span>{% trans "No blogs published yet. Visit again later!" %}</span></div>
-        {% endfor %}
+
+    <div class="scroll-to-article">
+        {% include "aldryn_newsblog/includes/dropdown.html" %}
     </div>
-    
-    <div class="aldryn-newsblog-pagination">
-        {% include "aldryn_newsblog/includes/pagination.html" %}
-    </div>
+</div>
+<div class="aldryn-newsblog-list">
+    {% for article in article_list %} {% include "aldryn_newsblog/includes/article.html" %} {% empty %}
+    <div class="notification-box-light"><span>{% trans "No blogs published yet. Visit again later!" %}</span></div>
+    {% endfor %}
+</div>
+
+<div class="aldryn-newsblog-pagination">
+    {% include "aldryn_newsblog/includes/pagination.html" %}
+</div>
 {% endblock %}

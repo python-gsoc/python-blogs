@@ -4,7 +4,7 @@ article {
     margin: 1em 0;
 }
 
-.aldryn-newsblog-detail > article {
+.aldryn-newsblog-detail>article {
     background: white;
 }
 
@@ -13,7 +13,7 @@ article {
     height: auto;
 }
 
-article > heading {
+article>heading {
     color: #489eba;
 }
 
@@ -35,7 +35,7 @@ article > heading {
     margin-top: 10px;
 }
 
-.categories > a {
+.categories>a {
     text-decoration: none;
 }
 
@@ -50,31 +50,31 @@ article > heading {
     text-align: center;
 }
 
-.aldryn-newsblog-pagination > ul {
+.aldryn-newsblog-pagination>ul {
     display: inline-block;
     margin: 0;
     padding: 0;
     list-style-type: none;
     overflow: hidden;
 }
-  
-.aldryn-newsblog-pagination > ul > li {
+
+.aldryn-newsblog-pagination>ul>li {
     padding: 5px 15px;
     float: left;
     background: #E0FFF1;
 }
 
-.aldryn-newsblog-pagination > ul > li:first-child {
+.aldryn-newsblog-pagination>ul>li:first-child {
     border-radius: 30px 0 0 30px;
     padding-left: 20px;
-}   
+}
 
-.aldryn-newsblog-pagination > ul > li:last-child {
+.aldryn-newsblog-pagination>ul>li:last-child {
     border-radius: 0 30px 30px 0;
     padding-right: 20px;
 }
 
-.aldryn-newsblog-pagination > ul > li a {
+.aldryn-newsblog-pagination>ul>li a {
     text-decoration: none;
     color: #4760FF;
 }
@@ -83,7 +83,7 @@ article > heading {
     text-align: center;
 }
 
-.aldryn-newsblog-pager > ul {
+.aldryn-newsblog-pager>ul {
     display: inline-block;
     margin: 0;
     padding: 0;
@@ -91,23 +91,23 @@ article > heading {
     overflow: hidden;
 }
 
-.aldryn-newsblog-pager > ul > li {
+.aldryn-newsblog-pager>ul>li {
     padding: 5px 15px;
     float: left;
     background: #E0FFF1;
 }
 
-.aldryn-newsblog-pager > ul > li:first-child {
+.aldryn-newsblog-pager>ul>li:first-child {
     border-radius: 30px 0 0 30px;
     padding-left: 20px;
 }
 
-.aldryn-newsblog-pager > ul > li:last-child {
+.aldryn-newsblog-pager>ul>li:last-child {
     border-radius: 0 30px 30px 0;
     padding-right: 20px;
 }
 
-.aldryn-newsblog-pager > ul > li a {
+.aldryn-newsblog-pager>ul>li a {
     text-decoration: none;
     color: #4760FF;
 }
@@ -172,4 +172,111 @@ article > heading {
 
 form textarea {
     border-radius: 0 0 4px 4px !important;
+}
+
+
+/*css for dropdown menu*/
+
+.dropbtn {
+    /* float: right; */
+    background-color: white;
+    color: #295E70;
+    font-family: sans-serif;
+    height: 45px;
+    font-size: 16px;
+    cursor: pointer;
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border: solid;
+    border-color: #295E70;
+    border-width: 2px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.dropbtn:hover {
+    background-color: #F5FFFA;
+}
+
+.dropdown-content {
+    display: none;
+    position: fixed;
+    background-color: #f1f1f1;
+    min-width: 155px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    margin-top: 60px;
+    margin-left: 10px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+    font-family: "Source Serif Pro", serif;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd
+}
+
+.show {
+    display: block;
+}
+
+.arrow {
+    position: relative;
+    height: 15px;
+    width: 15px;
+    margin-left: 15px;
+}
+
+.arrow::before,
+.arrow::after {
+    content: "";
+    position: absolute;
+    bottom: 0px;
+    width: 0.15rem;
+    height: 100%;
+    transition: all 0.5s;
+}
+
+.arrow::before {
+    left: -5px;
+    transform: rotate(45deg);
+    background-color: #394a6d;
+}
+
+.arrow::after {
+    left: 5px;
+    transform: rotate(-45deg);
+    background-color: #394a6d;
+}
+
+.open .arrow::before {
+    left: -5px;
+    transform: rotate(-45deg);
+}
+
+.open .arrow::after {
+    left: 5px;
+    transform: rotate(45deg);
+}
+
+@media (max-width: 48em) {
+    .dropbtn #drop-button {
+        display: none;
+    }
+    .dropbtn {
+        margin-left: 39%;
+        float: right;
+    }
+    .dropdown-content {
+        margin-left: 24%;
+    }
 }
