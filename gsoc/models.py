@@ -129,16 +129,7 @@ Article.add_to_class("get_root_comments", get_root_comments)
 def save(self, *args, **kwargs):
     tags = settings.BLEACH_ALLOWED_TAGS
     attrs = bleach.sanitizer.ALLOWED_ATTRIBUTES
-    attrs["iframe"] = [
-        "src",
-        "frameborder",
-        "allow",
-        "allowfullscreen",
-        "width",
-        "height",
-    ]
-    attrs["img"] = ["src", "alt"]
-    attrs["*"] = ["class", "style"]
+    attrs.update(settings.BLEACH_ALLOWED_ATTRS)
     styles = settings.BLEACH_ALLOWED_STYLES
     self.lead_in = bleach.clean(
         self.lead_in, tags=tags, attributes=attrs, styles=styles
@@ -1324,7 +1315,11 @@ def send_comment_notification(sender, instance, **kwargs):
 def decrease_blog_counter(sender, instance, **kwargs):
     if not instance.pk:
         section = instance.app_config
-        up = UserProfile.objects.get(app_config=section)
+        gsoc_year = GsocYear.objects.first()
+        student_role = {i[1]:i[0] for i in UserProfile.ROLES}['Student']
+        up = UserProfile.objects.filter(app_config=section,
+                                        gsoc_year=gsoc_year,
+                                        role=student_role).first()
         if up.current_blog_count > 0:
             up.current_blog_count -= 1
             print("Decreasing", up.current_blog_count)

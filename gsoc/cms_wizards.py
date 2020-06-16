@@ -1,4 +1,4 @@
-from .models import UserProfile
+from .models import GsocYear, UserProfile
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -72,7 +72,10 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
         # app_config choice field, we'll choose the option for the user.
         get_published_app_configs()
 
-        userprofiles = self.user.userprofile_set.all()
+        gsoc_year = GsocYear.objects.first()
+        student_role = {i[1]:i[0] for i in UserProfile.ROLES}['Student']
+        userprofiles = self.user.userprofile_set.filter(gsoc_year=gsoc_year,
+                                                        role=student_role)
 
         if self.user.is_superuser:
             userprofiles = UserProfile.objects.all()
