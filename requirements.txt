@@ -25,7 +25,6 @@ djangocms-googlemap>=1.3,<1.5
 djangocms-video>=2.1,<2.4
 djangocms-audio>=1.1.0
 djangocms_history>=1.0.0
-aldryn-newsblog>=2.2.1
 easy_thumbnails
 #djangocms_column>=1.9
 
@@ -56,15 +55,13 @@ beautifulsoup4>=4.8.0
 
 django-simple-cookie-consent>=0.1.1
 
-mysqlclient>=1.4.4
+
 importlib-resources>=1.0.2
 
-<<<<<<< HEAD
 html5lib>=1.0.1
 Pillow>=3.0
 six
 pytz
-=======
 backport_collections==0.1
 html5lib>=1.0.1
 Pillow>=3.0
@@ -72,4 +69,3 @@ lxml
 six
 pytz
 babel>=2.8.0
->>>>>>> 86b094f... Further work on Django 3 migration
