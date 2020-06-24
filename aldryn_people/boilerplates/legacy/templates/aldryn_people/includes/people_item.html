@@ -1,0 +1,19 @@
+{% load aldryn_people_tags i18n thumbnail %}
+
+<div class="people-item">
+    <h2>{{ person.name }} <span>{{ person.function }}</span></h2>
+    {% if person.visual %}<p class="people-visual">
+        {% if instance.show_links and person.get_absolute_url %}<a href="{{ person.get_absolute_url }}">{% endif %}
+            <img src="{% thumbnail person.visual 200x100 crop subject_location=person.visual.subject_location %}" alt="{{ person.name }}" />
+        {% if instance.show_links and person.get_absolute_url %}</a>{% endif %}
+        </p>{% endif %}
+    <p class="people-meta">
+        {% if person.phone %}{% trans "Phone:" %} <span>{{ person.phone|phoneformat }}</span><br />{% endif %}
+        {% if person.mobile %}{% trans "Mobile:" %} <span>{{ person.mobile|phoneformat }}</span><br />{% endif %}
+        {% if person.email %}{% trans "E-Mail:" %} <a href="mailto:{{ person.email }}">{{ person.email }}</a>{% endif %}
+        {% if not instance and person.vcard_enabled or instance.show_vcard and person.vcard_enabled %}
+            <br /><a href="{% url 'aldryn_people:download_vcard' person.slug %}" class="btn-download">{% trans "Download vCard" %}</a>
+        {% endif %}
+    </p>
+    {% if person.description %}<div class="people-desc">{{ person.description|safe }}</div>{% endif %}
+</div>

@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+from six import python_2_unicode_compatible
+
 import django.core.validators
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -10,7 +12,7 @@ from django.db import connection, models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
-from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.encoding import force_text
 from django.utils.timezone import now
 from django.utils.translation import override, ugettext
 from django.utils.translation import ugettext_lazy as _

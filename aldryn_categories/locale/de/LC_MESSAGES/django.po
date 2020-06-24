@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-01 11:38-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Paulo Alvarado <paulo.alvarado@divio.ch>, 2017\n"
+"Language-Team: German (https://www.transifex.com/divio/teams/58664/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:19
+msgid "Position"
+msgstr "Position"
+
+#: admin.py:20
+msgid "Relative to"
+msgstr "Relativ zu"
+
+#: cms_wizards.py:36
+msgid "New category"
+msgstr "Neue Kategorie"
+
+#: cms_wizards.py:39
+msgid "Create a new category."
+msgstr "Neue Kategorie erstellen."
+
+#: models.py:59
+msgid "name"
+msgstr "Name"
+
+#: models.py:65
+msgid "slug"
+msgstr "Slug"
+
+#: models.py:68
+msgid "Provide a “slug” or leave blank for an automatically generated one."
+msgstr "Leer lassen um den Slug automatisch zu generieren."
+
+#: models.py:76
+msgid "category"
+msgstr "Kategorie"
+
+#: models.py:77
+msgid "categories"
+msgstr "Kategorien"

@@ -1,41 +1,45 @@
 #django
-django~=2.2.0
+django~=3.0.0
+django-appdata>=0.3.0
+django-filer>=1.4.2
+django-parler
+django-sortedm2m
+django-taggit>=0.23.0
+django-treebeard>=4.0,<5.0
 
 #django debug
 django-debug-toolbar>=1.11
 
 #django cms
-django-cms~=3.7.0
-djangocms-text-ckeditor>=3.7.0
-djangocms-file>=2.2.0
-djangocms-link>=2.3.1
-djangocms-picture>=2.1.3
-djangocms-style>=2.1.0
-djangocms-snippet>=2.1.0
-djangocms-googlemap>=1.2.0
-djangocms-video>=2.1.1
+django-cms~=3.7.3
+djangocms-admin-style>=1.5,<1.6
+djangocms-text-ckeditor>=3.7,<4.0
+djangocms-file>=2.3,<2.5
+djangocms-link>=2.5,<2.7
+djangocms-icon>=1.4,<1.6
+djangocms-picture>=2.3,<2.5
+djangocms-bootstrap4>=1.5,<1.7
+djangocms-style>=2.2,<2.4
+djangocms-snippet>=2.2,<2.4
+djangocms-googlemap>=1.3,<1.5
+djangocms-video>=2.1,<2.4
 djangocms-audio>=1.1.0
 djangocms_history>=1.0.0
+
+easy_thumbnails
 #djangocms_column>=1.9
 
-#aldryn-newsblog requirements
-python-dateutil
-aldryn-apphooks-config>=0.5.2
+aldryn-apphooks-config>=0.6.0
 aldryn-boilerplates>=0.8.0
-aldryn-categories>=1.2.0
 aldryn-common>=1.0.5
-aldryn-people>=2.2.0
 aldryn-translation-tools>=0.3.0
-backport_collections==0.1
-django-appdata>=0.2.1
-django-cms>=3.4.5
-djangocms-text-ckeditor>=3.7.0
-django-filer>=1.4.2
-django-parler
-django-sortedm2m
-django-taggit>=0.23.0
-lxml
-pytz
+
+phonenumbers
+# DO NOT REMOVE THE FOLLOWING, IT IS REQUIRED FOR EXISTING MIGRATIONS
+django-phonenumber-field>=0.7.2,<2.0.0
+
+#    'python-dateutil',
+
 
 #gsoc irc requirements
 fredirc==0.3.0
@@ -66,3 +70,11 @@ django-simple-cookie-consent>=0.1.1
 
 mysqlclient>=1.4.4
 importlib-resources>=1.0.2
+
+backport_collections==0.1
+html5lib>=1.0.1
+Pillow>=3.0
+lxml
+six
+pytz
+babel>=2.8.0

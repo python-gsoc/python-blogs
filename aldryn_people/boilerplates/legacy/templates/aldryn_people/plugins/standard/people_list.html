@@ -1,0 +1,33 @@
+{% load i18n thumbnail %}
+
+<div class="plugin plugin-people">
+    {% if namespace_error and request.user.is_superuser or request.user.is_staff %}
+        <span class="people-error">{{ namespace_error }}</span>
+    {% endif %}
+    {% if people_groups %}
+        {% language instance.language %}
+        {% for group, people_list in people_groups.items %}
+            {% if group.name %}
+            <div class="people-group">
+                <h2>{{ group.name }}</h2>
+                <div class="people-lead">{{ group.description|safe }}</div>
+                <p class="people-desc">
+                    {% if group.phone %}{% trans "Phone:" %} <span>{{ group.phone }}</span><br />{% endif %}
+                    {% trans "Address:" %}
+                    <span>{{ group.address }}</span>
+                </p>
+            </div>
+            {% endif %}
+            {% include "aldryn_people/includes/people_items.html" with people=people_list %}
+        {% endfor %}
+        {% if groupless_people.count %}
+            <h2>{% trans "Ungrouped" %}</h2>
+            {% include "aldryn_people/includes/people_items.html" with people=groupless_people.all %}
+        {% endif %}
+        {% endlanguage %}
+    {% endif %}
+
+    {% if not people_groups %}
+        {% include "aldryn_people/includes/people_items.html" %}
+    {% endif %}
+</div>

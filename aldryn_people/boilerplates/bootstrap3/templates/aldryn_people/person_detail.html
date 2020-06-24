@@ -1,0 +1,10 @@
+{% extends "aldryn_people/fullwidth.html" %}
+{% load i18n %}
+
+{% block title %}{{ person.name }} - {{ block.super }}{% endblock %}
+
+{% block people_content %}
+    <div class="aldryn aldryn-people aldryn-people-detail">
+        {% include "aldryn_people/includes/person.html" with person=person detail_view="true" %}
+    </div>
+{% endblock people_content %}

@@ -1,0 +1,60 @@
+{% load cms_tags i18n thumbnail aldryn_people_tags %}
+
+<article class="aldryn-people-article">
+    {% if person.visual %}
+        <p class="visual">
+            {% if instance.show_links %}
+                <a href="{{ person.get_absolute_url }}">
+            {% endif %}
+                <img src="{% thumbnail person.visual 400x300 crop subject_location=person.visual.subject_location %}" alt="{{ person.name }}">
+            {% if instance.show_links %}
+                </a>
+            {% endif %}
+        </p>
+    {% endif %}
+
+    {% if not group %}<h2>{% else %}<h3>{% endif %}
+        {% if not instance and not detail_view or instance.show_links %}
+            <a href="{{ person.get_absolute_url }}">{{ person.name }}</a>
+        {% else %}
+            {% render_model person 'name' %}
+        {% endif %}
+        <small>{{ person.function }}</small>
+    {% if not group %}</h2>{% else %}</h3>{% endif %}
+
+    <p class="meta">
+        {% if person.phone %}
+            <strong>{% trans "Phone:" %}</strong>
+            {{ person.phone|phoneformat }}<br>
+        {% endif %}
+        {% if person.mobile %}
+            <strong>{% trans "Mobile:" %}</strong>
+            {{ person.mobile|phoneformat }}<br>
+        {% endif %}
+        {% if person.fax %}
+            <strong>{% trans "Fax:" %}</strong>
+            {{ person.fax }}<br>
+        {% endif %}
+        {% if person.email %}
+            <strong>{% trans "Email:" %}</strong>
+            <span class="fa fa-fw fa-envelope" aria-hidden="true"></span>
+            <a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
+        {% endif %}
+        {% if person.website %}
+            <strong>{% trans "Website:" %}</strong>
+            <span class="fa fa-fw fa-globe" aria-hidden="true"></span>
+            <a href="{{ person.website }}" target="_blank">{{ person.website }}</a><br>
+        {% endif %}
+    </p>
+
+    {% if person.description %}
+        <div class="lead">{{ person.description|safe }}</div>
+    {% endif %}
+
+    {% if not instance and person.vcard_enabled or instance.show_vcard and person.vcard_enabled %}
+        <a href="{{ person.get_vcard_url }}" class="btn btn-default btn-sm">
+            <span class="fa fa-fw fa-download" aria-hidden="true"></span>
+            {% trans "Download vCard" %}
+        </a>
+    {% endif %}
+</article>

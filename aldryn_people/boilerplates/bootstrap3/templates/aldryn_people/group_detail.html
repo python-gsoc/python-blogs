@@ -1,0 +1,13 @@
+{% extends "aldryn_people/fullwidth.html" %}
+{% load cms_tags i18n %}
+
+{% block title %}{{ group.name }} - {{ block.super }}{% endblock %}
+
+{% block people_content %}
+    <div class="aldryn aldryn-people aldryn-group-detail">
+        <h2>{% render_model group "name" %}</h2>
+        {% for person in group.people.all|dictsort:"name" %}
+            {% include "aldryn_people/includes/person.html" with person=person %}
+        {% endfor %}
+    </div>
+{% endblock people_content %}
