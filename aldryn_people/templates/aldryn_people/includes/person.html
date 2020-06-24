@@ -1,0 +1,60 @@
+{% load i18n thumbnail cms_tags aldryn_people_tags %}
+
+<article>
+    {% if not group %}<h2>{% else %}<h3>{% endif %}
+        {% if not instance and not detail_view or instance.show_links %}
+            {% if person.get_absolute_url %}
+                <a href="{{ person.get_absolute_url }}">{{ person.name }}</a>
+            {% else %}
+                {{ person.name }}
+            {% endif %}
+        {% else %}
+            {% render_model person 'name' %}
+        {% endif %}
+        <small>{{ person.function }}</small>
+    {% if not group %}</h2>{% else %}</h3>{% endif %}
+
+    {% if person.visual %}
+        <p>
+            {% if instance.show_links and person.get_absolute_url %}
+                <a href="{{ person.get_absolute_url }}">
+            {% endif %}
+            <img src="{% thumbnail person.visual 200x100 crop subject_location=person.visual.subject_location %}" alt="{{ person.name }}">
+            {% if instance.show_links and person.get_absolute_url %}
+                </a>
+            {% endif %}
+        </p>
+    {% endif %}
+
+    <p>
+        {% if person.phone %}
+            <strong>{% trans "Phone:" %}</strong>
+            {{ person.phone|phoneformat }}<br>
+        {% endif %}
+        {% if person.mobile %}
+            <strong>{% trans "Mobile:" %}</strong>
+            {{ person.mobile|phoneformat }}<br>
+        {% endif %}
+        {% if person.fax %}
+            <strong>{% trans "Fax:" %}</strong>
+            {{ person.fax }}<br>
+        {% endif %}
+        {% if person.email %}
+            <strong>{% trans "Email:" %}</strong>
+            <a href="mailto:{{ person.email }}">{{ person.email }}</a><br>
+        {% endif %}
+        {% if person.website %}
+            <strong>{% trans "Website:" %}</strong>
+            <a href="{{ person.website }}" target="_blank">{{ person.website }}</a><br>
+        {% endif %}
+    </p>
+    {% if person.description %}
+        {{ person.description|safe }}
+    {% endif %}
+
+    {% if not instance and person.vcard_enabled or instance.show_vcard and person.vcard_enabled and person.get_vcard_url %}
+        <a href="{{ person.get_vcard_url }}">
+            {% trans "Download vCard" %}
+        </a>
+    {% endif %}
+</article>
