@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load cms_tags i18n %}
+
+{% block content %}
+    <div class="aldryn aldryn-people aldryn-group-list">
+        {% if group_list %}
+            <h1>{% trans "Groups" %}</h1>
+            {% for group in group_list %}
+                <h2>{% render_model group 'name' %}</h2>
+                {% for person in group.people.all|dictsort:"name" %}
+                    {% include "aldryn_people/includes/people_item.html" with person=person %}
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+
+        {% if ungrouped_people %}
+            <h2>{% trans "Ungrouped" %}</h2>
+            {% for person in ungrouped_people %}
+                {% include "aldryn_people/includes/people_item.html" with person=person %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock content %}

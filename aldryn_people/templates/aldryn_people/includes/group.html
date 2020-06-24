@@ -1,0 +1,32 @@
+{% load i18n aldryn_people_tags %}
+
+<h2>{{ group.name }}</h2>
+
+{{ group.description|safe }}
+
+<p>
+    {% if group.phone %}
+        <strong>{% trans "Phone:" %}</strong>
+        {{ group.phone|phoneformat }}<br>
+    {% endif %}
+    {% if group.fax %}
+        <strong>{% trans "Fax:" %}</strong>
+        {{ group.fax|phoneformat }}<br>
+    {% endif %}
+    {% if group.email %}
+        <strong>{% trans "Email:" %}</strong>
+        <a href="mailto:{{ group.email }}">{{ group.email }}</a><br>
+    {% endif %}
+    {% if group.website %}
+        <strong>{% trans "Website:" %}</strong>
+        <a href="{{ group.website }}" target="_blank">{{ group.website }}</a><br>
+    {% endif %}
+</p>
+
+{% if group.address or group.postal_code or group.city %}
+    <strong>{% trans "Address:" %}</strong><br>
+    {% if group.address %}
+        {{ group.address }}<br>
+    {% endif %}
+    {{ group.postal_code }} {{ group.city }}
+{% endif %}

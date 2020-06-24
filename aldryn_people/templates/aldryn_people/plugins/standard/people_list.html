@@ -1,0 +1,31 @@
+{% load i18n %}
+
+{% if namespace_error and request.user.is_superuser or request.user.is_staff %}
+    <p>{{ namespace_error }}</p>
+{% endif %}
+{% if not people_groups %}
+    {# if grouping is disabled, list only people #}
+    {% for person in people %}
+        {% include "aldryn_people/includes/person.html" with person=person %}
+    {% endfor %}
+{% else %}
+    {# if enabled, we group the people by categories defined #}
+    {% language instance.language %}
+        {# IMPORTANT: first show people with a group #}
+        {% for group, people_list in people_groups.items %}
+            {% if group.name %}
+                {% include "aldryn_people/includes/group.html" %}
+                {% for person in people_list %}
+                    {% include "aldryn_people/includes/person.html" with person=person group="true" %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        {# IMPORTANT: and than the remaining, if any #}
+        {% if groupless_people.count %}
+            <h2>{% trans "Ungrouped" %}</h2>
+            {% for person in groupless_people.all %}
+                {% include "aldryn_people/includes/person.html" with person=person group="true" %}
+            {% endfor %}
+        {% endif %}
+    {% endlanguage %}
+{% endif %}

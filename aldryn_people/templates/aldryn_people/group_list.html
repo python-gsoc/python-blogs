@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n cms_tags %}
+
+{% block content %}
+    {% for group in group_list %}
+        <h2>{% render_model group 'name' %}</h2>
+        {% for person in group.people.all|dictsort:"name" %}
+            {% include "aldryn_people/includes/person.html" with person=person %}
+        {% endfor %}
+    {% endfor %}
+    {% if ungrouped_people %}
+        <h2>{% trans "Ungrouped" %}</h2>
+        {% for person in ungrouped_people %}
+            {% include "aldryn_people/includes/person.html" with person=person %}
+        {% endfor %}
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,7 @@
+{% load i18n thumbnail %}
+
+<ul class="people-items">
+	{% for person in people %}
+	<li>{% include "aldryn_people/includes/people_item.html" with person=person %}</li>
+	{% endfor %}
+</ul>
