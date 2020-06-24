@@ -1,0 +1,4 @@
+{
+    "disable": ["html"],
+    "ignore": ["docs/", "gsoc/static/djangocms_text_ckeditor/ckeditor/plugins/"]
+} 

@@ -1,10 +1,11 @@
+/*jshint esversion: 6 */
 function cancelProposalUpload() {
   axios.get('/cancel_proposal_upload/').then(
     function(resp) {
         inPageInfo("Proposal upload canceled.");
         setProposalUploadingStatus(false);
     }
-  )
+  );
 }
 function setProposalUploadingStatus(status) {
   const button = document.querySelector("#upload-proposal-button");
@@ -48,11 +49,11 @@ function hideInfoBox() {
 }
 function beforeUpload() {
   const offlineCancel = function(){
-    inPageInfo("Proposal upload canceled.")
+    inPageInfo("Proposal upload canceled.");
     };
-  const infoText = 'Please make sure there is no private data in your pdf file as this WILL be shown publically on the internet. Confirm?'
+  const infoText = 'Please make sure there is no private data in your pdf file as this WILL be shown publically on the internet. Confirm?';
   inPageInfo(infoText, false);
-  showInfoBoxBtns(uploadProposal, offlineCancel)
+  showInfoBoxBtns(uploadProposal, offlineCancel);
 }
 function hideInfoBoxBtns() {
   const btn1 = document.querySelector('#infoBtn1');
@@ -65,8 +66,12 @@ function hideInfoBoxBtns() {
 function showInfoBoxBtns(callback1, callback2) {
   const btn1 = document.querySelector('#infoBtn1');
   const btn2 = document.querySelector('#infoBtn2');
-  btn1.onclick = function(){hideInfoBoxBtns(); hideInfoBox(); callback1()};
-  btn2.onclick = function(){hideInfoBoxBtns(); hideInfoBox(); callback2()};
+  btn1.onclick = function(){
+    hideInfoBoxBtns(); 
+    hideInfoBox(); 
+    callback1();
+  };
+  btn2.onclick = function(){hideInfoBoxBtns(); hideInfoBox(); callback2();};
   btn1.style.display = 'inline';
   btn2.style.display = 'inline';
 }
@@ -85,32 +90,32 @@ function uploadProposal() {
   const uploadForm = document.querySelector('#upload-proposal-form');
   axios.post(
     '/upload-proposal/',
-    new FormData(uploadForm),
+    new FormData(uploadForm)
   )
     .then(function(resp) {
-      if(!resp.data['file_type_valid']) {
+      if(!resp.data.file_type_valid) {
         inPageInfo("Your file doesn't seem to be a pdf file. Please check again!");
         setProposalUploadingStatus(false);
-        return
+        return;
       }
-      if(!resp.data['file_not_too_large']) {
+      if(!resp.data.file_not_too_large) {
         inPageInfo("Your file is larger than 20MB. Please make it smaller!");
         setProposalUploadingStatus(false);
-        return
+        return;
       }
-      const privateData = resp.data['private_data'];
-      if(privateData["emails"].length > 0 ||
-      privateData["possible_phone_numbers"].length > 0 ||
-      privateData["locations"].length > 0) {
+      const privateData = resp.data.private_data;
+      if(privateData.emails.length > 0 ||
+      privateData.possible_phone_numbers.length > 0 ||
+      privateData.locations.length > 0) {
         let confirmText = "We seemed to have found private data in your pdf file. WE DO NOT RECOMEND UPLOADING A PDF WITH PHONE NUMBERS, PHYSICAL ADDRESS, OR EMAIL ADDRESSES AS THIS WILL BE SHOWN PUBLICALLY ON THE INTERNET. Are you sure to proceed?";
-        if (privateData['emails'].length > 0)
-        confirmText += `<br> Email addresses: ${privateData['emails'].toString()}`
-        if(privateData['possible_phone_numbers'].length > 0)
-        confirmText += `<br> Possible phone numbers: ${privateData['possible_phone_numbers'].toString()}`
-        if(privateData['locations'].length > 0)
-        confirmText += `<br> Locations: ${privateData['locations'].toString()}`
+        if (privateData.emails.length > 0)
+        confirmText += `<br> Email addresses: ${privateData.emails.toString()}`;
+        if(privateData.possible_phone_numbers.length > 0)
+        confirmText += `<br> Possible phone numbers: ${privateData.possible_phone_numbers.toString()}`;
+        if(privateData.locations.length > 0)
+        confirmText += `<br> Locations: ${privateData.locations.toString()}`;
         onFindPrivateData(confirmText);
-        return
+        return;
       }
       axios.get('/confirm_proposal');
       setProposalUploadingStatus(false);
@@ -119,5 +124,5 @@ function uploadProposal() {
     .catch(function(err) {
       setProposalUploadingStatus(false);
       console.log(err);
-    })
+    });
 }

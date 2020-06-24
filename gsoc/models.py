@@ -1156,7 +1156,8 @@ def update_blog_counter(sender, instance, **kwargs):
     if not instance.pk:
         # increase blog counter
         date = timezone.now() + datetime.timedelta(days=6)
-        due_dates = BlogPostDueDate.objects.filter(date__lt=date).all()
+        currentYear = datetime.datetime.now().year
+        due_dates = BlogPostDueDate.objects.filter(date__year=currentYear, date__lt=date).all()
         instance.current_blog_count = len(due_dates)
 
 
