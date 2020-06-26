@@ -13,7 +13,7 @@ django-debug-toolbar>=1.11
 #django cms
 django-cms~=3.7.3
 djangocms-admin-style>=1.5,<1.6
-djangocms-text-ckeditor>=3.7,<4.0
+djangocms-text-ckeditor>=3.9.1,<4.0
 djangocms-file>=2.3,<2.5
 djangocms-link>=2.5,<2.7
 djangocms-icon>=1.4,<1.6
