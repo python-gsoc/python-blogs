@@ -28,6 +28,15 @@ djangocms_history>=1.0.0
 easy_thumbnails
 #djangocms_column>=1.9
 
+#aldryn dependencies
+aldryn-apphooks-config>=0.6.0
+aldryn-boilerplates>=0.8.0
+aldryn-common>=1.0.5
+aldryn-translation-tools>=0.3.0
+
+# DO NOT REMOVE THE FOLLOWING, IT IS REQUIRED FOR EXISTING MIGRATIONS
+django-phonenumber-field>=0.7.2,<2.0.0
+
 #gsoc irc requirements
 fredirc==0.3.0
 
@@ -55,16 +64,11 @@ beautifulsoup4>=4.8.0
 
 django-simple-cookie-consent>=0.1.1
 
-
 importlib-resources>=1.0.2
 
 html5lib>=1.0.1
 Pillow>=3.0
-six
-pytz
 backport_collections==0.1
-html5lib>=1.0.1
-Pillow>=3.0
 lxml
 six
 pytz
