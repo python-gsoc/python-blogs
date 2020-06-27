@@ -252,7 +252,17 @@ if DEBUG:
 else:
     ERROR_LEVEL = "ERROR"
 
-ERROR_HANDLERS = ["file", "mail_admins"]
+# On production server:
+#ERROR_HANDLERS = ["file", "mail_admins"]
+# But for local development and testing
+ERROR_HANDLERS = ["file"]
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+        'EXCLUDED_INDEXES': ['thirdpartyapp.search_indexes.BarIndex'],
+    }
+}
 
 LOGGING = {
     "version": 1,
