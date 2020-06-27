@@ -40,7 +40,7 @@ class TestCategories(CategoryTestCaseMixin, TransactionTestCase):
 
     def test_str_malicious(self):
         malicious = "<script>alert('hi');</script>"
-        escaped = "&lt;script&gt;alert(&#39;hi&#39;);&lt;/script&gt;"
+        escaped = "&lt;script&gt;alert(&#x27;hi&#x27;);&lt;/script&gt;"
         root = Category.add_root(name=malicious)
         root.save()
         self.assertEqual(six.u(str(root)), escaped)
