@@ -185,7 +185,8 @@ class GsocYear(models.Model):
     class Meta:
         ordering = ["-gsoc_year"]
 
-    gsoc_year = models.IntegerField(name="gsoc_year")
+    gsoc_year = models.IntegerField(name="gsoc_year",
+                                    primary_key=True)
 
     def __str__(self):
         return str(self.gsoc_year)
@@ -193,7 +194,10 @@ class GsocYear(models.Model):
 
 class SubOrgDetails(models.Model):
     gsoc_year = models.ForeignKey(
-        GsocYear, on_delete=models.CASCADE, related_name="suborg_details"
+        GsocYear,
+        on_delete = models.CASCADE,
+        related_name = "suborg_details",
+        to_field = "gsoc_year",
     )
 
     reason_for_participation = models.TextField(
@@ -340,7 +344,7 @@ class SubOrgDetails(models.Model):
         RegLink.objects.create(
             user_role=1,
             user_suborg=self.suborg,
-            user_gsoc_year=self.gsoc_year,
+            gsoc_year=self.gsoc_year,
             email=self.suborg_admin_email,
             send_notifications=False,
         )
@@ -349,7 +353,7 @@ class SubOrgDetails(models.Model):
             RegLink.objects.create(
                 user_role=1,
                 user_suborg=self.suborg,
-                user_gsoc_year=self.gsoc_year,
+                gsoc_year=self.gsoc_year,
                 email=self.suborg_admin_2_email,
                 send_notifications=False,
             )
@@ -358,7 +362,7 @@ class SubOrgDetails(models.Model):
             RegLink.objects.create(
                 user_role=1,
                 user_suborg=self.suborg,
-                user_gsoc_year=self.gsoc_year,
+                gsoc_year=self.gsoc_year,
                 email=self.suborg_admin_3_email,
                 send_notifications=False,
             )
@@ -435,7 +439,11 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     role = models.IntegerField(name="role", choices=ROLES, default=0)
     gsoc_year = models.ForeignKey(
-        GsocYear, on_delete=models.CASCADE, null=True, blank=False
+        GsocYear,
+        on_delete = models.CASCADE,
+        null = True,
+        blank = False,
+        to_field = "gsoc_year"
     )
     suborg_full_name = models.ForeignKey(
         SubOrg, on_delete=models.CASCADE, null=True, blank=False
@@ -535,7 +543,10 @@ class Builder(models.Model):
 
 
 class Timeline(models.Model):
-    gsoc_year = models.ForeignKey(GsocYear, on_delete=models.CASCADE)
+    gsoc_year = models.ForeignKey(
+        GsocYear,
+        on_delete = models.CASCADE,
+        to_field = "gsoc_year")
     calendar_id = models.CharField(max_length=255, null=True, blank=True)
 
     def add_calendar(self):
@@ -831,12 +842,13 @@ class RegLink(models.Model):
     user_suborg = models.ForeignKey(
         SubOrg, name="user_suborg", on_delete=models.CASCADE, null=True, blank=False
     )
-    user_gsoc_year = models.ForeignKey(
+    gsoc_year = models.ForeignKey(
         GsocYear,
-        name="user_gsoc_year",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=False,
+        name = "gsoc_year",
+        on_delete = models.CASCADE,
+        null = True,
+        blank = False,
+        to_field = "gsoc_year",
     )
     adduserlog = models.ForeignKey(
         AddUserLog,
@@ -911,7 +923,7 @@ class RegLink(models.Model):
         profile = UserProfile.objects.create(
             user=user,
             role=self.user_role,
-            gsoc_year=self.user_gsoc_year,
+            gsoc_year=self.gsoc_year,
             suborg_full_name=self.user_suborg,
             reminder_disabled=reminder_disabled,
             github_handle=github_handle,
@@ -974,19 +986,19 @@ class RegLink(models.Model):
         template_data = {
             "register_link": settings.INETLOCATION + self.url,
             "role": self.user_role,
-            "gsoc_year": self.user_gsoc_year.gsoc_year,
+            "gsoc_year": self.gsoc_year.gsoc_year,
         }
         if self.user_role == 0:
             subject = (
                 f"You have been invited to join for GSoC "
-                f"{self.user_gsoc_year.gsoc_year} with PSF"
+                f"{self.gsoc_year.gsoc_year} with PSF"
             )
         else:
             subject = (
                 f"You have been invited to join "
                 f"{self.user_suborg.suborg_name.strip()}"
                 f" as a {role[self.user_role]} for GSoC "
-                f"{self.user_gsoc_year.gsoc_year} with PSF"
+                f"{self.gsoc_year.gsoc_year} with PSF"
             )
             template_data["suborg"] = self.user_suborg.suborg_name.strip()
         scheduler_data = build_send_mail_json(
