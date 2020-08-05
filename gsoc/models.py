@@ -899,13 +899,15 @@ class RegLink(models.Model):
     ):
         namespace = str(uuid.uuid4())
         email = kwargs.get("email", self.email)
-        user, status = User.objects.get_or_create(
+        user, created = User.objects.get_or_create(
             *args, is_staff=is_staff, email=email, **kwargs
         )
-        if not status:
+        if not created and not github_handle:
             profiles = user.userprofile_set.all()
-        #    for _ in profiles:
-        #        github_handle = profile.github_handle
+            for profile in profiles:
+                if profile.github_handle:
+                    github_handle = profile.github_handle
+                    break
 
         role = {k: v for v, k in UserProfile.ROLES}
         profile = UserProfile.objects.create(
@@ -917,6 +919,7 @@ class RegLink(models.Model):
             github_handle=github_handle,
         )
         if self.user_role != role.get("Student", 3):
+            profile.save()
             return user
 
         # setup blog
