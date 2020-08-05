@@ -950,21 +950,22 @@ class RegLink(models.Model):
         PagePermission.objects.create(user=user, page=page)
 
         permissions = list()
-        permissions.append(Permission.objects.filter(codename="add_article").first())
-        permissions.append(Permission.objects.filter(codename="change_article").first())
-        permissions.append(Permission.objects.filter(codename="delete_article").first())
-        permissions.append(Permission.objects.filter(codename="view_article").first())
+        pobjects = Permission.objects
+        permissions.append(pobjects.filter(codename="add_article").first())
+        permissions.append(pobjects.filter(codename="change_article").first())
+        permissions.append(pobjects.filter(codename="delete_article").first())
+        permissions.append(pobjects.filter(codename="view_article").first())
         permissions.append(
-            Permission.objects.filter(codename="add_pagenotification").first()
+            pobjects.filter(codename="add_pagenotification").first()
         )
         permissions.append(
-            Permission.objects.filter(codename="change_pagenotification").first()
+            pobjects.filter(codename="change_pagenotification").first()
         )
         permissions.append(
-            Permission.objects.filter(codename="delete_pagenotification").first()
+            pobjects.filter(codename="delete_pagenotification").first()
         )
         permissions.append(
-            Permission.objects.filter(codename="view_pagenotification").first()
+            pobjects.filter(codename="view_pagenotification").first()
         )
         user.user_permissions.set(permissions)
 
