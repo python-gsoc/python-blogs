@@ -37,7 +37,8 @@ from cms.utils.apphook_reload import mark_urlconf_as_changed
 import phonenumbers
 from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
-from gsoc.common.utils.tools import build_send_mail_json, build_send_reminder_json
+from gsoc.common.utils.tools import build_send_mail_json
+from gsoc.common.utils.tools import build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 
 
@@ -540,7 +541,8 @@ class Timeline(models.Model):
 
     def add_calendar(self):
         if not self.calendar_id:
-            with open(os.path.join(BASE_DIR, "google_api_token.pickle"), "rb") as token:
+            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
+            with open(tpath, "rb") as token:
                 creds = pickle.load(token)
                 service = build("calendar", "v3", credentials=creds)
                 calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
@@ -561,7 +563,8 @@ class Event(models.Model):
     @property
     def calendar_link(self):
         if self.event_id:
-            with open(os.path.join(BASE_DIR, "google_api_token.pickle"), "rb") as token:
+            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
+            with open(tpath, "rb") as token:
                 creds = pickle.load(token)
                 service = build("calendar", "v3", credentials=creds)
                 event = (
@@ -573,7 +576,8 @@ class Event(models.Model):
         return None
 
     def add_to_calendar(self):
-        with open(os.path.join(BASE_DIR, "google_api_token.pickle"), "rb") as token:
+        tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
+        with open(tpath, "rb") as token:
             creds = pickle.load(token)
             service = build("calendar", "v3", credentials=creds)
             event = {
@@ -581,23 +585,24 @@ class Event(models.Model):
                 "start": {"date": self.start_date.strftime("%Y-%m-%d")},
                 "end": {"date": self.end_date.strftime("%Y-%m-%d")},
             }
-            calendar_id = self.timeline.calendar_id if self.timeline else "primary"
+            cal_id = self.timeline.calendar_id if self.timeline else "primary"
             if not self.event_id:
                 event = (
                     service.events()
-                    .insert(calendarId=calendar_id, body=event)
+                    .insert(calendarId=cal_id, body=event)
                     .execute()
                 )
                 self.event_id = event.get("id")
                 self.save()
             else:
                 service.events().update(
-                    calendarId=calendar_id, eventId=self.event_id, body=event
+                    calendarId=cal_id, eventId=self.event_id, body=event
                 ).execute()
 
     def delete_from_calendar(self):
         if self.event_id:
-            with open(os.path.join(BASE_DIR, "google_api_token.pickle"), "rb") as token:
+            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
+            with open(tpath, "rb") as token:
                 creds = pickle.load(token)
                 service = build("calendar", "v3", credentials=creds)
                 service.events().delete(
@@ -625,20 +630,31 @@ class BlogPostDueDate(models.Model):
     title = models.CharField(max_length=100, default="Weekly Blog Post Due")
     date = models.DateField()
     timeline = models.ForeignKey(
-        Timeline, on_delete=models.CASCADE, null=True, blank=True
+        Timeline,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     add_counter_scheduler = models.ForeignKey(
-        Scheduler, on_delete=models.CASCADE, null=True, blank=True
+        Scheduler,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     pre_blog_reminder_builder = models.ForeignKey(
-        Builder, on_delete=models.CASCADE, null=True, blank=True, related_name="pre"
+        Builder,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="pre"
     )
     post_blog_reminder_builder = models.ManyToManyField(Builder, blank=True)
     event_id = models.CharField(max_length=255, null=True, blank=True)
     category = models.IntegerField(choices=categories, null=True, blank=True)
 
     def add_to_calendar(self):
-        with open(os.path.join(BASE_DIR, "google_api_token.pickle"), "rb") as token:
+        tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
+        with open(tpath, "rb") as token:
             creds = pickle.load(token)
             service = build("calendar", "v3", credentials=creds)
             event = {
@@ -646,23 +662,24 @@ class BlogPostDueDate(models.Model):
                 "start": {"date": self.date.strftime("%Y-%m-%d")},
                 "end": {"date": self.date.strftime("%Y-%m-%d")},
             }
-            calendar_id = self.timeline.calendar_id if self.timeline else "primary"
+            cal_id = self.timeline.calendar_id if self.timeline else "primary"
             if not self.event_id:
                 event = (
                     service.events()
-                    .insert(calendarId=calendar_id, body=event)
+                    .insert(calendarId=cal_id, body=event)
                     .execute()
                 )
                 self.event_id = event.get("id")
                 self.save()
             else:
                 service.events().update(
-                    calendarId=calendar_id, eventId=self.event_id, body=event
+                    calendarId=cal_id, eventId=self.event_id, body=event
                 ).execute()
 
     def delete_from_calendar(self):
         if self.event_id:
-            with open(os.path.join(BASE_DIR, "google_api_token.pickle"), "rb") as token:
+            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
+            with open(tpath, "rb") as token:
                 creds = pickle.load(token)
                 service = build("calendar", "v3", credentials=creds)
                 service.events().delete(
@@ -714,7 +731,10 @@ class PageNotification(models.Model):
     message = models.TextField(name="message")
     user = models.ForeignKey(User, name="user", on_delete=models.CASCADE)
     page = models.ForeignKey(
-        Page, name="page", related_name="notifications", on_delete=models.CASCADE
+        Page,
+        name="page",
+        related_name="notifications",
+        on_delete=models.CASCADE
     )
     pubished_page = models.ForeignKey(
         Page,
@@ -823,13 +843,25 @@ class AddUserLog(models.Model):
 
 class RegLink(models.Model):
     is_used = models.BooleanField(default=False, editable=False)
-    reglink_id = models.CharField(max_length=36, default=gen_uuid_str, editable=False)
+    reglink_id = models.CharField(
+        max_length=36,
+        default=gen_uuid_str,
+        editable=False
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     user_role = models.IntegerField(
-        name="user_role", choices=UserProfile.ROLES, default=0, null=True, blank=False
+        name="user_role",
+        choices=UserProfile.ROLES,
+        default=0,
+        null=True,
+        blank=False
     )
     user_suborg = models.ForeignKey(
-        SubOrg, name="user_suborg", on_delete=models.CASCADE, null=True, blank=False
+        SubOrg,
+        name="user_suborg",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=False
     )
     user_gsoc_year = models.ForeignKey(
         GsocYear,
@@ -846,10 +878,18 @@ class RegLink(models.Model):
         related_name="reglinks",
     )
     email = models.CharField(
-        null=False, blank=False, default="", max_length=300, validators=[validate_email]
+        null=False,
+        blank=False,
+        default="",
+        max_length=300,
+        validators=[validate_email]
     )
     scheduler = models.ForeignKey(
-        Scheduler, null=True, blank=True, on_delete=models.CASCADE, editable=False
+        Scheduler,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        editable=False
     )
     reminder = models.ForeignKey(
         Scheduler,
@@ -949,25 +989,17 @@ class RegLink(models.Model):
 
         PagePermission.objects.create(user=user, page=page)
 
-        permissions = list()
-        pobjects = Permission.objects
-        permissions.append(pobjects.filter(codename="add_article").first())
-        permissions.append(pobjects.filter(codename="change_article").first())
-        permissions.append(pobjects.filter(codename="delete_article").first())
-        permissions.append(pobjects.filter(codename="view_article").first())
-        permissions.append(
-            pobjects.filter(codename="add_pagenotification").first()
-        )
-        permissions.append(
-            pobjects.filter(codename="change_pagenotification").first()
-        )
-        permissions.append(
-            pobjects.filter(codename="delete_pagenotification").first()
-        )
-        permissions.append(
-            pobjects.filter(codename="view_pagenotification").first()
-        )
-        user.user_permissions.set(permissions)
+        perms = list()
+        pobjs = Permission.objects
+        perms.append(pobjs.filter(codename="add_article").first())
+        perms.append(pobjs.filter(codename="change_article").first())
+        perms.append(pobjs.filter(codename="delete_article").first())
+        perms.append(pobjs.filter(codename="view_article").first())
+        perms.append(pobjs.filter(codename="add_pagenotification").first())
+        perms.append(pobjs.filter(codename="change_pagenotification").first())
+        perms.append(pobjs.filter(codename="delete_pagenotification").first())
+        perms.append(pobjs.filter(codename="view_pagenotification").first())
+        user.user_permissions.set(perms)
 
         mark_urlconf_as_changed()
         return user
@@ -1000,7 +1032,9 @@ class RegLink(models.Model):
             template_data=template_data,
         )
         s = Scheduler.objects.create(
-            command="send_email", activation_date=trigger_time, data=scheduler_data
+            command="send_email",
+            activation_date=trigger_time,
+            data=scheduler_data
         )
         self.scheduler = s
         self.save()
@@ -1008,12 +1042,13 @@ class RegLink(models.Model):
     def create_reminder(self, trigger_time=None):
         if self.has_scheduler:
             validate_email(self.email)
+            register_link = settings.INETLOCATION + self.url
             scheduler_data = build_send_reminder_json(
                 self.email,
                 self.pk,
                 template="registration_reminder.html",
                 subject="Reminder for registration",
-                template_data={"register_link": settings.INETLOCATION + self.url},
+                template_data={"register_link": register_link},
             )
 
             if not trigger_time:
@@ -1103,9 +1138,16 @@ class SendEmail(models.Model):
     )
 
     to = models.CharField(
-        null=True, blank=True, max_length=255, help_text="Separate email with a comma"
+        null=True,
+        blank=True,
+        max_length=255,
+        help_text="Separate email with a comma"
     )
-    to_group = models.CharField(max_length=80, choices=groups, null=True, blank=True)
+    to_group = models.CharField(
+        max_length=80,
+        choices=groups,
+        null=True,
+        blank=True)
     subject = models.CharField(max_length=255)
     body = models.TextField()
     activation_date = models.DateTimeField(blank=True, null=True)
