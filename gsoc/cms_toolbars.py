@@ -22,7 +22,7 @@ from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
 from cms.models import Page
 
-from gsoc.models import ArticleReview
+from gsoc.models import ArticleReview, UserProfile
 
 
 def add_admin_menu(self):
@@ -83,7 +83,7 @@ def add_admin_menu(self):
                 on_close=None,
             )
 
-        if user:
+        if user and not user.is_current_year_student():
             self._admin_menu.add_link_item(
                 _("New Suborg Application"), reverse("suborg:register_suborg")
             )
