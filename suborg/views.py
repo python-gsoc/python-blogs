@@ -127,7 +127,7 @@ def add_mentor(request, application_id):
             instances = formset.save(commit=False)
             for instance in instances:
                 instance.user_suborg = application.suborg
-                instance.user_gsoc_year = application.gsoc_year
+                instance.gsoc_year = application.gsoc_year
                 instance.user_role = 2
                 instance.save()
         else:
@@ -135,7 +135,7 @@ def add_mentor(request, application_id):
 
     formset = MentorFormSet(
         queryset=RegLink.objects.filter(
-            user_gsoc_year=application.gsoc_year,
+            gsoc_year=application.gsoc_year,
             user_suborg=application.suborg,
             user_role=2,
         )

@@ -44,7 +44,7 @@ class UserDetailsForm(forms.ModelForm):
 class RegLinkForm(forms.ModelForm):
     class Meta:
         model = RegLink
-        fields = ("email", "user_role", "user_suborg", "user_gsoc_year")
+        fields = ("email", "user_role", "user_suborg", "gsoc_year")
 
 
 class BlogPostDueDateForm(forms.ModelForm):

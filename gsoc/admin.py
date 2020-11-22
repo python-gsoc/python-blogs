@@ -308,7 +308,7 @@ class RegLinkAdmin(admin.ModelAdmin):
         ),
         (
             "Configure user to be registered",
-            {"fields": ("user_role", "user_suborg", "user_gsoc_year", "email")},
+            {"fields": ("user_role", "user_suborg", "gsoc_year", "email")},
         ),
     )
     readonly_fields = (
@@ -333,7 +333,7 @@ class RegLinkAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = self.readonly_fields
         if obj and obj.is_used:
-            readonly_fields += ("user_role", "user_suborg", "user_gsoc_year", "email")
+            readonly_fields += ("user_role", "user_suborg", "gsoc_year", "email")
 
         return readonly_fields
 

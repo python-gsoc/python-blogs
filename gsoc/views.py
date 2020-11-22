@@ -176,7 +176,7 @@ def new_account_view(request):
         email = request.POST.get("email", None)
         gsoc_year = GsocYear.objects.first()
         if email:
-            RegLink.objects.create(user_role=0, user_gsoc_year=gsoc_year, email=email)
+            RegLink.objects.create(user_role=0, gsoc_year=gsoc_year, email=email)
             messages.success(
                 request, "You will get the registration link sent to your email soon"
             )
