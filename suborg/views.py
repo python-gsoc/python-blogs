@@ -25,10 +25,11 @@ def home(request):
 @decorators.login_required
 def application_list(request):
     applications = SubOrgDetails.objects.filter(suborg_admin_email=request.user.email)
+    gsoc_year = GsocYear.objects.first()
     if len(applications) == 0:
         return redirect(reverse("suborg:register_suborg"))
 
-    return render(request, "application_list.html", {"applications": applications})
+    return render(request, "application_list.html", {"applications": applications, "gsoc_year": gsoc_year})
 
 
 @decorators.login_required

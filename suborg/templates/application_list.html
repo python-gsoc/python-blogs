@@ -8,12 +8,12 @@
             <li>
                 <a href="{% url 'suborg:update_application' application_id=application.id %}">
                     {% if application.suborg %}
-                        {{ application.suborg.suborg_name }}
+                        {{ application.gsoc_year }} {{ application.suborg.suborg_name }}
                     {% else %}
-                        {{ application.suborg_name }}
+                        {{ application.gsoc_year }} {{ application.suborg_name }}
                     {% endif %}
                 </a>
-                {% if application.accepted %}
+                {% if application.accepted and gsoc_year == application.gsoc_year %}
                      - Accepted, <a href="{% url 'suborg:add_mentor' application_id=application.id %}">Add Mentors</a>
                 {% else %}
                      - Not Accepted
