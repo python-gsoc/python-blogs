@@ -13,6 +13,8 @@ from gsoc.models import (
     Scheduler
 )
 
+import json
+
 def is_superuser(user):
     return user.is_superuser
 
