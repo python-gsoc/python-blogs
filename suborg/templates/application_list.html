@@ -15,7 +15,7 @@
                 </a>
                 {% if application.accepted and gsoc_year == application.gsoc_year %}
                      - Accepted, <a href="{% url 'suborg:add_mentor' application_id=application.id %}">Add Mentors</a>
-                {% else %}
+                {% elif gsoc_year == application.gsoc_year %}
                      - Not Accepted
                 {% endif %}
             </li>
