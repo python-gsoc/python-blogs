@@ -130,16 +130,7 @@ Article.add_to_class("get_root_comments", get_root_comments)
 def save(self, *args, **kwargs):
     tags = settings.BLEACH_ALLOWED_TAGS
     attrs = bleach.sanitizer.ALLOWED_ATTRIBUTES
-    attrs["iframe"] = [
-        "src",
-        "frameborder",
-        "allow",
-        "allowfullscreen",
-        "width",
-        "height",
-    ]
-    attrs["img"] = ["src", "alt"]
-    attrs["*"] = ["class", "style"]
+    attrs.update(settings.BLEACH_ALLOWED_ATTRS)
     styles = settings.BLEACH_ALLOWED_STYLES
     self.lead_in = bleach.clean(
         self.lead_in, tags=tags, attributes=attrs, styles=styles
