@@ -73,10 +73,10 @@ def push_site_template(file_path, content):
 def push_images(file_path, content):
     g = Github(settings.GITHUB_ACCESS_TOKEN)
     repo = g.get_repo(settings.STATIC_SITE_REPO)
-    f = repo.get_contents(file_path)
-    if f.sha is not None: 
+    try:
+        f = repo.get_contents(file_path)
         repo.update_file(file_path, f"Add {file_path} logo", content, f.sha)
-    else:
+    except Exception as e:
         repo.create_file(file_path, f"Add {file_path} logo", content)
 
 
