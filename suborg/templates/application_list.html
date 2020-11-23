@@ -6,13 +6,20 @@
     <ul>
         {% for application in applications %}
             <li>
-                <a href="{% url 'suborg:update_application' application_id=application.id %}">
-                    {% if application.suborg %}
-                        {{ application.gsoc_year }} {{ application.suborg.suborg_name }}
-                    {% else %}
-                        {{ application.gsoc_year }} {{ application.suborg_name }}
-                    {% endif %}
-                </a>
+				{% if gsoc_year == application.gsoc_year %}
+					<a href="{% url 'suborg:update_application' application_id=application.id %}">
+						{% if application.suborg %}
+							{{ application.gsoc_year }} {{ application.suborg.suborg_name }}
+						{% else %}
+							{{ application.gsoc_year }} {{ application.suborg_name }}
+						{% endif %}		
+					</a>
+				{% elif application.suborg %}
+					{{ application.gsoc_year }} {{ application.suborg.suborg_name }}
+				{% else %}
+					{{ application.gsoc_year }} {{ application.suborg_name }}
+				{% endif %}
+				
                 {% if application.accepted and gsoc_year == application.gsoc_year %}
                      - Accepted, <a href="{% url 'suborg:add_mentor' application_id=application.id %}">Add Mentors</a>
                 {% elif gsoc_year == application.gsoc_year %}

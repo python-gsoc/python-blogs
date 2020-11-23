@@ -78,7 +78,7 @@
         <form method="POST" action={% url 'suborg:register_suborg' %} enctype="multipart/form-data" class="pure-form pure-form-stacked suborg-form">
             {% csrf_token %}
             {{ form }}
-            <button type="submit" class="pure-button pure-button-primary">Register</button>
+            <button type="submit" class="pure-button pure-button-primary">Submit</button>
         </form>
     </div>
 {% endblock content %}
