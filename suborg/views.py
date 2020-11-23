@@ -9,6 +9,9 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
 
+from gsoc.models import (
+    Scheduler
+)
 
 def is_superuser(user):
     return user.is_superuser
