@@ -76,3 +76,4 @@ lxml
 six
 pytz
 babel>=2.8.0
+mysqlclient>=1.4.4
