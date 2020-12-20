@@ -96,8 +96,11 @@ notes:
 
 for django 3 need to change in aldryn_newsblog
 
+```
 from six import python_2_unicode_compatible
-
+```
 instead of
 
+```
 from django.utils.six import python_2_unicode_compatible
+```
