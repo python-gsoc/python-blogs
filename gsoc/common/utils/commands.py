@@ -136,7 +136,7 @@ def update_site_template(scheduler: Scheduler):
                     timeline__gsoc_year=gsoc_year
                 ).all(),
             }
-        elif template == "index.html":
+        elif template == "ideas.html":
             # change this if the number of contact fields increase
             contact_fields = ("chat", "mailing_list", "twitter_url", "blog_url", "homepage")
             suborgs = SubOrgDetails.objects.filter(
