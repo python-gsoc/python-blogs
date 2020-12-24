@@ -361,14 +361,14 @@ class SubOrgDetails(models.Model):
 
         s = Scheduler.objects.filter(
             command="update_site_template",
-            data=json.dumps({"template": "index.html"}),
+            data=json.dumps({"template": "ideas.html"}),
             success=None,
         ).all()
         if len(s) == 0:
             time = timezone.now() + timezone.timedelta(minutes=5)
             Scheduler.objects.create(
                 command="update_site_template",
-                data=json.dumps({"template": "index.html"}),
+                data=json.dumps({"template": "ideas.html"}),
                 activation_date=time,
             )
 
