@@ -372,9 +372,10 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "hidden",
         "reminder_disabled",
         "current_blog_count",
+        "role", 
         "gsoc_invited",
     )
-    list_filter = ("hidden", "reminder_disabled")
+    list_filter = ("hidden", "reminder_disabled", "role", "gsoc_invited")
     readonly_fields = (
         "user",
         "role",
