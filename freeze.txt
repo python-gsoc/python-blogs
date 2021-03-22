@@ -17,7 +17,7 @@ cfgv==3.1.0
 chardet==3.0.4
 Deprecated==1.2.10
 distlib==0.3.0
-Django==3.0.6
+Django==3.1.6
 django-appconf==1.0.4
 django-appdata==0.3.0
 django-classy-tags==1.0.0
