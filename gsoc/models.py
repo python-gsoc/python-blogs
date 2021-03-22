@@ -466,7 +466,7 @@ class UserProfile(models.Model):
         self.proposal_confirmed = True
         self.save()
 
-class UserProfileProxy(UserProfile):
+class AdminGSOCInvites(UserProfile):
 
     class Meta:
         proxy = True

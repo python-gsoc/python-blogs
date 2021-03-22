@@ -401,9 +401,8 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
 admin.site.register(UserProfile, HiddenUserProfileAdmin)
 
 def mark_invited(self, request, queryset):
-    for scheduler in queryset:
-        Scheduler.objects.create(command=scheduler.command, data=scheduler.data)
-
+    queryset.update(gsoc_invited=True)
+    
 class HiddenGSOCInviteAdmin(admin.ModelAdmin):
     actions = [mark_invited]
     list_display = (
@@ -454,7 +453,7 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return UserProfile.all_objects.all().filter(gsoc_year=datetime.now().year).exclude(role="3")
 
-admin.site.register(UserProfileProxy, HiddenGSOCInviteAdmin)
+admin.site.register(AdminGSOCInvites, HiddenGSOCInviteAdmin)
 
 
 class PageNotificationAdmin(admin.ModelAdmin):
