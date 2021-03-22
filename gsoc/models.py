@@ -424,7 +424,6 @@ class UserProfileManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(hidden=False)
 
-
 class UserProfile(models.Model):
     ROLES = ((0, "Others"), (1, "Suborg Admin"), (2, "Mentor"), (3, "Student"))
 
@@ -467,6 +466,10 @@ class UserProfile(models.Model):
         self.proposal_confirmed = True
         self.save()
 
+class UserProfileProxy(UserProfile):
+
+    class Meta:
+        proxy = True
 
 class UserDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

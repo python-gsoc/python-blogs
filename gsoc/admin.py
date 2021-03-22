@@ -1,23 +1,4 @@
-from .models import (
-    UserProfile,
-    RegLink,
-    UserDetails,
-    Scheduler,
-    PageNotification,
-    AddUserLog,
-    BlogPostDueDate,
-    Builder,
-    Timeline,
-    ArticleReview,
-    Event,
-    SubOrgDetails,
-    GsocEndDate,
-    Comment,
-    SendEmail,
-    BlogPostHistory,
-    GsocYear,
-    SubOrg,
-)
+from .models import *
 from .forms import (
     UserProfileForm,
     UserDetailsForm,
@@ -27,7 +8,7 @@ from .forms import (
     GsocEndDateForm,
 )
 
-
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
@@ -431,7 +412,7 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
         "suborg_full_name",
         "gsoc_invited",
     )
-    list_filter = ("gsoc_invited")
+    list_filter = ("gsoc_invited",)
     readonly_fields = (
         "user",
         "role",
@@ -471,9 +452,9 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
         return obj.user.email
 
     def get_queryset(self, request):
-        return UserProfile.all_objects.all().filter(gsoc_year=gsoc_year).exclude(role=student_role)
+        return UserProfile.all_objects.all().filter(gsoc_year=datetime.now().year).exclude(role="3")
 
-admin.site.register(UserProfile, HiddenGSOCInviteAdmin)
+admin.site.register(UserProfileProxy, HiddenGSOCInviteAdmin)
 
 
 class PageNotificationAdmin(admin.ModelAdmin):
