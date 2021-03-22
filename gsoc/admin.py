@@ -417,8 +417,63 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return UserProfile.all_objects.all()
 
-
 admin.site.register(UserProfile, HiddenUserProfileAdmin)
+
+def mark_invited(self, request, queryset):
+    for scheduler in queryset:
+        Scheduler.objects.create(command=scheduler.command, data=scheduler.data)
+
+class HiddenGSOCInviteAdmin(admin.ModelAdmin):
+    actions = [mark_invited]
+    list_display = (
+        "user",
+        "email",
+        "suborg_full_name",
+        "gsoc_invited",
+    )
+    list_filter = ("gsoc_invited")
+    readonly_fields = (
+        "user",
+        "role",
+        "gsoc_year",
+        "accepted_proposal_pdf",
+        "blog_link",
+        "proposal_confirmed",
+        "github_handle",
+    )
+    fieldsets = (
+        ("Unhide", {"fields": ("hidden", "reminder_disabled")}),
+        (
+            "User Profile Details",
+            {
+                "fields": (
+                    "user",
+                    "role",
+                    "gsoc_year",
+                    "accepted_proposal_pdf",
+                    "proposal_confirmed",
+                    "blog_link",
+                    "current_blog_count",
+                    "github_handle",
+                    "gsoc_invited",
+                )
+            },
+        ),
+    )
+
+    def blog_link(self, obj):
+        ns = obj.app_config.namespace
+        page = Page.objects.get(application_namespace=ns, publisher_is_draft=False)
+        url = page.get_absolute_url()
+        return mark_safe(f'<a href="{url}">{ns}</a>')
+
+    def email(self, obj):
+        return obj.user.email
+
+    def get_queryset(self, request):
+        return UserProfile.all_objects.all().filter(gsoc_year=gsoc_year).exclude(role=student_role)
+
+admin.site.register(UserProfile, HiddenGSOCInviteAdmin)
 
 
 class PageNotificationAdmin(admin.ModelAdmin):
