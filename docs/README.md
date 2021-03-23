@@ -36,14 +36,6 @@ Default student users are `student-1`, `student-2`, `student-3` and `student-4` 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## Git
-
-To see diff's on the database you will need to run the following command:
-```
-$ git config --local include.path ../.gitconfig
-```
-Also make sure sqlite3 is available.
-
 ## Virtualenv
 
 A virtual environment is a tool that helps to keep dependencies required by different projects separate by creating isolated python virtual environments for them. This means that each project can have its own dependencies, regardless of what dependencies every other project has. We use a module named `virtualenv` which is a tool to create isolated Python environments. `virtualenv` creates a folder which contains all the necessary executables to use the packages that a Python project would need.
@@ -91,13 +83,3 @@ Once you are done with the work, you can deactivate the virtual environment by t
 
 Now you will be back to system’s default Python installation.
 
-
-notes:
-
-for django 3 need to change in aldryn_newsblog
-
-from six import python_2_unicode_compatible
-
-instead of
-
-from django.utils.six import python_2_unicode_compatible
