@@ -65,10 +65,12 @@ class GsocEndDateForm(forms.ModelForm):
         model = GsocEndDate
         fields = ("date",)
 
+
 class ChangeInfoForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ("username", "email", "first_name", "last_name")
+        fields = ("email", "first_name", "last_name")
+
 
 class SubOrgApplicationForm(forms.ModelForm):
     class Meta:

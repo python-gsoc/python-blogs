@@ -300,7 +300,7 @@ def change_password(request):
 @decorators.login_required
 def change_info(request):
     if request.method == "POST":
-        form = ChangeInfoForm(request.POST)
+        form = ChangeInfoForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Profile information Updated successfully!")
@@ -308,7 +308,7 @@ def change_info(request):
         else:
             messages.error(request, "Please correct the error below.")
     else:
-        form = ChangeInfoForm()
+        form = ChangeInfoForm(instance=request.user)
 
     return shortcuts.render(
         request, "registration/change_info.html", {"form": form}
