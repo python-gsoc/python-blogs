@@ -297,6 +297,7 @@ def change_password(request):
         request, "registration/change_password.html", {"form": form}
     )
 
+
 @decorators.login_required
 def change_info(request):
     if request.method == "POST":
