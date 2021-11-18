@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
+from os import name
 
 from cms.sitemaps import CMSSitemap
 from django.conf import settings
@@ -39,6 +40,7 @@ urlpatterns += [
     url("accounts/new", gsoc.views.new_account_view, name="new_account"),
     url("accounts/register", gsoc.views.register_view, name="register"),
     url("accounts/change_password", gsoc.views.change_password, name="change_password"),
+    url("accounts/change_info", gsoc.views.change_info, name="change_info"),
 ]
 
 urlpatterns += i18n_patterns(

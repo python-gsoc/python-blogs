@@ -9,6 +9,7 @@ from .models import (
     SubOrgDetails,
     SubOrg,
     GsocEndDate,
+    User
 )
 
 from django import forms
@@ -64,6 +65,10 @@ class GsocEndDateForm(forms.ModelForm):
         model = GsocEndDate
         fields = ("date",)
 
+class ChangeInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("username", "email", "first_name", "last_name")
 
 class SubOrgApplicationForm(forms.ModelForm):
     class Meta:

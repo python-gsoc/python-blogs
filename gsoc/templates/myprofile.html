@@ -13,6 +13,7 @@ My Profile
 
     {% if user %}
       <a href="/accounts/change_password" class="pure-button pure-button-primary">Change Password</a>
+      <a href="/accounts/change_info" class="pure-button pure-button-primary">Change Profile Info</a>
       {% if user.is_current_year_student %}
       <style>
         .alert {
