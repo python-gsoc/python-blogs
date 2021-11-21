@@ -40,7 +40,8 @@ EMAIL_PORT = 25
 REPLY_EMAIL = "gsoc-admins@python.org"
 
 # Admins
-ADMINS = (("GSoC Admins"))
+ADMINS = (("GSoC Admins", "gsoc-admins@python.org"))
+ERROR_NOTIFY_ML = ()
 
 # reCAPTCHA settings
 # update the `RECAPTCHA_PUBLIC_KEY` in `/static/js/recaptcha.js` manually

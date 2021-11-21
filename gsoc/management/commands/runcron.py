@@ -83,7 +83,7 @@ class Command(BaseCommand):
                     builder.last_error = err
                     builder.save()
                     send_mail(
-                        settings.ADMINS,
+                        settings.ERROR_NOTIFY_ML,
                         "Exception on runcron build_items",
                         "cron_error.html",
                         {"message": err, "time": today},
@@ -118,7 +118,7 @@ class Command(BaseCommand):
             scheduler.last_error = err
             scheduler.save()
             send_mail(
-                settings.ADMINS,
+                settings.ERROR_NOTIFY_ML,
                 "Exception on runcron process_items",
                 "cron_error.html",
                 {"message": err, "time": today},
