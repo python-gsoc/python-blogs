@@ -188,10 +188,10 @@ class GsocYear(models.Model):
 class SubOrgDetails(models.Model):
     suborg_admin = models.ForeignKey(
         User,
-        on_delete = PROTECT,
-        related_name = "suborg_admin",
-        blank = True,
-        null = True,
+        on_delete=PROTECT,
+        related_name="suborg_admin",
+        blank=True,
+        null=True,
     )
 
     gsoc_year = models.ForeignKey(
