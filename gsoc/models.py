@@ -8,6 +8,7 @@ import bleach
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
+from django.db.models.deletion import PROTECT
 
 from googleapiclient.discovery import build
 
@@ -185,6 +186,14 @@ class GsocYear(models.Model):
 
 
 class SubOrgDetails(models.Model):
+    suborg_admin = models.ForeignKey(
+        User,
+        on_delete = PROTECT,
+        related_name = "suborg_admin",
+        blank = True,
+        null = True,
+    )
+
     gsoc_year = models.ForeignKey(
         GsocYear,
         on_delete = models.CASCADE,
