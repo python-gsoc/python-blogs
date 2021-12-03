@@ -1,6 +1,6 @@
 # Python-GSoC Blogging platform
 
-Blog and management platform for PSF for running GSoC
+Blog and management platform of PSF for running GSoC.
 
 ## Build Status
 
