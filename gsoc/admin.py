@@ -1,4 +1,5 @@
 from .models import *
+from .filters import GSoCYearFilter
 from .forms import (
     UserProfileForm,
     UserDetailsForm,
@@ -353,10 +354,10 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "hidden",
         "reminder_disabled",
         "current_blog_count",
-        "role", 
+        "role",
         "gsoc_invited",
     )
-    list_filter = ("hidden", "reminder_disabled", "role", "gsoc_invited")
+    list_filter = ("hidden", "reminder_disabled", "role", "gsoc_invited", GSoCYearFilter)
     readonly_fields = (
         "user",
         "role",
@@ -396,13 +397,23 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         return obj.user.email
 
     def get_queryset(self, request):
-        return UserProfile.all_objects.all()
+        """
+        This queryset is used to return UserProfile object based on the role of request.user
+        If the user is a super user then all users are returned.
+        If the user is a suborg admin then mentors and students of that suborg are returned.
+        """
+        user = request.user.userprofile_set.get()
+        if request.user.is_superuser:
+            return UserProfile.all_objects.all()
+        if user.role == 1:
+            return UserProfile.objects.filter(suborg_full_name=user.suborg_full_name)
+        return UserProfile.objects.none()
 
 admin.site.register(UserProfile, HiddenUserProfileAdmin)
 
 def mark_invited(self, request, queryset):
     queryset.update(gsoc_invited=True)
-    
+
 class HiddenGSOCInviteAdmin(admin.ModelAdmin):
     actions = [mark_invited]
     list_display = (
