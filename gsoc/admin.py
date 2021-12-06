@@ -1,5 +1,4 @@
 from .models import *
-from .filters import GSoCYearFilter
 from .forms import (
     UserProfileForm,
     UserDetailsForm,
@@ -357,7 +356,7 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "role",
         "gsoc_invited",
     )
-    list_filter = ("hidden", "reminder_disabled", "role", "gsoc_invited", GSoCYearFilter)
+    list_filter = ("hidden", "reminder_disabled", "role", "gsoc_invited")
     readonly_fields = (
         "user",
         "role",
@@ -399,15 +398,19 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         """
         This queryset is used to return UserProfile object based on the role of request.user
-        If the user is a super user then all users are returned.
-        If the user is a suborg admin then mentors and students of that suborg are returned.
+        If the user is a super user then all users are returned sorted by gsoc_year with latest first.
+        If the user is a suborg admin then mentors and students of that suborg are returned filter by current year.
         """
-        user = request.user.userprofile_set.get()
         if request.user.is_superuser:
-            return UserProfile.all_objects.all()
-        if user.role == 1:
-            return UserProfile.objects.filter(suborg_full_name=user.suborg_full_name)
-        return UserProfile.objects.none()
+            return UserProfile.all_objects.all().order_by("gsoc_year")
+
+        user_profiles = request.user.userprofile_set.filter(role=1).all()
+        if len(user_profiles) == 0:
+            # user is not suborg admin
+            return UserProfile.objects.none()
+
+        user_suborgs = [x.suborg_full_name for x in user_profiles]
+        return UserProfile.objects.filter(gsoc_year=datetime.now().year).filter(suborg_full_name__in=user_suborgs)
 
 admin.site.register(UserProfile, HiddenUserProfileAdmin)
 
