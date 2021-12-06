@@ -398,8 +398,10 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         """
         This queryset is used to return UserProfile object based on the role of request.user
-        If the user is a super user then all users are returned sorted by gsoc_year with latest first.
-        If the user is a suborg admin then mentors and students of that suborg are returned filter by current year.
+        If the user is a super user then all users are returned sorted by gsoc_year
+        with latest first.
+        If the user is a suborg admin then mentors and students of that suborg are
+        returned filtered by current year.
         """
         if request.user.is_superuser:
             return UserProfile.all_objects.all().order_by("gsoc_year")
