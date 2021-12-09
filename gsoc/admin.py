@@ -626,6 +626,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
     list_filter = ("gsoc_year", "changed")
     # fields = ('last_message', )
     readonly_fields = (
+        "suborg_admin",
         "gsoc_year",
         "suborg_admin_email",
         "suborg_admin_2_email",
@@ -660,6 +661,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
             "Details",
             {
                 "fields": (
+                    "suborg_admin",
                     "gsoc_year",
                     "suborg_admin_email",
                     "past_gsoc_experience",

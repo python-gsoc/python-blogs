@@ -53,6 +53,7 @@ def register_suborg(request):
             suborg_details = form.save()
             suborg_details.changed = True
             suborg_details.created_at = timezone.now()
+            suborg_details.suborg_admin_id = request.user.id
             suborg_details.save()
             suborg_details.send_update_notification()
             return redirect(reverse("suborg:post_register"))
