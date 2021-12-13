@@ -396,6 +396,14 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         return obj.user.email
 
     def get_queryset(self, request):
+        return UserProfile.all_objects.all()
+
+
+admin.site.register(UserProfile, HiddenUserProfileAdmin)
+
+
+class SuborgProfilesAdmin(HiddenUserProfileAdmin):
+    def get_queryset(self, request):
         """
         This queryset is used to return UserProfile object based on the role of request.user
         If the user is a super user then all users are returned sorted by gsoc_year
@@ -414,7 +422,9 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         user_suborgs = [x.suborg_full_name for x in user_profiles]
         return UserProfile.objects.filter(gsoc_year=datetime.now().year).filter(suborg_full_name__in=user_suborgs)
 
-admin.site.register(UserProfile, HiddenUserProfileAdmin)
+
+admin.site.register(SuborgProfile, SuborgProfilesAdmin)
+
 
 def mark_invited(self, request, queryset):
     queryset.update(gsoc_invited=True)
