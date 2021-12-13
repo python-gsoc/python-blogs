@@ -1256,7 +1256,7 @@ def update_user_permission(sender, instance, **kwargs):
     permission = Permission.objects.get(codename='view_suborgprofile')
     if user.userprofile_set.filter(role=1).count() > 0:
         user.user_permissions.add(permission)
-    elif user.user_permissions.filter(codename='view_suborgprofile').count() > 0:
+    elif user.has_perm('gsoc.view_suborgprofile'):
         user.user_permissions.remove(permission)
     user.save()
 
