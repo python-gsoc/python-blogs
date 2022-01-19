@@ -1,5 +1,5 @@
 from gsoc.forms import SubOrgApplicationForm
-from gsoc.models import GsocYear, SubOrgDetails, RegLink
+from gsoc.models import GsocYear, SubOrgDetails, RegLink, UserProfile
 
 from django.contrib.auth.models import User
 from django.contrib.auth import decorators
@@ -30,11 +30,18 @@ def home(request):
 @decorators.login_required
 def application_list(request):
     applications = SubOrgDetails.objects.filter(suborg_admin_email=request.user.email)
+    print(applications)
+    mentors_list = {}
+    for a in applications:
+        mentors_list[a.suborg.id] = UserProfile.objects.filter(role=2, suborg_full_name=a.suborg.id)
+    print(mentors_list)
+    # for a in applications:
+    #     mentors_list[a.id] = RegLink.objects.filter(user_suborg=a.id)
     gsoc_year = GsocYear.objects.first()
     if len(applications) == 0:
         return redirect(reverse("suborg:register_suborg"))
 
-    return render(request, "application_list.html", {"applications": applications, "gsoc_year": gsoc_year})
+    return render(request, "application_list.html", {"applications": applications, "gsoc_year": gsoc_year, "mentors_list": mentors_list})
 
 
 @decorators.login_required
@@ -138,7 +145,7 @@ def add_mentor(request, application_id):
         )
         return redirect(reverse("suborg:application_list"))
 
-    MentorFormSet = modelformset_factory(RegLink, fields=("email",), extra=4)
+    MentorFormSet = modelformset_factory(RegLink, fields=("email",))
 
     if request.method == "POST":
         formset = MentorFormSet(request.POST)
