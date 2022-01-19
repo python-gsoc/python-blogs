@@ -30,13 +30,9 @@ def home(request):
 @decorators.login_required
 def application_list(request):
     applications = SubOrgDetails.objects.filter(suborg_admin_email=request.user.email)
-    print(applications)
     mentors_list = {}
     for a in applications:
         mentors_list[a.suborg.id] = UserProfile.objects.filter(role=2, suborg_full_name=a.suborg.id)
-    print(mentors_list)
-    # for a in applications:
-    #     mentors_list[a.id] = RegLink.objects.filter(user_suborg=a.id)
     gsoc_year = GsocYear.objects.first()
     if len(applications) == 0:
         return redirect(reverse("suborg:register_suborg"))
