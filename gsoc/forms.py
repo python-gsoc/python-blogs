@@ -90,6 +90,7 @@ class SubOrgApplicationForm(forms.ModelForm):
             "students_involvement_after",
         )
         widgets = {
+            "suborg_admin": forms.HiddenInput(),
             "suborg_admin_email": forms.HiddenInput(),
             "gsoc_year": forms.HiddenInput(),
             "past_years": forms.CheckboxSelectMultiple(),
