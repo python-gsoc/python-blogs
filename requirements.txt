@@ -1,5 +1,5 @@
 #django
-Django~=3.2.5
+Django~=3.1.14
 django-appdata>=0.3.0
 django-filer>=1.4.2
 django-haystack>=3.0b2
