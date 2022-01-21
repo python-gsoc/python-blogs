@@ -76,23 +76,16 @@ class SubOrgApplicationForm(forms.ModelForm):
             "last_reviewed_by",
             "created_at",
             "updated_at",
-            "reason_for_participation",
-            "mentors_student_engagement",
-            "students_on_schedule",
-            "students_involvement_gsoc",
-            "students_involvement_after",
         )
         widgets = {
             "suborg_admin": forms.HiddenInput(),
             "suborg_admin_email": forms.HiddenInput(),
             "gsoc_year": forms.HiddenInput(),
-            "applied_but_not_selected": forms.CheckboxSelectMultiple(),
         }
 
     def clean(self):
         cd = self.cleaned_data
         past_exp = cd.get("past_gsoc_experience")
-        applied_not_selected = cd.get("applied_but_not_selected").all()
         suborg_name = cd.get("suborg_name")
         suborg = cd.get("suborg")
         logo = cd.get("logo")
