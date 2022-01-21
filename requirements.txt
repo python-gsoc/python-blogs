@@ -1,5 +1,5 @@
 #django
-Django<3.2
+Django~=3.2.5
 django-appdata>=0.3.0
 django-filer>=1.4.2
 django-haystack>=3.0b2
@@ -12,7 +12,7 @@ django-treebeard>=4.0,<5.0
 django-debug-toolbar>=1.11
 
 #django cms
-django-cms>=3.8,<3.9
+django-cms>=3.9
 djangocms-admin-style>=2.0,<3.0
 djangocms-text-ckeditor>=4.0,<5.0
 djangocms-file>=3.0,<4.0
