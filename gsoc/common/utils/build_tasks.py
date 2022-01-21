@@ -18,7 +18,7 @@ def build_pre_blog_reminders(builder):
         categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
         category = categories[due_date.category][1]
         for profile in profiles:
-            if profile.current_blog_count is not 0 and not (
+            if profile.current_blog_count != 0 and not (
                 profile.hidden or profile.reminder_disabled
             ):
                 template_data = {

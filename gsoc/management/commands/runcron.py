@@ -128,31 +128,31 @@ class Command(BaseCommand):
         today = timezone.now()
 
         # custom handlers
-        irc_schedulers_1 = Scheduler.objects.filter(
-            success=None, command="send_irc_msg", activation_date=None
-        )
-        irc_schedulers_2 = Scheduler.objects.filter(
-            success=None, command="send_irc_msg", activation_date__lte=today
-        )
-        irc_schedulers = irc_schedulers_1 | irc_schedulers_2
-        if len(irc_schedulers) is 0:
-            self.stdout.write(
-                self.style.SUCCESS("No scheduled send_irc_msg tasks"), ending="\n"
-            )
-        else:
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "Sending {} scheduled irc message(s)".format(len(irc_schedulers))
-                ),
-                ending="\n",
-            )
-            commands.send_irc_msgs(irc_schedulers)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "Sent {} irc message(s)".format(len(irc_schedulers))
-                ),
-                ending="\n",
-            )
+        #irc_schedulers_1 = Scheduler.objects.filter(
+        #    success=None, command="send_irc_msg", activation_date=None
+        #)
+        #irc_schedulers_2 = Scheduler.objects.filter(
+        #    success=None, command="send_irc_msg", activation_date__lte=today
+        #)
+        #irc_schedulers = irc_schedulers_1 | irc_schedulers_2
+        #if len(irc_schedulers) is 0:
+        #    self.stdout.write(
+        #        self.style.SUCCESS("No scheduled send_irc_msg tasks"), ending="\n"
+        #    )
+        #else:
+        #    self.stdout.write(
+        #        self.style.SUCCESS(
+        #            "Sending {} scheduled irc message(s)".format(len(irc_schedulers))
+        #        ),
+        #        ending="\n",
+        #    )
+        #    commands.send_irc_msgs(irc_schedulers)
+        #    self.stdout.write(
+        #        self.style.SUCCESS(
+        #            "Sent {} irc message(s)".format(len(irc_schedulers))
+        #        ),
+        #        ending="\n",
+        #    )
 
         template_schedulers_1 = Scheduler.objects.filter(
             success=None, command="update_site_template", activation_date=None

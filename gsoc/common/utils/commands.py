@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.utils import timezone
 
-from .irc import send_message
+#from .irc import send_message
 
 from gsoc.models import (
     Scheduler,
@@ -81,14 +81,14 @@ def send_irc_msgs(schedulers):
     sends the irc messages from `send_irc_msg` `Scheduler` objects
     and returns any error encountered
     """
-    try:
-        send_message([_.data for _ in schedulers])
-        for s in schedulers:
-            s.success = True
-            s.save()
-        return None
-    except Exception as e:
-        return str(e)
+    #try:
+    #    send_message([_.data for _ in schedulers])
+    #    for s in schedulers:
+    #        s.success = True
+    #        s.save()
+    #    return None
+    #except Exception as e:
+    #    return str(e)
 
 
 def send_reg_reminder(scheduler: Scheduler):
