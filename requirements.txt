@@ -45,7 +45,7 @@ python-dateutil
 django-phonenumber-field>=0.7.2,<2.0.0
 
 #gsoc irc requirements
-#fredirc==0.3.0
+fredirc==0.3.0
 
 #gsoc pdf requirements
 pdfminer.six==20181108
