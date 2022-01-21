@@ -86,6 +86,8 @@ class SubOrgApplicationForm(forms.ModelForm):
             "suborg_admin": forms.HiddenInput(),
             "suborg_admin_email": forms.HiddenInput(),
             "gsoc_year": forms.HiddenInput(),
+            "past_years": forms.CheckboxSelectMultiple(),
+            "applied_but_not_selected": forms.CheckboxSelectMultiple(),
         }
 
     def clean(self):
@@ -131,5 +133,12 @@ class SubOrgApplicationForm(forms.ModelForm):
             raise ValidationError(
                 "At least one out of the five contact " "details should be entered"
             )
+
+        for _y in applied_not_selected:
+            for y in past_years:
+                if y == _y:
+                    raise ValidationError(
+                        "Applied but not selected year can not" " match with past years"
+                    )
 
         return cd
