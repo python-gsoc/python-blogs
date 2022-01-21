@@ -86,13 +86,14 @@ class SubOrgApplicationForm(forms.ModelForm):
             "suborg_admin": forms.HiddenInput(),
             "suborg_admin_email": forms.HiddenInput(),
             "gsoc_year": forms.HiddenInput(),
-            "applied_but_not_selected": forms.CheckboxSelectMultiple(),
         }
 
     def clean(self):
         cd = self.cleaned_data
         past_exp = cd.get("past_gsoc_experience")
-        suborg_name = cd.get("suborg_name") 
+        past_years = cd.get("past_years").all()
+        applied_not_selected = cd.get("applied_but_not_selected").all()
+        suborg_name = cd.get("suborg_name")
         suborg = cd.get("suborg")
         logo = cd.get("logo")
 
@@ -130,5 +131,5 @@ class SubOrgApplicationForm(forms.ModelForm):
             raise ValidationError(
                 "At least one out of the five contact " "details should be entered"
             )
-            
+
         return cd

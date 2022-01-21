@@ -222,51 +222,51 @@ class SubOrgDetails(models.Model):
         help_text="Fill this if there are other suborg admins other than you",
     )
 
-    # mentors_student_engagement = models.TextField(
-    #    verbose_name="How will you keep mentors engaged with their students?",
-    #    null=True,
-    #    blank=True,
-    # )
-    # students_on_schedule = models.TextField(
-    #    verbose_name="How will you help your students stay "
-    #    "on schedule to complete their projects?",
-    #    null=True,
-    #    blank=True,
-    # )
-    # students_involvement_gsoc = models.TextField(
-    #    verbose_name="How will you get your students involved in your community during GSoC?",
-    #    null=True,
-    #    blank=True,
-    # )
-    # students_involvement_after = models.TextField(
-    #    verbose_name="How will you keep students involved with your community after GSoC?",
-    #    null=True,
-    #    blank=True,
-    # )
+    mentors_student_engagement = models.TextField(
+        verbose_name="How will you keep mentors engaged with their students?",
+        null=True,
+        blank=True,
+    )
+    students_on_schedule = models.TextField(
+        verbose_name="How will you help your students stay "
+        "on schedule to complete their projects?",
+        null=True,
+        blank=True,
+    )
+    students_involvement_gsoc = models.TextField(
+        verbose_name="How will you get your students involved in your community during GSoC?",
+        null=True,
+        blank=True,
+    )
+    students_involvement_after = models.TextField(
+        verbose_name="How will you keep students involved with your community after GSoC?",
+        null=True,
+        blank=True,
+    )
     past_gsoc_experience = models.BooleanField(
         verbose_name="Has your org been accepted as a mentor org "
         "in Google Summer of Code before?",
         help_text="Mark the checkbox for yes",
     )
-    # past_years = models.ManyToManyField(
-    #    GsocYear,
-    #    blank=True,
-    #    verbose_name="Which years did your org participate in GSoC?",
-    # )
+    past_years = models.ManyToManyField(
+        GsocYear,
+        blank=True,
+        verbose_name="Which years did your org participate in GSoC?",
+    )
     suborg_in_past = models.BooleanField(
         verbose_name="Was this as a Suborg?", help_text="Mark the checkbox for yes"
     )
 
-    # applied_but_not_selected = models.ManyToManyField(
-    #    GsocYear,
-    #    blank=True,
-    #    related_name="applied_not_selected",
-    #    verbose_name="If your org has applied for GSoC "
-    #    "before but not been accepted, select the years",
-    # )
-    # year_of_start = models.IntegerField(
-    #    verbose_name="What year was your project started?"
-    # )
+    applied_but_not_selected = models.ManyToManyField(
+        GsocYear,
+        blank=True,
+        related_name="applied_not_selected",
+        verbose_name="If your org has applied for GSoC "
+        "before but not been accepted, select the years",
+    )
+    year_of_start = models.IntegerField(
+        verbose_name="What year was your project started?"
+    )
     source_code = models.URLField(verbose_name="Where does your source code live?")
     docs = models.URLField(
         verbose_name="Please provide the URL that points to the repository, "
