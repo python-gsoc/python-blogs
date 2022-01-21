@@ -265,7 +265,9 @@ class SubOrgDetails(models.Model):
         "before but not been accepted, select the years",
     )
     year_of_start = models.IntegerField(
-        verbose_name="What year was your project started?"
+        verbose_name="What year was your project started?",
+        null=True,
+        blank=True,
     )
     source_code = models.URLField(verbose_name="Where does your source code live?")
     docs = models.URLField(
