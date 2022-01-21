@@ -248,11 +248,6 @@ class SubOrgDetails(models.Model):
         "in Google Summer of Code before?",
         help_text="Mark the checkbox for yes",
     )
-    past_years = models.ManyToManyField(
-        GsocYear,
-        blank=True,
-        verbose_name="Which years did your org participate in GSoC?",
-    )
     suborg_in_past = models.BooleanField(
         verbose_name="Was this as a Suborg?", help_text="Mark the checkbox for yes"
     )
