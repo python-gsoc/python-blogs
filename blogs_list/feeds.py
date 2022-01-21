@@ -101,7 +101,7 @@ class BlogsFeed(Feed):
 
     link = settings.INETLOCATION
     feed_type = CorrectMimeTypeFeed
-    description = "Updates on different student blogs of GSoC@PSF"
+    description = "Updates on different contributor blogs of GSoC@PSF"
 
     def get_object(self, request):
         current_year = GsocYear.objects.first().gsoc_year
