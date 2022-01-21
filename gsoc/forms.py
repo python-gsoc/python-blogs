@@ -92,11 +92,7 @@ class SubOrgApplicationForm(forms.ModelForm):
     def clean(self):
         cd = self.cleaned_data
         past_exp = cd.get("past_gsoc_experience")
-        applied_not_selected = cd.get("applied_but_not_selected").all()
-        try:
-            suborg_name = cd.get("suborg_name") 
-        except cd.DoesNotExist:
-            suborg_name = None
+        suborg_name = cd.get("suborg_name") 
         suborg = cd.get("suborg")
         logo = cd.get("logo")
 
