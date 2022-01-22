@@ -88,7 +88,7 @@ def update_application(request, application_id):
                 success=None,
             ).all()
             if len(s) == 0:
-                time = timezone.now() + timezone.timedelta(minutes=5)
+                time = timezone.now() 
                 Scheduler.objects.create(
                     command="update_site_template",
                     data=json.dumps({"template": "ideas.html"}),
