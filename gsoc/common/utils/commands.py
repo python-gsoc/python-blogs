@@ -156,6 +156,7 @@ def update_site_template(scheduler: Scheduler):
                     "logo": f"/{suborg.logo.name}",
                     "ideas_list": suborg.ideas_list,
                     "contact": [],
+                    "source_code": suborg.source_code,
                 }
                 contact_count = 0
                 for field in contact_fields:
