@@ -225,12 +225,12 @@ def register_view(request):
                     "warning"
                 ] = "Your registration link is invalid! Please check again!"
             return shortcuts.render(request, "registration/register.html", context)
-        except IntegrityError:
-            context["can_register"] = False
-            context[
-                "warning"
-            ] = "Your registration link has already been used!"
-            return shortcuts.render(request, "registration/register.html", context)
+    except IntegrityError:
+        context["can_register"] = False
+        context[
+            "warning"
+        ] = "Your registration link has already been used!"
+        return shortcuts.render(request, "registration/register.html", context)
     if request.method == "POST":
         username = request.POST.get("username", "")
         password = request.POST.get("password", "")
