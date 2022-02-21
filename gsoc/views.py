@@ -30,6 +30,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
+from django.db import IntegrityError
 
 from aldryn_newsblog.models import Article
 
