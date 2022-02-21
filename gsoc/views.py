@@ -216,7 +216,7 @@ def register_view(request):
                 messages.success(
                     request,
                     f"A user with {user.email} already exists in our database. "
-                    f"A new profile has been created. Please login with your "
+                    f"The suborg has now been associated with your user. You may now login with your "
                     f"existing credentials.",
                 )
                 return shortcuts.redirect("/")
