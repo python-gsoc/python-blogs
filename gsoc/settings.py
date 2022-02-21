@@ -71,6 +71,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, "blogs_list", "templates"),
             os.path.join(BASE_DIR, "suborg", "templates"),
         ],
+        'APP_DIRS': True,
         "OPTIONS": {
             "context_processors": [
                 "django.contrib.auth.context_processors.auth",
