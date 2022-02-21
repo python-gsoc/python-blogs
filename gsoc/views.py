@@ -1,7 +1,7 @@
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
-from .forms import ProposalUploadForm
+from .forms import ChangeInfoForm, ProposalUploadForm
 from .models import (
     RegLink,
     ProposalTextValidator,
@@ -305,6 +305,23 @@ def change_password(request):
         request, "registration/change_password.html", {"form": form}
     )
 
+
+@decorators.login_required
+def change_info(request):
+    if request.method == "POST":
+        form = ChangeInfoForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile information Updated successfully!")
+            return redirect("change_info")
+        else:
+            messages.error(request, "Please correct the error below.")
+    else:
+        form = ChangeInfoForm(instance=request.user)
+
+    return shortcuts.render(
+        request, "registration/change_info.html", {"form": form}
+    )
 
 @never_cache
 def new_comment(request):

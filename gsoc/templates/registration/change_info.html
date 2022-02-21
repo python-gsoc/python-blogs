@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+Change Profile Information
+{% endblock %}
+
+{% block content %}
+<section class="center">
+    <form class="pure-form pure-form-aligned" method="post">
+        <legend>
+            <h2>Change Profile Information:</h2>
+        </legend>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="pure-button pure-button-primary" type="submit">Save changes</button>
+    </form>
+</section>
+{% endblock %}
