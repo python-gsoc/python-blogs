@@ -576,3 +576,5 @@ CACHES = {
         "LOCATION": "mem_cache",
     }
 }
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
