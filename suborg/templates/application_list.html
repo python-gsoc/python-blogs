@@ -27,7 +27,7 @@
                     <ol>
                     {% for mentor in mentors_list|dict_key:application.suborg.id %}
                         <li>
-                            {{ mentor.user.username }}
+                            {{ mentor.user.username }}( {{ mentor.user.email }} )
                         </li>
                     {% endfor %}
                     </ol>
