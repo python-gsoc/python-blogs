@@ -353,7 +353,7 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "hidden",
         "reminder_disabled",
         "current_blog_count",
-        "role", 
+        "role",
         "gsoc_invited",
     )
     list_filter = ("hidden", "reminder_disabled", "role", "gsoc_invited")
@@ -398,11 +398,37 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return UserProfile.all_objects.all()
 
+
 admin.site.register(UserProfile, HiddenUserProfileAdmin)
+
+
+class SuborgProfilesAdmin(HiddenUserProfileAdmin):
+    def get_queryset(self, request):
+        """
+        This queryset is used to return UserProfile object based on the role of request.user
+        If the user is a super user then all users are returned sorted by gsoc_year
+        with latest first.
+        If the user is a suborg admin then mentors and students of that suborg are
+        returned filtered by current year.
+        """
+        if request.user.is_superuser:
+            return UserProfile.all_objects.all().order_by("gsoc_year")
+
+        user_profiles = request.user.userprofile_set.filter(role=1).all()
+        if len(user_profiles) == 0:
+            # user is not suborg admin
+            return UserProfile.objects.none()
+
+        user_suborgs = [x.suborg_full_name for x in user_profiles]
+        return UserProfile.objects.filter(gsoc_year=datetime.now().year).filter(suborg_full_name__in=user_suborgs)
+
+
+admin.site.register(SuborgProfile, SuborgProfilesAdmin)
+
 
 def mark_invited(self, request, queryset):
     queryset.update(gsoc_invited=True)
-    
+
 class HiddenGSOCInviteAdmin(admin.ModelAdmin):
     actions = [mark_invited]
     list_display = (

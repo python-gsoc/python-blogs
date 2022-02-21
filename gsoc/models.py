@@ -434,6 +434,12 @@ class UserProfile(models.Model):
         self.proposal_confirmed = True
         self.save()
 
+
+class SuborgProfile(UserProfile):
+    class Meta:
+        proxy = True
+
+
 class AdminGSOCInvites(UserProfile):
 
     class Meta:
@@ -1204,6 +1210,23 @@ def auto_delete_proposal_on_delete(sender, instance, **kwargs):
             return
         if os.path.isfile(filepath):
             os.remove(filepath)
+
+
+# update user permission when user profile associated with the user is changed.
+@receiver(models.signals.post_save, sender=UserProfile)
+def update_user_permission(sender, instance, **kwargs):
+    """
+    If any user profile associated with user has role as suborg admin then add the
+    view_suborgprofile permission to the user else remove the permission if present.
+    """
+
+    user = instance.user
+    permission = Permission.objects.get(codename='view_suborgprofile')
+    if user.userprofile_set.filter(role=1).count() > 0:
+        user.user_permissions.add(permission)
+    elif user.has_perm('gsoc.view_suborgprofile'):
+        user.user_permissions.remove(permission)
+    user.save()
 
 
 # Auto Delete Proposal when new Proposal is uploaded
