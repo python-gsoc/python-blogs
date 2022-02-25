@@ -770,3 +770,5 @@ class GsocYearAdmin(admin.ModelAdmin):
 
 
 admin.site.register(GsocYear, GsocYearAdmin)
+
+admin.site.register(SubOrg)
