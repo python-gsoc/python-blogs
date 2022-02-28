@@ -97,8 +97,6 @@ def send_reg_reminder(scheduler: Scheduler):
         reglink = RegLink.objects.get(pk=data["object_pk"])
         if reglink.is_usable():
             return send_email(scheduler)
-        else:
-            return "link already used"
     except Exception as e:
         return str(e)
 
