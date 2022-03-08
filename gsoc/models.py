@@ -293,8 +293,19 @@ class SubOrgDetails(models.Model):
             "gsoc_year": self.gsoc_year.gsoc_year,
             "suborg_name": self.suborg.suborg_name,
         }
+        suborg_email_list = [', '.join(str(x) for x in settings.ADMINS),str(self.suborg_admin_email)]
+        try:
+            if self.suborg_admin_2_email is not None:
+                suborg_email_list.append(self.suborg_admin_2_email)
+        except NameError:
+            pass
+        try:
+            if self.suborg_admin_3_email is not None:
+                suborg_email_list.append(self.suborg_admin_3_email)
+        except NameError:
+            pass
         scheduler_data = build_send_mail_json(
-            self.suborg_admin_email+","+self.suborg_admin_2_email+","+self.suborg_admin_3_email+","+settings.ADMINS,
+            suborg_email_list,
             template="suborg_accept.html",
             subject="Acceptance for GSoC@PSF {}".format(self.gsoc_year.gsoc_year),
             template_data=template_data,
@@ -369,8 +380,19 @@ class SubOrgDetails(models.Model):
             "suborg_name": suborg_name,
             "message": self.last_message,
         }
+        suborg_email_list = [', '.join(str(x) for x in settings.ADMINS),str(self.suborg_admin_email)]
+        try:
+            if self.suborg_admin_2_email is not None:
+                suborg_email_list.append(self.suborg_admin_2_email)
+        except NameError:
+            pass
+        try:
+            if self.suborg_admin_3_email is not None:
+                suborg_email_list.append(self.suborg_admin_3_email)
+        except NameError:
+            pass
         scheduler_data = build_send_mail_json(
-            self.suborg_admin_email+","+suborg_admin_2_email+","+suborg_admin_3_email+","+settings.ADMINS,
+            suborg_email_list,
             template="suborg_review.html",
             subject="Review your SubOrg Application"
             " for GSoC@PSF {}".format(self.gsoc_year.gsoc_year),
