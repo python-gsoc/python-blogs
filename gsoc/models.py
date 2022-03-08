@@ -294,7 +294,7 @@ class SubOrgDetails(models.Model):
             "suborg_name": self.suborg.suborg_name,
         }
         scheduler_data = build_send_mail_json(
-            self.suborg_admin_email,
+            self.suborg_admin_email+","+suborg_admin_2_email+","+suborg_admin_3_email+","+settings.ADMINS,
             template="suborg_accept.html",
             subject="Acceptance for GSoC@PSF {}".format(self.gsoc_year.gsoc_year),
             template_data=template_data,
@@ -370,7 +370,7 @@ class SubOrgDetails(models.Model):
             "message": self.last_message,
         }
         scheduler_data = build_send_mail_json(
-            self.suborg_admin_email,
+            self.suborg_admin_email+","+suborg_admin_2_email+","+suborg_admin_3_email+","+settings.ADMINS,
             template="suborg_review.html",
             subject="Review your SubOrg Application"
             " for GSoC@PSF {}".format(self.gsoc_year.gsoc_year),
