@@ -139,7 +139,7 @@ def update_site_template(scheduler: Scheduler):
             contact_fields = ("chat", "mailing_list", "twitter_url", "blog_url", "homepage")
             suborgs = SubOrgDetails.objects.filter(
                 gsoc_year=gsoc_year, accepted=True
-            ).all()
+            ).all().order_by('suborg_name')
             suborg_list = []
             for suborg in suborgs:
                 f = open(suborg.logo.path, "rb")
