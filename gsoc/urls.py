@@ -115,3 +115,8 @@ urlpatterns += [
 ]
 
 urlpatterns += [url(r"^test/", gsoc.views.test, name="test")]
+
+# Export routes
+urlpatterns += [
+    url("admin/export", gsoc.views.export_mentors, name="export_mentors")
+]
