@@ -90,6 +90,12 @@ def add_admin_menu(self):
             self._admin_menu.add_link_item(
                 _("Manage Suborg Application"), reverse("suborg:application_list")
             )
+        
+        if user and user.is_superuser:
+            # Export button
+            self._admin_menu.add_sideframe_item(
+                _("Export Mentors"), url="admin/export"
+            )
 
         self._admin_menu.add_break(ADMINISTRATION_BREAK)
 
