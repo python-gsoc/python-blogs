@@ -488,6 +488,7 @@ def readd_users(request, uuid):
 
     return shortcuts.render(request, "readd.html", context)
 
+
 # Export mentors view
 @decorators.login_required
 @decorators.user_passes_test(is_superuser)
@@ -496,7 +497,7 @@ def export_mentors(request):
     mentor_list = []
     for mentor in mentors:
         mentor_list.append(mentor.user.email)
-    
+
     response_content = '\n'.join(mentor_list)
     response = HttpResponse(response_content, content_type="text/plain,charset=utf8")
     response['Content-Disposition'] = 'attachment; filename="mentors.txt"'
