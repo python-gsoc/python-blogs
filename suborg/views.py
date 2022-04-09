@@ -117,6 +117,9 @@ def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
         application.accept()
+        user = UserProfile.objects.get(id=application.suborg_admin.id)
+        user.role = 1
+        user.save()
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
 
