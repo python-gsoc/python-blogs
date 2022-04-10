@@ -1,4 +1,3 @@
-import email
 from gsoc.forms import SubOrgApplicationForm
 from gsoc.models import GsocYear, SubOrgDetails, RegLink, UserProfile
 
