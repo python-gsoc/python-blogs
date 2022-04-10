@@ -120,14 +120,14 @@ def accept_application(request, application_id):
         application.accept()
 
         # Give suborg-admin role to main admin
-        user = UserProfile.objects.get(id=application.suborg_admin.id)
+        user = UserProfile.objects.get(user_id=application.suborg_admin.id)
         user.role = 1
         user.save()
 
         # Give suborg-admin role to secondary admins
         accept_admin(email=application.suborg_admin_2_email)
         accept_admin(email=application.suborg_admin_3_email)
-        
+
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
 
