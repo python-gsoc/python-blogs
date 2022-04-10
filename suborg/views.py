@@ -127,8 +127,15 @@ def accept_application(request, application_id):
         # Give suborg-admin role to secondary admins
         admin2 = User.objects.filter(email=application.suborg_admin_2_email)
         admin3 = User.objects.filter(email=application.suborg_admin_3_email)
-    
+        if admin2.exists():
+            accept_admin(admin2[0])
+        if admin3.exists():
+            accept_admin(admin3[0])
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
+
+
+def accept_admin(admin):
+    pass
 
 
 # @decorators.user_passes_test(is_superuser)
