@@ -1,3 +1,4 @@
+import email
 from gsoc.forms import SubOrgApplicationForm
 from gsoc.models import GsocYear, SubOrgDetails, RegLink, UserProfile
 
@@ -117,9 +118,16 @@ def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
         application.accept()
+
+        # Give suborg-admin role to main admin
         user = UserProfile.objects.get(id=application.suborg_admin.id)
         user.role = 1
         user.save()
+
+        # Give suborg-admin role to secondary admins
+        admin2 = User.objects.filter(email=application.suborg_admin_2_email)
+        admin3 = User.objects.filter(email=application.suborg_admin_3_email)
+    
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
 
