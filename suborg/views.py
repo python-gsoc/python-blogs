@@ -135,7 +135,9 @@ def accept_application(request, application_id):
 
 
 def accept_admin(admin):
-    pass
+    user = UserProfile.objects.get(user=admin)
+    user.role = 1
+    user.save()
 
 
 # @decorators.user_passes_test(is_superuser)
