@@ -3,6 +3,9 @@
 # described in https://git-scm.com/docs/gitignore
 settings_local.py
 credentials.json
+token.json
+Pipfile
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
