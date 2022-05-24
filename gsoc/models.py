@@ -53,6 +53,7 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 def gen_uuid_str():
     return str(uuid.uuid4())
 
+
 def getCreds():
     creds = None
     if os.path.exists('token.json'):
