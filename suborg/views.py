@@ -1,5 +1,5 @@
 from gsoc.forms import SubOrgApplicationForm
-from gsoc.models import GsocYear, SubOrgDetails, RegLink, UserProfile
+from gsoc.models import GsocYear, SubOrg, SubOrgDetails, RegLink, UserProfile
 
 from django.contrib.auth.models import User
 from django.contrib.auth import decorators
@@ -116,22 +116,28 @@ def post_register(request):
 def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
-        application.accept()
+        suborg = SubOrg.objects.create(suborg_name=application.suborg_name)
+        application.accept(suborg)
 
         # Give suborg-admin role to admins
-        accept_admin(application.suborg_admin.email)
-        accept_admin(application.suborg_admin_2_email)
-        accept_admin(application.suborg_admin_3_email)
+        accept_admin(application.suborg_admin.email, suborg)
+        accept_admin(application.suborg_admin_2_email, suborg)
+        accept_admin(application.suborg_admin_3_email, suborg)
 
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
 
-def accept_admin(email):
+def accept_admin(email, suborg):
     admin = User.objects.filter(email=email)
     if admin.exists():
         user = UserProfile.objects.get(user=admin[0])
         user.role = 1
         user.save()
+    else:
+        gsoc_year = GsocYear.objects.first()
+        RegLink.objects.create(user_role=1, 
+        user_suborg = suborg,
+        gsoc_year=gsoc_year, email=email)
 
 
 # @decorators.user_passes_test(is_superuser)

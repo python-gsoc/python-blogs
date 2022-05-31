@@ -283,10 +283,10 @@ class SubOrgDetails(models.Model):
     class Meta:
         verbose_name_plural = "Suborg Details"
 
-    def accept(self):
+    def accept(self, suborg):
         self.accepted = True
         if not self.suborg:
-            self.suborg = SubOrg.objects.create(suborg_name=self.suborg_name)
+            self.suborg = suborg
         self.save()
 
         template_data = {
