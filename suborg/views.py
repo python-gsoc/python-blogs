@@ -116,7 +116,10 @@ def post_register(request):
 def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
-        suborg = SubOrg.objects.create(suborg_name=application.suborg_name)
+        suborg = SubOrg.objects.get(suborg_name=application.suborg_name)
+        
+        if not suborg:
+            suborg = SubOrg.objects.create(suborg_name=application.suborg_name)
         application.accept(suborg)
 
         # Give suborg-admin role to admins
