@@ -120,24 +120,28 @@ def accept_application(request, application_id):
         application.accept(suborg)
 
         # Give suborg-admin role to admins
-        accept_admin(application.suborg_admin.email, suborg)
-        accept_admin(application.suborg_admin_2_email, suborg)
-        accept_admin(application.suborg_admin_3_email, suborg)
+        accept_admin(application, suborg)
 
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
 
-def accept_admin(email, suborg):
-    admin = User.objects.filter(email=email)
-    if admin.exists():
-        user = UserProfile.objects.get(user=admin[0])
-        user.role = 1
-        user.save()
-    else:
-        gsoc_year = GsocYear.objects.first()
-        RegLink.objects.create(user_role=1, 
-        user_suborg = suborg,
-        gsoc_year=gsoc_year, email=email)
+def accept_admin(application, suborg):
+    emails = [
+        application.suborg_admin.email,
+        application.suborg_admin_2_email,
+        application.suborg_admin_3_email
+    ]
+    for email in emails:
+        admin = User.objects.filter(email=email)
+        if admin.exists():
+            user = UserProfile.objects.get(user=admin[0])
+            user.role = 1
+            user.save()
+        else:
+            gsoc_year = GsocYear.objects.first()
+            RegLink.objects.create(user_role=1, 
+            user_suborg = suborg,
+            gsoc_year=gsoc_year, email=email)
 
 
 # @decorators.user_passes_test(is_superuser)
