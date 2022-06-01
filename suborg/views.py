@@ -118,16 +118,16 @@ def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
         suborg = SubOrg.objects.filter(suborg_name=application.suborg_name)[0]
-        
+
         if not suborg:
             suborg = SubOrg.objects.create(suborg_name=application.suborg_name)
         application.accept(suborg)
 
         # Give suborg-admin role to admins
         emails = [
-        application.suborg_admin.email,
-        application.suborg_admin_2_email,
-        application.suborg_admin_3_email
+            application.suborg_admin.email,
+            application.suborg_admin_2_email,
+            application.suborg_admin_3_email
         ]
         for email in emails:
             admin = User.objects.filter(email=email)
@@ -138,8 +138,8 @@ def accept_application(request, application_id):
             else:
                 gsoc_year = GsocYear.objects.get(gsoc_year=datetime.datetime.now().year)
                 RegLink.objects.create(
-                    user_role=1, 
-                    user_suborg = suborg,
+                    user_role=1,
+                    user_suborg=suborg,
                     gsoc_year=gsoc_year, email=email
                 )
 
