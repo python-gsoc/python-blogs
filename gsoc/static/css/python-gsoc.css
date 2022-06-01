@@ -533,3 +533,8 @@ pre {
 .rss-icon {
     color: #f26522;
 }
+
+/* CSS for not accepted users page */
+.table-container{
+    margin: 3%;
+}
