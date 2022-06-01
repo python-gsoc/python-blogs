@@ -9,6 +9,7 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
+    UserProfile,
 )
 
 import io
@@ -490,8 +491,9 @@ def readd_users(request, uuid):
 
 def not_accepted_page(request):
     if request.method == "GET":
-
-        return render(request, 'admin/not_accepted.html')
+        not_accepted_users = RegLink.objects.filter(is_used=False)
+        roles = {0: "Others", 1: "Suborg Admin", 2: "Mentor", 3: "Student"}
+        return render(request, 'admin/not_accepted.html', {"users": not_accepted_users, "roles": roles})
 
 
 from django.http import HttpResponse
