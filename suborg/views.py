@@ -142,7 +142,8 @@ def accept_application(request, application_id):
                 RegLink.objects.create(
                     user_role=1,
                     user_suborg=suborg,
-                    gsoc_year=gsoc_year, email=email
+                    gsoc_year=gsoc_year,
+                    email=email
                 )
 
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
