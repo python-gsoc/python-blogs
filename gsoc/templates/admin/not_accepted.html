@@ -4,44 +4,26 @@
 {% block title %} Not Accepted Users {% endblock %}
 
 {% block content %}
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/purecss@2.1.0/build/pure-min.css"
-      integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body>
-    <div class="table-container">
-      <table class="pure-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Email</th>
-            <th>Suborg</th>
-            <th>Role</th>
+  <div class="table-container">
+    <table class="pure-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Email</th>
+          <th>Suborg</th>
+          <th onclick="sortTable(0)" >Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr class="pure-table-odd">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.user_suborg.suborg_name }}</td>
+            <td>{{ roles|dict_key:user.user_role }}</td>
           </tr>
-        </thead>
-        <tbody>
-          {% for user in users %}
-            <tr class="pure-table-odd">
-              <td>{{ forloop.counter }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.user_suborg.suborg_name }}</td>
-              <td>{{ roles|dict_key:user.user_role }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </body>
-</html>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}
