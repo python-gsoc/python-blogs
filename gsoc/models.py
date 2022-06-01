@@ -285,8 +285,7 @@ class SubOrgDetails(models.Model):
 
     def accept(self, suborg):
         self.accepted = True
-        if not self.suborg:
-            self.suborg = suborg
+        self.suborg = suborg
         self.save()
 
         template_data = {

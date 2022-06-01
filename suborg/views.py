@@ -117,7 +117,7 @@ def post_register(request):
 def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
-        suborg = SubOrg.objects.filter(suborg_name=application.suborg_name)
+        suborg = SubOrg.objects.filter(suborg_name=application.suborg_name)[0]
         
         if not suborg:
             suborg = SubOrg.objects.create(suborg_name=application.suborg_name)
@@ -136,7 +136,7 @@ def accept_application(request, application_id):
                 user.role = 1
                 user.save()
             else:
-                gsoc_year = datetime.datetime.now().year
+                gsoc_year = GsocYear.objects.get(gsoc_year=datetime.datetime.now().year)
                 RegLink.objects.create(
                     user_role=1, 
                     user_suborg = suborg,
