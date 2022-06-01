@@ -25,7 +25,7 @@ from django import shortcuts
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from django.core.cache import cache
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -486,6 +486,12 @@ def readd_users(request, uuid):
             messages.error("Incorrect token, please use the correct token")
 
     return shortcuts.render(request, "readd.html", context)
+
+
+def not_accepted_page(request):
+    if request.method == "GET":
+
+        return render(request, 'admin/not_accepted.html')
 
 
 from django.http import HttpResponse
