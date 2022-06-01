@@ -14,6 +14,7 @@ from gsoc.models import (
 )
 
 import json
+import datetime
 
 def is_superuser(user):
     return user.is_superuser
@@ -135,7 +136,7 @@ def accept_application(request, application_id):
                 user.role = 1
                 user.save()
             else:
-                gsoc_year = GsocYear.objects.first()
+                gsoc_year = datetime.datetime.now().year
                 RegLink.objects.create(user_role=1, 
                 user_suborg = suborg,
                 gsoc_year=gsoc_year, email=email)
