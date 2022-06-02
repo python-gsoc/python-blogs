@@ -1,4 +1,3 @@
-from logging.config import valid_ident
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
@@ -10,7 +9,6 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
-    UserProfile,
 )
 
 import io
@@ -488,23 +486,6 @@ def readd_users(request, uuid):
             messages.error("Incorrect token, please use the correct token")
 
     return shortcuts.render(request, "readd.html", context)
-
-
-def not_accepted_page(request):
-    if request.method == "GET":
-        users = User.objects.all()
-        registered_users = [u.email for u in users]
-        not_accepted_users = RegLink.objects.filter(is_used=False).distinct()
-
-        view_users = []
-        not_registered_emails = []
-        for user in not_accepted_users:
-            if not user.email in registered_users and user.email not in not_registered_emails:
-                view_users.append(user)
-                not_registered_emails.append(user.email)
-
-        roles = {0: "Others", 1: "Suborg Admin", 2: "Mentor", 3: "Student"}
-        return render(request, 'admin/not_accepted.html', {"users": view_users, "roles": roles})
 
 
 from django.http import HttpResponse

@@ -115,8 +115,3 @@ urlpatterns += [
 ]
 
 urlpatterns += [url(r"^test/", gsoc.views.test, name="test")]
-
-# Not Accepted Page
-urlpatterns += [
-    url("not-accepted", gsoc.views.not_accepted_page, name="not-accepted")
-]

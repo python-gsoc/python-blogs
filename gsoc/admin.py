@@ -779,7 +779,7 @@ class NotAcceptedAdmin(admin.ModelAdmin):
     list_filter = ("user_suborg", "user_role")
 
     def get_queryset(self, request):
-        not_accepted_users = RegLink.objects.filter(is_used=False).distinct
+        not_accepted_users = RegLink.objects.filter(is_used=False)
         return not_accepted_users
 
 admin.site.register(NotAcceptedUser, NotAcceptedAdmin)
