@@ -782,4 +782,5 @@ class NotAcceptedAdmin(admin.ModelAdmin):
         not_accepted_users = RegLink.objects.filter(is_used=False)
         return not_accepted_users
 
+
 admin.site.register(NotAcceptedUser, NotAcceptedAdmin)
