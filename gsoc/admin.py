@@ -777,12 +777,9 @@ admin.site.register(SubOrg)
 class NotAcceptedAdmin(admin.ModelAdmin):
     list_display = ("email", "user_suborg", "user_role")
     list_filter = ("user_suborg", "user_role")
+
     def get_queryset(self, request):
-
-        users = User.objects.all()
-        registered_users = [u.email for u in users]
-        not_accepted_users = RegLink.objects.filter(is_used=False).exclude(email__in=registered_users)
-
+        not_accepted_users = RegLink.objects.filter(is_used=False).distinct
         return not_accepted_users
 
 admin.site.register(NotAcceptedUser, NotAcceptedAdmin)
