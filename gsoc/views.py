@@ -25,7 +25,7 @@ from django import shortcuts
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from django.core.cache import cache
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
