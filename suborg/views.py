@@ -120,7 +120,7 @@ def accept_application(request, application_id):
 
         try:
             suborg = SubOrg.objects.get(suborg_name=application.suborg_name)
-        except:
+        except SubOrg.DoesNotExist:
             suborg = SubOrg.objects.create(suborg_name=application.suborg_name)
 
         application.accept(suborg)
