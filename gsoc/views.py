@@ -1,4 +1,6 @@
+from datetime import datetime
 from gsoc import settings
+from gsoc.common.utils.tools import build_send_mail_json
 
 from .common.utils.memcached_stats import MemcachedStats
 from .forms import ChangeInfoForm, ProposalUploadForm
@@ -9,6 +11,7 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
+    Scheduler,
 )
 
 import io
@@ -17,6 +20,7 @@ import urllib
 import json
 import uuid
 
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import decorators, password_validation, validators, logout
 from django.contrib.auth.models import User
@@ -177,7 +181,30 @@ def new_account_view(request):
         email = request.POST.get("email", None)
         gsoc_year = GsocYear.objects.first()
         if email:
-            RegLink.objects.create(user_role=0, gsoc_year=gsoc_year, email=email)
+            if RegLink.objects.filter(email=email).exists():
+                reglink = RegLink.objects.get(email=email)
+                template_data = {
+                    "register_link": settings.INETLOCATION + "/accounts/register?reglink_id=" + reglink.reglink_id,
+                    "role": 0,
+                    "gsoc_year": datetime.now().year,
+                    }
+                subject = (
+                    f"You have been invited to join for GSoC "
+                    f"{datetime.now().year} with PSF"
+                )
+                scheduler_data = build_send_mail_json(
+                    email,
+                    template="invite.html",
+                    subject=subject,
+                    template_data=template_data,
+                )
+                Scheduler.objects.create(
+                    command="send_email",
+                    activation_date=timezone.now(),
+                    data=scheduler_data
+                )
+            else:
+                RegLink.objects.create(user_role=0, gsoc_year=gsoc_year, email=email)
             messages.success(
                 request, "You will get the registration link sent to your email soon"
             )
