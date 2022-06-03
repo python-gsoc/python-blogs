@@ -779,8 +779,16 @@ class NotAcceptedAdmin(admin.ModelAdmin):
     list_filter = ("user_suborg", "user_role")
 
     def get_queryset(self, request):
-        not_accepted_users = RegLink.objects.filter(is_used=False)
+        accepted_users = RegLink.objects.filter(is_used=True).values('email')
+        accepted_emails = [item['email'] for item in accepted_users]
+        not_accepted_users = RegLink.objects.filter(gsoc_year=2023).exclude(email__in=accepted_emails)
         return not_accepted_users
+        
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 admin.site.register(NotAcceptedUser, NotAcceptedAdmin)
