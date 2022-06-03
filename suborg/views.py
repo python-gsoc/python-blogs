@@ -146,12 +146,15 @@ def accept_application(request, application_id):
                 )
                 user.save()
             except User.DoesNotExist:
-                RegLink.objects.create(
-                    user_role=1,
-                    user_suborg=suborg,
-                    gsoc_year=gsoc_year,
-                    email=email
-                )
+                try:
+                    RegLink.objects.create(
+                        user_role=1,
+                        user_suborg=suborg,
+                        gsoc_year=gsoc_year,
+                        email=email
+                    )
+                except:
+                    pass
             except IntegrityError as e:
                 if 'unique constraint' in e.args[0]:
                     user = UserProfile.objects.get(
