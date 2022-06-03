@@ -1,3 +1,5 @@
+from gsoc import settings
+from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.forms import SubOrgApplicationForm
 from gsoc.models import GsocYear, SubOrg, SubOrgDetails, RegLink, UserProfile
 
@@ -15,7 +17,7 @@ from gsoc.models import (
 )
 
 import json
-import datetime
+from datetime import datetime
 
 def is_superuser(user):
     return user.is_superuser
@@ -118,7 +120,7 @@ def post_register(request):
 def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
-        gsoc_year = GsocYear.objects.get(gsoc_year=datetime.datetime.now().year)
+        gsoc_year = GsocYear.objects.get(gsoc_year=datetime.now().year)
 
         try:
             suborg = SubOrg.objects.get(suborg_name=application.suborg_name)
@@ -153,8 +155,29 @@ def accept_application(request, application_id):
                         gsoc_year=gsoc_year,
                         email=email
                     )
-                except:
-                    pass
+                except IntegrityError as e:
+                    if 'unique constraint' in e.args[0]:
+                        reglink = RegLink.objects.get(email=email)
+                        template_data = {
+                            "register_link": settings.INETLOCATION + "/accounts/register?reglink_id=" + reglink.reglink_id,
+                            "role": 0,
+                            "gsoc_year": datetime.now().year,
+                            }
+                        subject = (
+                            f"You have been invited to join for GSoC "
+                            f"{datetime.now().year} with PSF"
+                        )
+                        scheduler_data = build_send_mail_json(
+                            email,
+                            template="invite.html",
+                            subject=subject,
+                            template_data=template_data,
+                        )
+                        Scheduler.objects.create(
+                            command="send_email",
+                            activation_date=timezone.now(),
+                            data=scheduler_data
+                        )
             except IntegrityError as e:
                 if 'unique constraint' in e.args[0]:
                     user = UserProfile.objects.get(
