@@ -159,7 +159,9 @@ def accept_application(request, application_id):
                     if 'unique constraint' in e.args[0]:
                         reglink = RegLink.objects.get(email=email)
                         template_data = {
-                            "register_link": settings.INETLOCATION + "/accounts/register?reglink_id=" + reglink.reglink_id,
+                            "register_link": settings.INETLOCATION +
+                                "/accounts/register?reglink_id=" +
+                                reglink.reglink_id,
                             "role": 0,
                             "gsoc_year": datetime.now().year,
                             }

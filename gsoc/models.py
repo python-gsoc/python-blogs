@@ -1,4 +1,3 @@
-from copyreg import constructor
 import os
 import re
 import datetime
