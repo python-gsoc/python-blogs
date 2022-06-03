@@ -772,3 +772,24 @@ class GsocYearAdmin(admin.ModelAdmin):
 admin.site.register(GsocYear, GsocYearAdmin)
 
 admin.site.register(SubOrg)
+
+
+class NotAcceptedAdmin(admin.ModelAdmin):
+    list_display = ("email", "user_suborg", "user_role")
+    list_filter = ("user_suborg", "user_role")
+
+    def get_queryset(self, request):
+        accepted_users = RegLink.objects.filter(is_used=True).values('email')
+        accepted_emails = [item['email'] for item in accepted_users]
+        not_accepted_users = \
+            RegLink.objects.filter(gsoc_year=datetime.now().year).exclude(email__in=accepted_emails)
+        return not_accepted_users
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(NotAcceptedUser, NotAcceptedAdmin)

@@ -1196,6 +1196,11 @@ class SendEmail(models.Model):
         super(SendEmail, self).save(*args, **kwargs)
 
 
+class NotAcceptedUser(RegLink):
+    class Meta:
+        proxy = True
+
+
 # Receivers
 
 # Update blog count when new UserProfile is created
