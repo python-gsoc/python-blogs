@@ -160,8 +160,8 @@ def accept_application(request, application_id):
                         reglink = RegLink.objects.get(email=email)
                         template_data = {
                             "register_link": settings.INETLOCATION +
-                                "/accounts/register?reglink_id=" +
-                                reglink.reglink_id,
+                            "/accounts/register?reglink_id=" +
+                            reglink.reglink_id,
                             "role": 0,
                             "gsoc_year": datetime.now().year,
                             }
