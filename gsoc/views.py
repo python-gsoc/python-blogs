@@ -181,30 +181,30 @@ def new_account_view(request):
         email = request.POST.get("email", None)
         gsoc_year = GsocYear.objects.first()
         if email:
-            if RegLink.objects.filter(email=email).exists():
-                reglink = RegLink.objects.get(email=email)
-                template_data = {
-                    "register_link": settings.INETLOCATION + "/accounts/register?reglink_id=" + reglink.reglink_id,
-                    "role": 0,
-                    "gsoc_year": datetime.now().year,
-                    }
-                subject = (
-                    f"You have been invited to join for GSoC "
-                    f"{datetime.now().year} with PSF"
-                )
-                scheduler_data = build_send_mail_json(
-                    email,
-                    template="invite.html",
-                    subject=subject,
-                    template_data=template_data,
-                )
-                Scheduler.objects.create(
-                    command="send_email",
-                    activation_date=timezone.now(),
-                    data=scheduler_data
-                )
-            else:
+            try:
                 RegLink.objects.create(user_role=0, gsoc_year=gsoc_year, email=email)
+            except IntegrityError:
+                    reglink = RegLink.objects.get(email=email)
+                    template_data = {
+                        "register_link": settings.INETLOCATION + "/accounts/register?reglink_id=" + reglink.reglink_id,
+                        "role": 0,
+                        "gsoc_year": datetime.now().year,
+                        }
+                    subject = (
+                        f"You have been invited to join for GSoC "
+                        f"{datetime.now().year} with PSF"
+                    )
+                    scheduler_data = build_send_mail_json(
+                        email,
+                        template="invite.html",
+                        subject=subject,
+                        template_data=template_data,
+                    )
+                    Scheduler.objects.create(
+                        command="send_email",
+                        activation_date=timezone.now(),
+                        data=scheduler_data
+                    )
             messages.success(
                 request, "You will get the registration link sent to your email soon"
             )
