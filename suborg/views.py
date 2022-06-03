@@ -8,6 +8,7 @@ from django.forms import modelformset_factory
 from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
+from django.db import IntegrityError
 
 from gsoc.models import (
     Scheduler
@@ -117,6 +118,7 @@ def post_register(request):
 def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
+        gsoc_year = GsocYear.objects.get(gsoc_year=datetime.datetime.now().year)
 
         try:
             suborg = SubOrg.objects.get(suborg_name=application.suborg_name)
@@ -132,19 +134,32 @@ def accept_application(request, application_id):
             application.suborg_admin_3_email
         ]
         for email in emails:
-            admin = User.objects.filter(email=email)
-            if admin.exists():
-                user = UserProfile.objects.get(user=admin[0])
-                user.role = 1
+            try:
+                admin = User.objects.get(email=email)
+                user = UserProfile.objects.create(
+                    user=admin,
+                    role=1,
+                    gsoc_year=gsoc_year,
+                    suborg_full_name=suborg,
+                    reminder_disabled=False,
+                    github_handle=None,
+                )
                 user.save()
-            else:
-                gsoc_year = GsocYear.objects.get(gsoc_year=datetime.datetime.now().year)
+            except User.DoesNotExist:
                 RegLink.objects.create(
                     user_role=1,
                     user_suborg=suborg,
                     gsoc_year=gsoc_year,
                     email=email
                 )
+            except IntegrityError as e:
+                if 'unique constraint' in e.args[0]:
+                    user = UserProfile.objects.get(
+                        user=admin,
+                        gsoc_year=gsoc_year,
+                    )
+                    user.suborg_full_name = suborg
+                    user.save()
 
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 

@@ -311,32 +311,6 @@ class SubOrgDetails(models.Model):
         )
         Scheduler.objects.create(command="send_email", data=scheduler_data)
 
-        RegLink.objects.create(
-            user_role=1,
-            user_suborg=self.suborg,
-            gsoc_year=self.gsoc_year,
-            email=self.suborg_admin_email,
-            send_notifications=False,
-        )
-
-        if self.suborg_admin_2_email:
-            RegLink.objects.create(
-                user_role=1,
-                user_suborg=self.suborg,
-                gsoc_year=self.gsoc_year,
-                email=self.suborg_admin_2_email,
-                send_notifications=False,
-            )
-
-        if self.suborg_admin_3_email:
-            RegLink.objects.create(
-                user_role=1,
-                user_suborg=self.suborg,
-                gsoc_year=self.gsoc_year,
-                email=self.suborg_admin_3_email,
-                send_notifications=False,
-            )
-
         s = Scheduler.objects.filter(
             command="update_site_template",
             data=json.dumps({"template": "ideas.html"}),
