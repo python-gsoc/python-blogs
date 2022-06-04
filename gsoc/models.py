@@ -1081,8 +1081,8 @@ class RegLink(models.Model):
             if reglink.scheduler_id is not None and reglink.reminder_id is not None:
                 Scheduler.objects.get(id=reglink.scheduler_id).delete()
                 Scheduler.objects.get(id=reglink.reminder_id).delete()
-            reglink.delete() 
-        except:
+            reglink.delete()
+        except RegLink.DoesNotExist:
             pass
         super(RegLink, self).save(*args, **kwargs)
 
