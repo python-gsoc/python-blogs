@@ -178,6 +178,9 @@ def new_account_view(request):
         gsoc_year = GsocYear.objects.first()
         if email:
             RegLink.objects.create(user_role=0, gsoc_year=gsoc_year, email=email)
+            messages.success(
+                request, "You will get the registration link sent to your email soon"
+            )
         else:
             messages.error(request, "An error occured, try again!")
         return shortcuts.redirect("/")

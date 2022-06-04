@@ -4,6 +4,7 @@ import datetime
 import uuid
 import json
 import pickle
+from MySQLdb import IntegrityError
 import bleach
 from urllib.parse import urljoin
 
@@ -1078,8 +1079,7 @@ class RegLink(models.Model):
                 email=self.email,
                 user_suborg=self.user_suborg
             ).delete()
-            print('hi')
-        except:
+        except RegLink.DoesNotExist:
             pass
         super(RegLink, self).save(*args, **kwargs)
 
