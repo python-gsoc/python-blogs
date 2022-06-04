@@ -1070,6 +1070,19 @@ class RegLink(models.Model):
         else:
             self.create_scheduler()
 
+    def save(self, *args, **kwargs):
+        try:
+            RegLink.objects.get(
+                user_role=self.user_role,
+                gsoc_year=self.gsoc_year,
+                email=self.email,
+                user_suborg=self.user_suborg
+            ).delete()
+            print('hi')
+        except:
+            pass
+        super(RegLink, self).save(*args, **kwargs)
+
 
 class Comment(models.Model):
     username = models.CharField(max_length=50)

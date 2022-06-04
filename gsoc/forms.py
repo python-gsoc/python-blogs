@@ -47,17 +47,6 @@ class RegLinkForm(forms.ModelForm):
         model = RegLink
         fields = ("email", "user_role", "user_suborg", "gsoc_year")
 
-    def save(self, commit=True):
-        data = super(RegLinkForm, self).save(commit=False)
-        email = self.cleaned_data['email']
-        try:
-            RegLink.objects.get(email=email).delete()
-        except RegLink.DoesNotExist:
-            pass
-        if commit:
-            data.save()
-        return data
-
 
 class BlogPostDueDateForm(forms.ModelForm):
     class Meta:
