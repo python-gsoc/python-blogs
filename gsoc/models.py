@@ -816,11 +816,6 @@ class AddUserLog(models.Model):
 
 
 class RegLink(models.Model):
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['email'], name='unique email')
-        ]
-
     is_used = models.BooleanField(default=False, editable=False)
     reglink_id = models.CharField(
         max_length=36,
