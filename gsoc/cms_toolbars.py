@@ -30,8 +30,14 @@ def add_admin_menu(self):
         self._admin_menu = self.toolbar.get_or_create_menu(
             ADMIN_MENU_IDENTIFIER, self.current_site.name
         )
-        # Users button
-        self.add_users_button(self._admin_menu)
+
+        user = getattr(self.request, "user", None)
+
+        if user and user.is_superuser:
+            # Users button
+            self._admin_menu.add_sideframe_item(
+                _("User Profiles"), url="admin/gsoc/userprofile"
+            )
 
         # sites menu
         sites_queryset = Site.objects.order_by("name")
@@ -48,8 +54,6 @@ def add_admin_menu(self):
                     url="http://%s" % site.domain,
                     active=site.pk == self.current_site.pk,
                 )
-
-        user = getattr(self.request, "user", None)
 
         # admin
         self._admin_menu.add_sideframe_item(
