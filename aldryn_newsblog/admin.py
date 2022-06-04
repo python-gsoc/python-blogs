@@ -170,6 +170,9 @@ class ArticleAdmin(
         request.GET = data
         return super(ArticleAdmin, self).add_view(request, *args, **kwargs)
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
 admin.site.register(models.Article, ArticleAdmin)
 
