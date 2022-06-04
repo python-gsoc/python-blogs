@@ -148,46 +148,12 @@ def accept_application(request, application_id):
                 )
                 user.save()
             except User.DoesNotExist:
-                try:
-                    RegLink.objects.create(
-                        user_role=1,
-                        user_suborg=suborg,
-                        gsoc_year=gsoc_year,
-                        email=email
-                    )
-                except IntegrityError as e:
-                    if 'unique constraint' in e.args[0]:
-                        reglink = RegLink.objects.get(email=email)
-                        template_data = {
-                            "register_link": settings.INETLOCATION +
-                            "/accounts/register?reglink_id=" +
-                            reglink.reglink_id,
-                            "role": 0,
-                            "gsoc_year": datetime.now().year,
-                            }
-                        subject = (
-                            f"You have been invited to join for GSoC "
-                            f"{datetime.now().year} with PSF"
-                        )
-                        scheduler_data = build_send_mail_json(
-                            email,
-                            template="invite.html",
-                            subject=subject,
-                            template_data=template_data,
-                        )
-                        Scheduler.objects.create(
-                            command="send_email",
-                            activation_date=timezone.now(),
-                            data=scheduler_data
-                        )
-            except IntegrityError as e:
-                if 'unique constraint' in e.args[0]:
-                    user = UserProfile.objects.get(
-                        user=admin,
-                        gsoc_year=gsoc_year,
-                    )
-                    user.suborg_full_name = suborg
-                    user.save()
+                RegLink.objects.create(
+                    user_role=1,
+                    user_suborg=suborg,
+                    gsoc_year=gsoc_year,
+                    email=email
+                )
 
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
