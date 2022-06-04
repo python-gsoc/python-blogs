@@ -1,5 +1,3 @@
-from gsoc import settings
-from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.forms import SubOrgApplicationForm
 from gsoc.models import GsocYear, SubOrg, SubOrgDetails, RegLink, UserProfile
 
@@ -10,7 +8,6 @@ from django.forms import modelformset_factory
 from django.urls import reverse
 from django.contrib import messages
 from django.utils import timezone
-from django.db import IntegrityError
 
 from gsoc.models import (
     Scheduler
