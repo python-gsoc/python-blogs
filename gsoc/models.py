@@ -1072,13 +1072,17 @@ class RegLink(models.Model):
 
     def save(self, *args, **kwargs):
         try:
-            RegLink.objects.get(
+            reglink = RegLink.objects.get(
                 user_role=self.user_role,
                 gsoc_year=self.gsoc_year,
                 email=self.email,
                 user_suborg=self.user_suborg
-            ).delete()
-        except RegLink.DoesNotExist:
+            )
+            if reglink.scheduler_id is not None and reglink.reminder_id is not None:
+                Scheduler.objects.get(id=reglink.scheduler_id).delete()
+                Scheduler.objects.get(id=reglink.reminder_id).delete()
+            reglink.delete() 
+        except:
             pass
         super(RegLink, self).save(*args, **kwargs)
 
