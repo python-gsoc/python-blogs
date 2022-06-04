@@ -351,8 +351,7 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "role",
         "github_handle",
     )
-    list_filter = \
-        ("role", "gsoc_invited", "suborg_full_name", "gsoc_year")
+    list_filter = ("role", "gsoc_invited", "suborg_full_name", "gsoc_year")
     readonly_fields = (
         "user",
         "role",
