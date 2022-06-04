@@ -4,7 +4,6 @@ import datetime
 import uuid
 import json
 import pickle
-from MySQLdb import IntegrityError
 import bleach
 from urllib.parse import urljoin
 
@@ -14,7 +13,7 @@ from django.db.models.deletion import PROTECT
 from googleapiclient.discovery import build
 
 from django.contrib.auth.models import Permission
-from django.contrib import auth, messages
+from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
