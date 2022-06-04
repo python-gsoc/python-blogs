@@ -317,6 +317,9 @@ class RegLinkAdmin(admin.ModelAdmin):
             readonly_fields += ("user_role", "user_suborg", "gsoc_year", "email")
 
         return readonly_fields
+    
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 admin.site.register(RegLink, RegLinkAdmin)
