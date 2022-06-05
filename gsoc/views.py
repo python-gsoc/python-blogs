@@ -500,7 +500,7 @@ def export_mentors(request):
     writer = csv.writer(response)
     query_set = UserProfile.objects.filter(
         gsoc_year=datetime.now().year,
-        role__in=[2,1],
+        role__in=[2, 1]
         )
 
     writer.writerow(['User', 'Email', 'Suborg'])
