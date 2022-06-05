@@ -494,6 +494,17 @@ def readd_users(request, uuid):
 # Export mentors view
 @decorators.login_required
 @decorators.user_passes_test(is_superuser)
+def export_view(request):
+    if request.method == "GET":
+        return HttpResponse(
+            "<div style='padding:60px'>"
+            "<h1>Mentors data exported successfully!!</h1>" +
+            "<a href='admin/export'>Click here to download</a>" +
+            "</div>"   
+        )
+
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
 def export_mentors(request):
     output = []
     response = HttpResponse(content_type='text/csv')
@@ -501,7 +512,7 @@ def export_mentors(request):
     query_set = UserProfile.objects.filter(
         gsoc_year=datetime.now().year,
         role__in=[2, 1]
-        )
+        ).order_by("-id")
 
     writer.writerow(['User', 'Email', 'Suborg'])
     for userprofile in query_set:
