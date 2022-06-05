@@ -472,7 +472,9 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
         return obj.user.email
 
     def get_queryset(self, request):
-        return UserProfile.all_objects.all().filter(gsoc_year=datetime.now().year).exclude(role="3").distinct()
+        return UserProfile.all_objects.all().\
+        filter(gsoc_year=datetime.now().year).\
+        exclude(role="3").exclude(suborg_full_name=None).distinct()
 
 admin.site.register(AdminGSOCInvites, HiddenGSOCInviteAdmin)
 
