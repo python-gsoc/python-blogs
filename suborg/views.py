@@ -29,7 +29,7 @@ def home(request):
 
 @decorators.login_required
 def application_list(request):
-    applications = SubOrgDetails.objects.filter(suborg_admin_email=request.user.email)
+    applications = SubOrgDetails.objects.filter(suborg_admin=request.user)
     mentors_list = {}
     for a in applications:
         if hasattr(a.suborg, 'id'):
