@@ -496,11 +496,11 @@ def readd_users(request, uuid):
 @decorators.user_passes_test(is_superuser)
 def export_mentors(request):
     output = []
-    response = HttpResponse (content_type='text/csv')
+    response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)
     query_set = UserProfile.objects.filter(
-        gsoc_year= datetime.now().year ,
-        role__in=[2,1]
+        gsoc_year=datetime.now().year,
+        role__in=[2,1],
         )
 
     writer.writerow(['User', 'Email', 'Suborg'])
