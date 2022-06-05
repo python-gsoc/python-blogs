@@ -165,7 +165,8 @@ def add_mentor(request, application_id):
                 scheduler_data_mentor = build_send_mail_json(
                     ADMINS,
                     template="add_mentor.html",
-                    subject=f"New mentor added: {instance.email} on suborg {application.suborg.suborg_name}",
+                    subject=f"New mentor added: {instance.email}\
+                         on suborg {application.suborg.suborg_name}",
                     template_data=mentor_template_data,
                 )
 
