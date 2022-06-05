@@ -94,7 +94,7 @@ def add_admin_menu(self):
         if user and user.is_superuser:
             # Export button
             self._admin_menu.add_sideframe_item(
-                _("Export Mentors"), url="admin/export"
+                _("Export Mentors"), reverse("export_mentors")
             )
 
         self._admin_menu.add_break(ADMINISTRATION_BREAK)

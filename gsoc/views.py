@@ -1,3 +1,5 @@
+import csv
+from datetime import datetime
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
@@ -493,14 +495,19 @@ def readd_users(request, uuid):
 @decorators.login_required
 @decorators.user_passes_test(is_superuser)
 def export_mentors(request):
-    mentors = UserProfile.objects.filter(role=2)
-    mentor_list = []
-    for mentor in mentors:
-        mentor_list.append(mentor.user.email)
+    output = []
+    response = HttpResponse (content_type='text/csv')
+    writer = csv.writer(response)
+    query_set = UserProfile.objects.filter(
+        gsoc_year= datetime.now().year ,
+        role__in=[2,1]
+        )
 
-    response_content = '\n'.join(mentor_list)
-    response = HttpResponse(response_content, content_type="text/plain,charset=utf8")
-    response['Content-Disposition'] = 'attachment; filename="mentors.txt"'
+    writer.writerow(['User', 'Email', 'Suborg'])
+    for userprofile in query_set:
+        output.append([userprofile.user, userprofile.user.email, userprofile.suborg_full_name])
+    writer.writerows(output)
+
     return response
 
 
