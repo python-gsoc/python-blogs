@@ -500,8 +500,9 @@ def export_view(request):
             "<div style='padding:60px'>"
             "<h1>Mentors data exported successfully!!</h1>" +
             "<a href='admin/export'>Click here to download</a>" +
-            "</div>"   
+            "</div>"
         )
+
 
 @decorators.login_required
 @decorators.user_passes_test(is_superuser)
