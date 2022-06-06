@@ -1,6 +1,3 @@
-from cProfile import label
-from dis import dis
-from turtle import update
 from PIL import Image
 
 from .models import (

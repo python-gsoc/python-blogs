@@ -1,5 +1,4 @@
 from datetime import datetime
-from email.errors import CloseBoundaryNotFoundDefect
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
@@ -222,7 +221,7 @@ def register_view(request):
                 if reglink.is_used:
                     messages.info(request, "Invitaion already accepted!!")
                     return shortcuts.redirect("/")
-                    
+
                 messages.info(
                     request,
                     f"{reglink.email}, please enter your credentials to accept invitaion to {reglink.user_suborg}.",
