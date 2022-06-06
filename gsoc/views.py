@@ -1,3 +1,4 @@
+from datetime import datetime
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
@@ -9,6 +10,7 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
+    UserProfile,
 )
 
 import io
@@ -188,9 +190,6 @@ def new_account_view(request):
 
 
 def register_view(request):
-    if request.user.is_authenticated:
-        messages.info(request, "You have been logged out.")
-        logout(request)
 
     reglink_id = request.GET.get("reglink_id", request.POST.get("reglink_id", ""))
     try:
@@ -232,6 +231,13 @@ def register_view(request):
             "warning"
         ] = "Your registration link has already been used!"
         return shortcuts.render(request, "registration/register.html", context)
+    if request.user.is_authenticated:
+        try:
+            profile = UserProfile.objects.get(user=request.user, gsoc_year=datetime.now().year, role=2)
+            messages.info(request, f"Registered as mentor with {profile.suborg_full_name} x please login again")
+        except:
+            messages.info(request, "You have been logged out.")
+        logout(request)
     if request.method == "POST":
         username = request.POST.get("username", "")
         password = request.POST.get("password", "")
