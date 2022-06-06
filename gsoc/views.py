@@ -1,8 +1,9 @@
 from datetime import datetime
+from email.errors import CloseBoundaryNotFoundDefect
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
-from .forms import ChangeInfoForm, ProposalUploadForm
+from .forms import AcceptanceForm, ChangeInfoForm, ProposalUploadForm
 from .models import (
     RegLink,
     ProposalTextValidator,
@@ -205,20 +206,31 @@ def register_view(request):
         "reglink_id": reglink_id,
         "email": getattr(reglink, "email", "EMPTY"),
     }
+
+    if request.user.is_authenticated:
+        try:
+            profile = UserProfile.objects.get(user=request.user, gsoc_year=datetime.now().year, role=2)
+            messages.info(request, f"Registered as mentor with {profile.suborg_full_name} x please login again")
+        except:
+            messages.info(request, "You have been logged out.")
+        logout(request)
+
     try:
         if reglink_usable is False or request.method == "GET":
             user = User.objects.filter(email=context["email"]).first()
             if user:
-                reglink.create_user(username=user.username)
-                reglink.is_used = True
-                reglink.save()
-                messages.success(
+                if reglink.is_used:
+                    messages.info(request, "Invitaion already accepted!!")
+                    return shortcuts.redirect("/")
+                    
+                messages.info(
                     request,
-                    f"A user with {user.email} already exists in our database. "
-                    f"The suborg has now been associated with your user automatically. You may now login with your "
-                    f"existing credentials.",
+                    f"{reglink.email}, please enter your credentials to accept invitaion to {reglink.user_suborg}.",
                 )
-                return shortcuts.redirect("/")
+                form = AcceptanceForm()
+                data = {'form':form, 'reglink': reglink_id}
+                return shortcuts.render(request, "registration/acceptance.html", data)
+
             if reglink_usable is False:
                 context["can_register"] = False
                 context[
@@ -231,13 +243,6 @@ def register_view(request):
             "warning"
         ] = "Your registration link has already been used!"
         return shortcuts.render(request, "registration/register.html", context)
-    if request.user.is_authenticated:
-        try:
-            profile = UserProfile.objects.get(user=request.user, gsoc_year=datetime.now().year, role=2)
-            messages.info(request, f"Registered as mentor with {profile.suborg_full_name} x please login again")
-        except:
-            messages.info(request, "You have been logged out.")
-        logout(request)
     if request.method == "POST":
         username = request.POST.get("username", "")
         password = request.POST.get("password", "")
@@ -291,6 +296,29 @@ def register_view(request):
             context["done_registration"] = False
 
         return shortcuts.render(request, "registration/register.html", context)
+
+
+def accept_invitation(request):
+    if request.method == 'POST':
+        form = AcceptanceForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            reglink_id = form.cleaned_data['reglink']
+            user = User.objects.get(email=email)
+
+            if user.check_password(password):
+                reglink = RegLink.objects.get(reglink_id=reglink_id)
+                reglink.create_user(username=user.username)
+                reglink.is_used = True
+                reglink.save()
+                messages.success(request, "Invitaion accepted successfully!!")
+                return shortcuts.redirect("/")
+            else:
+                messages.success(request, "Invalid credentials. Please try again.")
+        else:
+            messages.info(request, "Something went wrong. Please try again later.")
+        return shortcuts.redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 @decorators.login_required

@@ -1,3 +1,6 @@
+from cProfile import label
+from dis import dis
+from turtle import update
 from PIL import Image
 
 from .models import (
@@ -70,6 +73,12 @@ class ChangeInfoForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("email", "first_name", "last_name")
+
+
+class AcceptanceForm(forms.Form):
+    email = forms.EmailField(label='email')
+    password = forms.CharField(widget=forms.PasswordInput())
+    reglink = forms.CharField(widget=forms.HiddenInput(), required=False)
 
 
 class SubOrgApplicationForm(forms.ModelForm):
