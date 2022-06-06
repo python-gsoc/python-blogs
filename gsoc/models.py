@@ -952,16 +952,20 @@ class RegLink(models.Model):
                     break
 
         role = {k: v for v, k in UserProfile.ROLES}
-        profile = UserProfile.objects.create(
-            user=user,
-            role=self.user_role,
-            gsoc_year=self.gsoc_year,
-            suborg_full_name=self.user_suborg,
-            reminder_disabled=reminder_disabled,
-            github_handle=github_handle,
-        )
-        if self.user_role != role.get("Student", 3):
-            profile.save()
+
+        if self.user_suborg is not None:
+            profile = UserProfile.objects.create(
+                user=user,
+                role=self.user_role,
+                gsoc_year=self.gsoc_year,
+                suborg_full_name=self.user_suborg,
+                reminder_disabled=reminder_disabled,
+                github_handle=github_handle,
+            )
+            if self.user_role != role.get("Student", 3):
+                profile.save()
+
+        if self.user_role != role.get("Student", 3):  
             return user
 
         # setup blog
