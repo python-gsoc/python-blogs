@@ -208,9 +208,14 @@ def register_view(request):
 
     if request.user.is_authenticated:
         try:
-            profile = UserProfile.objects.get(user=request.user, gsoc_year=datetime.now().year, role=2)
-            messages.info(request, f"Registered as mentor with {profile.suborg_full_name} x please login again")
-        except:
+            profile = UserProfile.objects.get(user=request.user,
+                gsoc_year=datetime.now().year,
+                role=2
+                )
+            messages.info(request,
+                f"Registered as mentor with {profile.suborg_full_name} x please login again"
+                )
+        except UserProfile.DoesNotExist:
             messages.info(request, "You have been logged out.")
         logout(request)
 
@@ -224,10 +229,11 @@ def register_view(request):
 
                 messages.info(
                     request,
-                    f"{reglink.email}, please enter your credentials to accept invitaion to {reglink.user_suborg}.",
+                    f"{reglink.email}, please enter your credentials" +
+                    "to accept invitaion to {reglink.user_suborg}.",
                 )
                 form = AcceptanceForm()
-                data = {'form':form, 'reglink': reglink_id}
+                data = {'form': form, 'reglink': reglink_id}
                 return shortcuts.render(request, "registration/acceptance.html", data)
 
             if reglink_usable is False:
