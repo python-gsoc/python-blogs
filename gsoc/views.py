@@ -508,7 +508,7 @@ def export_view(request):
 @decorators.user_passes_test(is_superuser)
 def export_mentors(request):
     output = []
-    ROLES = {1:'Suborg Admin', 2:'Mentor'}
+    ROLES = {1: 'Suborg Admin', 2: 'Mentor'}
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)
     query_set = UserProfile.objects.filter(
