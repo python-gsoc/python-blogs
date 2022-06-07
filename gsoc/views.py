@@ -488,6 +488,11 @@ def readd_users(request, uuid):
     return shortcuts.render(request, "readd.html", context)
 
 
+def csrf_failure(request, reason="CSRF failed"):
+    messages.info(request, "CSRF Token verification failed.")
+    return shortcuts.render(request, 'registration/login.html')
+
+
 from django.http import HttpResponse
 
 
