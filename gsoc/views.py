@@ -208,13 +208,15 @@ def register_view(request):
 
     if request.user.is_authenticated:
         try:
-            profile = UserProfile.objects.get(user=request.user,
+            profile = UserProfile.objects.get(
+                user=request.user,
                 gsoc_year=datetime.now().year,
                 role=2
-                )
-            messages.info(request,
+            )
+            messages.info(
+                request,
                 f"Registered as mentor with {profile.suborg_full_name} x please login again"
-                )
+            )
         except UserProfile.DoesNotExist:
             messages.info(request, "You have been logged out.")
         logout(request)
