@@ -508,6 +508,7 @@ def export_view(request):
 @decorators.user_passes_test(is_superuser)
 def export_mentors(request):
     output = []
+    ROLES = {1:'Suborg Admin', 2:'Mentor'}
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)
     query_set = UserProfile.objects.filter(
@@ -515,9 +516,14 @@ def export_mentors(request):
         role__in=[2, 1]
         ).order_by("-id")
 
-    writer.writerow(['User', 'Email', 'Suborg'])
+    writer.writerow(['User', 'Email', 'Suborg', 'Role'])
     for userprofile in query_set:
-        output.append([userprofile.user, userprofile.user.email, userprofile.suborg_full_name])
+        output.append([
+            userprofile.user,
+            userprofile.user.email,
+            userprofile.suborg_full_name,
+            ROLES.get(userprofile.role)
+            ])
     writer.writerows(output)
 
     return response
