@@ -455,6 +455,29 @@ class UserProfile(models.Model):
     def confirm_proposal(self):
         self.proposal_confirmed = True
         self.save()
+    
+    def save(self, *args, **kwargs):
+        if self.user == None:
+            raise Exception("User must not be empty!")
+        if self.role == 0:
+            raise Exception("User must have a role!")
+        if self.gsoc_year != GsocYear.objects.get(
+            gsoc_year=datetime.datetime.now().year
+            ):
+            raise Exception("Not current year!")
+        if self.suborg_full_name == None:
+            raise Exception("Suborg must not be empty!")
+
+        # duplicate check
+        user = UserProfile.objects.get(user=self.user)
+        if all([
+            self.role == user.role,
+            self.suborg_full_name == user.suborg_full_name,
+            self.gsoc_year == user.gsoc_year
+            ]):
+            raise Exception("UserProfile already exists!!")
+
+        super(UserProfile, self).save(*args, **kwargs)
 
 
 class SuborgProfile(UserProfile):
@@ -953,7 +976,7 @@ class RegLink(models.Model):
 
         role = {k: v for v, k in UserProfile.ROLES}
 
-        if self.user_suborg is not None:
+        try:
             profile = UserProfile.objects.create(
                 user=user,
                 role=self.user_role,
@@ -962,8 +985,9 @@ class RegLink(models.Model):
                 reminder_disabled=reminder_disabled,
                 github_handle=github_handle,
             )
-            if self.user_role != role.get("Student", 3):
-                profile.save()
+        except Exception as e:
+            profile = None
+            print(e)
 
         if self.user_role != role.get("Student", 3):
             return user
@@ -973,8 +997,9 @@ class RegLink(models.Model):
         app_config = NewsBlogConfig.objects.create(namespace=namespace)
         app_config.app_title = blogname
         app_config.save()
-        profile.app_config = app_config
-        profile.save()
+        if profile:
+            profile.app_config = app_config
+            profile.save()
         blog_list_page = (
             Page.objects.filter(application_namespace="blogs_list")
             .filter(publisher_is_draft=True)
