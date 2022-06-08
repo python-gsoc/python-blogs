@@ -455,17 +455,15 @@ class UserProfile(models.Model):
     def confirm_proposal(self):
         self.proposal_confirmed = True
         self.save()
-    
+
     def save(self, *args, **kwargs):
-        if self.user == None:
+        if self.user is None:
             raise Exception("User must not be empty!")
         if self.role == 0:
             raise Exception("User must have a role!")
-        if self.gsoc_year != GsocYear.objects.get(
-            gsoc_year=datetime.datetime.now().year
-            ):
+        if self.gsoc_year != GsocYear.objects.get(gsoc_year=datetime.datetime.now().year):
             raise Exception("Not current year!")
-        if self.suborg_full_name == None:
+        if self.suborg_full_name is None:
             raise Exception("Suborg must not be empty!")
 
         # duplicate check
@@ -474,7 +472,7 @@ class UserProfile(models.Model):
             self.role == user.role,
             self.suborg_full_name == user.suborg_full_name,
             self.gsoc_year == user.gsoc_year
-            ]):
+        ]):
             raise Exception("UserProfile already exists!!")
 
         super(UserProfile, self).save(*args, **kwargs)
@@ -985,9 +983,8 @@ class RegLink(models.Model):
                 reminder_disabled=reminder_disabled,
                 github_handle=github_handle,
             )
-        except Exception as e:
+        except Exception:
             profile = None
-            print(e)
 
         if self.user_role != role.get("Student", 3):
             return user
