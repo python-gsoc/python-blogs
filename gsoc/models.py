@@ -13,7 +13,7 @@ from django.db.models.deletion import PROTECT
 from googleapiclient.discovery import build
 
 from django.contrib.auth.models import Permission
-from django.contrib import auth, messages
+from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -1042,6 +1042,22 @@ class RegLink(models.Model):
             self.save()
         else:
             self.create_scheduler()
+
+    def save(self, *args, **kwargs):
+        try:
+            reglink = RegLink.objects.get(
+                user_role=self.user_role,
+                gsoc_year=self.gsoc_year,
+                email=self.email,
+                user_suborg=self.user_suborg
+            )
+            if reglink.scheduler_id is not None and reglink.reminder_id is not None:
+                Scheduler.objects.get(id=reglink.scheduler_id).delete()
+                Scheduler.objects.get(id=reglink.reminder_id).delete()
+            reglink.delete()
+        except RegLink.DoesNotExist:
+            pass
+        super(RegLink, self).save(*args, **kwargs)
 
 
 class Comment(models.Model):
