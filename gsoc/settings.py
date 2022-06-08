@@ -578,3 +578,5 @@ CACHES = {
 }
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
+CSRF_FAILURE_VIEW = 'gsoc.views.csrf_failure'
