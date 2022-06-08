@@ -429,29 +429,29 @@ class UserProfile(models.Model):
         self.proposal_confirmed = True
         self.save()
 
-    def save(self, *args, **kwargs):
-        if self.user is None:
-            raise Exception("User must not be empty!")
-        if self.role == 0:
-            raise Exception("User must have a role!")
-        if self.gsoc_year != GsocYear.objects.get(gsoc_year=datetime.datetime.now().year):
-            raise Exception("Not current year!")
-        if self.suborg_full_name is None:
-            raise Exception("Suborg must not be empty!")
+    # def save(self, *args, **kwargs):
+    #     if self.user is None:
+    #         raise Exception("User must not be empty!")
+    #     if self.role == 0:
+    #         raise Exception("User must have a role!")
+    #     if self.gsoc_year != GsocYear.objects.get(gsoc_year=datetime.datetime.now().year):
+    #         raise Exception("Not current year!")
+    #     if self.suborg_full_name is None:
+    #         raise Exception("Suborg must not be empty!")
 
-        # duplicate check
-        try:
-            user = UserProfile.objects.get(user=self.user)
-            if all([
-                self.role == user.role,
-                self.suborg_full_name == user.suborg_full_name,
-                self.gsoc_year == user.gsoc_year
-            ]):
-                raise Exception("UserProfile already exists!!")
-        except UserProfile.DoesNotExist:
-            pass
+    #     # duplicate check
+    #     try:
+    #         user = UserProfile.objects.get(user=self.user)
+    #         if all([
+    #             self.role == user.role,
+    #             self.suborg_full_name == user.suborg_full_name,
+    #             self.gsoc_year == user.gsoc_year
+    #         ]):
+    #             raise Exception("UserProfile already exists!!")
+    #     except UserProfile.DoesNotExist:
+    #         pass
 
-        super(UserProfile, self).save(*args, **kwargs)
+    #     super(UserProfile, self).save(*args, **kwargs)
 
 
 class SuborgProfile(UserProfile):
@@ -961,13 +961,12 @@ class RegLink(models.Model):
             )
         except Exception as e:
             profile = None
-            print(e)
 
         if self.user_role != role.get("Student", 3):
             try:
                 profile.save()
             except Exception as e:
-                print(e)
+                pass
             return user
 
         # setup blog
@@ -978,6 +977,7 @@ class RegLink(models.Model):
         if profile:
             profile.app_config = app_config
             profile.save()
+            print('kear')
         blog_list_page = (
             Page.objects.filter(application_namespace="blogs_list")
             .filter(publisher_is_draft=True)
@@ -1011,6 +1011,7 @@ class RegLink(models.Model):
         user.user_permissions.set(perms)
 
         mark_urlconf_as_changed()
+        print('hello')
         return user
 
     def create_scheduler(self, trigger_time=timezone.now()):
@@ -1086,10 +1087,11 @@ class RegLink(models.Model):
                 user_suborg=self.user_suborg
             )
             if reglink.scheduler_id is not None and reglink.reminder_id is not None:
+                reglink.delete()
                 Scheduler.objects.get(id=reglink.scheduler_id).delete()
                 Scheduler.objects.get(id=reglink.reminder_id).delete()
-            reglink.delete()
-        except RegLink.DoesNotExist:
+
+        except Exception:
             pass
         super(RegLink, self).save(*args, **kwargs)
 
