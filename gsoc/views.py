@@ -1,3 +1,4 @@
+from distutils.log import info
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
@@ -264,13 +265,16 @@ def register_view(request):
             info_valid = False
 
         if info_valid:
-            user = reglink.create_user(
-                username=username,
-                reminder_disabled=reminder_disabled,
-                github_handle=github_handle,
-            )
-            user.set_password(password)
-            user.save()
+            try:
+                user = reglink.create_user(
+                    username=username,
+                    reminder_disabled=reminder_disabled,
+                    github_handle=github_handle,
+                )
+                user.set_password(password)
+                user.save()
+            except:
+                user = None
         else:
             user = None
 

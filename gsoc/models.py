@@ -467,13 +467,16 @@ class UserProfile(models.Model):
             raise Exception("Suborg must not be empty!")
 
         # duplicate check
-        user = UserProfile.objects.get(user=self.user)
-        if all([
-            self.role == user.role,
-            self.suborg_full_name == user.suborg_full_name,
-            self.gsoc_year == user.gsoc_year
-        ]):
-            raise Exception("UserProfile already exists!!")
+        try:
+            user = UserProfile.objects.get(user=self.user)
+            if all([
+                self.role == user.role,
+                self.suborg_full_name == user.suborg_full_name,
+                self.gsoc_year == user.gsoc_year
+            ]):
+                raise Exception("UserProfile already exists!!")
+        except UserProfile.DoesNotExist:
+            pass
 
         super(UserProfile, self).save(*args, **kwargs)
 
@@ -983,14 +986,15 @@ class RegLink(models.Model):
                 reminder_disabled=reminder_disabled,
                 github_handle=github_handle,
             )
-        except Exception:
+        except Exception as e:
             profile = None
+            print(e)
 
         if self.user_role != role.get("Student", 3):
             try:
                 profile.save()
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
             return user
 
         # setup blog
