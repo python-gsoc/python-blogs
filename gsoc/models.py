@@ -987,6 +987,10 @@ class RegLink(models.Model):
             profile = None
 
         if self.user_role != role.get("Student", 3):
+            try:
+                profile.save()
+            except Exception:
+                pass
             return user
 
         # setup blog
