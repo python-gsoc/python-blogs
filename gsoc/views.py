@@ -491,6 +491,13 @@ def readd_users(request, uuid):
     return shortcuts.render(request, "readd.html", context)
 
 
+def csrf_failure(request, reason="CSRF failed"):
+    if request.user.is_authenticated:
+        return shortcuts.redirect('/')
+    messages.info(request, "CSRF Token verification failed.")
+    return shortcuts.redirect('accounts/login')
+
+
 # Export mentors view
 @decorators.login_required
 @decorators.user_passes_test(is_superuser)
