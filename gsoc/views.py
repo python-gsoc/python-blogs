@@ -1,3 +1,5 @@
+import csv
+from datetime import datetime
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
@@ -9,6 +11,7 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
+    UserProfile,
 )
 
 import io
@@ -486,6 +489,44 @@ def readd_users(request, uuid):
             messages.error("Incorrect token, please use the correct token")
 
     return shortcuts.render(request, "readd.html", context)
+
+
+# Export mentors view
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def export_view(request):
+    if request.method == "GET":
+        return HttpResponse(
+            "<div style='padding:60px'>"
+            "<h1>Mentors data exported successfully!!</h1>" +
+            "<a href='admin/export'>Click here to download</a>" +
+            "</div>"
+        )
+
+
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def export_mentors(request):
+    output = []
+    ROLES = {1: 'Suborg Admin', 2: 'Mentor'}
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.writer(response)
+    query_set = UserProfile.objects.filter(
+        gsoc_year=datetime.now().year,
+        role__in=[2, 1]
+        ).order_by("-id")
+
+    writer.writerow(['User', 'Email', 'Suborg', 'Role'])
+    for userprofile in query_set:
+        output.append([
+            userprofile.user,
+            userprofile.user.email,
+            userprofile.suborg_full_name,
+            ROLES.get(userprofile.role)
+            ])
+    writer.writerows(output)
+
+    return response
 
 
 from django.http import HttpResponse
