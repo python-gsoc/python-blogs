@@ -214,11 +214,12 @@ def register_view(request):
             profile = UserProfile.objects.get(
                 user=request.user,
                 gsoc_year=datetime.now().year,
-                role__in=[2,1]
+                role__in=[2, 1]
             )
             messages.info(
                 request,
-                f"Registered as {ROLES.get(profile.role)} with {profile.suborg_full_name} x please login again"
+                f"Registered as {ROLES.get(profile.role)} with " +
+                f"{profile.suborg_full_name} x please login again"
             )
         except UserProfile.DoesNotExist:
             messages.info(request, "You have been logged out.")
