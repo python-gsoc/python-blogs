@@ -1082,7 +1082,7 @@ class RegLink(models.Model):
                 gsoc_year=self.gsoc_year,
                 email=self.email,
                 user_suborg=self.user_suborg
-            )
+            ).delete()
             if reglink.scheduler_id is not None and reglink.reminder_id is not None:
                 Scheduler.objects.get(id=reglink.scheduler_id).delete()
                 Scheduler.objects.get(id=reglink.reminder_id).delete()
