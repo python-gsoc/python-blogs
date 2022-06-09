@@ -13,7 +13,7 @@ from django.db.models.deletion import PROTECT
 from googleapiclient.discovery import build
 
 from django.contrib.auth.models import Permission
-from django.contrib import auth, messages
+from django.contrib import auth
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -283,10 +283,9 @@ class SubOrgDetails(models.Model):
     class Meta:
         verbose_name_plural = "Suborg Details"
 
-    def accept(self):
+    def accept(self, suborg):
         self.accepted = True
-        if not self.suborg:
-            self.suborg = SubOrg.objects.create(suborg_name=self.suborg_name)
+        self.suborg = suborg
         self.save()
 
         template_data = {
@@ -311,32 +310,6 @@ class SubOrgDetails(models.Model):
             template_data=template_data,
         )
         Scheduler.objects.create(command="send_email", data=scheduler_data)
-
-        RegLink.objects.create(
-            user_role=1,
-            user_suborg=self.suborg,
-            gsoc_year=self.gsoc_year,
-            email=self.suborg_admin_email,
-            send_notifications=False,
-        )
-
-        if self.suborg_admin_2_email:
-            RegLink.objects.create(
-                user_role=1,
-                user_suborg=self.suborg,
-                gsoc_year=self.gsoc_year,
-                email=self.suborg_admin_2_email,
-                send_notifications=False,
-            )
-
-        if self.suborg_admin_3_email:
-            RegLink.objects.create(
-                user_role=1,
-                user_suborg=self.suborg,
-                gsoc_year=self.gsoc_year,
-                email=self.suborg_admin_3_email,
-                send_notifications=False,
-            )
 
         s = Scheduler.objects.filter(
             command="update_site_template",
@@ -1069,6 +1042,22 @@ class RegLink(models.Model):
             self.save()
         else:
             self.create_scheduler()
+
+    def save(self, *args, **kwargs):
+        try:
+            reglink = RegLink.objects.get(
+                user_role=self.user_role,
+                gsoc_year=self.gsoc_year,
+                email=self.email,
+                user_suborg=self.user_suborg
+            )
+            if reglink.scheduler_id is not None and reglink.reminder_id is not None:
+                Scheduler.objects.get(id=reglink.scheduler_id).delete()
+                Scheduler.objects.get(id=reglink.reminder_id).delete()
+            reglink.delete()
+        except RegLink.DoesNotExist:
+            pass
+        super(RegLink, self).save(*args, **kwargs)
 
 
 class Comment(models.Model):
