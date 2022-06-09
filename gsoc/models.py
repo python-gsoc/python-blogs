@@ -429,29 +429,29 @@ class UserProfile(models.Model):
         self.proposal_confirmed = True
         self.save()
 
-    # def save(self, *args, **kwargs):
-    #     if self.user is None:
-    #         raise Exception("User must not be empty!")
-    #     if self.role == 0:
-    #         raise Exception("User must have a role!")
-    #     if self.gsoc_year != GsocYear.objects.get(gsoc_year=datetime.datetime.now().year):
-    #         raise Exception("Not current year!")
-    #     if self.suborg_full_name is None:
-    #         raise Exception("Suborg must not be empty!")
+    def save(self, *args, **kwargs):
+        if self.user is None:
+            raise Exception("User must not be empty!")
+        if self.role == 0:
+            raise Exception("User must have a role!")
+        if self.gsoc_year != GsocYear.objects.get(gsoc_year=datetime.datetime.now().year):
+            raise Exception("Not current year!")
+        if self.suborg_full_name is None:
+            raise Exception("Suborg must not be empty!")
 
-    #     # duplicate check
-    #     try:
-    #         user = UserProfile.objects.get(user=self.user)
-    #         if all([
-    #             self.role == user.role,
-    #             self.suborg_full_name == user.suborg_full_name,
-    #             self.gsoc_year == user.gsoc_year
-    #         ]):
-    #             raise Exception("UserProfile already exists!!")
-    #     except UserProfile.DoesNotExist:
-    #         pass
+        # duplicate check
+        try:
+            user = UserProfile.objects.get(user=self.user)
+            if all([
+                self.role == user.role,
+                self.suborg_full_name == user.suborg_full_name,
+                self.gsoc_year == user.gsoc_year
+            ]):
+                raise Exception("UserProfile already exists!!")
+        except UserProfile.DoesNotExist:
+            pass
 
-    #     super(UserProfile, self).save(*args, **kwargs)
+        super(UserProfile, self).save(*args, **kwargs)
 
 
 class SuborgProfile(UserProfile):
@@ -1087,7 +1087,6 @@ class RegLink(models.Model):
                 user_suborg=self.user_suborg
             )
             if reglink.scheduler_id is not None and reglink.reminder_id is not None:
-                reglink.delete()
                 Scheduler.objects.get(id=reglink.scheduler_id).delete()
                 Scheduler.objects.get(id=reglink.reminder_id).delete()
 
