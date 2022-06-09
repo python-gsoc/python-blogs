@@ -73,9 +73,9 @@ class ChangeInfoForm(forms.ModelForm):
 
 
 class AcceptanceForm(forms.Form):
-    email = forms.EmailField(label='email')
+    email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
-    reglink = forms.CharField(widget=forms.HiddenInput(), required=False)
+    reglink = forms.CharField(widget=forms.HiddenInput())
 
 
 class SubOrgApplicationForm(forms.ModelForm):

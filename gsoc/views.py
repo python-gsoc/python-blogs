@@ -44,6 +44,9 @@ from pdfminer.pdfpage import PDFPage
 from profanityfilter import ProfanityFilter
 
 
+ROLES = {1: 'Admin', 2: 'Mentor'}
+
+
 # handle file upload
 
 
@@ -211,11 +214,11 @@ def register_view(request):
             profile = UserProfile.objects.get(
                 user=request.user,
                 gsoc_year=datetime.now().year,
-                role=2
+                role__in=[2,1]
             )
             messages.info(
                 request,
-                f"Registered as mentor with {profile.suborg_full_name} x please login again"
+                f"Registered as {ROLES.get(profile.role)} with {profile.suborg_full_name} x please login again"
             )
         except UserProfile.DoesNotExist:
             messages.info(request, "You have been logged out.")
@@ -231,10 +234,13 @@ def register_view(request):
 
                 messages.info(
                     request,
-                    f"{reglink.email}, please enter your credentials" +
-                    "to accept invitaion to {reglink.user_suborg}.",
+                    f"{reglink.email}, please enter your credentials " +
+                    f"to accept invitation " +
+                    f"of {ROLES.get(reglink.user_role)} to {reglink.user_suborg}.",
                 )
-                form = AcceptanceForm()
+                form = AcceptanceForm(initial={
+                    'email': reglink.email,
+                    })
                 data = {'form': form, 'reglink': reglink_id}
                 return shortcuts.render(request, "registration/acceptance.html", data)
 
@@ -312,17 +318,23 @@ def accept_invitation(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             reglink_id = form.cleaned_data['reglink']
-            user = User.objects.get(email=email)
-
-            if user.check_password(password):
+            try:
                 reglink = RegLink.objects.get(reglink_id=reglink_id)
-                reglink.create_user(username=user.username)
-                reglink.is_used = True
-                reglink.save()
-                messages.success(request, "Invitaion accepted successfully!!")
-                return shortcuts.redirect("/")
-            else:
-                messages.success(request, "Invalid credentials. Please try again.")
+                user = User.objects.get(email=email)
+                print(reglink.email, email)
+                if email == reglink.email:
+                    if user.check_password(password):
+                        reglink.create_user(username=user.username)
+                        reglink.is_used = True
+                        reglink.save()
+                        messages.success(request, "Invitaion accepted successfully!!")
+                        return shortcuts.redirect("/")
+                    else:
+                        messages.error(request, "Invalid credentials. Please try again.")
+                else:
+                    messages.error(request, "Invalid email for the reglink.")
+            except User.DoesNotExist:
+                messages.error(request, "Invalid email provided.")
         else:
             messages.info(request, "Something went wrong. Please try again later.")
         return shortcuts.redirect(request.META.get('HTTP_REFERER', '/'))
