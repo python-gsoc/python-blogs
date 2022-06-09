@@ -448,7 +448,7 @@ class UserProfile(models.Model):
                 self.gsoc_year == user.gsoc_year
             ]):
                 raise Exception("UserProfile already exists!!")
-        except UserProfile.DoesNotExist:
+        except:
             pass
 
         super(UserProfile, self).save(*args, **kwargs)
@@ -959,13 +959,13 @@ class RegLink(models.Model):
                 reminder_disabled=reminder_disabled,
                 github_handle=github_handle,
             )
-        except Exception as e:
+        except Exception:
             profile = None
 
         if self.user_role != role.get("Student", 3):
             try:
                 profile.save()
-            except Exception as e:
+            except Exception:
                 pass
             return user
 
@@ -974,10 +974,8 @@ class RegLink(models.Model):
         app_config = NewsBlogConfig.objects.create(namespace=namespace)
         app_config.app_title = blogname
         app_config.save()
-        if profile:
-            profile.app_config = app_config
-            profile.save()
-            print('kear')
+        profile.app_config = app_config
+        profile.save()
         blog_list_page = (
             Page.objects.filter(application_namespace="blogs_list")
             .filter(publisher_is_draft=True)
@@ -1011,7 +1009,6 @@ class RegLink(models.Model):
         user.user_permissions.set(perms)
 
         mark_urlconf_as_changed()
-        print('hello')
         return user
 
     def create_scheduler(self, trigger_time=timezone.now()):
@@ -1085,7 +1082,7 @@ class RegLink(models.Model):
                 gsoc_year=self.gsoc_year,
                 email=self.email,
                 user_suborg=self.user_suborg
-            )
+            ).delete()
             if reglink.scheduler_id is not None and reglink.reminder_id is not None:
                 Scheduler.objects.get(id=reglink.scheduler_id).delete()
                 Scheduler.objects.get(id=reglink.reminder_id).delete()
