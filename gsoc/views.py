@@ -275,7 +275,7 @@ def register_view(request):
                 )
                 user.set_password(password)
                 user.save()
-            except:
+            except Exception:
                 user = None
         else:
             user = None

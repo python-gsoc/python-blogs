@@ -448,7 +448,7 @@ class UserProfile(models.Model):
                 self.gsoc_year == user.gsoc_year
             ]):
                 raise Exception("UserProfile already exists!!")
-        except:
+        except Exception:
             pass
 
         super(UserProfile, self).save(*args, **kwargs)
