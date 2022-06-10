@@ -236,7 +236,7 @@ def register_view(request):
 
                 messages.info(
                     request,
-                    f"{reglink.email}, please enter your credentials " +
+                    f"Please enter your credentials " +
                     f"to accept invitation " +
                     f"of {ROLES.get(reglink.user_role)} to {reglink.user_suborg}.",
                 )
@@ -326,7 +326,6 @@ def accept_invitation(request):
             try:
                 reglink = RegLink.objects.get(reglink_id=reglink_id)
                 user = User.objects.get(email=email)
-                print(reglink.email, email)
                 if email == reglink.email:
                     if user.check_password(password):
                         reglink.create_user(username=user.username)
