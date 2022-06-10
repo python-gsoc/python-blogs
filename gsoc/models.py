@@ -432,7 +432,7 @@ class UserProfile(models.Model):
     def save(self, *args, **kwargs):
         if self.user is None:
             raise Exception("User must not be empty!")
-        if self.role == 0:
+        if self.role == 0 or self.role is None:
             raise Exception("User must have a role!")
         if self.gsoc_year != GsocYear.objects.get(gsoc_year=datetime.datetime.now().year):
             raise Exception("Not current year!")
