@@ -1159,7 +1159,6 @@ class SendEmail(models.Model):
 
         if self.to_group == "students":
             ups = UserProfile.objects.filter(role=3, gsoc_year=gsoc_year).all()
-            print(ups)
             emails.extend([_.user.email for _ in ups])
         elif self.to_group == "mentors":
             ups = UserProfile.objects.filter(role=2, gsoc_year=gsoc_year).all()
