@@ -1,6 +1,8 @@
 import csv
 from datetime import datetime
 from gsoc import settings
+from gsoc.common.utils.tools import build_send_mail_json
+from settings_local import ADMINS
 
 from .common.utils.memcached_stats import MemcachedStats
 from .forms import AcceptanceForm, ChangeInfoForm, ProposalUploadForm
@@ -11,6 +13,7 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
+    Scheduler,
     UserProfile,
 )
 
@@ -331,6 +334,25 @@ def accept_invitation(request):
                         reglink.is_used = True
                         reglink.save()
                         messages.success(request, "Invitaion accepted successfully!!")
+
+                        # send email to admins
+                        if reglink.user_role == 2:
+                            mentor_template_data = {
+                                "student_email": email,
+                                "suborg_name": reglink.user_suborg.suborg_name,
+                            }
+
+                            scheduler_data_mentor = build_send_mail_json(
+                                ADMINS,
+                                template="add_mentor.html",
+                                subject=f"New mentor added: {email}\
+                                    on suborg {reglink.user_suborg.suborg_name}",
+                                template_data=mentor_template_data,
+                            )
+
+                            Scheduler.objects.create(
+                                command="send_email", data=scheduler_data_mentor
+                            )
                         return shortcuts.redirect("/")
                     else:
                         messages.error(request, "Invalid credentials. Please try again.")
