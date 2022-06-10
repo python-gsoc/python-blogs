@@ -470,7 +470,7 @@ class UserProfile(models.Model):
             Scheduler.objects.get_or_create(
                 command="send_email", data=scheduler_data_mentor
             )
-            
+
         super(UserProfile, self).save(*args, **kwargs)
 
 

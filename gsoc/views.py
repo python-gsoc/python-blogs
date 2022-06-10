@@ -1,8 +1,6 @@
 import csv
 from datetime import datetime
 from gsoc import settings
-from gsoc.common.utils.tools import build_send_mail_json
-from settings_local import ADMINS
 
 from .common.utils.memcached_stats import MemcachedStats
 from .forms import AcceptanceForm, ChangeInfoForm, ProposalUploadForm
@@ -13,7 +11,6 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
-    Scheduler,
     UserProfile,
 )
 
