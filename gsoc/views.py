@@ -1,7 +1,9 @@
+import csv
+from datetime import datetime
 from gsoc import settings
 
 from .common.utils.memcached_stats import MemcachedStats
-from .forms import ChangeInfoForm, ProposalUploadForm
+from .forms import AcceptanceForm, ChangeInfoForm, ProposalUploadForm
 from .models import (
     RegLink,
     ProposalTextValidator,
@@ -9,6 +11,7 @@ from .models import (
     ArticleReview,
     GsocYear,
     ReaddUser,
+    UserProfile,
 )
 
 import io
@@ -40,6 +43,9 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 from profanityfilter import ProfanityFilter
+
+
+ROLES = {1: 'Admin', 2: 'Mentor', 3: 'Student'}
 
 
 # handle file upload
@@ -188,9 +194,6 @@ def new_account_view(request):
 
 
 def register_view(request):
-    if request.user.is_authenticated:
-        messages.info(request, "You have been logged out.")
-        logout(request)
 
     reglink_id = request.GET.get("reglink_id", request.POST.get("reglink_id", ""))
     try:
@@ -206,20 +209,42 @@ def register_view(request):
         "reglink_id": reglink_id,
         "email": getattr(reglink, "email", "EMPTY"),
     }
+
+    if request.user.is_authenticated:
+        try:
+            profile = UserProfile.objects.get(
+                user=request.user,
+                gsoc_year=datetime.now().year,
+            )
+            messages.info(
+                request,
+                f"Registered as {ROLES.get(profile.role)} with " +
+                f"{profile.suborg_full_name} x please login again"
+            )
+        except UserProfile.DoesNotExist:
+            messages.info(request, "You have been logged out.")
+        logout(request)
+
     try:
         if reglink_usable is False or request.method == "GET":
             user = User.objects.filter(email=context["email"]).first()
             if user:
-                reglink.create_user(username=user.username)
-                reglink.is_used = True
-                reglink.save()
-                messages.success(
+                if reglink.is_used:
+                    messages.info(request, "Invitaion already accepted!!")
+                    return shortcuts.redirect("/")
+
+                messages.info(
                     request,
-                    f"A user with {user.email} already exists in our database. "
-                    f"The suborg has now been associated with your user automatically. You may now login with your "
-                    f"existing credentials.",
+                    f"Please enter your credentials " +
+                    f"to accept invitation " +
+                    f"of {ROLES.get(reglink.user_role)} to {reglink.user_suborg}.",
                 )
-                return shortcuts.redirect("/")
+                form = AcceptanceForm(initial={
+                    'email': reglink.email,
+                    })
+                data = {'form': form, 'reglink': reglink_id}
+                return shortcuts.render(request, "registration/acceptance.html", data)
+
             if reglink_usable is False:
                 context["can_register"] = False
                 context[
@@ -264,13 +289,16 @@ def register_view(request):
             info_valid = False
 
         if info_valid:
-            user = reglink.create_user(
-                username=username,
-                reminder_disabled=reminder_disabled,
-                github_handle=github_handle,
-            )
-            user.set_password(password)
-            user.save()
+            try:
+                user = reglink.create_user(
+                    username=username,
+                    reminder_disabled=reminder_disabled,
+                    github_handle=github_handle,
+                )
+                user.set_password(password)
+                user.save()
+            except Exception:
+                user = None
         else:
             user = None
 
@@ -285,6 +313,34 @@ def register_view(request):
             context["done_registration"] = False
 
         return shortcuts.render(request, "registration/register.html", context)
+
+
+def accept_invitation(request):
+    if request.method == 'POST':
+        form = AcceptanceForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            reglink_id = form.cleaned_data['reglink']
+            try:
+                reglink = RegLink.objects.get(reglink_id=reglink_id)
+                user = User.objects.get(email=email)
+                if email == reglink.email:
+                    if user.check_password(password):
+                        reglink.create_user(username=user.username)
+                        reglink.is_used = True
+                        reglink.save()
+                        messages.success(request, "Invitaion accepted successfully!!")
+                        return shortcuts.redirect("/")
+                    else:
+                        messages.error(request, "Invalid credentials. Please try again.")
+                else:
+                    messages.error(request, "Invalid email for the reglink.")
+            except User.DoesNotExist:
+                messages.error(request, "Invalid email provided.")
+        else:
+            messages.info(request, "Something went wrong. Please try again later.")
+        return shortcuts.redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 @decorators.login_required
@@ -486,6 +542,52 @@ def readd_users(request, uuid):
             messages.error("Incorrect token, please use the correct token")
 
     return shortcuts.render(request, "readd.html", context)
+
+
+def csrf_failure(request, reason="CSRF failed"):
+    if request.user.is_authenticated:
+        return shortcuts.redirect('/')
+    messages.info(request, "CSRF Token verification failed.")
+    return shortcuts.redirect('accounts/login')
+
+
+# Export mentors view
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def export_view(request):
+    if request.method == "GET":
+        return HttpResponse(
+            "<div style='padding:60px'>"
+            "<h1>Mentors data exported successfully!!</h1>" +
+            "<a href='admin/export'>Click here to download</a>" +
+            "</div>"
+        )
+
+
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def export_mentors(request):
+    output = []
+    ROLES = {1: 'Suborg Admin', 2: 'Mentor'}
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Mentors.csv"'
+    writer = csv.writer(response)
+    query_set = UserProfile.objects.filter(
+        gsoc_year=datetime.now().year,
+        role__in=[2, 1]
+        ).order_by("-id")
+
+    writer.writerow(['User', 'Email', 'Suborg', 'Role'])
+    for userprofile in query_set:
+        output.append([
+            userprofile.user,
+            userprofile.user.email,
+            userprofile.suborg_full_name,
+            ROLES.get(userprofile.role)
+            ])
+    writer.writerows(output)
+
+    return response
 
 
 from django.http import HttpResponse
