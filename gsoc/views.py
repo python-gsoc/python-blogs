@@ -45,7 +45,7 @@ from pdfminer.pdfpage import PDFPage
 from profanityfilter import ProfanityFilter
 
 
-ROLES = {1: 'Admin', 2: 'Mentor'}
+ROLES = {1: 'Admin', 2: 'Mentor', 3: 'Student'}
 
 
 # handle file upload
@@ -215,7 +215,6 @@ def register_view(request):
             profile = UserProfile.objects.get(
                 user=request.user,
                 gsoc_year=datetime.now().year,
-                role__in=[2, 1]
             )
             messages.info(
                 request,
