@@ -455,7 +455,7 @@ class UserProfile(models.Model):
         # send email to admins
         if self.role == 2:
             mentor_template_data = {
-                "student_email": self.user.email,
+                "mentor_email": self.user.email,
                 "suborg_name": self.suborg_full_name.suborg_name,
             }
 
