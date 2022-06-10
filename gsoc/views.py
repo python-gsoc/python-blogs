@@ -520,6 +520,7 @@ def export_mentors(request):
     output = []
     ROLES = {1: 'Suborg Admin', 2: 'Mentor'}
     response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Mentors.csv"'
     writer = csv.writer(response)
     query_set = UserProfile.objects.filter(
         gsoc_year=datetime.now().year,
