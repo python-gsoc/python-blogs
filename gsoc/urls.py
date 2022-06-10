@@ -41,6 +41,7 @@ urlpatterns += [
     url("accounts/register", gsoc.views.register_view, name="register"),
     url("accounts/change_password", gsoc.views.change_password, name="change_password"),
     url("accounts/change_info", gsoc.views.change_info, name="change_info"),
+    url("accounts/accept_invitation", gsoc.views.accept_invitation, name="accept_invitation"),
 ]
 
 urlpatterns += i18n_patterns(
