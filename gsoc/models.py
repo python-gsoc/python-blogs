@@ -1166,6 +1166,9 @@ class SendEmail(models.Model):
         elif self.to_group == "suborg_admins":
             ups = UserProfile.objects.filter(role=1, gsoc_year=gsoc_year).all()
             emails.extend([_.user.email for _ in ups])
+        elif self.to_group == "admins":
+            ups = User.objects.filter(is_superuser=True)
+            emails.extend([_.user.email for _ in ups])
         elif self.to_group == "all":
             ups = UserProfile.objects.filter(gsoc_year=gsoc_year).all()
             emails.extend([_.user.email for _ in ups])
