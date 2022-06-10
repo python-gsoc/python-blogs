@@ -1,5 +1,3 @@
-from gsoc.common.utils.tools import build_send_mail_json
-from settings_local import ADMINS
 from gsoc.forms import SubOrgApplicationForm
 from gsoc.models import GsocYear, SubOrgDetails, RegLink, UserProfile
 
@@ -155,25 +153,6 @@ def add_mentor(request, application_id):
                 instance.gsoc_year = application.gsoc_year
                 instance.user_role = 2
                 instance.save()
-
-                # send email to admins
-                mentor_template_data = {
-                    "student_email": instance.email,
-                    "suborg_name": application.suborg.suborg_name,
-                }
-
-                scheduler_data_mentor = build_send_mail_json(
-                    ADMINS,
-                    template="add_mentor.html",
-                    subject=f"New mentor added: {instance.email}\
-                         on suborg {application.suborg.suborg_name}",
-                    template_data=mentor_template_data,
-                )
-
-                Scheduler.objects.create(
-                    command="send_email", data=scheduler_data_mentor
-                )
-
         else:
             return render(request, "add_mentor.html", {"formset": formset})
 
