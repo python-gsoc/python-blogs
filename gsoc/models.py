@@ -41,6 +41,7 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
+from settings_local import ADMINS
 
 
 # Util Functions
@@ -451,6 +452,25 @@ class UserProfile(models.Model):
         except Exception:
             pass
 
+        # send email to admins
+        if self.role == 2:
+            mentor_template_data = {
+                "student_email": self.user.email,
+                "suborg_name": self.suborg_full_name.suborg_name,
+            }
+
+            scheduler_data_mentor = build_send_mail_json(
+                ADMINS,
+                template="add_mentor.html",
+                subject=f"New mentor added: {self.user.email}\
+                    on suborg {self.suborg_full_name.suborg_name}",
+                template_data=mentor_template_data,
+            )
+
+            Scheduler.objects.get_or_create(
+                command="send_email", data=scheduler_data_mentor
+            )
+            
         super(UserProfile, self).save(*args, **kwargs)
 
 
