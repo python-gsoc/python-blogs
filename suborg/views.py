@@ -135,15 +135,18 @@ def accept_application(request, application_id):
         for email in emails:
             try:
                 admin = User.objects.get(email=email)
-                user = UserProfile.objects.create(
-                    user=admin,
-                    role=1,
-                    gsoc_year=gsoc_year,
-                    suborg_full_name=suborg,
-                    reminder_disabled=False,
-                    github_handle=None,
-                )
-                user.save()
+                try:
+                    user = UserProfile.objects.create(
+                        user=admin,
+                        role=1,
+                        gsoc_year=gsoc_year,
+                        suborg_full_name=suborg,
+                        reminder_disabled=False,
+                        github_handle=None,
+                    )
+                    user.save()
+                except Exception:
+                    pass
             except User.DoesNotExist:
                 RegLink.objects.create(
                     user_role=1,

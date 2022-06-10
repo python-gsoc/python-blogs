@@ -267,13 +267,16 @@ def register_view(request):
             info_valid = False
 
         if info_valid:
-            user = reglink.create_user(
-                username=username,
-                reminder_disabled=reminder_disabled,
-                github_handle=github_handle,
-            )
-            user.set_password(password)
-            user.save()
+            try:
+                user = reglink.create_user(
+                    username=username,
+                    reminder_disabled=reminder_disabled,
+                    github_handle=github_handle,
+                )
+                user.set_password(password)
+                user.save()
+            except Exception:
+                user = None
         else:
             user = None
 
