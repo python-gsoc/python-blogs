@@ -1,8 +1,10 @@
 import os
 import re
 import datetime
+from tkinter import CASCADE
 import uuid
 import json
+from MySQLdb import Time
 import bleach
 from urllib.parse import urljoin
 
@@ -532,24 +534,6 @@ class Scheduler(models.Model):
         return self.command
 
 
-class Builder(models.Model):
-    categories = (
-        ("build_pre_blog_reminders", "build_pre_blog_reminders"),
-        ("build_post_blog_reminders", "build_post_blog_reminders"),
-        ("build_revoke_student_perms", "build_revoke_student_perms"),
-        ("build_remove_user_details", "build_remove_user_details"),
-    )
-
-    category = models.CharField(max_length=40, choices=categories)
-    activation_date = models.DateTimeField(null=True, blank=True)
-    built = models.BooleanField(default=None, null=True)
-    data = models.TextField()
-    last_error = models.TextField(null=True, default=None, blank=True)
-
-    def __str__(self):
-        return self.category
-
-
 class Timeline(models.Model):
     gsoc_year = models.ForeignKey(
         GsocYear,
@@ -565,6 +549,25 @@ class Timeline(models.Model):
             calendar = service.calendars().insert(body=calendar).execute()
             self.calendar_id = calendar.get("id")
             self.save()
+
+
+class Builder(models.Model):
+    categories = (
+        ("build_pre_blog_reminders", "build_pre_blog_reminders"),
+        ("build_post_blog_reminders", "build_post_blog_reminders"),
+        ("build_revoke_student_perms", "build_revoke_student_perms"),
+        ("build_remove_user_details", "build_remove_user_details"),
+    )
+
+    category = models.CharField(max_length=40, choices=categories)
+    activation_date = models.DateTimeField(null=True, blank=True)
+    built = models.BooleanField(default=None, null=True)
+    data = models.TextField()
+    last_error = models.TextField(null=True, default=None, blank=True)
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.category
 
 
 class Event(models.Model):
@@ -708,6 +711,7 @@ class BlogPostDueDate(models.Model):
             category="build_pre_blog_reminders",
             activation_date=self.date + datetime.timedelta(days=-3),
             data=builder_data,
+            timeline=self.timeline
         )
         self.pre_blog_reminder_builder = s
 
@@ -715,6 +719,7 @@ class BlogPostDueDate(models.Model):
             category="build_post_blog_reminders",
             activation_date=self.date + datetime.timedelta(days=1),
             data=builder_data,
+            timeline=self.timeline
         )
         self.post_blog_reminder_builder.add(s)
 
@@ -722,6 +727,7 @@ class BlogPostDueDate(models.Model):
             category="build_post_blog_reminders",
             activation_date=self.date + datetime.timedelta(days=3),
             data=builder_data,
+            timeline=self.timeline
         )
         self.post_blog_reminder_builder.add(s)
 
