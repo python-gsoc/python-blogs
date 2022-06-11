@@ -1,5 +1,5 @@
 from gsoc.forms import SubOrgApplicationForm
-from gsoc.models import GsocYear, SubOrgDetails, RegLink, UserProfile
+from gsoc.models import GsocYear, SubOrg, SubOrgDetails, RegLink, UserProfile
 
 from django.contrib.auth.models import User
 from django.contrib.auth import decorators
@@ -14,6 +14,7 @@ from gsoc.models import (
 )
 
 import json
+from datetime import datetime
 
 def is_superuser(user):
     return user.is_superuser
@@ -29,7 +30,7 @@ def home(request):
 
 @decorators.login_required
 def application_list(request):
-    applications = SubOrgDetails.objects.filter(suborg_admin_email=request.user.email)
+    applications = SubOrgDetails.objects.filter(suborg_admin=request.user)
     mentors_list = {}
     for a in applications:
         if hasattr(a.suborg, 'id'):
@@ -116,7 +117,44 @@ def post_register(request):
 def accept_application(request, application_id):
     if request.method == "GET":
         application = SubOrgDetails.objects.get(id=application_id)
-        application.accept()
+        gsoc_year = GsocYear.objects.get(gsoc_year=datetime.now().year)
+
+        try:
+            suborg = SubOrg.objects.get(suborg_name=application.suborg_name)
+        except SubOrg.DoesNotExist:
+            suborg = SubOrg.objects.create(suborg_name=application.suborg_name)
+
+        application.accept(suborg)
+
+        # Give suborg-admin role to admins
+        emails = [
+            application.suborg_admin.email,
+            application.suborg_admin_2_email,
+            application.suborg_admin_3_email
+        ]
+        for email in emails:
+            try:
+                admin = User.objects.get(email=email)
+                try:
+                    user = UserProfile.objects.create(
+                        user=admin,
+                        role=1,
+                        gsoc_year=gsoc_year,
+                        suborg_full_name=suborg,
+                        reminder_disabled=False,
+                        github_handle=None,
+                    )
+                    user.save()
+                except Exception:
+                    pass
+            except User.DoesNotExist:
+                RegLink.objects.create(
+                    user_role=1,
+                    user_suborg=suborg,
+                    gsoc_year=gsoc_year,
+                    email=email
+                )
+
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
 

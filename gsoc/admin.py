@@ -348,15 +348,10 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "user",
         "email",
         "gsoc_year",
-        "suborg_full_name",
-        "proposal_confirmed",
-        "hidden",
-        "reminder_disabled",
-        "current_blog_count",
         "role",
-        "gsoc_invited",
+        "github_handle",
     )
-    list_filter = ("hidden", "reminder_disabled", "role", "gsoc_invited")
+    list_filter = ("role", "gsoc_invited", "suborg_full_name", "gsoc_year")
     readonly_fields = (
         "user",
         "role",
@@ -477,7 +472,9 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
         return obj.user.email
 
     def get_queryset(self, request):
-        return UserProfile.all_objects.all().filter(gsoc_year=datetime.now().year).exclude(role="3").distinct()
+        return UserProfile.all_objects.all().\
+            filter(gsoc_year=datetime.now().year).\
+            exclude(role="3").exclude(suborg_full_name=None).distinct()
 
 admin.site.register(AdminGSOCInvites, HiddenGSOCInviteAdmin)
 
@@ -772,3 +769,24 @@ class GsocYearAdmin(admin.ModelAdmin):
 admin.site.register(GsocYear, GsocYearAdmin)
 
 admin.site.register(SubOrg)
+
+
+class NotAcceptedAdmin(admin.ModelAdmin):
+    list_display = ("email", "user_suborg", "user_role")
+    list_filter = ("user_suborg", "user_role")
+
+    def get_queryset(self, request):
+        accepted_users = RegLink.objects.filter(is_used=True).values('email')
+        accepted_emails = [item['email'] for item in accepted_users]
+        not_accepted_users = \
+            RegLink.objects.filter(gsoc_year=datetime.now().year).exclude(email__in=accepted_emails)
+        return not_accepted_users
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(NotAcceptedUser, NotAcceptedAdmin)

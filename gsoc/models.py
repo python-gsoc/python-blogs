@@ -303,10 +303,9 @@ class SubOrgDetails(models.Model):
     class Meta:
         verbose_name_plural = "Suborg Details"
 
-    def accept(self):
+    def accept(self, suborg):
         self.accepted = True
-        if not self.suborg:
-            self.suborg = SubOrg.objects.create(suborg_name=self.suborg_name)
+        self.suborg = suborg
         self.save()
 
         template_data = {
@@ -331,32 +330,6 @@ class SubOrgDetails(models.Model):
             template_data=template_data,
         )
         Scheduler.objects.create(command="send_email", data=scheduler_data)
-
-        RegLink.objects.create(
-            user_role=1,
-            user_suborg=self.suborg,
-            gsoc_year=self.gsoc_year,
-            email=self.suborg_admin_email,
-            send_notifications=False,
-        )
-
-        if self.suborg_admin_2_email:
-            RegLink.objects.create(
-                user_role=1,
-                user_suborg=self.suborg,
-                gsoc_year=self.gsoc_year,
-                email=self.suborg_admin_2_email,
-                send_notifications=False,
-            )
-
-        if self.suborg_admin_3_email:
-            RegLink.objects.create(
-                user_role=1,
-                user_suborg=self.suborg,
-                gsoc_year=self.gsoc_year,
-                email=self.suborg_admin_3_email,
-                send_notifications=False,
-            )
 
         s = Scheduler.objects.filter(
             command="update_site_template",
@@ -475,6 +448,30 @@ class UserProfile(models.Model):
     def confirm_proposal(self):
         self.proposal_confirmed = True
         self.save()
+
+    def save(self, *args, **kwargs):
+        if self.user is None:
+            raise Exception("User must not be empty!")
+        if self.role == 0 or self.role is None:
+            raise Exception("User must have a role!")
+        if self.gsoc_year != GsocYear.objects.get(gsoc_year=datetime.datetime.now().year):
+            raise Exception("Not current year!")
+        if self.suborg_full_name is None:
+            raise Exception("Suborg must not be empty!")
+
+        # duplicate check
+        try:
+            user = UserProfile.objects.get(user=self.user)
+            if all([
+                self.role == user.role,
+                self.suborg_full_name == user.suborg_full_name,
+                self.gsoc_year == user.gsoc_year
+            ]):
+                raise Exception("UserProfile already exists!!")
+        except Exception:
+            pass
+
+        super(UserProfile, self).save(*args, **kwargs)
 
 
 class SuborgProfile(UserProfile):
@@ -960,16 +957,24 @@ class RegLink(models.Model):
                     break
 
         role = {k: v for v, k in UserProfile.ROLES}
-        profile = UserProfile.objects.create(
-            user=user,
-            role=self.user_role,
-            gsoc_year=self.gsoc_year,
-            suborg_full_name=self.user_suborg,
-            reminder_disabled=reminder_disabled,
-            github_handle=github_handle,
-        )
+
+        try:
+            profile = UserProfile.objects.create(
+                user=user,
+                role=self.user_role,
+                gsoc_year=self.gsoc_year,
+                suborg_full_name=self.user_suborg,
+                reminder_disabled=reminder_disabled,
+                github_handle=github_handle,
+            )
+        except Exception:
+            profile = None
+
         if self.user_role != role.get("Student", 3):
-            profile.save()
+            try:
+                profile.save()
+            except Exception:
+                pass
             return user
 
         # setup blog
@@ -1078,6 +1083,22 @@ class RegLink(models.Model):
         else:
             self.create_scheduler()
 
+    def save(self, *args, **kwargs):
+        try:
+            reglink = RegLink.objects.get(
+                user_role=self.user_role,
+                gsoc_year=self.gsoc_year,
+                email=self.email,
+                user_suborg=self.user_suborg
+            ).delete()
+            if reglink.scheduler_id is not None and reglink.reminder_id is not None:
+                Scheduler.objects.get(id=reglink.scheduler_id).delete()
+                Scheduler.objects.get(id=reglink.reminder_id).delete()
+
+        except Exception:
+            pass
+        super(RegLink, self).save(*args, **kwargs)
+
 
 class Comment(models.Model):
     username = models.CharField(max_length=50)
@@ -1185,6 +1206,9 @@ class SendEmail(models.Model):
         elif self.to_group == "suborg_admins":
             ups = UserProfile.objects.filter(role=1, gsoc_year=gsoc_year).all()
             emails.extend([_.user.email for _ in ups])
+        elif self.to_group == "admins":
+            ups = User.objects.filter(is_superuser=True)
+            emails.extend([_.user.email for _ in ups])
         elif self.to_group == "all":
             ups = UserProfile.objects.filter(gsoc_year=gsoc_year).all()
             emails.extend([_.user.email for _ in ups])
@@ -1202,6 +1226,11 @@ class SendEmail(models.Model):
         )
 
         super(SendEmail, self).save(*args, **kwargs)
+
+
+class NotAcceptedUser(RegLink):
+    class Meta:
+        proxy = True
 
 
 # Receivers
