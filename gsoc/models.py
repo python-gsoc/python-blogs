@@ -41,6 +41,7 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
+from settings_local import ADMINS
 
 
 # Util Functions
@@ -451,6 +452,26 @@ class UserProfile(models.Model):
         except Exception:
             pass
 
+        # send email to admins
+        if self.role in [1, 2]:
+            mentor_template_data = {
+                "email": self.user.email,
+                "suborg_name": self.suborg_full_name.suborg_name,
+                "role": self.ROLES[self.role][1]
+            }
+
+            scheduler_data_mentor = build_send_mail_json(
+                ADMINS,
+                template="add_mentor.html",
+                subject=f"New {self.ROLES[self.role][1]} added: {self.user.email}\
+                    on suborg {self.suborg_full_name.suborg_name}",
+                template_data=mentor_template_data,
+            )
+
+            Scheduler.objects.get_or_create(
+                command="send_email", data=scheduler_data_mentor
+            )
+
         super(UserProfile, self).save(*args, **kwargs)
 
 
@@ -512,24 +533,6 @@ class Scheduler(models.Model):
         return self.command
 
 
-class Builder(models.Model):
-    categories = (
-        ("build_pre_blog_reminders", "build_pre_blog_reminders"),
-        ("build_post_blog_reminders", "build_post_blog_reminders"),
-        ("build_revoke_student_perms", "build_revoke_student_perms"),
-        ("build_remove_user_details", "build_remove_user_details"),
-    )
-
-    category = models.CharField(max_length=40, choices=categories)
-    activation_date = models.DateTimeField(null=True, blank=True)
-    built = models.BooleanField(default=None, null=True)
-    data = models.TextField()
-    last_error = models.TextField(null=True, default=None, blank=True)
-
-    def __str__(self):
-        return self.category
-
-
 class Timeline(models.Model):
     gsoc_year = models.ForeignKey(
         GsocYear,
@@ -547,6 +550,27 @@ class Timeline(models.Model):
                 calendar = service.calendars().insert(body=calendar).execute()
                 self.calendar_id = calendar.get("id")
                 self.save()
+
+
+class Builder(models.Model):
+    categories = (
+        ("build_pre_blog_reminders", "build_pre_blog_reminders"),
+        ("build_post_blog_reminders", "build_post_blog_reminders"),
+        ("build_revoke_student_perms", "build_revoke_student_perms"),
+        ("build_remove_user_details", "build_remove_user_details"),
+    )
+
+    category = models.CharField(max_length=40, choices=categories)
+    activation_date = models.DateTimeField(null=True, blank=True)
+    built = models.BooleanField(default=None, null=True)
+    data = models.TextField()
+    last_error = models.TextField(null=True, default=None, blank=True)
+    timeline = models.ForeignKey(
+        Timeline, on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    def __str__(self):
+        return self.category
 
 
 class Event(models.Model):
@@ -700,6 +724,7 @@ class BlogPostDueDate(models.Model):
             category="build_pre_blog_reminders",
             activation_date=self.date + datetime.timedelta(days=-3),
             data=builder_data,
+            timeline=self.timeline
         )
         self.pre_blog_reminder_builder = s
 
@@ -707,6 +732,7 @@ class BlogPostDueDate(models.Model):
             category="build_post_blog_reminders",
             activation_date=self.date + datetime.timedelta(days=1),
             data=builder_data,
+            timeline=self.timeline
         )
         self.post_blog_reminder_builder.add(s)
 
@@ -714,6 +740,7 @@ class BlogPostDueDate(models.Model):
             category="build_post_blog_reminders",
             activation_date=self.date + datetime.timedelta(days=3),
             data=builder_data,
+            timeline=self.timeline
         )
         self.post_blog_reminder_builder.add(s)
 
