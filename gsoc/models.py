@@ -1,3 +1,4 @@
+from asyncio.windows_utils import BUFSIZE
 import os
 import re
 import datetime
@@ -732,6 +733,22 @@ class BlogPostDueDate(models.Model):
         self.post_blog_reminder_builder.add(s)
 
         self.save()
+
+    def save(self, *args, **kwargs):
+        try:
+            pre = Builder.objects.get(id=self.pre_blog_reminder_builder.id)
+            pre.activation_date = self.date - datetime.timedelta(days=1)
+            pre.save()
+
+            post1, post2 = self.post_blog_reminder_builder.all()
+            post1.activation_date = self.date + datetime.timedelta(days=1)
+            post1.save()
+
+            post2.activation_date = self.date + datetime.timedelta(days=3)
+            post2.save()
+        except Exception:
+            pass
+        super(BlogPostDueDate, self).save(*args, **kwargs)
 
 
 class GsocEndDate(models.Model):
