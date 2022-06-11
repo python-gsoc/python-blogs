@@ -453,16 +453,17 @@ class UserProfile(models.Model):
             pass
 
         # send email to admins
-        if self.role == 2:
+        if self.role in [1, 2]:
             mentor_template_data = {
-                "mentor_email": self.user.email,
+                "email": self.user.email,
                 "suborg_name": self.suborg_full_name.suborg_name,
+                "role": self.ROLES[self.role][1]
             }
 
             scheduler_data_mentor = build_send_mail_json(
                 ADMINS,
                 template="add_mentor.html",
-                subject=f"New mentor added: {self.user.email}\
+                subject=f"New {self.ROLES[self.role][1]} added: {self.user.email}\
                     on suborg {self.suborg_full_name.suborg_name}",
                 template_data=mentor_template_data,
             )
