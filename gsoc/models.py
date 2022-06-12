@@ -207,6 +207,16 @@ class GsocYear(models.Model):
     def __str__(self):
         return str(self.gsoc_year)
 
+    def save(self, *args, **kwargs):
+        try:
+            end_date = GsocEndDate.objects.get(
+                date__contains=datetime.datetime.now().year
+            )
+            if end_date.date < datetime.datetime.now().date():
+                super(GsocYear, self).save(*args, **kwargs)
+        except GsocEndDate.DoesNotExist:
+            pass
+
 
 class SubOrgDetails(models.Model):
     suborg_admin = models.ForeignKey(
