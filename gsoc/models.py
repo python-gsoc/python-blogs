@@ -184,7 +184,7 @@ class GsocYear(models.Model):
 
     def __str__(self):
         return str(self.gsoc_year)
-    
+
     def save(self, *args, **kwargs):
         try:
             end_date = GsocEndDate.objects.get(
