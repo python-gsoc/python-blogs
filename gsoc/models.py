@@ -1473,14 +1473,11 @@ def add_history(sender, instance, **kwargs):
 
 
 # Delete add_blog_counter scheduler when timeline is deleted
-@receiver(models.signals.pre_delete, sender=Timeline)
+@receiver(models.signals.pre_delete, sender=BlogPostDueDate)
 def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
     try:
-        blog_post_due = BlogPostDueDate.objects.filter(
-            timeline_id=instance.id
-        ).latest('id')
-        Scheduler.objects.get(id=blog_post_due.add_counter_scheduler.id).delete()
-    except Exception:
+        Scheduler.objects.get(id=instance.add_counter_scheduler.id).delete()
+    except Scheduler.DoesNotExist:
         pass
 
 
@@ -1488,10 +1485,8 @@ def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def update_add_blog_counter_scheduler(sender, instance, **kwargs):
     try:
-        scheduler = Scheduler.objects.filter(
-            id=instance.add_counter_scheduler.id
-        ).latest('id')
+        scheduler = Scheduler.objects.get(id=instance.add_counter_scheduler.id)
         scheduler.activation_date = instance.date + datetime.timedelta(days=-6)
         scheduler.save()
-    except Exception:
+    except Scheduler.DoesNotExist:
         pass
