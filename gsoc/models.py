@@ -1513,7 +1513,7 @@ def add_history(sender, instance, **kwargs):
     BlogPostHistory.objects.create(article=instance, content=instance.lead_in)
 
 
-# Delete add_blog_counter scheduler when timeline is deleted
+# Delete add_blog_counter scheduler when BlopPostDueDate object is deleted
 @receiver(models.signals.post_delete, sender=BlogPostDueDate)
 def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
     try:
@@ -1522,7 +1522,7 @@ def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
         pass
 
 
-# Update add_blog_counter scheduler when timeline is changed
+# Update add_blog_counter scheduler when BlopPostDueDate object is changed
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def update_add_blog_counter_scheduler(sender, instance, **kwargs):
     try:
