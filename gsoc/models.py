@@ -1491,4 +1491,3 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
         scheduler.save()
     except Exception:
         pass
-    
