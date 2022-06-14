@@ -753,10 +753,13 @@ class GsocEndDate(models.Model):
 
     def save(self, *args, **kwargs):
         super(GsocEndDate, self).save(*args, **kwargs)
-        Builder.objects.create(
+        builder, created_builder = Builder.objects.get_or_create(
             category="build_revoke_student_perms", activation_date=self.date
         )
-        Scheduler.objects.create(
+        if not created_builder:
+            builder.activation_date = self.date
+            builder.save()
+        scheduler, created_scheduler = Scheduler.objects.get_or_create(
             command="archive_gsoc_pages", activation_date=self.date, data="{}"
         )
 
