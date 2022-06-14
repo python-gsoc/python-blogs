@@ -1470,3 +1470,25 @@ def add_review(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Article)
 def add_history(sender, instance, **kwargs):
     BlogPostHistory.objects.create(article=instance, content=instance.lead_in)
+
+
+# Delete add_blog_counter scheduler when timeline is deleted
+@receiver(models.signals.pre_delete, sender=Timeline)
+def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        blog_post_due = BlogPostDueDate.objects.get(timeline_id=instance.id)
+        Scheduler.objects.get(id=blog_post_due.add_counter_scheduler.id).delete()
+    except Exception:
+        pass
+
+
+# Update add_blog_counter scheduler when timeline is changed
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def update_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        scheduler = Scheduler.objects.get(id=instance.add_counter_scheduler.id)
+        scheduler.activation_date = instance.date + datetime.timedelta(days=-6)
+        scheduler.save()
+    except Exception:
+        pass
+    
