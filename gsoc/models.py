@@ -754,7 +754,6 @@ class GsocEndDate(models.Model):
     date = models.DateField()
 
     def save(self, *args, **kwargs):
-        super(GsocEndDate, self).save(*args, **kwargs)
         try:
             builder = Builder.objects.get(
                 timeline=self.timeline,
@@ -776,6 +775,7 @@ class GsocEndDate(models.Model):
             Scheduler.objects.create(
                 command="archive_gsoc_pages", activation_date=self.date, data="{}"
             )
+        super(GsocEndDate, self).save(*args, **kwargs)
 
 
 class PageNotification(models.Model):
