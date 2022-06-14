@@ -1,7 +1,6 @@
 import os
 import re
 import datetime
-from unicodedata import category
 import uuid
 import json
 import pickle
@@ -27,7 +26,6 @@ from django.shortcuts import reverse
 from django.conf import settings
 
 from aldryn_apphooks_config.fields import AppHookConfigField
-from setuptools import Command
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.models import Article, Person
