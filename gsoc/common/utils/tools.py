@@ -47,7 +47,7 @@ def send_mail(send_to, subject, template, context={}):
         subject=settings.EMAIL_SUBJECT_PREFIX + subject,
         from_email=settings.SERVER_EMAIL,
         reply_to=settings.REPLY_EMAIL,
-        to=[],
+        to=settings.ADMINS,
         bcc=send_to,
     )
     send_email.content_subtype = "html"
