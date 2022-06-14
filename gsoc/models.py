@@ -51,6 +51,18 @@ def gen_uuid_str():
     return str(uuid.uuid4())
 
 
+def validate_date(value):
+    gsoc_year = GsocYear.objects.first()
+    try:
+        end_date = GsocEndDate.objects.get(
+            date__contains=gsoc_year
+        )
+        if end_date.date > datetime.datetime.now().date():
+            raise ValidationError('Cannot add new year untl GSoC ends!')
+    except GsocEndDate.DoesNotExist:
+        pass
+
+
 # Patching
 
 NewsBlogConfig.__str__ = lambda self: self.app_title
@@ -180,20 +192,11 @@ class GsocYear(models.Model):
         ordering = ["-gsoc_year"]
 
     gsoc_year = models.IntegerField(name="gsoc_year",
-                                    primary_key=True)
+                                    primary_key=True,
+                                    validators=[validate_date])
 
     def __str__(self):
         return str(self.gsoc_year)
-
-    def save(self, *args, **kwargs):
-        try:
-            end_date = GsocEndDate.objects.get(
-                date__contains=datetime.datetime.now().year
-            )
-            if end_date.date < datetime.datetime.now().date():
-                super(GsocYear, self).save(*args, **kwargs)
-        except GsocEndDate.DoesNotExist:
-            pass
 
 
 class SubOrgDetails(models.Model):
