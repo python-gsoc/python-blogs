@@ -40,6 +40,7 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
+from gsoc.constants import *
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 from settings_local import ADMINS
 
@@ -711,7 +712,9 @@ class BlogPostDueDate(models.Model):
     def create_scheduler(self):
         s = Scheduler.objects.create(
             command="add_blog_counter",
-            activation_date=self.date + datetime.timedelta(days=-6),
+            activation_date=self.date + datetime.timedelta(
+                days=BLOG_POST_DUE_REMINDER
+            ),
             data="{}",
         )
         self.add_counter_scheduler = s
@@ -722,7 +725,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_pre_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=-3),
+            activation_date=self.date + datetime.timedelta(
+                days=PRE_BLOG_REMINDER
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -730,7 +735,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=1),
+            activation_date=self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_FIRST
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -738,7 +745,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=3),
+            activation_date=self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_SECOND
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -746,10 +755,56 @@ class BlogPostDueDate(models.Model):
 
         self.save()
 
+    def save(self, *args, **kwargs):
+        try:
+            pre = Builder.objects.get(id=self.pre_blog_reminder_builder.id)
+            pre.activation_date = self.date - datetime.timedelta(
+                days=PRE_BLOG_REMINDER
+            )
+            pre.save()
+
+            post1, post2 = self.post_blog_reminder_builder.all()
+            post1.activation_date = self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_FIRST
+            )
+            post1.save()
+
+            post2.activation_date = self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_SECOND
+            )
+            post2.save()
+        except Exception:
+            pass
+        super(BlogPostDueDate, self).save(*args, **kwargs)
+
 
 class GsocEndDate(models.Model):
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
+
+    def save(self, *args, **kwargs):
+        try:
+            builder = Builder.objects.get(
+                timeline=self.timeline,
+                category="build_revoke_student_perms",
+            )
+            builder.activation_date = self.date
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_revoke_student_perms",
+                activation_date=self.date,
+                timeline=self.timeline
+            )
+        try:
+            scheduler = Scheduler.objects.get(command="archive_gsoc_pages")
+            scheduler.activation_date = self.date
+            scheduler.save()
+        except Scheduler.DoesNotExist:
+            Scheduler.objects.create(
+                command="archive_gsoc_pages", activation_date=self.date, data="{}"
+            )
+        super(GsocEndDate, self).save(*args, **kwargs)
 
 
 class PageNotification(models.Model):
@@ -1087,7 +1142,7 @@ class RegLink(models.Model):
 
             if not trigger_time:
                 activation_date = self.scheduler.activation_date + datetime.timedelta(
-                    days=3
+                    days=DEFAULT_TRIGGER_TIME
                 )
             else:
                 activation_date = trigger_time
@@ -1259,7 +1314,9 @@ class NotAcceptedUser(RegLink):
 def update_blog_counter(sender, instance, **kwargs):
     if not instance.pk:
         # increase blog counter
-        date = timezone.now() + datetime.timedelta(days=6)
+        date = timezone.now() + datetime.timedelta(
+            days=UPDATE_BLOG_COUNTER
+        )
         currentYear = datetime.datetime.now().year
         due_dates = BlogPostDueDate.objects.filter(date__year=currentYear, date__lt=date).all()
         instance.current_blog_count = len(due_dates)
@@ -1379,22 +1436,6 @@ def create_schedulers_builders(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
-
-
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Builder.objects.create(
-        category="build_revoke_student_perms", activation_date=instance.date
-    )
-
-
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Scheduler.objects.create(
-        command="archive_gsoc_pages", activation_date=instance.date, data="{}"
-    )
 
 
 # Publish the duedate to Github pages
