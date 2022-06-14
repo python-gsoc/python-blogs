@@ -52,7 +52,7 @@ def gen_uuid_str():
 
 
 def validate_date(value):
-    gsoc_year = GsocYear.objects.first()
+    gsoc_year = GsocYear.objects.latest('gsoc_year')
     try:
         end_date = GsocEndDate.objects.get(
             date__contains=gsoc_year
