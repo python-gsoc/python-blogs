@@ -752,13 +752,13 @@ class GsocEndDate(models.Model):
     date = models.DateField()
 
     def save(self, *args, **kwargs):
+        super(GsocEndDate, self).save(*args, **kwargs)
         Builder.objects.create(
             category="build_revoke_student_perms", activation_date=self.date
         )
         Scheduler.objects.create(
             command="archive_gsoc_pages", activation_date=self.date, data="{}"
         )
-        super(GsocEndDate, self).save(*args, **kwargs)
 
 
 class PageNotification(models.Model):
