@@ -782,6 +782,30 @@ class GsocEndDate(models.Model):
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
 
+    def save(self, *args, **kwargs):
+        try:
+            builder = Builder.objects.get(
+                timeline=self.timeline,
+                category="build_revoke_student_perms",
+            )
+            builder.activation_date = self.date
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_revoke_student_perms",
+                activation_date=self.date,
+                timeline=self.timeline
+            )
+        try:
+            scheduler = Scheduler.objects.get(command="archive_gsoc_pages")
+            scheduler.activation_date = self.date
+            scheduler.save()
+        except Scheduler.DoesNotExist:
+            Scheduler.objects.create(
+                command="archive_gsoc_pages", activation_date=self.date, data="{}"
+            )
+        super(GsocEndDate, self).save(*args, **kwargs)
+
 
 class PageNotification(models.Model):
     message = models.TextField(name="message")
@@ -1412,22 +1436,6 @@ def create_schedulers_builders(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
-
-
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Builder.objects.create(
-        category="build_revoke_student_perms", activation_date=instance.date
-    )
-
-
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Scheduler.objects.create(
-        command="archive_gsoc_pages", activation_date=instance.date, data="{}"
-    )
 
 
 # Publish the duedate to Github pages
