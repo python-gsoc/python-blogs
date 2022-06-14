@@ -39,7 +39,10 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
+
+from gsoc.constants import *
 from gsoc.settings import PROPOSALS_PATH
+from settings_local import ADMINS
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
