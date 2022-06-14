@@ -1,6 +1,7 @@
 import os
 import re
 import datetime
+from unicodedata import category
 import uuid
 import json
 import pickle
@@ -26,6 +27,7 @@ from django.shortcuts import reverse
 from django.conf import settings
 
 from aldryn_apphooks_config.fields import AppHookConfigField
+from setuptools import Command
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.models import Article, Person
@@ -753,15 +755,27 @@ class GsocEndDate(models.Model):
 
     def save(self, *args, **kwargs):
         super(GsocEndDate, self).save(*args, **kwargs)
-        builder, created_builder = Builder.objects.get_or_create(
-            category="build_revoke_student_perms", activation_date=self.date
-        )
-        if not created_builder:
+        try:
+            builder = Builder.objects.get(
+                timeline=self.timeline,
+                category="build_revoke_student_perms",
+            )
             builder.activation_date = self.date
             builder.save()
-        scheduler, created_scheduler = Scheduler.objects.get_or_create(
-            command="archive_gsoc_pages", activation_date=self.date, data="{}"
-        )
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_revoke_student_perms",
+                activation_date=self.date,
+                timeline=self.timeline
+            )
+        try:
+            scheduler = Scheduler.objects.get(command="archive_gsoc_pages")
+            scheduler.activation_date = self.date
+            scheduler.save()
+        except Scheduler.DoesNotExist:
+            Scheduler.objects.create(
+                command="archive_gsoc_pages", activation_date=self.date, data="{}"
+            )
 
 
 class PageNotification(models.Model):
