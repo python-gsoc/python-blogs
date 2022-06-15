@@ -1,3 +1,4 @@
+import re
 from PIL import Image
 
 from .models import (
@@ -121,8 +122,12 @@ class SubOrgApplicationForm(forms.ModelForm):
 
         if not suborg and suborg_name:
             suborg = SubOrg.objects.filter(suborg_name=suborg_name)
-            if len(suborg) > 0:
+            if suborg:
                 cd["suborg"] = suborg.first()
+            else:
+                regex = r'^[ a-zA-Z\-]*$'
+                if not re.match(regex, suborg_name):
+                    raise ValidationError("Invalid suborg name.")
         elif suborg and not suborg_name:
             cd["suborg_name"] = suborg.suborg_name
         elif suborg and suborg_name:
