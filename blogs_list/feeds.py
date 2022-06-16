@@ -146,7 +146,7 @@ class BlogsFeed(Feed):
             articles = list(articles_all[start_index:end_index])
             return articles
         else:
-            raise ObjectDoesNotExist
+            return []
 
     def feed_extra_kwargs(self, obj):
         return {
