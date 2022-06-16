@@ -251,7 +251,7 @@ class ArticleList(ArticleListBase):
                     featured_qs = featured_qs.published()
                 exclude_featured = featured_qs[:exclude_count].values_list('pk')
                 qs = qs.exclude(pk__in=exclude_featured)
-        except:
+        except Exception:
             pass
         return qs
 
