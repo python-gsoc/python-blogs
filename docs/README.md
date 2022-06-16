@@ -24,7 +24,7 @@ cp settings_local.py.template settings_local.py
 ## Setup database
 - Download and install [XAMPP](https://www.apachefriends.org/download.html) or any other MySQL server
 - Create a database
-- Update database name, user, password in the local_settings.py
+- Update database name, user, password in the settings_local.py
 - Migrate
 ```python
 python manage.py migrate
