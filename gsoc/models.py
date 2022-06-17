@@ -558,12 +558,21 @@ class Timeline(models.Model):
             "timeline_id": self.id,
             "calendar_id": self.calendar_id
         })
-        Builder.objects.create(
-            category="build_add_timeline_to_calendar",
-            activation_date=datetime.datetime.now(),
-            data=builder_data,
-            timeline=self
-        )
+        try:
+            builder = Builder.objects.get(
+                category="build_add_timeline_to_calendar",
+                timeline=self
+            )
+            builder.activation_date = datetime.datetime.now()
+            builder.calendar_id = self.calendar_id
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_timeline_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self
+            )
 
 
 class Builder(models.Model):
@@ -683,7 +692,6 @@ class BlogPostDueDate(models.Model):
     category = models.IntegerField(choices=categories, null=True, blank=True)
 
     def add_to_calendar(self):
-        print(self.timeline.calendar_id)
         builder_data = json.dumps({
             "id": self.id,
             "title": self.title,
@@ -695,8 +703,9 @@ class BlogPostDueDate(models.Model):
                 category="build_add_bpdd_to_calendar",
                 timeline=self.timeline
             )
-            builder.activation_date = self.date
+            builder.activation_date = datetime.datetime.now()
             builder.built = None
+            builder.data = builder_data
             builder.save()
         except Builder.DoesNotExist:
             Builder.objects.create(
