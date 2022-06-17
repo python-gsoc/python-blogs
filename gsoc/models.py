@@ -1,12 +1,8 @@
-from asyncio.windows_utils import BUFSIZE
 import os
 import re
 import datetime
-from tkinter import CASCADE
-from unicodedata import category
 import uuid
 import json
-from MySQLdb import Time
 import bleach
 from urllib.parse import urljoin
 
@@ -591,6 +587,12 @@ class Builder(models.Model):
     data = models.TextField()
     last_error = models.TextField(null=True, default=None, blank=True)
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE)
+    bpdd = models.ForeignKey(
+        'BlogPostDueDate',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.category
@@ -701,7 +703,8 @@ class BlogPostDueDate(models.Model):
         try:
             builder = Builder.objects.get(
                 category="build_add_bpdd_to_calendar",
-                timeline=self.timeline
+                timeline=self.timeline,
+                bpdd=self
             )
             builder.activation_date = datetime.datetime.now()
             builder.built = None
@@ -712,7 +715,8 @@ class BlogPostDueDate(models.Model):
                 category="build_add_bpdd_to_calendar",
                 activation_date=datetime.datetime.now(),
                 data=builder_data,
-                timeline=self.timeline
+                timeline=self.timeline,
+                bpdd=self
             )
 
     def delete_from_calendar(self):
