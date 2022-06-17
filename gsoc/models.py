@@ -3,6 +3,7 @@ import os
 import re
 import datetime
 from tkinter import CASCADE
+from unicodedata import category
 import uuid
 import json
 from MySQLdb import Time
@@ -553,13 +554,16 @@ class Timeline(models.Model):
     calendar_id = models.CharField(max_length=255, null=True, blank=True)
 
     def add_calendar(self):
-        if not self.calendar_id:
-            creds = getCreds()
-            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-            calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
-            calendar = service.calendars().insert(body=calendar).execute()
-            self.calendar_id = calendar.get("id")
-            self.save()
+        builder_data = json.dumps({
+            "timeline_id": self.id,
+            "calendar_id": self.calendar_id
+        })
+        Builder.objects.create(
+            category="build_add_timeline_to_calendar",
+            activation_date=datetime.datetime.now(),
+            data=builder_data,
+            timeline=self
+        )
 
 
 class Builder(models.Model):
@@ -568,6 +572,8 @@ class Builder(models.Model):
         ("build_post_blog_reminders", "build_post_blog_reminders"),
         ("build_revoke_student_perms", "build_revoke_student_perms"),
         ("build_remove_user_details", "build_remove_user_details"),
+        ("build_add_timeline_to_calendar", "build_add_timeline_to_calendar"),
+        ("build_add_bpdd_to_calendar", "build_add_bpdd_to_calendar")
     )
 
     category = models.CharField(max_length=40, choices=categories)
@@ -677,26 +683,28 @@ class BlogPostDueDate(models.Model):
     category = models.IntegerField(choices=categories, null=True, blank=True)
 
     def add_to_calendar(self):
-        creds = getCreds()
-        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-        event = {
-            "summary": self.title,
-            "start": {"date": self.date.strftime("%Y-%m-%d")},
-            "end": {"date": self.date.strftime("%Y-%m-%d")},
-        }
-        cal_id = self.timeline.calendar_id if self.timeline else "primary"
-        if not self.event_id:
-            event = (
-                service.events()
-                .insert(calendarId=cal_id, body=event)
-                .execute()
+        print(self.timeline.calendar_id)
+        builder_data = json.dumps({
+            "id": self.id,
+            "title": self.title,
+            "date": str(self.date.strftime('%Y-%m-%d')),
+            "event_id": self.event_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_bpdd_to_calendar",
+                timeline=self.timeline
             )
-            self.event_id = event.get("id")
-            self.save()
-        else:
-            service.events().update(
-                calendarId=cal_id, eventId=self.event_id, body=event
-            ).execute()
+            builder.activation_date = self.date
+            builder.built = None
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_bpdd_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self.timeline
+            )
 
     def delete_from_calendar(self):
         if self.event_id:

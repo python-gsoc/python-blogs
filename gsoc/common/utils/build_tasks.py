@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import uuid
 import urllib.parse
@@ -5,7 +6,7 @@ import urllib.parse
 from django.utils import timezone
 from django.conf import settings
 
-from gsoc.models import UserProfile, GsocYear, BlogPostDueDate, Scheduler, ReaddUser
+from gsoc.models import Timeline, UserProfile, GsocYear, BlogPostDueDate, Scheduler, ReaddUser
 from gsoc.common.utils.tools import build_send_mail_json
 
 
@@ -154,3 +155,62 @@ def build_remove_user_details(builder):
             Scheduler.objects.create(command="send_email", data=scheduler_data)
     except Exception as e:
         return str(e)
+
+import os
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+
+def getCreds():
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    return creds
+
+
+def build_add_timeline_to_calendar(builder):
+    data = json.loads(builder.data)
+    if not data["calendar_id"]:
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
+            calendar = service.calendars().insert(body=calendar).execute()
+            timeline = Timeline.objects.get(id=data["timeline_id"])
+            timeline.calendar_id = calendar.get("id")
+            timeline.save()
+
+def build_add_bpdd_to_calendar(builder):
+    data = json.loads(builder.data)
+    creds = getCreds()
+    service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+    event = {
+        "summary": data["title"],
+        "start": {"date": data["date"]},
+        "end": {"date": data["date"]},
+    }
+    cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
+    if not data["event_id"]:
+        event = (
+            service.events()
+            .insert(calendarId=cal_id, body=event)
+            .execute()
+        )
+        item = BlogPostDueDate.objects.get(id=data["id"])
+        item.event_id = event.get("id")
+        item.save()
+    else:
+        service.events().update(
+            calendarId=cal_id, eventId=data["event_id"], body=event
+        ).execute()
