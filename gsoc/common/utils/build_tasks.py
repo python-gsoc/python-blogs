@@ -1,7 +1,5 @@
-from datetime import datetime
 import json
 import uuid
-import urllib.parse
 
 from django.utils import timezone
 from django.conf import settings
