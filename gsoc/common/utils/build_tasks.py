@@ -4,7 +4,7 @@ import uuid
 from django.utils import timezone
 from django.conf import settings
 
-from gsoc.models import Timeline, UserProfile, GsocYear, BlogPostDueDate, Scheduler, ReaddUser
+from gsoc.models import Event, Timeline, UserProfile, GsocYear, BlogPostDueDate, Scheduler, ReaddUser
 from gsoc.common.utils.tools import build_send_mail_json
 
 
@@ -211,4 +211,28 @@ def build_add_bpdd_to_calendar(builder):
     else:
         service.events().update(
             calendarId=cal_id, eventId=data["event_id"], body=event
+        ).execute()
+
+def build_add_event_to_calendar(builder):
+    data = json.loads(builder.data)
+    creds = getCreds()
+    service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+    event = {
+        "summary": data["title"],
+        "start": {"date": data["start_date"]},
+        "end": {"date": data["end_date"]},
+    }
+    cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
+    item = Event.objects.get(id=data["id"])
+    if not data["event_id"]:
+        event = (
+            service.events()
+            .insert(calendarId=cal_id, body=event)
+            .execute()
+        )
+        item.event_id = event.get("id")
+        item.save()
+    else:
+        service.events().update(
+            calendarId=cal_id, eventId=item.event_id, body=event
         ).execute()
