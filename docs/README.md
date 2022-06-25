@@ -37,11 +37,10 @@ Default student users are `student-1`, `student-2`, `student-3` and `student-4` 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Google OAuth
-- Go to https://console.cloud.google.com/apis/ and create a new project
+- Go to https://console.cloud.google.com/ and create a new project
 - Enable Google Calendar API and create an OAuth 2.0 client ID
 - Download the JSON file and rename it to `credentials.json`
 - Move the file to the root folder of the project
-- Update configurations on settings_local.py
 
 ## Virtualenv
 
