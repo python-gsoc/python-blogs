@@ -726,48 +726,51 @@ class BlogPostDueDate(models.Model):
                 ).execute()
 
     def create_scheduler(self):
-        s = Scheduler.objects.create(
-            command="add_blog_counter",
-            activation_date=self.date + datetime.timedelta(
-                days=BLOG_POST_DUE_REMINDER.days
-            ),
-            data="{}",
-        )
-        self.add_counter_scheduler = s
-        self.save()
+        if not BLOG_POST_DUE_REMINDER.disabled:
+            s = Scheduler.objects.create(
+                command="add_blog_counter",
+                activation_date=self.date + datetime.timedelta(
+                    days=BLOG_POST_DUE_REMINDER.days
+                ),
+                data="{}",
+            )
+            self.add_counter_scheduler = s
+            self.save()
 
     def create_builders(self):
         builder_data = json.dumps({"due_date_pk": self.pk})
-        
-        s = Builder.objects.create(
-            category="build_pre_blog_reminders",
-            activation_date=self.date + datetime.timedelta(
-                days=PRE_BLOG_REMINDER.days
-            ),
-            data=builder_data,
-            timeline=self.timeline
-        )
-        self.pre_blog_reminder_builder = s
 
-        s = Builder.objects.create(
-            category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(
-                days=POST_BLOG_REMINDER_FIRST.days
-            ),
-            data=builder_data,
-            timeline=self.timeline
-        )
-        self.post_blog_reminder_builder.add(s)
+        if not PRE_BLOG_REMINDER.disabled:
+            s = Builder.objects.create(
+                category="build_pre_blog_reminders",
+                activation_date=self.date + datetime.timedelta(
+                    days=PRE_BLOG_REMINDER.days
+                ),
+                data=builder_data,
+                timeline=self.timeline
+            )
+            self.pre_blog_reminder_builder = s
 
-        s = Builder.objects.create(
-            category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(
-                days=POST_BLOG_REMINDER_SECOND.days
-            ),
-            data=builder_data,
-            timeline=self.timeline
-        )
-        self.post_blog_reminder_builder.add(s)
+        if not POST_BLOG_REMINDER_FIRST.disabled:
+            s = Builder.objects.create(
+                category="build_post_blog_reminders",
+                activation_date=self.date + datetime.timedelta(
+                    days=POST_BLOG_REMINDER_FIRST.days
+                ),
+                data=builder_data,
+                timeline=self.timeline
+            )
+            self.post_blog_reminder_builder.add(s)
+        if not POST_BLOG_REMINDER_SECOND.disabled:
+            s = Builder.objects.create(
+                category="build_post_blog_reminders",
+                activation_date=self.date + datetime.timedelta(
+                    days=POST_BLOG_REMINDER_SECOND.days
+                ),
+                data=builder_data,
+                timeline=self.timeline
+            )
+            self.post_blog_reminder_builder.add(s)
 
         self.save()
 
