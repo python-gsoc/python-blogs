@@ -793,10 +793,10 @@ admin.site.register(NotAcceptedUser, NotAcceptedAdmin)
 
 
 class DaysConfAdmin(admin.ModelAdmin):
-    list_display = ("title", "days")
+    list_display = ("title", "days", "disabled")
 
-    # def has_add_permission(self, request, obj=None):
-    #     return False
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 admin.site.register(DaysConf, DaysConfAdmin)
