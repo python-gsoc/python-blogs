@@ -383,7 +383,7 @@ def add_page_menu(self):
 
                 # navigation toggle
                 nav_title = _('Hide in navigation') if self.page.in_navigation \
-                else _('Display in navigation')
+                    else _('Display in navigation')
                 nav_action = admin_reverse(
                     'cms_page_change_innavigation',
                     args=(self.page.pk,)
