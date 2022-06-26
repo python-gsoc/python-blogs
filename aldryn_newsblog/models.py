@@ -201,9 +201,12 @@ class Article(TranslatedAutoSlugifyMixin,
                 'slug', default=None, language_code=language)
             if slug and lang:
                 site_id = getattr(settings, 'SITE_ID', None)
-                if get_redirect_on_fallback(language, site_id):
-                    language = lang
-                kwargs.update(slug=slug)
+                try:
+                    if get_redirect_on_fallback(language, site_id):
+                        language = lang
+                    kwargs.update(slug=slug)
+                except:
+                    pass
 
         if self.app_config and self.app_config.namespace:
             namespace = '{0}:'.format(self.app_config.namespace)
