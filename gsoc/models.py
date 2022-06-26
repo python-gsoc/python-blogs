@@ -40,7 +40,6 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
-from gsoc.constants import *
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 from settings_local import ADMINS
 
@@ -164,6 +163,22 @@ Article.save = save
 
 
 # Models
+
+
+class DaysConf(models.Model):
+    title = models.CharField(max_length=100)
+    days = models.IntegerField()
+
+
+# days for reminder
+PRE_BLOG_REMINDER = DaysConf.objects.get(title="PRE_BLOG_REMINDER")
+POST_BLOG_REMINDER_FIRST = DaysConf.objects.get(title="POST_BLOG_REMINDER_FIRST")
+POST_BLOG_REMINDER_SECOND = DaysConf.objects.get(title="POST_BLOG_REMINDER_SECOND")
+
+BLOG_POST_DUE_REMINDER = DaysConf.objects.get(title="BLOG_POST_DUE_REMINDER")
+UPDATE_BLOG_COUNTER = DaysConf.objects.get(title="UPDATE_BLOG_COUNTER")
+
+REGLINK_REMINDER = DaysConf.objects.get(title="REGLINK_REMINDER")
 
 
 class SubOrg(models.Model):
@@ -1142,7 +1157,7 @@ class RegLink(models.Model):
 
             if not trigger_time:
                 activation_date = self.scheduler.activation_date + datetime.timedelta(
-                    days=DEFAULT_TRIGGER_TIME
+                    days=REGLINK_REMINDER
                 )
             else:
                 activation_date = trigger_time
