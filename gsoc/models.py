@@ -136,7 +136,7 @@ def save(self, *args, **kwargs):
     attrs.update(settings.BLEACH_ALLOWED_ATTRS)
     styles = settings.BLEACH_ALLOWED_STYLES
     self.lead_in = bleach.clean(
-        self.lead_in, tags=tags, attributes=attrs, styles=styles
+        self.lead_in, tags=tags, attributes=attrs
     )
     soup = BeautifulSoup(self.lead_in, "html5lib")
     for iframe_tag in soup.find_all("iframe"):
