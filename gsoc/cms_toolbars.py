@@ -30,7 +30,7 @@ from aldryn_newsblog.cms_toolbars import NewsBlogToolbar
 
 from cms.models import Page
 
-from gsoc.models import ArticleReview, UserProfile
+from gsoc.models import ArticleReview
 
 
 # identifiers
@@ -41,8 +41,6 @@ PAGE_MENU_SECOND_BREAK = 'Page Menu Second Break'
 PAGE_MENU_THIRD_BREAK = 'Page Menu Third Break'
 PAGE_MENU_FOURTH_BREAK = 'Page Menu Fourth Break'
 PAGE_MENU_LAST_BREAK = 'Page Menu Last Break'
-HISTORY_MENU_BREAK = 'History Menu Break'
-MANAGE_PAGES_BREAK = 'Manage Pages Break'
 TEMPLATE_MENU_BREAK = 'Template Menu Break'
 
 
