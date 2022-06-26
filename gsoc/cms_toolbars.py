@@ -360,9 +360,9 @@ def add_page_menu(self):
                 if not permission_disabled:
                     permission_disabled = not \
                             page_permissions.user_can_change_page_permissions(
-                            user=self.request.user,
-                            page=self.page,
-                        )
+                                user=self.request.user,
+                                page=self.page,
+                            )
                 current_page_menu.add_modal_item(
                     _('Permissions'),
                     url=permissions_url,
@@ -383,7 +383,7 @@ def add_page_menu(self):
 
                 # navigation toggle
                 nav_title = _('Hide in navigation') if self.page.in_navigation \
-                            else _('Display in navigation')
+                                else _('Display in navigation')
                 nav_action = admin_reverse(
                     'cms_page_change_innavigation',
                     args=(self.page.pk,)
@@ -451,7 +451,7 @@ def add_page_menu(self):
             else:
                 delete_url = admin_reverse('cms_page_delete', args=(self.page.pk,))
             delete_disabled = not edit_mode or not \
-                            user_can_delete_page(self.request.user, page=self.page)
+                                user_can_delete_page(self.request.user, page=self.page)
             on_delete_redirect_url = self.get_on_delete_redirect_url()
             current_page_menu.add_modal_item(
                 _('Delete page'),
