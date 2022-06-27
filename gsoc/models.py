@@ -786,7 +786,7 @@ class BlogPostDueDate(models.Model):
         else:
             num = sum([1 for item in items if "Weekly Blog Post Due" in item.title])
             self.title = f"Weekly Blog Post Due {num}"
-  
+
         super(BlogPostDueDate, self).save(*args, **kwargs)
 
 
