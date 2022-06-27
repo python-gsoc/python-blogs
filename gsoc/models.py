@@ -777,15 +777,16 @@ class BlogPostDueDate(models.Model):
             pass
 
         # update title
-        gsoc_year = GsocYear.objects.latest()
+        gsoc_year = GsocYear.objects.latest('gsoc_year')
         timeline = Timeline.objects.get(gsoc_year=gsoc_year)
-        items = BlogPostDueDate.objects.all(timeline=timeline)
+        items = BlogPostDueDate.objects.filter(timeline=timeline)
         if self.category == 0:
             num = sum([1 for item in items if "Weekly Check-in Due" in item.title])
             self.title = f"Weekly Check-in Due {num}"
         else:
             num = sum([1 for item in items if "Weekly Blog Post Due" in item.title])
             self.title = f"Weekly Blog Post Due {num}"
+            
         super(BlogPostDueDate, self).save(*args, **kwargs)
 
 
