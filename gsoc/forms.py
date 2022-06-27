@@ -1,4 +1,3 @@
-from email.policy import default
 from PIL import Image
 
 from .models import (
