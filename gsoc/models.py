@@ -650,7 +650,7 @@ class BlogPostDueDate(models.Model):
     class Meta:
         ordering = ["date"]
 
-    title = models.CharField(max_length=100, default="Weekly Blog Post Due")
+    title = models.CharField(max_length=100, default="Loading...")
     date = models.DateField()
     timeline = models.ForeignKey(
         Timeline,
@@ -775,6 +775,15 @@ class BlogPostDueDate(models.Model):
             post2.save()
         except Exception:
             pass
+
+        # update title
+        items = BlogPostDueDate.objects.all()
+        if self.category == 0:
+            num = sum([1 for item in items if "Weekly Check-in Due" in item.title])
+            self.title = f"Weekly Check-in Due {num}"
+        else:
+            num = sum([1 for item in items if "Weekly Blog Post Due" in item.title])
+            self.title = f"Weekly Blog Post Due {num}"
         super(BlogPostDueDate, self).save(*args, **kwargs)
 
 
