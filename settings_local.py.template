@@ -47,20 +47,6 @@ ADMINS = (("GSoC Admins", "gsoc-admins@python.org"))
 RECAPTCHA_PRIVATE_KEY = "6LcL0q8UAAAAAFPz31u0Ce9gnbEjhFou19c4MhnQ"
 RECAPTCHA_PUBLIC_KEY = "6LcL0q8UAAAAALYynEklThsKgSVZ2B1kubc-Y6br"
 
-# google oauth client_config
-GOOGLE_API_SCOPES = ["https://www.googleapis.com/auth/calendar"]
-GOOGLE_API_CLIENT_CONFIG = {
-    "installed": {
-        "client_id": "",
-        "project_id": "",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "p62APV3jXWciaWRzk9D9YAMm",
-        "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob", "http://localhost"],
-    }
-}
-
 # GITHUB SETTINGS
 STATIC_SITE_REPO = "python-gsoc/python-gsoc.github.io"
 GITHUB_ACCESS_TOKEN = ""

@@ -3,7 +3,6 @@ import re
 import datetime
 import uuid
 import json
-import pickle
 import bleach
 from urllib.parse import urljoin
 
@@ -40,9 +39,16 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
-from gsoc.settings import PROPOSALS_PATH, BASE_DIR
+
+from gsoc.constants import *
+from gsoc.settings import BASE_DIR, PROPOSALS_PATH
 from settings_local import ADMINS
 
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 # Util Functions
 
@@ -51,6 +57,7 @@ def gen_uuid_str():
     return str(uuid.uuid4())
 
 
+<<<<<<< HEAD
 def validate_date(value):
     gsoc_year = GsocYear.objects.latest('gsoc_year')
     try:
@@ -61,6 +68,27 @@ def validate_date(value):
             raise ValidationError('Cannot add new year untl GSoC ends!')
     except GsocEndDate.DoesNotExist:
         pass
+=======
+def getCreds():
+    creds = None
+    if os.path.exists(os.path.join(BASE_DIR, 'token.json')):
+        creds = Credentials.from_authorized_user_file(
+            os.path.join(BASE_DIR, 'token.json'),
+            SCOPES
+        )
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                os.path.join(BASE_DIR, 'credentials.json'),
+                SCOPES
+            )
+            creds = flow.run_local_server(port=0)
+        with open(os.path.join(BASE_DIR, 'token.json'), 'w') as token:
+            token.write(creds.to_json())
+    return creds
+>>>>>>> 80d1d7187370d2b841c24a71512a4cfd53e813d5
 
 
 # Patching
@@ -555,14 +583,12 @@ class Timeline(models.Model):
 
     def add_calendar(self):
         if not self.calendar_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
-                calendar = service.calendars().insert(body=calendar).execute()
-                self.calendar_id = calendar.get("id")
-                self.save()
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
+            calendar = service.calendars().insert(body=calendar).execute()
+            self.calendar_id = calendar.get("id")
+            self.save()
 
 
 class Builder(models.Model):
@@ -598,51 +624,45 @@ class Event(models.Model):
     @property
     def calendar_link(self):
         if self.event_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                event = (
-                    service.events()
-                    .get(calendarId=self.timeline.calendar_id, eventId=self.event_id)
-                    .execute()
-                )
-                return event.get("htmlLink", None)
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            event = (
+                service.events()
+                .get(calendarId=self.timeline.calendar_id, eventId=self.event_id)
+                .execute()
+            )
+            return event.get("htmlLink", None)
         return None
 
     def add_to_calendar(self):
-        tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-        with open(tpath, "rb") as token:
-            creds = pickle.load(token)
-            service = build("calendar", "v3", credentials=creds)
-            event = {
-                "summary": self.title,
-                "start": {"date": self.start_date.strftime("%Y-%m-%d")},
-                "end": {"date": self.end_date.strftime("%Y-%m-%d")},
-            }
-            cal_id = self.timeline.calendar_id if self.timeline else "primary"
-            if not self.event_id:
-                event = (
-                    service.events()
-                    .insert(calendarId=cal_id, body=event)
-                    .execute()
-                )
-                self.event_id = event.get("id")
-                self.save()
-            else:
-                service.events().update(
-                    calendarId=cal_id, eventId=self.event_id, body=event
-                ).execute()
+        creds = getCreds()
+        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+        event = {
+            "summary": self.title,
+            "start": {"date": self.start_date.strftime("%Y-%m-%d")},
+            "end": {"date": self.end_date.strftime("%Y-%m-%d")},
+        }
+        cal_id = self.timeline.calendar_id if self.timeline else "primary"
+        if not self.event_id:
+            event = (
+                service.events()
+                .insert(calendarId=cal_id, body=event)
+                .execute()
+            )
+            self.event_id = event.get("id")
+            self.save()
+        else:
+            service.events().update(
+                calendarId=cal_id, eventId=self.event_id, body=event
+            ).execute()
 
     def delete_from_calendar(self):
         if self.event_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                service.events().delete(
-                    calendarId=self.timeline.calendar_id, eventId=self.event_id
-                ).execute()
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            service.events().delete(
+                calendarId=self.timeline.calendar_id, eventId=self.event_id
+            ).execute()
 
     def save(self, *args, **kwargs):
         if not self.end_date:
@@ -662,7 +682,7 @@ class BlogPostDueDate(models.Model):
     class Meta:
         ordering = ["date"]
 
-    title = models.CharField(max_length=100, default="Weekly Blog Post Due")
+    title = models.CharField(max_length=100, default="Loading...")
     date = models.DateField()
     timeline = models.ForeignKey(
         Timeline,
@@ -688,43 +708,41 @@ class BlogPostDueDate(models.Model):
     category = models.IntegerField(choices=categories, null=True, blank=True)
 
     def add_to_calendar(self):
-        tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-        with open(tpath, "rb") as token:
-            creds = pickle.load(token)
-            service = build("calendar", "v3", credentials=creds)
-            event = {
-                "summary": self.title,
-                "start": {"date": self.date.strftime("%Y-%m-%d")},
-                "end": {"date": self.date.strftime("%Y-%m-%d")},
-            }
-            cal_id = self.timeline.calendar_id if self.timeline else "primary"
-            if not self.event_id:
-                event = (
-                    service.events()
-                    .insert(calendarId=cal_id, body=event)
-                    .execute()
-                )
-                self.event_id = event.get("id")
-                self.save()
-            else:
-                service.events().update(
-                    calendarId=cal_id, eventId=self.event_id, body=event
-                ).execute()
+        creds = getCreds()
+        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+        event = {
+            "summary": self.title,
+            "start": {"date": self.date.strftime("%Y-%m-%d")},
+            "end": {"date": self.date.strftime("%Y-%m-%d")},
+        }
+        cal_id = self.timeline.calendar_id if self.timeline else "primary"
+        if not self.event_id:
+            event = (
+                service.events()
+                .insert(calendarId=cal_id, body=event)
+                .execute()
+            )
+            self.event_id = event.get("id")
+            self.save()
+        else:
+            service.events().update(
+                calendarId=cal_id, eventId=self.event_id, body=event
+            ).execute()
 
     def delete_from_calendar(self):
         if self.event_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                service.events().delete(
-                    calendarId=self.timeline.calendar_id, eventId=self.event_id
-                ).execute()
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            service.events().delete(
+                calendarId=self.timeline.calendar_id, eventId=self.event_id
+            ).execute()
 
     def create_scheduler(self):
         s = Scheduler.objects.create(
             command="add_blog_counter",
-            activation_date=self.date + datetime.timedelta(days=-6),
+            activation_date=self.date + datetime.timedelta(
+                days=BLOG_POST_DUE_REMINDER
+            ),
             data="{}",
         )
         self.add_counter_scheduler = s
@@ -735,7 +753,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_pre_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=-3),
+            activation_date=self.date + datetime.timedelta(
+                days=PRE_BLOG_REMINDER
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -743,7 +763,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=1),
+            activation_date=self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_FIRST
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -751,7 +773,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=3),
+            activation_date=self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_SECOND
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -759,10 +783,68 @@ class BlogPostDueDate(models.Model):
 
         self.save()
 
+    def save(self, *args, **kwargs):
+        try:
+            pre = Builder.objects.get(id=self.pre_blog_reminder_builder.id)
+            pre.activation_date = self.date - datetime.timedelta(
+                days=PRE_BLOG_REMINDER
+            )
+            pre.save()
+
+            post1, post2 = self.post_blog_reminder_builder.all()
+            post1.activation_date = self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_FIRST
+            )
+            post1.save()
+
+            post2.activation_date = self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_SECOND
+            )
+            post2.save()
+        except Exception:
+            pass
+
+        # update title
+        gsoc_year = GsocYear.objects.latest('gsoc_year')
+        timeline = Timeline.objects.get(gsoc_year=gsoc_year)
+        items = BlogPostDueDate.objects.filter(timeline=timeline)
+        if self.category == 0:
+            num = sum([1 for item in items if "Weekly Check-in Due" in item.title])
+            self.title = f"Weekly Check-in Due {num}"
+        else:
+            num = sum([1 for item in items if "Weekly Blog Post Due" in item.title])
+            self.title = f"Weekly Blog Post Due {num}"
+
+        super(BlogPostDueDate, self).save(*args, **kwargs)
+
 
 class GsocEndDate(models.Model):
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
+
+    def save(self, *args, **kwargs):
+        try:
+            builder = Builder.objects.get(
+                timeline=self.timeline,
+                category="build_revoke_student_perms",
+            )
+            builder.activation_date = self.date
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_revoke_student_perms",
+                activation_date=self.date,
+                timeline=self.timeline
+            )
+        try:
+            scheduler = Scheduler.objects.get(command="archive_gsoc_pages")
+            scheduler.activation_date = self.date
+            scheduler.save()
+        except Scheduler.DoesNotExist:
+            Scheduler.objects.create(
+                command="archive_gsoc_pages", activation_date=self.date, data="{}"
+            )
+        super(GsocEndDate, self).save(*args, **kwargs)
 
 
 class PageNotification(models.Model):
@@ -1100,7 +1182,7 @@ class RegLink(models.Model):
 
             if not trigger_time:
                 activation_date = self.scheduler.activation_date + datetime.timedelta(
-                    days=3
+                    days=DEFAULT_TRIGGER_TIME
                 )
             else:
                 activation_date = trigger_time
@@ -1272,7 +1354,9 @@ class NotAcceptedUser(RegLink):
 def update_blog_counter(sender, instance, **kwargs):
     if not instance.pk:
         # increase blog counter
-        date = timezone.now() + datetime.timedelta(days=6)
+        date = timezone.now() + datetime.timedelta(
+            days=UPDATE_BLOG_COUNTER
+        )
         currentYear = datetime.datetime.now().year
         due_dates = BlogPostDueDate.objects.filter(date__year=currentYear, date__lt=date).all()
         instance.current_blog_count = len(due_dates)
@@ -1394,22 +1478,6 @@ def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
 
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Builder.objects.create(
-        category="build_revoke_student_perms", activation_date=instance.date
-    )
-
-
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Scheduler.objects.create(
-        command="archive_gsoc_pages", activation_date=instance.date, data="{}"
-    )
-
-
 # Publish the duedate to Github pages
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def duedate_publish_to_github_pages(sender, instance, **kwargs):
@@ -1483,3 +1551,23 @@ def add_review(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Article)
 def add_history(sender, instance, **kwargs):
     BlogPostHistory.objects.create(article=instance, content=instance.lead_in)
+
+
+# Delete add_blog_counter scheduler when BlopPostDueDate object is deleted
+@receiver(models.signals.post_delete, sender=BlogPostDueDate)
+def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        Scheduler.objects.get(id=instance.add_counter_scheduler.id).delete()
+    except Scheduler.DoesNotExist:
+        pass
+
+
+# Update add_blog_counter scheduler when BlopPostDueDate object is changed
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def update_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        scheduler = Scheduler.objects.get(id=instance.add_counter_scheduler.id)
+        scheduler.activation_date = instance.date + datetime.timedelta(days=-6)
+        scheduler.save()
+    except Scheduler.DoesNotExist:
+        pass
