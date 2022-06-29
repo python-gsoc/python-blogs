@@ -243,13 +243,16 @@ class ArticleList(ArticleListBase):
         qs = super(ArticleList, self).get_queryset()
         # exclude featured articles from queryset, to allow featured article
         # plugin on the list view page without duplicate entries in page qs.
-        exclude_count = self.config.exclude_featured
-        if exclude_count:
-            featured_qs = Article.objects.all().filter(is_featured=True)
-            if not self.edit_mode:
-                featured_qs = featured_qs.published()
-            exclude_featured = featured_qs[:exclude_count].values_list('pk')
-            qs = qs.exclude(pk__in=exclude_featured)
+        try:
+            exclude_count = self.config.exclude_featured
+            if exclude_count:
+                featured_qs = Article.objects.all().filter(is_featured=True)
+                if not self.edit_mode:
+                    featured_qs = featured_qs.published()
+                exclude_featured = featured_qs[:exclude_count].values_list('pk')
+                qs = qs.exclude(pk__in=exclude_featured)
+        except Exception:
+            pass
         return qs
 
 
