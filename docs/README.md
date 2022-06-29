@@ -39,6 +39,10 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## Google OAuth
 - Go to https://console.cloud.google.com/ and create a new project
 - Enable Google Calendar API and create an OAuth 2.0 client ID
+- add following on the Authorised redirect URIs of OAuth client ID
+```python
+http://localhost/
+```
 - Download the JSON file and rename it to `credentials.json`
 - Move the file to the root folder of the project
 
