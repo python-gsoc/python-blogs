@@ -1532,3 +1532,23 @@ def add_review(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Article)
 def add_history(sender, instance, **kwargs):
     BlogPostHistory.objects.create(article=instance, content=instance.lead_in)
+
+
+# Delete add_blog_counter scheduler when BlopPostDueDate object is deleted
+@receiver(models.signals.post_delete, sender=BlogPostDueDate)
+def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        Scheduler.objects.get(id=instance.add_counter_scheduler.id).delete()
+    except Scheduler.DoesNotExist:
+        pass
+
+
+# Update add_blog_counter scheduler when BlopPostDueDate object is changed
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def update_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        scheduler = Scheduler.objects.get(id=instance.add_counter_scheduler.id)
+        scheduler.activation_date = instance.date + datetime.timedelta(days=-6)
+        scheduler.save()
+    except Scheduler.DoesNotExist:
+        pass
