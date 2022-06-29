@@ -41,41 +41,16 @@ from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
 
 from gsoc.constants import *
-from gsoc.settings import BASE_DIR, PROPOSALS_PATH
+from gsoc.settings import PROPOSALS_PATH
 from settings_local import ADMINS
+from gsoc.common.utils.googleoauth import getCreds
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-
-SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 # Util Functions
 
 
 def gen_uuid_str():
     return str(uuid.uuid4())
-
-
-def getCreds():
-    creds = None
-    if os.path.exists(os.path.join(BASE_DIR, 'token.json')):
-        creds = Credentials.from_authorized_user_file(
-            os.path.join(BASE_DIR, 'token.json'),
-            SCOPES
-        )
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                os.path.join(BASE_DIR, 'credentials.json'),
-                SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-        with open(os.path.join(BASE_DIR, 'token.json'), 'w') as token:
-            token.write(creds.to_json())
-    return creds
 
 
 # Patching

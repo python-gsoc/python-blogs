@@ -7,6 +7,9 @@ from django.conf import settings
 from gsoc.models import Event, Timeline, UserProfile, GsocYear, BlogPostDueDate, Scheduler, ReaddUser
 from gsoc.common.utils.tools import build_send_mail_json
 
+from googleapiclient.discovery import build
+from gsoc.common.utils.googleoauth import getCreds
+
 
 def build_pre_blog_reminders(builder):
     try:
@@ -153,29 +156,6 @@ def build_remove_user_details(builder):
             Scheduler.objects.create(command="send_email", data=scheduler_data)
     except Exception as e:
         return str(e)
-
-import os
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-
-def getCreds():
-    creds = None
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-    return creds
 
 
 def build_add_timeline_to_calendar(builder):
