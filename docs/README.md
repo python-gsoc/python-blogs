@@ -24,13 +24,16 @@ cp settings_local.py.template settings_local.py
 ## Setup database
 - Download and install [XAMPP](https://www.apachefriends.org/download.html) or any other MySQL server
 - Create a database
-- Update database name, user, password in the settings_local.py
-- Migrate
-```python
+```
+CREATE DATABASE python_blogs;
+```
+- Update username and password in the settings_local.py
+- Run migrate command
+```
 python manage.py migrate
 ```
-- Load initial data
-```python
+- Run command to load data
+```
 python manage.py loaddata dump.json
 ```
 
