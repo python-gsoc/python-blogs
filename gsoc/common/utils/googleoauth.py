@@ -1,7 +1,6 @@
 import os
 
 from gsoc.settings import BASE_DIR
-from settings_local import ADMINS
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
