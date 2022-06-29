@@ -3,7 +3,6 @@ import re
 import datetime
 import uuid
 import json
-import pickle
 import bleach
 from urllib.parse import urljoin
 
@@ -40,16 +39,38 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
+
 from gsoc.constants import *
-from gsoc.settings import PROPOSALS_PATH, BASE_DIR
+from gsoc.settings import PROPOSALS_PATH
 from settings_local import ADMINS
 
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 # Util Functions
 
 
 def gen_uuid_str():
     return str(uuid.uuid4())
+
+
+def getCreds():
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    return creds
 
 
 # Patching
@@ -543,14 +564,12 @@ class Timeline(models.Model):
 
     def add_calendar(self):
         if not self.calendar_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
-                calendar = service.calendars().insert(body=calendar).execute()
-                self.calendar_id = calendar.get("id")
-                self.save()
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
+            calendar = service.calendars().insert(body=calendar).execute()
+            self.calendar_id = calendar.get("id")
+            self.save()
 
 
 class Builder(models.Model):
@@ -586,51 +605,45 @@ class Event(models.Model):
     @property
     def calendar_link(self):
         if self.event_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                event = (
-                    service.events()
-                    .get(calendarId=self.timeline.calendar_id, eventId=self.event_id)
-                    .execute()
-                )
-                return event.get("htmlLink", None)
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            event = (
+                service.events()
+                .get(calendarId=self.timeline.calendar_id, eventId=self.event_id)
+                .execute()
+            )
+            return event.get("htmlLink", None)
         return None
 
     def add_to_calendar(self):
-        tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-        with open(tpath, "rb") as token:
-            creds = pickle.load(token)
-            service = build("calendar", "v3", credentials=creds)
-            event = {
-                "summary": self.title,
-                "start": {"date": self.start_date.strftime("%Y-%m-%d")},
-                "end": {"date": self.end_date.strftime("%Y-%m-%d")},
-            }
-            cal_id = self.timeline.calendar_id if self.timeline else "primary"
-            if not self.event_id:
-                event = (
-                    service.events()
-                    .insert(calendarId=cal_id, body=event)
-                    .execute()
-                )
-                self.event_id = event.get("id")
-                self.save()
-            else:
-                service.events().update(
-                    calendarId=cal_id, eventId=self.event_id, body=event
-                ).execute()
+        creds = getCreds()
+        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+        event = {
+            "summary": self.title,
+            "start": {"date": self.start_date.strftime("%Y-%m-%d")},
+            "end": {"date": self.end_date.strftime("%Y-%m-%d")},
+        }
+        cal_id = self.timeline.calendar_id if self.timeline else "primary"
+        if not self.event_id:
+            event = (
+                service.events()
+                .insert(calendarId=cal_id, body=event)
+                .execute()
+            )
+            self.event_id = event.get("id")
+            self.save()
+        else:
+            service.events().update(
+                calendarId=cal_id, eventId=self.event_id, body=event
+            ).execute()
 
     def delete_from_calendar(self):
         if self.event_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                service.events().delete(
-                    calendarId=self.timeline.calendar_id, eventId=self.event_id
-                ).execute()
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            service.events().delete(
+                calendarId=self.timeline.calendar_id, eventId=self.event_id
+            ).execute()
 
     def save(self, *args, **kwargs):
         if not self.end_date:
@@ -676,38 +689,34 @@ class BlogPostDueDate(models.Model):
     category = models.IntegerField(choices=categories, null=True, blank=True)
 
     def add_to_calendar(self):
-        tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-        with open(tpath, "rb") as token:
-            creds = pickle.load(token)
-            service = build("calendar", "v3", credentials=creds)
-            event = {
-                "summary": self.title,
-                "start": {"date": self.date.strftime("%Y-%m-%d")},
-                "end": {"date": self.date.strftime("%Y-%m-%d")},
-            }
-            cal_id = self.timeline.calendar_id if self.timeline else "primary"
-            if not self.event_id:
-                event = (
-                    service.events()
-                    .insert(calendarId=cal_id, body=event)
-                    .execute()
-                )
-                self.event_id = event.get("id")
-                self.save()
-            else:
-                service.events().update(
-                    calendarId=cal_id, eventId=self.event_id, body=event
-                ).execute()
+        creds = getCreds()
+        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+        event = {
+            "summary": self.title,
+            "start": {"date": self.date.strftime("%Y-%m-%d")},
+            "end": {"date": self.date.strftime("%Y-%m-%d")},
+        }
+        cal_id = self.timeline.calendar_id if self.timeline else "primary"
+        if not self.event_id:
+            event = (
+                service.events()
+                .insert(calendarId=cal_id, body=event)
+                .execute()
+            )
+            self.event_id = event.get("id")
+            self.save()
+        else:
+            service.events().update(
+                calendarId=cal_id, eventId=self.event_id, body=event
+            ).execute()
 
     def delete_from_calendar(self):
         if self.event_id:
-            tpath = os.path.join(BASE_DIR, "google_api_token.pickle")
-            with open(tpath, "rb") as token:
-                creds = pickle.load(token)
-                service = build("calendar", "v3", credentials=creds)
-                service.events().delete(
-                    calendarId=self.timeline.calendar_id, eventId=self.event_id
-                ).execute()
+            creds = getCreds()
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            service.events().delete(
+                calendarId=self.timeline.calendar_id, eventId=self.event_id
+            ).execute()
 
     def create_scheduler(self):
         s = Scheduler.objects.create(

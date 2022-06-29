@@ -36,6 +36,12 @@ Default student users are `student-1`, `student-2`, `student-3` and `student-4` 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+## Google OAuth
+- Go to https://console.cloud.google.com/ and create a new project
+- Enable Google Calendar API and create an OAuth 2.0 client ID
+- Download the JSON file and rename it to `credentials.json`
+- Move the file to the root folder of the project
+
 ## Virtualenv
 
 A virtual environment is a tool that helps to keep dependencies required by different projects separate by creating isolated python virtual environments for them. This means that each project can have its own dependencies, regardless of what dependencies every other project has. We use a module named `virtualenv` which is a tool to create isolated Python environments. `virtualenv` creates a folder which contains all the necessary executables to use the packages that a Python project would need.
