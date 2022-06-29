@@ -57,7 +57,6 @@ def gen_uuid_str():
     return str(uuid.uuid4())
 
 
-<<<<<<< HEAD
 def validate_date(value):
     gsoc_year = GsocYear.objects.latest('gsoc_year')
     try:
@@ -68,7 +67,8 @@ def validate_date(value):
             raise ValidationError('Cannot add new year untl GSoC ends!')
     except GsocEndDate.DoesNotExist:
         pass
-=======
+
+    
 def getCreds():
     creds = None
     if os.path.exists(os.path.join(BASE_DIR, 'token.json')):
@@ -88,7 +88,6 @@ def getCreds():
         with open(os.path.join(BASE_DIR, 'token.json'), 'w') as token:
             token.write(creds.to_json())
     return creds
->>>>>>> 80d1d7187370d2b841c24a71512a4cfd53e813d5
 
 
 # Patching
