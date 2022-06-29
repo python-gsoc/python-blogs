@@ -4,7 +4,9 @@ import uuid
 from django.utils import timezone
 from django.conf import settings
 
-from gsoc.models import Event, Timeline, UserProfile, GsocYear, BlogPostDueDate, Scheduler, ReaddUser
+from gsoc.models import (Event, Timeline,UserProfile, GsocYear,
+    BlogPostDueDate, Scheduler, ReaddUser
+)
 from gsoc.common.utils.tools import build_send_mail_json
 
 from googleapiclient.discovery import build
@@ -161,13 +163,14 @@ def build_remove_user_details(builder):
 def build_add_timeline_to_calendar(builder):
     data = json.loads(builder.data)
     if not data["calendar_id"]:
-            creds = getCreds()
-            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-            calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
-            calendar = service.calendars().insert(body=calendar).execute()
-            timeline = Timeline.objects.get(id=data["timeline_id"])
-            timeline.calendar_id = calendar.get("id")
-            timeline.save()
+        creds = getCreds()
+        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+        calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
+        calendar = service.calendars().insert(body=calendar).execute()
+        timeline = Timeline.objects.get(id=data["timeline_id"])
+        timeline.calendar_id = calendar.get("id")
+        timeline.save()
+
 
 def build_add_bpdd_to_calendar(builder):
     data = json.loads(builder.data)
@@ -192,6 +195,7 @@ def build_add_bpdd_to_calendar(builder):
         service.events().update(
             calendarId=cal_id, eventId=data["event_id"], body=event
         ).execute()
+
 
 def build_add_event_to_calendar(builder):
     data = json.loads(builder.data)
