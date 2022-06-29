@@ -39,7 +39,10 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
-from gsoc.settings import PROPOSALS_PATH
+
+from gsoc.constants import *
+from gsoc.settings import BASE_DIR, PROPOSALS_PATH
+from settings_local import ADMINS
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -56,16 +59,21 @@ def gen_uuid_str():
 
 def getCreds():
     creds = None
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists(os.path.join(BASE_DIR, 'token.json')):
+        creds = Credentials.from_authorized_user_file(
+            os.path.join(BASE_DIR, 'token.json'),
+            SCOPES
+        )
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                os.path.join(BASE_DIR, 'credentials.json'),
+                SCOPES
+            )
             creds = flow.run_local_server(port=0)
-        with open('token.json', 'w') as token:
+        with open(os.path.join(BASE_DIR, 'token.json'), 'w') as token:
             token.write(creds.to_json())
     return creds
 
@@ -481,6 +489,26 @@ class UserProfile(models.Model):
         except Exception:
             pass
 
+        # send email to admins
+        if self.role in [1, 2]:
+            mentor_template_data = {
+                "email": self.user.email,
+                "suborg_name": self.suborg_full_name.suborg_name,
+                "role": self.ROLES[self.role][1]
+            }
+
+            scheduler_data_mentor = build_send_mail_json(
+                ADMINS,
+                template="add_mentor.html",
+                subject=f"New {self.ROLES[self.role][1]} added: {self.user.email}\
+                    on suborg {self.suborg_full_name.suborg_name}",
+                template_data=mentor_template_data,
+            )
+
+            Scheduler.objects.get_or_create(
+                command="send_email", data=scheduler_data_mentor
+            )
+
         super(UserProfile, self).save(*args, **kwargs)
 
 
@@ -679,7 +707,7 @@ class BlogPostDueDate(models.Model):
     class Meta:
         ordering = ["date"]
 
-    title = models.CharField(max_length=100, default="Weekly Blog Post Due")
+    title = models.CharField(max_length=100, default="Loading...")
     date = models.DateField()
     timeline = models.ForeignKey(
         Timeline,
@@ -741,7 +769,9 @@ class BlogPostDueDate(models.Model):
     def create_scheduler(self):
         s = Scheduler.objects.create(
             command="add_blog_counter",
-            activation_date=self.date + datetime.timedelta(days=-6),
+            activation_date=self.date + datetime.timedelta(
+                days=BLOG_POST_DUE_REMINDER
+            ),
             data="{}",
         )
         self.add_counter_scheduler = s
@@ -752,7 +782,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_pre_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=-3),
+            activation_date=self.date + datetime.timedelta(
+                days=PRE_BLOG_REMINDER
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -760,7 +792,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=1),
+            activation_date=self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_FIRST
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -768,7 +802,9 @@ class BlogPostDueDate(models.Model):
 
         s = Builder.objects.create(
             category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(days=3),
+            activation_date=self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_SECOND
+            ),
             data=builder_data,
             timeline=self.timeline
         )
@@ -779,23 +815,65 @@ class BlogPostDueDate(models.Model):
     def save(self, *args, **kwargs):
         try:
             pre = Builder.objects.get(id=self.pre_blog_reminder_builder.id)
-            pre.activation_date = self.date - datetime.timedelta(days=1)
+            pre.activation_date = self.date - datetime.timedelta(
+                days=PRE_BLOG_REMINDER
+            )
             pre.save()
 
             post1, post2 = self.post_blog_reminder_builder.all()
-            post1.activation_date = self.date + datetime.timedelta(days=1)
+            post1.activation_date = self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_FIRST
+            )
             post1.save()
 
-            post2.activation_date = self.date + datetime.timedelta(days=3)
+            post2.activation_date = self.date + datetime.timedelta(
+                days=POST_BLOG_REMINDER_SECOND
+            )
             post2.save()
         except Exception:
             pass
+
+        # update title
+        gsoc_year = GsocYear.objects.latest('gsoc_year')
+        timeline = Timeline.objects.get(gsoc_year=gsoc_year)
+        items = BlogPostDueDate.objects.filter(timeline=timeline)
+        if self.category == 0:
+            num = sum([1 for item in items if "Weekly Check-in Due" in item.title])
+            self.title = f"Weekly Check-in Due {num}"
+        else:
+            num = sum([1 for item in items if "Weekly Blog Post Due" in item.title])
+            self.title = f"Weekly Blog Post Due {num}"
+
         super(BlogPostDueDate, self).save(*args, **kwargs)
 
 
 class GsocEndDate(models.Model):
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
+
+    def save(self, *args, **kwargs):
+        try:
+            builder = Builder.objects.get(
+                timeline=self.timeline,
+                category="build_revoke_student_perms",
+            )
+            builder.activation_date = self.date
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_revoke_student_perms",
+                activation_date=self.date,
+                timeline=self.timeline
+            )
+        try:
+            scheduler = Scheduler.objects.get(command="archive_gsoc_pages")
+            scheduler.activation_date = self.date
+            scheduler.save()
+        except Scheduler.DoesNotExist:
+            Scheduler.objects.create(
+                command="archive_gsoc_pages", activation_date=self.date, data="{}"
+            )
+        super(GsocEndDate, self).save(*args, **kwargs)
 
 
 class PageNotification(models.Model):
@@ -1133,7 +1211,7 @@ class RegLink(models.Model):
 
             if not trigger_time:
                 activation_date = self.scheduler.activation_date + datetime.timedelta(
-                    days=3
+                    days=DEFAULT_TRIGGER_TIME
                 )
             else:
                 activation_date = trigger_time
@@ -1305,7 +1383,9 @@ class NotAcceptedUser(RegLink):
 def update_blog_counter(sender, instance, **kwargs):
     if not instance.pk:
         # increase blog counter
-        date = timezone.now() + datetime.timedelta(days=6)
+        date = timezone.now() + datetime.timedelta(
+            days=UPDATE_BLOG_COUNTER
+        )
         currentYear = datetime.datetime.now().year
         due_dates = BlogPostDueDate.objects.filter(date__year=currentYear, date__lt=date).all()
         instance.current_blog_count = len(due_dates)
@@ -1427,22 +1507,6 @@ def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
 
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Builder.objects.create(
-        category="build_revoke_student_perms", activation_date=instance.date
-    )
-
-
-# Add new builder for GsocEndDate
-@receiver(models.signals.post_save, sender=GsocEndDate)
-def add_revoke_perms_builder(sender, instance, **kwargs):
-    Scheduler.objects.create(
-        command="archive_gsoc_pages", activation_date=instance.date, data="{}"
-    )
-
-
 # Publish the duedate to Github pages
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def duedate_publish_to_github_pages(sender, instance, **kwargs):
@@ -1516,3 +1580,23 @@ def add_review(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Article)
 def add_history(sender, instance, **kwargs):
     BlogPostHistory.objects.create(article=instance, content=instance.lead_in)
+
+
+# Delete add_blog_counter scheduler when BlopPostDueDate object is deleted
+@receiver(models.signals.post_delete, sender=BlogPostDueDate)
+def delete_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        Scheduler.objects.get(id=instance.add_counter_scheduler.id).delete()
+    except Scheduler.DoesNotExist:
+        pass
+
+
+# Update add_blog_counter scheduler when BlopPostDueDate object is changed
+@receiver(models.signals.post_save, sender=BlogPostDueDate)
+def update_add_blog_counter_scheduler(sender, instance, **kwargs):
+    try:
+        scheduler = Scheduler.objects.get(id=instance.add_counter_scheduler.id)
+        scheduler.activation_date = instance.date + datetime.timedelta(days=-6)
+        scheduler.save()
+    except Scheduler.DoesNotExist:
+        pass
