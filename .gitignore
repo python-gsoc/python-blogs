@@ -3,6 +3,7 @@
 # described in https://git-scm.com/docs/gitignore
 settings_local.py
 Pipfile
+Pipfile.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

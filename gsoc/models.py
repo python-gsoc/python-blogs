@@ -39,9 +39,7 @@ from phonenumbers.phonenumbermatcher import PhoneNumberMatcher
 
 from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
-
-from gsoc.constants import *
-from gsoc.settings import PROPOSALS_PATH
+from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 from settings_local import ADMINS
 from gsoc.common.utils.googleoauth import getCreds
 
@@ -51,6 +49,18 @@ from gsoc.common.utils.googleoauth import getCreds
 
 def gen_uuid_str():
     return str(uuid.uuid4())
+
+
+def validate_date(value):
+    gsoc_year = GsocYear.objects.latest('gsoc_year')
+    try:
+        end_date = GsocEndDate.objects.get(
+            date__contains=gsoc_year
+        )
+        if end_date.date > datetime.datetime.now().date():
+            raise ValidationError('Cannot add new year untl GSoC ends!')
+    except GsocEndDate.DoesNotExist:
+        pass
 
 
 # Patching
@@ -167,6 +177,23 @@ Article.save = save
 # Models
 
 
+class DaysConf(models.Model):
+    title = models.CharField(max_length=100)
+    days = models.IntegerField()
+    disabled = models.BooleanField(default=False)
+
+
+# days for reminder
+PRE_BLOG_REMINDER = DaysConf.objects.get(title="PRE_BLOG_REMINDER")
+POST_BLOG_REMINDER_FIRST = DaysConf.objects.get(title="POST_BLOG_REMINDER_FIRST")
+POST_BLOG_REMINDER_SECOND = DaysConf.objects.get(title="POST_BLOG_REMINDER_SECOND")
+
+BLOG_POST_DUE_REMINDER = DaysConf.objects.get(title="BLOG_POST_DUE_REMINDER")
+UPDATE_BLOG_COUNTER = DaysConf.objects.get(title="UPDATE_BLOG_COUNTER")
+
+REGLINK_REMINDER = DaysConf.objects.get(title="REGLINK_REMINDER")
+
+
 class SubOrg(models.Model):
     class Meta:
         ordering = ["suborg_name"]
@@ -182,7 +209,8 @@ class GsocYear(models.Model):
         ordering = ["-gsoc_year"]
 
     gsoc_year = models.IntegerField(name="gsoc_year",
-                                    primary_key=True)
+                                    primary_key=True,
+                                    validators=[validate_date])
 
     def __str__(self):
         return str(self.gsoc_year)
@@ -732,48 +760,51 @@ class BlogPostDueDate(models.Model):
             ).execute()
 
     def create_scheduler(self):
-        s = Scheduler.objects.create(
-            command="add_blog_counter",
-            activation_date=self.date + datetime.timedelta(
-                days=BLOG_POST_DUE_REMINDER
-            ),
-            data="{}",
-        )
-        self.add_counter_scheduler = s
-        self.save()
+        if not BLOG_POST_DUE_REMINDER.disabled:
+            s = Scheduler.objects.create(
+                command="add_blog_counter",
+                activation_date=self.date + datetime.timedelta(
+                    days=BLOG_POST_DUE_REMINDER.days
+                ),
+                data="{}",
+            )
+            self.add_counter_scheduler = s
+            self.save()
 
     def create_builders(self):
         builder_data = json.dumps({"due_date_pk": self.pk})
 
-        s = Builder.objects.create(
-            category="build_pre_blog_reminders",
-            activation_date=self.date + datetime.timedelta(
-                days=PRE_BLOG_REMINDER
-            ),
-            data=builder_data,
-            timeline=self.timeline
-        )
-        self.pre_blog_reminder_builder = s
+        if not PRE_BLOG_REMINDER.disabled:
+            s = Builder.objects.create(
+                category="build_pre_blog_reminders",
+                activation_date=self.date + datetime.timedelta(
+                    days=PRE_BLOG_REMINDER.days
+                ),
+                data=builder_data,
+                timeline=self.timeline
+            )
+            self.pre_blog_reminder_builder = s
 
-        s = Builder.objects.create(
-            category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(
-                days=POST_BLOG_REMINDER_FIRST
-            ),
-            data=builder_data,
-            timeline=self.timeline
-        )
-        self.post_blog_reminder_builder.add(s)
-
-        s = Builder.objects.create(
-            category="build_post_blog_reminders",
-            activation_date=self.date + datetime.timedelta(
-                days=POST_BLOG_REMINDER_SECOND
-            ),
-            data=builder_data,
-            timeline=self.timeline
-        )
-        self.post_blog_reminder_builder.add(s)
+        if not POST_BLOG_REMINDER_FIRST.disabled:
+            s = Builder.objects.create(
+                category="build_post_blog_reminders",
+                activation_date=self.date + datetime.timedelta(
+                    days=POST_BLOG_REMINDER_FIRST.days
+                ),
+                data=builder_data,
+                timeline=self.timeline
+            )
+            self.post_blog_reminder_builder.add(s)
+        if not POST_BLOG_REMINDER_SECOND.disabled:
+            s = Builder.objects.create(
+                category="build_post_blog_reminders",
+                activation_date=self.date + datetime.timedelta(
+                    days=POST_BLOG_REMINDER_SECOND.days
+                ),
+                data=builder_data,
+                timeline=self.timeline
+            )
+            self.post_blog_reminder_builder.add(s)
 
         self.save()
 
@@ -781,18 +812,18 @@ class BlogPostDueDate(models.Model):
         try:
             pre = Builder.objects.get(id=self.pre_blog_reminder_builder.id)
             pre.activation_date = self.date - datetime.timedelta(
-                days=PRE_BLOG_REMINDER
+                days=PRE_BLOG_REMINDER.days
             )
             pre.save()
 
             post1, post2 = self.post_blog_reminder_builder.all()
             post1.activation_date = self.date + datetime.timedelta(
-                days=POST_BLOG_REMINDER_FIRST
+                days=POST_BLOG_REMINDER_FIRST.days
             )
             post1.save()
 
             post2.activation_date = self.date + datetime.timedelta(
-                days=POST_BLOG_REMINDER_SECOND
+                days=POST_BLOG_REMINDER_SECOND.days
             )
             post2.save()
         except Exception:
@@ -1176,7 +1207,7 @@ class RegLink(models.Model):
 
             if not trigger_time:
                 activation_date = self.scheduler.activation_date + datetime.timedelta(
-                    days=DEFAULT_TRIGGER_TIME
+                    days=REGLINK_REMINDER.days
                 )
             else:
                 activation_date = trigger_time
@@ -1349,7 +1380,7 @@ def update_blog_counter(sender, instance, **kwargs):
     if not instance.pk:
         # increase blog counter
         date = timezone.now() + datetime.timedelta(
-            days=UPDATE_BLOG_COUNTER
+            days=UPDATE_BLOG_COUNTER.days
         )
         currentYear = datetime.datetime.now().year
         due_dates = BlogPostDueDate.objects.filter(date__year=currentYear, date__lt=date).all()
