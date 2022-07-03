@@ -55,6 +55,18 @@ def gen_uuid_str():
     return str(uuid.uuid4())
 
 
+def validate_date(value):
+    gsoc_year = GsocYear.objects.latest('gsoc_year')
+    try:
+        end_date = GsocEndDate.objects.get(
+            date__contains=gsoc_year
+        )
+        if end_date.date > datetime.datetime.now().date():
+            raise ValidationError('Cannot add new year untl GSoC ends!')
+    except GsocEndDate.DoesNotExist:
+        pass
+
+    
 def getCreds():
     creds = None
     if os.path.exists(os.path.join(BASE_DIR, 'token.json')):
@@ -222,7 +234,8 @@ class GsocYear(models.Model):
         ordering = ["-gsoc_year"]
 
     gsoc_year = models.IntegerField(name="gsoc_year",
-                                    primary_key=True)
+                                    primary_key=True,
+                                    validators=[validate_date])
 
     def __str__(self):
         return str(self.gsoc_year)
