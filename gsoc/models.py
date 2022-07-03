@@ -41,12 +41,8 @@ from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 from settings_local import ADMINS
+from gsoc.common.utils.googleoauth import getCreds
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-
-SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 # Util Functions
 
@@ -65,27 +61,6 @@ def validate_date(value):
             raise ValidationError('Cannot add new year untl GSoC ends!')
     except GsocEndDate.DoesNotExist:
         pass
-
-    
-def getCreds():
-    creds = None
-    if os.path.exists(os.path.join(BASE_DIR, 'token.json')):
-        creds = Credentials.from_authorized_user_file(
-            os.path.join(BASE_DIR, 'token.json'),
-            SCOPES
-        )
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                os.path.join(BASE_DIR, 'credentials.json'),
-                SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-        with open(os.path.join(BASE_DIR, 'token.json'), 'w') as token:
-            token.write(creds.to_json())
-    return creds
 
 
 # Patching
@@ -596,13 +571,25 @@ class Timeline(models.Model):
     calendar_id = models.CharField(max_length=255, null=True, blank=True)
 
     def add_calendar(self):
-        if not self.calendar_id:
-            creds = getCreds()
-            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-            calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
-            calendar = service.calendars().insert(body=calendar).execute()
-            self.calendar_id = calendar.get("id")
-            self.save()
+        builder_data = json.dumps({
+            "timeline_id": self.id,
+            "calendar_id": self.calendar_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_timeline_to_calendar",
+                timeline=self
+            )
+            builder.activation_date = datetime.datetime.now()
+            builder.calendar_id = self.calendar_id
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_timeline_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self
+            )
 
 
 class Builder(models.Model):
@@ -611,6 +598,9 @@ class Builder(models.Model):
         ("build_post_blog_reminders", "build_post_blog_reminders"),
         ("build_revoke_student_perms", "build_revoke_student_perms"),
         ("build_remove_user_details", "build_remove_user_details"),
+        ("build_add_timeline_to_calendar", "build_add_timeline_to_calendar"),
+        ("build_add_bpdd_to_calendar", "build_add_bpdd_to_calendar"),
+        ("build_add_event_to_calendar", "build_add_event_to_calendar")
     )
 
     category = models.CharField(max_length=40, choices=categories)
@@ -618,8 +608,18 @@ class Builder(models.Model):
     built = models.BooleanField(default=None, null=True)
     data = models.TextField()
     last_error = models.TextField(null=True, default=None, blank=True)
-    timeline = models.ForeignKey(
-        Timeline, on_delete=models.CASCADE, null=True, blank=True
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE)
+    bpdd = models.ForeignKey(
+        'BlogPostDueDate',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    event = models.ForeignKey(
+        'Event',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     def __str__(self):
@@ -649,26 +649,30 @@ class Event(models.Model):
         return None
 
     def add_to_calendar(self):
-        creds = getCreds()
-        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-        event = {
-            "summary": self.title,
-            "start": {"date": self.start_date.strftime("%Y-%m-%d")},
-            "end": {"date": self.end_date.strftime("%Y-%m-%d")},
-        }
-        cal_id = self.timeline.calendar_id if self.timeline else "primary"
-        if not self.event_id:
-            event = (
-                service.events()
-                .insert(calendarId=cal_id, body=event)
-                .execute()
+        builder_data = json.dumps({
+            "id": self.id,
+            "title": self.title,
+            "start_date": str(self.start_date.strftime('%Y-%m-%d')),
+            "end_date": str(self.end_date.strftime('%Y-%m-%d')),
+            "event_id": self.event_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_event_to_calendar",
+                timeline=self.timeline,
+                event=self
             )
-            self.event_id = event.get("id")
-            self.save()
-        else:
-            service.events().update(
-                calendarId=cal_id, eventId=self.event_id, body=event
-            ).execute()
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
+            builder.data = builder_data
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_event_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self.timeline,
+            )
 
     def delete_from_calendar(self):
         if self.event_id:
@@ -722,26 +726,30 @@ class BlogPostDueDate(models.Model):
     category = models.IntegerField(choices=categories, null=True, blank=True)
 
     def add_to_calendar(self):
-        creds = getCreds()
-        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-        event = {
-            "summary": self.title,
-            "start": {"date": self.date.strftime("%Y-%m-%d")},
-            "end": {"date": self.date.strftime("%Y-%m-%d")},
-        }
-        cal_id = self.timeline.calendar_id if self.timeline else "primary"
-        if not self.event_id:
-            event = (
-                service.events()
-                .insert(calendarId=cal_id, body=event)
-                .execute()
+        builder_data = json.dumps({
+            "id": self.id,
+            "title": self.title,
+            "date": str(self.date.strftime('%Y-%m-%d')),
+            "event_id": self.event_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_bpdd_to_calendar",
+                timeline=self.timeline,
+                bpdd=self
             )
-            self.event_id = event.get("id")
-            self.save()
-        else:
-            service.events().update(
-                calendarId=cal_id, eventId=self.event_id, body=event
-            ).execute()
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
+            builder.data = builder_data
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_bpdd_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self.timeline,
+                bpdd=self
+            )
 
     def delete_from_calendar(self):
         if self.event_id:
