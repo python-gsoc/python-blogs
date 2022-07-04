@@ -2,7 +2,9 @@
 # $GIT_DIR/info/exclude or the core.excludesFile configuration variable as
 # described in https://git-scm.com/docs/gitignore
 settings_local.py
-credentials.json
+Pipfile
+Pipfile.lock
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -21,5 +23,5 @@ logs/*
 .vscode
 
 # Google Calendar creds
-scripts/credentials.json
-google_api_token.pickle
+credentials.json
+token.json
