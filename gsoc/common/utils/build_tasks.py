@@ -171,8 +171,10 @@ def build_add_timeline_to_calendar(builder):
             timeline.calendar_id = calendar.get("id")
             timeline.save()
         else:
-            raise Exception(f"Please get the Access Token: " +
-            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}")
+            raise Exception(
+                f"Please get the Access Token: " +
+                f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+            )
 
 
 def build_add_bpdd_to_calendar(builder):
@@ -200,8 +202,10 @@ def build_add_bpdd_to_calendar(builder):
                 calendarId=cal_id, eventId=data["event_id"], body=event
             ).execute()
     else:
-        raise Exception(f"Please get the Access Token: " +
-            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}")
+        raise Exception(
+            f"Please get the Access Token: " +
+            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+        )
 
 
 def build_add_event_to_calendar(builder):
@@ -229,5 +233,7 @@ def build_add_event_to_calendar(builder):
                 calendarId=cal_id, eventId=item.event_id, body=event
             ).execute()
     else:
-        raise Exception(f"Please get the Access Token: " +
-            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}")
+        raise Exception(
+            f"Please get the Access Token: " +
+            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+        )
