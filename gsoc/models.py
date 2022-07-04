@@ -80,7 +80,7 @@ def getCreds():
                 "Please refresh the Access Token: " +
                 f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
             )
-    
+
     return creds
 
 
