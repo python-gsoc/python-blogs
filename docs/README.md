@@ -23,6 +23,11 @@ cp settings_local.py.template settings_local.py
 
 ## Setup database
 - Download and install [XAMPP](https://www.apachefriends.org/download.html) or any other MySQL server
+- Open Xampp Shell
+- Login to MySql
+```
+mysql -u root 
+```
 - Create a database
 ```
 CREATE DATABASE python_blogs;
