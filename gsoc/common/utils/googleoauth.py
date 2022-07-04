@@ -24,7 +24,7 @@ def getCreds():
                 os.path.join(BASE_DIR, 'credentials.json'),
                 SCOPES
             )
-            creds = flow.run_local_server(port=0)
+            creds = flow.run_local_server(port=0, open_browser=False)
         with open(os.path.join(BASE_DIR, 'token.json'), 'w') as token:
             token.write(creds.to_json())
     return creds
