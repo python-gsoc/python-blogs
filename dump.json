@@ -1,7 +1,6 @@
 [
 {
   "model": "auth.group",
-  "pk": 1,
   "fields": {
     "name": "students",
     "permissions": []
@@ -9,7 +8,6 @@
 },
 {
   "model": "auth.user",
-  "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$216000$wrtDD3rgL7s2$ysVvRQOxJAy3cXGjQnNefYK/Gt3LVGFUx9Ge1VJcdrQ=",
     "last_login": "2021-03-22T12:37:59",
@@ -27,7 +25,6 @@
 },
 {
   "model": "auth.user",
-  "pk": 6,
   "fields": {
     "password": "pbkdf2_sha256$120000$h81cG7UVbSHg$osNFoq0TpGc6Bwh1JnK5QXCccoTjiYixm0CEibXINRs=",
     "last_login": "2019-08-30T12:11:11.203",
@@ -41,20 +38,51 @@
     "date_joined": "2019-08-30T11:57:44.746",
     "groups": [],
     "user_permissions": [
-      169,
-      170,
-      171,
-      172,
-      293,
-      294,
-      295,
-      296
+      [
+        "add_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "change_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "delete_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "view_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "add_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "change_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "delete_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "view_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ]
     ]
   }
 },
 {
   "model": "auth.user",
-  "pk": 7,
   "fields": {
     "password": "pbkdf2_sha256$120000$Wh63ZpMjaztj$7bcmpBG46tM+kGHQ3ubt1lq7silJZAjSfjXnFi1ThtU=",
     "last_login": "2019-08-30T12:09:22.354",
@@ -68,20 +96,51 @@
     "date_joined": "2019-08-30T11:58:22.936",
     "groups": [],
     "user_permissions": [
-      169,
-      170,
-      171,
-      172,
-      293,
-      294,
-      295,
-      296
+      [
+        "add_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "change_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "delete_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "view_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "add_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "change_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "delete_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "view_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ]
     ]
   }
 },
 {
   "model": "auth.user",
-  "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$120000$n9y0jpfJzjyS$1P3qD2s5Km1Cp7nKr578oalQtrOZZvMp7hxCReADuqk=",
     "last_login": "2019-08-30T12:06:49.766",
@@ -95,20 +154,51 @@
     "date_joined": "2019-08-30T11:58:49.957",
     "groups": [],
     "user_permissions": [
-      169,
-      170,
-      171,
-      172,
-      293,
-      294,
-      295,
-      296
+      [
+        "add_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "change_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "delete_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "view_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "add_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "change_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "delete_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "view_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ]
     ]
   }
 },
 {
   "model": "auth.user",
-  "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$120000$Fzm590vUZXe8$8NyUPb1mthufuSRbOedvpmxhANX4ci0GzKyV8eB9tU8=",
     "last_login": "2019-08-30T12:00:57.425",
@@ -122,15 +212,223 @@
     "date_joined": "2019-08-30T11:59:13.164",
     "groups": [],
     "user_permissions": [
-      169,
-      170,
-      171,
-      172,
-      293,
-      294,
-      295,
-      296
+      [
+        "add_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "change_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "delete_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "view_article",
+        "aldryn_newsblog",
+        "article"
+      ],
+      [
+        "add_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "change_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "delete_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ],
+      [
+        "view_pagenotification",
+        "gsoc",
+        "pagenotification"
+      ]
     ]
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "1753kb9ar1xgndz7clraypp0mvmze0b4",
+  "fields": {
+    "session_data": "M2EzNzdjNWY3MmEyZTExM2JkZDY5MTAxNzUzYTEwZDY2NDA0NmYxZjp7Il9hdXRoX3VzZXJfaWQiOiI0IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxOGJkOWE5NTEzYmQyYzI0Y2VlNTNjMjY0NzcwMmJmN2E0NjhkYWRmIn0=",
+    "expire_date": "2019-09-13T11:42:18.862"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "5lqnzml0vvfuzk8xbfn6epftsiuhpq6d",
+  "fields": {
+    "session_data": "ZGQ3MGY4YmUwMGE2YjRhNmVkZTEzMWQyYTM5ODk2OWQwOGYwYmMwODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhODA3ZTc1Zjk4NjhjMTAyNThmNmMzOWE1NzExYzgxODU2ZDQyYzBmIiwiY21zX2xvZ19sYXRlc3QiOjU0fQ==",
+    "expire_date": "2019-04-09T18:09:06.854"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "7p9mhks7fc75bm01pg3yq0gfm278rhgo",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBS6BRcuvcMzcDMSNVAUtqV8e7apAvd_vfef6kJtzVPW-NlmkmdlVGn3y1ienDZAd2x3KpOtazLHPWu6IM2fa3Ez8vh_h1kbPlbC5oRXWArAGB6ERipsxxgiOhAnO1855P0gRwTofGD2OAdIRMwJq_eH-krOHs:1lORNK:vIC2RZ4bHix30mxpuhgOvkUPtRWqY_qp0c4amkdzb5I",
+    "expire_date": "2021-04-05T14:42:10.802"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "afo9r8crwctr1x3bxj3cr4hdd4mmxm55",
+  "fields": {
+    "session_data": "ZGFmY2RkN2ZiYjk3OTA5Njc0YjgwNjYxMGI5NzUzMDkyYmFmMjkxNzp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjNjczNDMzNTYzYmRhOTA4OWNiMzM0ZWRlYzJjNDVkMTczMjVkODkzIn0=",
+    "expire_date": "2019-09-13T11:59:17.889"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "aix9q3zkdcv0ca5zunxye38znrf1dow1",
+  "fields": {
+    "session_data": "YzcyNmQ1NzY0ZjdiMWMyYWJhMjcxNzc4ZjI3OTk1ZWI4ZGMzZTVmZTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjNjczNDMzNTYzYmRhOTA4OWNiMzM0ZWRlYzJjNDVkMTczMjVkODkzIiwiY21zX2xvZ19sYXRlc3QiOjkxfQ==",
+    "expire_date": "2019-07-10T04:49:41.193"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "cavdaqop4d84kd71brz2ehbnzzjd5qf3",
+  "fields": {
+    "session_data": "OTM2ZmZlOWEyYjY4MDRhYzdkMGRlNWNlZGNiNGJiZTZmYzQ5ZjAyNDp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI4OTQxMGYyMzFhODBkOTIyOWU2ZjcxMjNiMDA2ZWI0ZjAyOGIzYTNkIn0=",
+    "expire_date": "2019-05-22T09:11:13.874"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "cj2z6zppbd05j9prqccto76gtjgv93t0",
+  "fields": {
+    "session_data": "ODUzMzdlZGRlYTQyOTgyMmU4ZTI4ODc4NzM0MTE3OTdjMDc5MjdlMzp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiMmRkMWQ4MDZlODg0OWQ2MWNiYjU4MDU4ZmYyMDY3MmY3ZDcxZGQ3In0=",
+    "expire_date": "2019-05-02T22:15:31.156"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "cmjswtqvqoyphgox6bohfzig6kb4krp5",
+  "fields": {
+    "session_data": "YmYwNTExODFkYTJjMGJlOWFiZWQwYzU1NzM5YWY3N2FlODg1NDkyNjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjNjczNDMzNTYzYmRhOTA4OWNiMzM0ZWRlYzJjNDVkMTczMjVkODkzIiwiY21zX3Rvb2xiYXJfZGlzYWJsZWQiOmZhbHNlLCJjbXNfZWRpdCI6ZmFsc2UsImNtc19wcmV2aWV3Ijp0cnVlfQ==",
+    "expire_date": "2019-06-30T04:36:06.659"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "cpik344t32lkqpp8rgcloxnkp07h8g3i",
+  "fields": {
+    "session_data": "Y2UzODQ2NWI0MmRjZTdiZjdhMTdkMjYwZGIyYTRlNTJiMzA5NWQ0Zjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhODA3ZTc1Zjk4NjhjMTAyNThmNmMzOWE1NzExYzgxODU2ZDQyYzBmIiwiY21zX3Rvb2xiYXJfZGlzYWJsZWQiOmZhbHNlLCJjbXNfZWRpdCI6ZmFsc2UsImNtc19wcmV2aWV3Ijp0cnVlLCJjbXNfbG9nX2xhdGVzdCI6ODN9",
+    "expire_date": "2019-05-03T09:25:20.550"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "dkgg4gtpappfwmxujd1uenvfu1h78wfo",
+  "fields": {
+    "session_data": "ZGM0YmEyMTFlMTY4Nzg0ZGE4NjE1MmJjOTgwNmQ5YjAxOWVmOGFiYjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhODA3ZTc1Zjk4NjhjMTAyNThmNmMzOWE1NzExYzgxODU2ZDQyYzBmIn0=",
+    "expire_date": "2019-04-09T16:12:48.301"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "emngmijwtdaq8nmjx5zxmbk9tkbd6wqu",
+  "fields": {
+    "session_data": "YTMyYmU5NDNmNjQ4MDYwZDg3M2MxNTlkNGFkYjk2NzkxZDVlNTJlZTp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI3YmQ0MjI2OWVlYzFlMDkwMTcwNmY1MjVhNDRlODI0ZWM0NDY2MTljIiwiY21zX3Rvb2xiYXJfZGlzYWJsZWQiOmZhbHNlLCJjbXNfZWRpdCI6dHJ1ZSwiY21zX3ByZXZpZXciOmZhbHNlLCJ3aXphcmRfd2l6YXJkX2NyZWF0ZV92aWV3Ijp7InN0ZXAiOm51bGwsInN0ZXBfZGF0YSI6e30sInN0ZXBfZmlsZXMiOnt9LCJleHRyYV9kYXRhIjp7fX19",
+    "expire_date": "2019-09-13T12:12:42.188"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "empg6xkdxsfu1qqyftkk25d3awaacqa1",
+  "fields": {
+    "session_data": "ZGM0YmEyMTFlMTY4Nzg0ZGE4NjE1MmJjOTgwNmQ5YjAxOWVmOGFiYjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhODA3ZTc1Zjk4NjhjMTAyNThmNmMzOWE1NzExYzgxODU2ZDQyYzBmIn0=",
+    "expire_date": "2019-04-05T09:58:22.841"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "gxsh6xpqdq8affuwt63ei9ff17d4q9se",
+  "fields": {
+    "session_data": "ZjNkYjJjMDNhOGQ5ZDA1NWUwYjI0ODdiZjQ1NTVmNDNmYTljMzFkOTp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI4OTQxMGYyMzFhODBkOTIyOWU2ZjcxMjNiMDA2ZWI0ZjAyOGIzYTNkIiwiY21zX3Rvb2xiYXJfZGlzYWJsZWQiOmZhbHNlLCJjbXNfZWRpdCI6dHJ1ZSwiY21zX3ByZXZpZXciOmZhbHNlLCJ3aXphcmRfd2l6YXJkX2NyZWF0ZV92aWV3Ijp7InN0ZXAiOiIxIiwic3RlcF9kYXRhIjp7IjAiOnsiY3NyZm1pZGRsZXdhcmV0b2tlbiI6WyJvZmNIUzQxWDI3aHR1ZW81RXFEdjFBclJwUzY5aXdGZzByOG5lVmdxREgwQTJzOWxkQlg0aUFCTXR4Nmo1dDdnIl0sIndpemFyZF9jcmVhdGVfdmlldy1jdXJyZW50X3N0ZXAiOlsiMCJdLCIwLXBhZ2UiOlsiMSJdLCIwLWxhbmd1YWdlIjpbImVuIl0sIjAtZW50cnkiOlsiOWVjOWM3YmY3N2I5ODYwYzM2ZTEzYzdhYjhmNTY3NTM0NWYwOTljZCJdfX0sInN0ZXBfZmlsZXMiOnsiMCI6e319LCJleHRyYV9kYXRhIjp7fX19",
+    "expire_date": "2019-06-15T15:13:37.287"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "je3131vet8070rjeywikwwe8zf8iw557",
+  "fields": {
+    "session_data": "NGNjN2VhNTgxNTI5MDI1MDg4OWJjM2MwODA0Y2VlNDA0MmYyMmM1Njp7ImNtc190b29sYmFyX2Rpc2FibGVkIjpmYWxzZSwiY21zX2VkaXQiOmZhbHNlLCJjbXNfcHJldmlldyI6dHJ1ZSwiX2F1dGhfdXNlcl9pZCI6IjEiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaGFzaCI6ImE4MDdlNzVmOTg2OGMxMDI1OGY2YzM5YTU3MTFjODE4NTZkNDJjMGYifQ==",
+    "expire_date": "2019-03-27T00:26:52.259"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "njy79cuuymuj7dhrzwe6gai5dach6vko",
+  "fields": {
+    "session_data": "ZGFmY2RkN2ZiYjk3OTA5Njc0YjgwNjYxMGI5NzUzMDkyYmFmMjkxNzp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjNjczNDMzNTYzYmRhOTA4OWNiMzM0ZWRlYzJjNDVkMTczMjVkODkzIn0=",
+    "expire_date": "2019-08-23T05:06:51.402"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "pfz1nw9bdi0wygn5zteuqhzue2spezna",
+  "fields": {
+    "session_data": "ZjMyNzljNWVhZTY0YzViNGYyZWY2M2YzMjJlMDE0YjhiNGEyNTU2MDp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhMTA3ZjJiM2FlMmQxMDYxNTk5ZTQxYTZkMjEyYjc1ODE2ZjcxODZjIn0=",
+    "expire_date": "2019-10-09T05:19:36.646"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "rofh57d54rfz4gm1mc61hu4r4hncqihv",
+  "fields": {
+    "session_data": "NmI3OTNjMDQ4ZjRhOTI3YzVlNDdjMGM1YTdjMDc2OWYyNDYyZGU4Yjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhODA3ZTc1Zjk4NjhjMTAyNThmNmMzOWE1NzExYzgxODU2ZDQyYzBmIiwiY21zX3Rvb2xiYXJfZGlzYWJsZWQiOmZhbHNlLCJjbXNfZWRpdCI6dHJ1ZSwiY21zX3ByZXZpZXciOmZhbHNlfQ==",
+    "expire_date": "2019-03-26T23:38:34.553"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "twvj2w0a0vz6vqsfm1trizh8vy9xeog7",
+  "fields": {
+    "session_data": "ODRjOTQ3YzBkYzA2NzcyNjMwNjAxYjZhZGE2Yzk5MGEzYTYxZTIzYjp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJiMmRkMWQ4MDZlODg0OWQ2MWNiYjU4MDU4ZmYyMDY3MmY3ZDcxZGQ3IiwiY21zX3Rvb2xiYXJfZGlzYWJsZWQiOmZhbHNlLCJjbXNfZWRpdCI6dHJ1ZSwiY21zX3ByZXZpZXciOmZhbHNlfQ==",
+    "expire_date": "2019-04-09T10:19:01.283"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "us7b5kw6ohj977zagc1kanv228tiz75l",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBS6BRcuvcMzcDMSNVAUtqV8e7apAvd_vfef6kJtzVPW-NlmkmdlVGn3y1ienDZAd2x3KpOtazLHPWu6IM2fa3Ez8vh_h1kbPlbC5oRXWArAGB6ERipsxxgiOhAnO1855P0gRwTofGD2OAdIRMwJq_eH-krOHs:1lOPxy:dnL-I4zk-gt4Mebb4VE3OVRS4DZInMDNxHorX9T-_8Q",
+    "expire_date": "2021-04-05T13:11:54.194"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "v4ab6j8utqmk7zpgqu6qi03aipm58e26",
+  "fields": {
+    "session_data": "YWUzM2MzNjkyZGZhZDUzMjA2N2MzYmIxOWVkNzgxNmNjYTlkMDg3Yjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhODA3ZTc1Zjk4NjhjMTAyNThmNmMzOWE1NzExYzgxODU2ZDQyYzBmIiwiY21zX2xvZ19sYXRlc3QiOjU4fQ==",
+    "expire_date": "2019-04-09T18:31:35.533"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xsh283hvw9fdlu477tidvolydwc1hir3",
+  "fields": {
+    "session_data": "ZGFmY2RkN2ZiYjk3OTA5Njc0YjgwNjYxMGI5NzUzMDkyYmFmMjkxNzp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJjNjczNDMzNTYzYmRhOTA4OWNiMzM0ZWRlYzJjNDVkMTczMjVkODkzIn0=",
+    "expire_date": "2019-08-04T15:20:52.178"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "z9qukklrwxwmo4mjv6dx6w3ciombguzf",
+  "fields": {
+    "session_data": "ZGM0YmEyMTFlMTY4Nzg0ZGE4NjE1MmJjOTgwNmQ5YjAxOWVmOGFiYjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJhODA3ZTc1Zjk4NjhjMTAyNThmNmMzOWE1NzExYzgxODU2ZDQyYzBmIn0=",
+    "expire_date": "2019-04-23T01:44:55.603"
   }
 },
 {
@@ -138,8 +436,13 @@
   "pk": 1,
   "fields": {
     "action_time": "2019-02-17T17:59:23.512",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "1",
     "object_repr": "Homepage",
     "action_flag": 1,
@@ -151,8 +454,13 @@
   "pk": 2,
   "fields": {
     "action_time": "2019-02-17T17:59:32.211",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "1",
     "object_repr": "Homepage",
     "action_flag": 2,
@@ -164,8 +472,13 @@
   "pk": 3,
   "fields": {
     "action_time": "2019-02-17T17:59:39.119",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "1",
     "object_repr": "Homepage",
     "action_flag": 2,
@@ -177,8 +490,13 @@
   "pk": 4,
   "fields": {
     "action_time": "2019-02-17T17:59:59.068",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "3",
     "object_repr": "Contact",
     "action_flag": 1,
@@ -190,8 +508,13 @@
   "pk": 5,
   "fields": {
     "action_time": "2019-02-17T18:00:10.291",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "4",
     "object_repr": "Getting Started",
     "action_flag": 1,
@@ -203,8 +526,13 @@
   "pk": 6,
   "fields": {
     "action_time": "2019-02-17T18:00:17.281",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "5",
     "object_repr": "Students",
     "action_flag": 1,
@@ -216,8 +544,13 @@
   "pk": 7,
   "fields": {
     "action_time": "2019-02-17T18:00:23.624",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "6",
     "object_repr": "Mentors",
     "action_flag": 1,
@@ -229,8 +562,13 @@
   "pk": 8,
   "fields": {
     "action_time": "2019-02-17T18:00:31.823",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "7",
     "object_repr": "Project Ideas",
     "action_flag": 1,
@@ -242,8 +580,13 @@
   "pk": 9,
   "fields": {
     "action_time": "2019-02-17T18:00:41.619",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "8",
     "object_repr": "Student Blogs",
     "action_flag": 1,
@@ -255,8 +598,13 @@
   "pk": 10,
   "fields": {
     "action_time": "2019-02-17T18:00:47.880",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "9",
     "object_repr": "Schedule",
     "action_flag": 1,
@@ -268,8 +616,13 @@
   "pk": 11,
   "fields": {
     "action_time": "2019-02-17T18:01:01.297",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "3",
     "object_repr": "Contact",
     "action_flag": 2,
@@ -281,8 +634,13 @@
   "pk": 12,
   "fields": {
     "action_time": "2019-02-17T18:01:13.025",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "4",
     "object_repr": "Getting Started",
     "action_flag": 2,
@@ -294,8 +652,13 @@
   "pk": 13,
   "fields": {
     "action_time": "2019-02-17T18:01:23.247",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "5",
     "object_repr": "Students",
     "action_flag": 2,
@@ -307,8 +670,13 @@
   "pk": 14,
   "fields": {
     "action_time": "2019-02-17T18:01:36.693",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "6",
     "object_repr": "Mentors",
     "action_flag": 2,
@@ -320,8 +688,13 @@
   "pk": 15,
   "fields": {
     "action_time": "2019-02-17T18:01:46.846",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "7",
     "object_repr": "Project Ideas",
     "action_flag": 2,
@@ -333,8 +706,13 @@
   "pk": 16,
   "fields": {
     "action_time": "2019-02-17T18:02:06.373",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "8",
     "object_repr": "Student Blogs",
     "action_flag": 2,
@@ -346,8 +724,13 @@
   "pk": 17,
   "fields": {
     "action_time": "2019-02-17T18:02:15.974",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "9",
     "object_repr": "Schedule",
     "action_flag": 2,
@@ -359,8 +742,13 @@
   "pk": 18,
   "fields": {
     "action_time": "2019-02-17T18:02:19.599",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "3",
     "object_repr": "Contact",
     "action_flag": 2,
@@ -372,8 +760,13 @@
   "pk": 19,
   "fields": {
     "action_time": "2019-02-17T18:02:22.442",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "4",
     "object_repr": "Getting Started",
     "action_flag": 2,
@@ -385,8 +778,13 @@
   "pk": 20,
   "fields": {
     "action_time": "2019-02-17T18:02:24.850",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "5",
     "object_repr": "Students",
     "action_flag": 2,
@@ -398,8 +796,13 @@
   "pk": 21,
   "fields": {
     "action_time": "2019-02-17T18:02:27.291",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "6",
     "object_repr": "Mentors",
     "action_flag": 2,
@@ -411,8 +814,13 @@
   "pk": 22,
   "fields": {
     "action_time": "2019-02-17T18:02:29.977",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "7",
     "object_repr": "Project Ideas",
     "action_flag": 2,
@@ -424,8 +832,13 @@
   "pk": 23,
   "fields": {
     "action_time": "2019-02-17T18:02:32.864",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "8",
     "object_repr": "Student Blogs",
     "action_flag": 2,
@@ -437,8 +850,13 @@
   "pk": 24,
   "fields": {
     "action_time": "2019-02-17T18:02:35.713",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "9",
     "object_repr": "Schedule",
     "action_flag": 2,
@@ -450,8 +868,13 @@
   "pk": 25,
   "fields": {
     "action_time": "2019-02-17T18:03:14.653",
-    "user": 1,
-    "content_type": 9,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "sites",
+      "site"
+    ],
     "object_id": "1",
     "object_repr": "http://python-gsoc.org/",
     "action_flag": 2,
@@ -463,8 +886,13 @@
   "pk": 26,
   "fields": {
     "action_time": "2019-02-19T22:02:59.431",
-    "user": 1,
-    "content_type": 4,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "group"
+    ],
     "object_id": "1",
     "object_repr": "students",
     "action_flag": 1,
@@ -476,8 +904,13 @@
   "pk": 27,
   "fields": {
     "action_time": "2019-02-19T22:03:22.557",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "1",
     "object_repr": "admin",
     "action_flag": 2,
@@ -489,8 +922,13 @@
   "pk": 28,
   "fields": {
     "action_time": "2019-03-08T16:42:52.558",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "8",
     "object_repr": "Student Blogs",
     "action_flag": 3,
@@ -502,8 +940,13 @@
   "pk": 29,
   "fields": {
     "action_time": "2019-03-08T16:50:51.916",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "17",
     "object_repr": "Test Blog 1",
     "action_flag": 1,
@@ -515,8 +958,13 @@
   "pk": 30,
   "fields": {
     "action_time": "2019-03-08T16:50:56.943",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "17",
     "object_repr": "Test Blog 1",
     "action_flag": 2,
@@ -528,8 +976,13 @@
   "pk": 31,
   "fields": {
     "action_time": "2019-03-08T16:51:50.843",
-    "user": 1,
-    "content_type": 51,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "newsblogconfig"
+    ],
     "object_id": "2",
     "object_repr": "test blog 1",
     "action_flag": 1,
@@ -541,8 +994,13 @@
   "pk": 32,
   "fields": {
     "action_time": "2019-03-08T16:51:54.583",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "17",
     "object_repr": "Test Blog 1",
     "action_flag": 2,
@@ -554,8 +1012,13 @@
   "pk": 33,
   "fields": {
     "action_time": "2019-03-08T16:55:05.295",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "17",
     "object_repr": "Test Blog 1",
     "action_flag": 2,
@@ -567,8 +1030,13 @@
   "pk": 34,
   "fields": {
     "action_time": "2019-03-08T16:56:22.072",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "1",
     "object_repr": "test article 1",
     "action_flag": 1,
@@ -580,8 +1048,13 @@
   "pk": 35,
   "fields": {
     "action_time": "2019-03-08T16:56:45.972",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "2",
     "object_repr": "test article 2",
     "action_flag": 1,
@@ -593,8 +1066,13 @@
   "pk": 36,
   "fields": {
     "action_time": "2019-03-08T16:57:10.803",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "3",
     "object_repr": "test article 3",
     "action_flag": 1,
@@ -606,8 +1084,13 @@
   "pk": 37,
   "fields": {
     "action_time": "2019-03-08T16:57:28.000",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "4",
     "object_repr": "test article 4",
     "action_flag": 1,
@@ -619,8 +1102,13 @@
   "pk": 38,
   "fields": {
     "action_time": "2019-03-08T16:57:48.290",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "5",
     "object_repr": "test article 5",
     "action_flag": 1,
@@ -632,8 +1120,13 @@
   "pk": 39,
   "fields": {
     "action_time": "2019-03-08T16:58:14.156",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "6",
     "object_repr": "test article 6",
     "action_flag": 1,
@@ -645,8 +1138,13 @@
   "pk": 40,
   "fields": {
     "action_time": "2019-03-08T16:58:36.696",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "19",
     "object_repr": "Test Blog 2",
     "action_flag": 1,
@@ -658,8 +1156,13 @@
   "pk": 41,
   "fields": {
     "action_time": "2019-03-08T16:58:56.874",
-    "user": 1,
-    "content_type": 51,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "newsblogconfig"
+    ],
     "object_id": "3",
     "object_repr": "test blog 2",
     "action_flag": 1,
@@ -671,8 +1174,13 @@
   "pk": 42,
   "fields": {
     "action_time": "2019-03-08T16:59:00.504",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "19",
     "object_repr": "Test Blog 2",
     "action_flag": 2,
@@ -684,8 +1192,13 @@
   "pk": 43,
   "fields": {
     "action_time": "2019-03-08T16:59:04.127",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "19",
     "object_repr": "Test Blog 2",
     "action_flag": 2,
@@ -697,8 +1210,13 @@
   "pk": 44,
   "fields": {
     "action_time": "2019-03-08T16:59:55.510",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "2",
     "object_repr": "Test-Student1",
     "action_flag": 1,
@@ -710,8 +1228,13 @@
   "pk": 45,
   "fields": {
     "action_time": "2019-03-11T05:57:07.556",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "2",
     "object_repr": "Test-Student1",
     "action_flag": 2,
@@ -723,8 +1246,13 @@
   "pk": 46,
   "fields": {
     "action_time": "2019-03-13T00:24:46.928",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "21",
     "object_repr": "My Profile",
     "action_flag": 1,
@@ -736,8 +1264,13 @@
   "pk": 47,
   "fields": {
     "action_time": "2019-03-13T00:24:58.771",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "21",
     "object_repr": "My Profile",
     "action_flag": 2,
@@ -749,8 +1282,13 @@
   "pk": 48,
   "fields": {
     "action_time": "2019-03-13T00:26:32.457",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "21",
     "object_repr": "My Profile",
     "action_flag": 2,
@@ -762,8 +1300,13 @@
   "pk": 49,
   "fields": {
     "action_time": "2019-03-13T00:26:51.290",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "21",
     "object_repr": "My Profile",
     "action_flag": 2,
@@ -775,8 +1318,13 @@
   "pk": 50,
   "fields": {
     "action_time": "2019-03-13T00:31:31.742",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "21",
     "object_repr": "My Profile",
     "action_flag": 2,
@@ -788,8 +1336,13 @@
   "pk": 51,
   "fields": {
     "action_time": "2019-03-13T00:31:37.198",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "21",
     "object_repr": "My Profile",
     "action_flag": 2,
@@ -801,8 +1354,13 @@
   "pk": 52,
   "fields": {
     "action_time": "2019-03-26T17:26:45.572",
-    "user": 1,
-    "content_type": 60,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_people",
+      "person"
+    ],
     "object_id": "1",
     "object_repr": "Sounak",
     "action_flag": 2,
@@ -814,8 +1372,13 @@
   "pk": 53,
   "fields": {
     "action_time": "2019-03-26T18:08:09.094",
-    "user": 1,
-    "content_type": 43,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_categories",
+      "category"
+    ],
     "object_id": "1",
     "object_repr": "Hey",
     "action_flag": 1,
@@ -827,8 +1390,13 @@
   "pk": 54,
   "fields": {
     "action_time": "2019-03-26T18:09:06.817",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "7",
     "object_repr": "This is something neww!",
     "action_flag": 1,
@@ -840,8 +1408,13 @@
   "pk": 55,
   "fields": {
     "action_time": "2019-03-26T18:31:17.995",
-    "user": 1,
-    "content_type": 43,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_categories",
+      "category"
+    ],
     "object_id": "2",
     "object_repr": "Bye",
     "action_flag": 1,
@@ -853,8 +1426,13 @@
   "pk": 56,
   "fields": {
     "action_time": "2019-03-26T18:31:26.060",
-    "user": 1,
-    "content_type": 43,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_categories",
+      "category"
+    ],
     "object_id": "3",
     "object_repr": "tata",
     "action_flag": 1,
@@ -866,8 +1444,13 @@
   "pk": 57,
   "fields": {
     "action_time": "2019-03-26T18:31:31.747",
-    "user": 1,
-    "content_type": 43,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_categories",
+      "category"
+    ],
     "object_id": "4",
     "object_repr": "akaka",
     "action_flag": 1,
@@ -879,8 +1462,13 @@
   "pk": 58,
   "fields": {
     "action_time": "2019-03-26T18:31:35.493",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "7",
     "object_repr": "This is something neww!",
     "action_flag": 2,
@@ -892,8 +1480,13 @@
   "pk": 59,
   "fields": {
     "action_time": "2019-04-18T22:14:49.993",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "2",
     "object_repr": "Test-Student1",
     "action_flag": 2,
@@ -905,8 +1498,13 @@
   "pk": 60,
   "fields": {
     "action_time": "2019-04-18T22:15:18.804",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "17",
     "object_repr": "Test Blog 1",
     "action_flag": 2,
@@ -918,8 +1516,13 @@
   "pk": 61,
   "fields": {
     "action_time": "2019-04-19T07:58:45.620",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "3",
     "object_repr": "Test-Student2",
     "action_flag": 1,
@@ -931,8 +1534,13 @@
   "pk": 62,
   "fields": {
     "action_time": "2019-04-19T07:59:06.702",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "3",
     "object_repr": "Test-Student2",
     "action_flag": 2,
@@ -944,8 +1552,13 @@
   "pk": 63,
   "fields": {
     "action_time": "2019-04-19T07:59:27.690",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "2",
     "object_repr": "Test-Student1",
     "action_flag": 2,
@@ -957,8 +1570,13 @@
   "pk": 64,
   "fields": {
     "action_time": "2019-04-19T08:00:43.607",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "2",
     "object_repr": "Test-Student1",
     "action_flag": 2,
@@ -970,8 +1588,13 @@
   "pk": 65,
   "fields": {
     "action_time": "2019-04-19T09:06:34.635",
-    "user": 1,
-    "content_type": 60,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_people",
+      "person"
+    ],
     "object_id": "2",
     "object_repr": "Test Student 2",
     "action_flag": 2,
@@ -983,8 +1606,13 @@
   "pk": 66,
   "fields": {
     "action_time": "2019-04-19T09:07:01.499",
-    "user": 1,
-    "content_type": 60,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_people",
+      "person"
+    ],
     "object_id": "1",
     "object_repr": "Test Student 1",
     "action_flag": 2,
@@ -996,8 +1624,13 @@
   "pk": 67,
   "fields": {
     "action_time": "2019-04-19T09:09:41.572",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "17",
     "object_repr": "Test Blog 1",
     "action_flag": 2,
@@ -1009,8 +1642,13 @@
   "pk": 68,
   "fields": {
     "action_time": "2019-04-19T09:09:58.847",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "19",
     "object_repr": "Test Blog 2",
     "action_flag": 2,
@@ -1022,8 +1660,13 @@
   "pk": 69,
   "fields": {
     "action_time": "2019-04-19T09:10:48.522",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "23",
     "object_repr": "All Blogs",
     "action_flag": 1,
@@ -1035,8 +1678,13 @@
   "pk": 70,
   "fields": {
     "action_time": "2019-04-19T09:11:16.442",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "23",
     "object_repr": "All Blogs",
     "action_flag": 2,
@@ -1048,8 +1696,13 @@
   "pk": 71,
   "fields": {
     "action_time": "2019-04-19T09:11:35.998",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "17",
     "object_repr": "Test Blog 1",
     "action_flag": 2,
@@ -1061,8 +1714,13 @@
   "pk": 72,
   "fields": {
     "action_time": "2019-04-19T09:11:55.187",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "23",
     "object_repr": "All Blogs",
     "action_flag": 2,
@@ -1074,8 +1732,13 @@
   "pk": 73,
   "fields": {
     "action_time": "2019-04-19T09:12:31.016",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "19",
     "object_repr": "Test Blog 2",
     "action_flag": 2,
@@ -1087,8 +1750,13 @@
   "pk": 74,
   "fields": {
     "action_time": "2019-04-19T09:21:46.930",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "6",
     "object_repr": "test article 6",
     "action_flag": 2,
@@ -1100,8 +1768,13 @@
   "pk": 75,
   "fields": {
     "action_time": "2019-04-19T09:22:08.476",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "5",
     "object_repr": "test article 5",
     "action_flag": 2,
@@ -1113,8 +1786,13 @@
   "pk": 76,
   "fields": {
     "action_time": "2019-04-19T09:22:26.315",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "4",
     "object_repr": "test article 4",
     "action_flag": 2,
@@ -1126,8 +1804,13 @@
   "pk": 77,
   "fields": {
     "action_time": "2019-04-19T09:22:46.314",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "3",
     "object_repr": "test article 3",
     "action_flag": 2,
@@ -1139,8 +1822,13 @@
   "pk": 78,
   "fields": {
     "action_time": "2019-04-19T09:23:04.219",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "2",
     "object_repr": "test article 2",
     "action_flag": 2,
@@ -1152,8 +1840,13 @@
   "pk": 79,
   "fields": {
     "action_time": "2019-04-19T09:23:23.387",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "1",
     "object_repr": "test article 1",
     "action_flag": 2,
@@ -1165,8 +1858,13 @@
   "pk": 80,
   "fields": {
     "action_time": "2019-04-19T09:23:41.512",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "7",
     "object_repr": "This is something neww!",
     "action_flag": 3,
@@ -1178,8 +1876,13 @@
   "pk": 81,
   "fields": {
     "action_time": "2019-04-19T09:24:52.323",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "1",
     "object_repr": "admin",
     "action_flag": 2,
@@ -1191,8 +1894,13 @@
   "pk": 82,
   "fields": {
     "action_time": "2019-04-19T09:25:07.519",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "2",
     "object_repr": "Test-Student1",
     "action_flag": 2,
@@ -1204,8 +1912,13 @@
   "pk": 83,
   "fields": {
     "action_time": "2019-04-19T09:25:20.438",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "3",
     "object_repr": "Test-Student2",
     "action_flag": 2,
@@ -1217,8 +1930,13 @@
   "pk": 84,
   "fields": {
     "action_time": "2019-06-14T06:03:12.853",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "25",
     "object_repr": "Suborg Application",
     "action_flag": 1,
@@ -1230,8 +1948,13 @@
   "pk": 85,
   "fields": {
     "action_time": "2019-06-14T06:03:40.193",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "25",
     "object_repr": "Suborg Application",
     "action_flag": 2,
@@ -1243,8 +1966,13 @@
   "pk": 86,
   "fields": {
     "action_time": "2019-06-14T06:03:44.323",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "25",
     "object_repr": "Suborg Application",
     "action_flag": 2,
@@ -1256,8 +1984,13 @@
   "pk": 87,
   "fields": {
     "action_time": "2019-06-16T04:33:47.944",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "25",
     "object_repr": "Suborg Application",
     "action_flag": 2,
@@ -1269,8 +2002,13 @@
   "pk": 88,
   "fields": {
     "action_time": "2019-06-16T04:34:09.336",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "25",
     "object_repr": "Suborg Application",
     "action_flag": 2,
@@ -1282,8 +2020,13 @@
   "pk": 89,
   "fields": {
     "action_time": "2019-06-16T04:35:07.469",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "25",
     "object_repr": "Suborg Application",
     "action_flag": 2,
@@ -1295,8 +2038,13 @@
   "pk": 90,
   "fields": {
     "action_time": "2019-06-16T04:35:11.873",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "25",
     "object_repr": "Suborg Application",
     "action_flag": 2,
@@ -1308,8 +2056,13 @@
   "pk": 91,
   "fields": {
     "action_time": "2019-06-26T04:49:41.157",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "1",
     "object_repr": "admin",
     "action_flag": 2,
@@ -1321,8 +2074,13 @@
   "pk": 92,
   "fields": {
     "action_time": "2019-07-21T15:19:35.553",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "23",
     "object_repr": "All Blogs",
     "action_flag": 2,
@@ -1334,8 +2092,13 @@
   "pk": 93,
   "fields": {
     "action_time": "2019-07-21T15:20:51.857",
-    "user": 1,
-    "content_type": 2,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "cms",
+      "page"
+    ],
     "object_id": "23",
     "object_repr": "All Blogs",
     "action_flag": 2,
@@ -1347,8 +2110,13 @@
   "pk": 94,
   "fields": {
     "action_time": "2019-08-30T11:18:57.726",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "6",
     "object_repr": "test article 6",
     "action_flag": 3,
@@ -1360,8 +2128,13 @@
   "pk": 95,
   "fields": {
     "action_time": "2019-08-30T11:18:57.729",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "5",
     "object_repr": "test article 5",
     "action_flag": 3,
@@ -1373,8 +2146,13 @@
   "pk": 96,
   "fields": {
     "action_time": "2019-08-30T11:18:57.732",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "4",
     "object_repr": "test article 4",
     "action_flag": 3,
@@ -1386,8 +2164,13 @@
   "pk": 97,
   "fields": {
     "action_time": "2019-08-30T11:18:57.735",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "3",
     "object_repr": "test article 3",
     "action_flag": 3,
@@ -1399,8 +2182,13 @@
   "pk": 98,
   "fields": {
     "action_time": "2019-08-30T11:18:57.739",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "2",
     "object_repr": "test article 2",
     "action_flag": 3,
@@ -1412,8 +2200,13 @@
   "pk": 99,
   "fields": {
     "action_time": "2019-08-30T11:18:57.743",
-    "user": 1,
-    "content_type": 45,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "aldryn_newsblog",
+      "article"
+    ],
     "object_id": "1",
     "object_repr": "test article 1",
     "action_flag": 3,
@@ -1425,8 +2218,13 @@
   "pk": 100,
   "fields": {
     "action_time": "2019-08-30T11:19:15.024",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "2",
     "object_repr": "Test-Student1",
     "action_flag": 3,
@@ -1438,8 +2236,13 @@
   "pk": 101,
   "fields": {
     "action_time": "2019-08-30T11:19:15.033",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "3",
     "object_repr": "Test-Student2",
     "action_flag": 3,
@@ -1451,8 +2254,13 @@
   "pk": 102,
   "fields": {
     "action_time": "2019-08-30T11:41:07.200",
-    "user": 1,
-    "content_type": 79,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "gsoc",
+      "reglink"
+    ],
     "object_id": "1",
     "object_repr": "Register Link /accounts/register?reglink_id=6e5fe777-b4dd-486e-8a73-ad9e90ad0f0d for test-1@email.com. Not sent.",
     "action_flag": 3,
@@ -1464,8 +2272,13 @@
   "pk": 103,
   "fields": {
     "action_time": "2019-08-30T11:46:00.833",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "4",
     "object_repr": "test-1",
     "action_flag": 3,
@@ -1477,8 +2290,13 @@
   "pk": 104,
   "fields": {
     "action_time": "2019-08-30T11:47:38.910",
-    "user": 1,
-    "content_type": 88,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "gsoc",
+      "suborgdetails"
+    ],
     "object_id": "1",
     "object_repr": "SubOrgDetails object (1)",
     "action_flag": 3,
@@ -1490,8 +2308,13 @@
   "pk": 105,
   "fields": {
     "action_time": "2019-08-30T11:49:15.325",
-    "user": 1,
-    "content_type": 81,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "gsoc",
+      "adduserlog"
+    ],
     "object_id": "1",
     "object_repr": "d2ed2af2-3034-4352-a08e-a2686bdccaa1",
     "action_flag": 1,
@@ -1503,8 +2326,13 @@
   "pk": 106,
   "fields": {
     "action_time": "2019-08-30T11:55:40.878",
-    "user": 1,
-    "content_type": 81,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "gsoc",
+      "adduserlog"
+    ],
     "object_id": "1",
     "object_repr": "d2ed2af2-3034-4352-a08e-a2686bdccaa1",
     "action_flag": 3,
@@ -1516,8 +2344,13 @@
   "pk": 107,
   "fields": {
     "action_time": "2019-08-30T11:55:56.425",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "5",
     "object_repr": "test-student-1",
     "action_flag": 3,
@@ -1529,8 +2362,13 @@
   "pk": 108,
   "fields": {
     "action_time": "2019-08-30T11:56:41.366",
-    "user": 1,
-    "content_type": 81,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "gsoc",
+      "adduserlog"
+    ],
     "object_id": "2",
     "object_repr": "0c17d26c-3258-4ed3-8707-598f1506ac29",
     "action_flag": 1,
@@ -1542,8 +2380,13 @@
   "pk": 109,
   "fields": {
     "action_time": "2019-08-30T11:57:57.663",
-    "user": 1,
-    "content_type": 79,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "gsoc",
+      "reglink"
+    ],
     "object_id": "2",
     "object_repr": "Register Link /accounts/register?reglink_id=12b10014-5d11-4b3c-8dcc-d734a367b2b1 for test-1@email.com. Not sent.",
     "action_flag": 3,
@@ -1555,8 +2398,13 @@
   "pk": 110,
   "fields": {
     "action_time": "2021-03-22T13:11:51.815",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "1",
     "object_repr": "admin",
     "action_flag": 2,
@@ -1568,8 +2416,13 @@
   "pk": 111,
   "fields": {
     "action_time": "2021-03-22T14:11:55.562",
-    "user": 1,
-    "content_type": 64,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "gsoc",
+      "gsocyear"
+    ],
     "object_id": "2021",
     "object_repr": "2021",
     "action_flag": 1,
@@ -1581,8 +2434,13 @@
   "pk": 112,
   "fields": {
     "action_time": "2021-03-22T14:12:05.756",
-    "user": 1,
-    "content_type": 5,
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "object_id": "1",
     "object_repr": "admin",
     "action_flag": 2,
@@ -1591,7 +2449,6 @@
 },
 {
   "model": "sites.site",
-  "pk": 1,
   "fields": {
     "domain": "http://python-gsoc.org/",
     "name": "python-gsoc.org"
@@ -1601,7 +2458,9 @@
   "model": "cms.usersettings",
   "pk": 1,
   "fields": {
-    "user": 1,
+    "user": [
+      "admin"
+    ],
     "language": "en",
     "clipboard": 8
   }
@@ -1610,7 +2469,9 @@
   "model": "cms.usersettings",
   "pk": 5,
   "fields": {
-    "user": 9,
+    "user": [
+      "student-1"
+    ],
     "language": "en",
     "clipboard": 108
   }
@@ -1619,7 +2480,9 @@
   "model": "cms.usersettings",
   "pk": 6,
   "fields": {
-    "user": 8,
+    "user": [
+      "student-2"
+    ],
     "language": "en",
     "clipboard": 115
   }
@@ -1628,7 +2491,9 @@
   "model": "cms.usersettings",
   "pk": 7,
   "fields": {
-    "user": 7,
+    "user": [
+      "student-3"
+    ],
     "language": "en",
     "clipboard": 122
   }
@@ -1637,7 +2502,9 @@
   "model": "cms.usersettings",
   "pk": 8,
   "fields": {
-    "user": 6,
+    "user": [
+      "student-4"
+    ],
     "language": "en",
     "clipboard": 129
   }
@@ -1650,7 +2517,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1661,7 +2530,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1672,7 +2543,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1683,7 +2556,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1694,7 +2569,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1705,7 +2582,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1716,7 +2595,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1727,7 +2608,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1738,7 +2621,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1749,7 +2634,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1760,7 +2647,9 @@
     "depth": 1,
     "numchild": 5,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1771,7 +2660,9 @@
     "depth": 1,
     "numchild": 0,
     "parent": null,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1782,7 +2673,9 @@
     "depth": 2,
     "numchild": 0,
     "parent": 12,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1793,7 +2686,9 @@
     "depth": 2,
     "numchild": 0,
     "parent": 12,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1804,7 +2699,9 @@
     "depth": 2,
     "numchild": 0,
     "parent": 12,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1815,7 +2712,9 @@
     "depth": 2,
     "numchild": 0,
     "parent": 12,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -1826,7 +2725,9 @@
     "depth": 2,
     "numchild": 0,
     "parent": 12,
-    "site": 1
+    "site": [
+      "http://python-gsoc.org/"
+    ]
   }
 },
 {
@@ -2887,7 +3788,9 @@
   "model": "cms.pagepermission",
   "pk": 4,
   "fields": {
-    "user": 6,
+    "user": [
+      "student-4"
+    ],
     "group": null,
     "can_change": true,
     "can_add": true,
@@ -2905,7 +3808,9 @@
   "model": "cms.pagepermission",
   "pk": 5,
   "fields": {
-    "user": 7,
+    "user": [
+      "student-3"
+    ],
     "group": null,
     "can_change": true,
     "can_add": true,
@@ -2923,7 +3828,9 @@
   "model": "cms.pagepermission",
   "pk": 6,
   "fields": {
-    "user": 8,
+    "user": [
+      "student-2"
+    ],
     "group": null,
     "can_change": true,
     "can_add": true,
@@ -2941,7 +3848,9 @@
   "model": "cms.pagepermission",
   "pk": 7,
   "fields": {
-    "user": 9,
+    "user": [
+      "student-1"
+    ],
     "group": null,
     "can_change": true,
     "can_add": true,
@@ -2957,9 +3866,13 @@
 },
 {
   "model": "cms.pageusergroup",
-  "pk": 1,
   "fields": {
-    "created_by": 1
+    "group_ptr": [
+      "students"
+    ],
+    "created_by": [
+      "admin"
+    ]
   }
 },
 {
@@ -4889,7 +5802,10 @@
   "model": "filer.file",
   "pk": 1,
   "fields": {
-    "polymorphic_ctype": 35,
+    "polymorphic_ctype": [
+      "filer",
+      "image"
+    ],
     "folder": null,
     "file": "filer_public/57/de/57deef18-3cb3-4e23-aa1f-4c6c898ca4e1/psf-logo_nrgjkqopng300x300_q85.png",
     "_file_size": 14561,
@@ -4898,7 +5814,9 @@
     "original_filename": "PSF-Logo_nRGJKQo.png.300x300_q85.png",
     "name": "",
     "description": null,
-    "owner": 1,
+    "owner": [
+      "admin"
+    ],
     "uploaded_at": "2019-03-08T16:55:57.637",
     "modified_at": "2019-03-08T16:55:57.637",
     "is_public": true,
@@ -4909,7 +5827,9 @@
   "model": "filer.clipboard",
   "pk": 1,
   "fields": {
-    "user": 1
+    "user": [
+      "admin"
+    ]
   }
 },
 {
@@ -4921,6 +5841,7 @@
     "default_alt_text": null,
     "default_caption": null,
     "subject_location": "",
+    "file_ptr": 1,
     "date_taken": "2019-03-08T16:55:57.626",
     "author": null,
     "must_always_publish_author_credit": false,
@@ -5509,7 +6430,9 @@
   "fields": {
     "content": 109,
     "author": 3,
-    "owner": 9,
+    "owner": [
+      "student-1"
+    ],
     "app_config": 8,
     "publishing_date": "2019-08-30T12:01:26.940",
     "is_published": true,
@@ -5525,7 +6448,9 @@
   "fields": {
     "content": 110,
     "author": 3,
-    "owner": 9,
+    "owner": [
+      "student-1"
+    ],
     "app_config": 8,
     "publishing_date": "2019-08-30T12:02:00.636",
     "is_published": true,
@@ -5541,7 +6466,9 @@
   "fields": {
     "content": 111,
     "author": 3,
-    "owner": 9,
+    "owner": [
+      "student-1"
+    ],
     "app_config": 8,
     "publishing_date": "2019-08-30T12:02:23.554",
     "is_published": true,
@@ -5557,7 +6484,9 @@
   "fields": {
     "content": 112,
     "author": 3,
-    "owner": 9,
+    "owner": [
+      "student-1"
+    ],
     "app_config": 8,
     "publishing_date": "2019-08-30T12:02:47.310",
     "is_published": true,
@@ -5573,7 +6502,9 @@
   "fields": {
     "content": 113,
     "author": 3,
-    "owner": 9,
+    "owner": [
+      "student-1"
+    ],
     "app_config": 8,
     "publishing_date": "2019-08-30T12:03:07.917",
     "is_published": true,
@@ -5589,7 +6520,9 @@
   "fields": {
     "content": 114,
     "author": 3,
-    "owner": 9,
+    "owner": [
+      "student-1"
+    ],
     "app_config": 8,
     "publishing_date": "2019-08-30T12:04:20.214",
     "is_published": true,
@@ -5605,7 +6538,9 @@
   "fields": {
     "content": 116,
     "author": 4,
-    "owner": 8,
+    "owner": [
+      "student-2"
+    ],
     "app_config": 7,
     "publishing_date": "2019-08-30T12:07:12.202",
     "is_published": true,
@@ -5621,7 +6556,9 @@
   "fields": {
     "content": 117,
     "author": 4,
-    "owner": 8,
+    "owner": [
+      "student-2"
+    ],
     "app_config": 7,
     "publishing_date": "2019-08-30T12:07:30.811",
     "is_published": true,
@@ -5637,7 +6574,9 @@
   "fields": {
     "content": 118,
     "author": 4,
-    "owner": 8,
+    "owner": [
+      "student-2"
+    ],
     "app_config": 7,
     "publishing_date": "2019-08-30T12:07:50.030",
     "is_published": true,
@@ -5653,7 +6592,9 @@
   "fields": {
     "content": 119,
     "author": 4,
-    "owner": 8,
+    "owner": [
+      "student-2"
+    ],
     "app_config": 7,
     "publishing_date": "2019-08-30T12:08:13.528",
     "is_published": true,
@@ -5669,7 +6610,9 @@
   "fields": {
     "content": 120,
     "author": 4,
-    "owner": 8,
+    "owner": [
+      "student-2"
+    ],
     "app_config": 7,
     "publishing_date": "2019-08-30T12:08:34.854",
     "is_published": true,
@@ -5685,7 +6628,9 @@
   "fields": {
     "content": 121,
     "author": 4,
-    "owner": 8,
+    "owner": [
+      "student-2"
+    ],
     "app_config": 7,
     "publishing_date": "2019-08-30T12:08:58.195",
     "is_published": true,
@@ -5701,7 +6646,9 @@
   "fields": {
     "content": 123,
     "author": 5,
-    "owner": 7,
+    "owner": [
+      "student-3"
+    ],
     "app_config": 6,
     "publishing_date": "2019-08-30T12:09:40.188",
     "is_published": true,
@@ -5717,7 +6664,9 @@
   "fields": {
     "content": 124,
     "author": 5,
-    "owner": 7,
+    "owner": [
+      "student-3"
+    ],
     "app_config": 6,
     "publishing_date": "2019-08-30T12:09:58.673",
     "is_published": true,
@@ -5733,7 +6682,9 @@
   "fields": {
     "content": 125,
     "author": 5,
-    "owner": 7,
+    "owner": [
+      "student-3"
+    ],
     "app_config": 6,
     "publishing_date": "2019-08-30T12:10:11.820",
     "is_published": true,
@@ -5749,7 +6700,9 @@
   "fields": {
     "content": 126,
     "author": 5,
-    "owner": 7,
+    "owner": [
+      "student-3"
+    ],
     "app_config": 6,
     "publishing_date": "2019-08-30T12:10:31.506",
     "is_published": true,
@@ -5765,7 +6718,9 @@
   "fields": {
     "content": 127,
     "author": 5,
-    "owner": 7,
+    "owner": [
+      "student-3"
+    ],
     "app_config": 6,
     "publishing_date": "2019-08-30T12:10:41.743",
     "is_published": true,
@@ -5781,7 +6736,9 @@
   "fields": {
     "content": 128,
     "author": 5,
-    "owner": 7,
+    "owner": [
+      "student-3"
+    ],
     "app_config": 6,
     "publishing_date": "2019-08-30T12:10:57.755",
     "is_published": true,
@@ -5797,7 +6754,9 @@
   "fields": {
     "content": 130,
     "author": 6,
-    "owner": 6,
+    "owner": [
+      "student-4"
+    ],
     "app_config": 5,
     "publishing_date": "2019-08-30T12:11:30.310",
     "is_published": true,
@@ -5813,7 +6772,9 @@
   "fields": {
     "content": 131,
     "author": 6,
-    "owner": 6,
+    "owner": [
+      "student-4"
+    ],
     "app_config": 5,
     "publishing_date": "2019-08-30T12:11:45.615",
     "is_published": true,
@@ -5829,7 +6790,9 @@
   "fields": {
     "content": 132,
     "author": 6,
-    "owner": 6,
+    "owner": [
+      "student-4"
+    ],
     "app_config": 5,
     "publishing_date": "2019-08-30T12:11:55.630",
     "is_published": true,
@@ -5845,7 +6808,9 @@
   "fields": {
     "content": 133,
     "author": 6,
-    "owner": 6,
+    "owner": [
+      "student-4"
+    ],
     "app_config": 5,
     "publishing_date": "2019-08-30T12:12:15.494",
     "is_published": true,
@@ -5861,7 +6826,9 @@
   "fields": {
     "content": 134,
     "author": 6,
-    "owner": 6,
+    "owner": [
+      "student-4"
+    ],
     "app_config": 5,
     "publishing_date": "2019-08-30T12:12:24.107",
     "is_published": true,
@@ -5877,7 +6844,9 @@
   "fields": {
     "content": 135,
     "author": 6,
-    "owner": 6,
+    "owner": [
+      "student-4"
+    ],
     "app_config": 5,
     "publishing_date": "2019-08-30T12:12:41.765",
     "is_published": true,
@@ -5946,7 +6915,9 @@
     "website": null,
     "visual": null,
     "vcard_enabled": true,
-    "user": 9,
+    "user": [
+      "student-1"
+    ],
     "groups": []
   }
 },
@@ -5961,7 +6932,9 @@
     "website": null,
     "visual": null,
     "vcard_enabled": true,
-    "user": 8,
+    "user": [
+      "student-2"
+    ],
     "groups": []
   }
 },
@@ -5976,7 +6949,9 @@
     "website": null,
     "visual": null,
     "vcard_enabled": true,
-    "user": 7,
+    "user": [
+      "student-3"
+    ],
     "groups": []
   }
 },
@@ -5991,7 +6966,9 @@
     "website": null,
     "visual": null,
     "vcard_enabled": true,
-    "user": 6,
+    "user": [
+      "student-4"
+    ],
     "groups": []
   }
 },
@@ -6017,6 +6994,60 @@
   "fields": {
     "name": "hdhdhd",
     "slug": "hdhdhd"
+  }
+},
+{
+  "model": "gsoc.daysconf",
+  "pk": 1,
+  "fields": {
+    "title": "PRE_BLOG_REMINDER",
+    "days": -3,
+    "disabled": false
+  }
+},
+{
+  "model": "gsoc.daysconf",
+  "pk": 2,
+  "fields": {
+    "title": "POST_BLOG_REMINDER_FIRST",
+    "days": -1,
+    "disabled": false
+  }
+},
+{
+  "model": "gsoc.daysconf",
+  "pk": 3,
+  "fields": {
+    "title": "POST_BLOG_REMINDER_SECOND",
+    "days": 3,
+    "disabled": false
+  }
+},
+{
+  "model": "gsoc.daysconf",
+  "pk": 4,
+  "fields": {
+    "title": "BLOG_POST_DUE_REMINDER",
+    "days": -6,
+    "disabled": false
+  }
+},
+{
+  "model": "gsoc.daysconf",
+  "pk": 5,
+  "fields": {
+    "title": "UPDATE_BLOG_COUNTER",
+    "days": 6,
+    "disabled": false
+  }
+},
+{
+  "model": "gsoc.daysconf",
+  "pk": 6,
+  "fields": {
+    "title": "REGLINK_REMINDER",
+    "days": 3,
+    "disabled": false
   }
 },
 {
@@ -6131,7 +7162,9 @@
   "model": "gsoc.userprofile",
   "pk": 5,
   "fields": {
-    "user": 6,
+    "user": [
+      "student-4"
+    ],
     "role": 3,
     "gsoc_year": 2019,
     "suborg_full_name": 4,
@@ -6149,7 +7182,9 @@
   "model": "gsoc.userprofile",
   "pk": 6,
   "fields": {
-    "user": 7,
+    "user": [
+      "student-3"
+    ],
     "role": 3,
     "gsoc_year": 2019,
     "suborg_full_name": 1,
@@ -6167,7 +7202,9 @@
   "model": "gsoc.userprofile",
   "pk": 7,
   "fields": {
-    "user": 8,
+    "user": [
+      "student-2"
+    ],
     "role": 3,
     "gsoc_year": 2019,
     "suborg_full_name": 3,
@@ -6185,7 +7222,9 @@
   "model": "gsoc.userprofile",
   "pk": 8,
   "fields": {
-    "user": 9,
+    "user": [
+      "student-1"
+    ],
     "role": 3,
     "gsoc_year": 2019,
     "suborg_full_name": 2,
@@ -6203,7 +7242,9 @@
   "model": "gsoc.userprofile",
   "pk": 9,
   "fields": {
-    "user": 1,
+    "user": [
+      "admin"
+    ],
     "role": 1,
     "gsoc_year": 2021,
     "suborg_full_name": 1,
@@ -6741,7 +7782,9 @@
   "pk": 1,
   "fields": {
     "article": 8,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6750,7 +7793,9 @@
   "pk": 2,
   "fields": {
     "article": 9,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6768,7 +7813,9 @@
   "pk": 4,
   "fields": {
     "article": 11,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6777,7 +7824,9 @@
   "pk": 5,
   "fields": {
     "article": 12,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6795,7 +7844,9 @@
   "pk": 7,
   "fields": {
     "article": 14,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6804,7 +7855,9 @@
   "pk": 8,
   "fields": {
     "article": 15,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6822,7 +7875,9 @@
   "pk": 10,
   "fields": {
     "article": 17,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6840,7 +7895,9 @@
   "pk": 12,
   "fields": {
     "article": 19,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6849,7 +7906,9 @@
   "pk": 13,
   "fields": {
     "article": 20,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6876,7 +7935,9 @@
   "pk": 16,
   "fields": {
     "article": 23,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6894,7 +7955,9 @@
   "pk": 18,
   "fields": {
     "article": 25,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6912,7 +7975,9 @@
   "pk": 20,
   "fields": {
     "article": 27,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6921,7 +7986,9 @@
   "pk": 21,
   "fields": {
     "article": 28,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6930,7 +7997,9 @@
   "pk": 22,
   "fields": {
     "article": 29,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6939,7 +8008,9 @@
   "pk": 23,
   "fields": {
     "article": 30,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 },
@@ -6948,7 +8019,9 @@
   "pk": 24,
   "fields": {
     "article": 31,
-    "last_reviewed_by": 1,
+    "last_reviewed_by": [
+      "admin"
+    ],
     "is_reviewed": true
   }
 }
