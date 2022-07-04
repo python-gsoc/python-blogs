@@ -126,5 +126,5 @@ urlpatterns += [
 # Google OAuth
 urlpatterns += [
     url("authorize", gsoc.views.authorize, name="auth"),
-    url("oauth2callback",gsoc.views.oauth2callback, name="oauth2callback")
+    url("oauth2callback", gsoc.views.oauth2callback, name="oauth2callback")
 ]

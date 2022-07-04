@@ -76,8 +76,10 @@ def getCreds():
         )
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            raise Exception("Please refresh the Access Token: " +
-                f"{settings.OAUTH_REDIRECT_URI + 'authorize'}")
+            raise Exception(
+                "Please refresh the Access Token: " +
+                f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+            )
     
     return creds
 
