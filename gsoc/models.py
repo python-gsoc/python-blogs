@@ -21,7 +21,7 @@ from django.utils.translation import gettext as _
 from django.utils.html import mark_safe
 from django.core.validators import validate_email
 from django.utils import timezone
-from django.shortcuts import reverse
+from django.shortcuts import redirect, reverse
 from django.conf import settings
 
 from aldryn_apphooks_config.fields import AppHookConfigField
@@ -41,7 +41,9 @@ from gsoc.common.utils.tools import build_send_mail_json
 from gsoc.common.utils.tools import build_send_reminder_json
 from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 from settings_local import ADMINS
-from gsoc.common.utils.googleoauth import getCreds
+
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import Flow
 
 
 # Util Functions
@@ -61,6 +63,25 @@ def validate_date(value):
             raise ValidationError('Cannot add new year untl GSoC ends!')
     except GsocEndDate.DoesNotExist:
         pass
+
+
+def getCreds():
+    creds = None
+    SCOPES = ['https://www.googleapis.com/auth/calendar']
+
+    if os.path.exists(os.path.join(BASE_DIR, 'token.json')):
+        creds = Credentials.from_authorized_user_file(
+            os.path.join(BASE_DIR, 'token.json'),
+            SCOPES
+        )
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            raise Exception(
+                "Please refresh the Access Token: " +
+                f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+            )
+
+    return creds
 
 
 # Patching
@@ -649,13 +670,14 @@ class Event(models.Model):
     def calendar_link(self):
         if self.event_id:
             creds = getCreds()
-            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-            event = (
-                service.events()
-                .get(calendarId=self.timeline.calendar_id, eventId=self.event_id)
-                .execute()
-            )
-            return event.get("htmlLink", None)
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                event = (
+                    service.events()
+                    .get(calendarId=self.timeline.calendar_id, eventId=self.event_id)
+                    .execute()
+                )
+                return event.get("htmlLink", None)
         return None
 
     def add_to_calendar(self):
@@ -687,10 +709,11 @@ class Event(models.Model):
     def delete_from_calendar(self):
         if self.event_id:
             creds = getCreds()
-            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-            service.events().delete(
-                calendarId=self.timeline.calendar_id, eventId=self.event_id
-            ).execute()
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                service.events().delete(
+                    calendarId=self.timeline.calendar_id, eventId=self.event_id
+                ).execute()
 
     def save(self, *args, **kwargs):
         if not self.end_date:
@@ -764,10 +787,11 @@ class BlogPostDueDate(models.Model):
     def delete_from_calendar(self):
         if self.event_id:
             creds = getCreds()
-            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-            service.events().delete(
-                calendarId=self.timeline.calendar_id, eventId=self.event_id
-            ).execute()
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                service.events().delete(
+                    calendarId=self.timeline.calendar_id, eventId=self.event_id
+                ).execute()
 
     def create_scheduler(self):
         if not BLOG_POST_DUE_REMINDER.disabled:
