@@ -11,6 +11,9 @@ SECRET_KEY = "set to some long unique string"
 #    ('Ad Min', 'admin@example.com'),
 # )
 
+# OAUTH Redirect URI
+OAUTH_REDIRECT_URI = 'http://localhost:8000/en/'
+
 DATABASES = {
     "default": {
         "CONN_MAX_AGE": 0,

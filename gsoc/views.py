@@ -2,7 +2,6 @@ import csv
 from datetime import datetime
 from gsoc import settings
 
-from .common.utils.memcached_stats import MemcachedStats
 from .forms import AcceptanceForm, ChangeInfoForm, ProposalUploadForm
 from .models import (
     RegLink,
@@ -43,6 +42,8 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 from profanityfilter import ProfanityFilter
+
+import google_auth_oauthlib.flow
 
 
 ROLES = {1: 'Admin', 2: 'Mentor', 3: 'Student'}
@@ -595,3 +596,53 @@ from django.http import HttpResponse
 
 def test(request):
     return HttpResponse("{}".format(request.META["REMOTE_ADDR"]))
+
+
+# Google OAuth
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, 'credentials.json')
+
+
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def authorize(request):
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE,
+        scopes=SCOPES
+    )
+
+    flow.redirect_uri = settings.OAUTH_REDIRECT_URI + "oauth2callback"
+
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
+
+    request.session['state'] = state
+
+    return redirect(authorization_url)
+
+
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def oauth2callback(request):
+    if 'https' not in settings.OAUTH_REDIRECT_URI:
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+    state = request.session.get('state')
+
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE,
+        scopes=SCOPES,
+        state=state
+    )
+    flow.redirect_uri = settings.OAUTH_REDIRECT_URI + "oauth2callback"
+
+    authorization_response = request.get_full_path()
+    flow.fetch_token(authorization_response=authorization_response)
+
+    credentials = flow.credentials
+    with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
+        token.write(credentials.to_json())
+
+    return HttpResponse("Token generated successfully!!")
