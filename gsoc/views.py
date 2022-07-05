@@ -626,8 +626,7 @@ def authorize(request):
 @decorators.login_required
 @decorators.user_passes_test(is_superuser)
 def oauth2callback(request):
-    if 'https' not in settings.OAUTH_REDIRECT_URI:
-        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     state = request.session.get('state')
 
