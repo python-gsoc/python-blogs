@@ -862,7 +862,7 @@ class GsocEndDate(models.Model):
                 timeline=self.timeline
             )
         try:
-            scheduler = Scheduler.objects.get(command="archive_gsoc_pages")
+            scheduler = Scheduler.objects.get(command="archive_gsoc_pages",gsoc_year=gsoc_year)
             scheduler.activation_date = self.date
             scheduler.save()
         except Scheduler.DoesNotExist:
