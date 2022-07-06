@@ -23,7 +23,7 @@ cp settings_local.py.template settings_local.py
 
 ## Setup database
 - Download and install [XAMPP](https://www.apachefriends.org/download.html) or any other MySQL server
-- Open Xampp Shell
+- Open Xampp/MySql Shell
 - Login to MySql (default user:'root', default pass:'')
 ```
 mysql -u root 
