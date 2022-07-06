@@ -24,7 +24,7 @@ cp settings_local.py.template settings_local.py
 ## Setup database
 - Download and install [XAMPP](https://www.apachefriends.org/download.html) or any other MySQL server
 - Open Xampp Shell
-- Login to MySql
+- Login to MySql (default user:'root', default pass:'')
 ```
 mysql -u root 
 ```
@@ -39,7 +39,7 @@ python manage.py migrate
 ```
 - Run command to load data
 ```
-python manage.py loaddata dump.json
+python manage.py loaddata data.json
 ```
 
 ## Usage
