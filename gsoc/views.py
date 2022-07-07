@@ -611,30 +611,28 @@ CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, 'credentials.json')
 def authorize(request):
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-            with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
-                token.write(creds.to_json())
-            return HttpResponse("Token refreshed successfully.")
-        else:
-            flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-                CLIENT_SECRETS_FILE,
-                scopes=SCOPES
-            )
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+                with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
+                    token.write(creds.to_json())
+                return HttpResponse("Token refreshed successfully.")
+                
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE,
+        scopes=SCOPES
+    )
 
-            flow.redirect_uri = settings.OAUTH_REDIRECT_URI + "oauth2callback"
+    flow.redirect_uri = settings.OAUTH_REDIRECT_URI + "oauth2callback"
 
-            authorization_url, state = flow.authorization_url(
-                access_type='offline',
-                include_granted_scopes='true'
-            )
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
 
-            request.session['state'] = state
+    request.session['state'] = state
 
-            return redirect(authorization_url)
-    else:
-        return HttpResponse("Token is valid.")
+    return redirect(authorization_url)
 
 
 @decorators.login_required
