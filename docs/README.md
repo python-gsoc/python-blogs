@@ -21,6 +21,27 @@ To setup settings copy settings_local.py.template to the root of the dir
 cp settings_local.py.template settings_local.py
 ```
 
+## Setup database
+- Download and install [XAMPP](https://www.apachefriends.org/download.html) or any other MySQL server
+- Open Xampp/MySql Shell
+- Login to MySql (default user:'root', default pass:'')
+```
+mysql -u root 
+```
+- Create a database
+```
+CREATE DATABASE python_blogs;
+```
+- Update username and password in the settings_local.py
+- Run migrate command
+```
+python manage.py migrate
+```
+- Run command to load data
+```
+python manage.py loaddata data.json
+```
+
 ## Usage
 
 ```python
