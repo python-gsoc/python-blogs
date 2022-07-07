@@ -98,6 +98,8 @@ def build_post_blog_reminders(builder):
                     Scheduler.objects.create(
                         command="send_email", data=scheduler_data_mentors
                     )
+                else:
+                    student_template = "first_post_blog_reminder_student.html"
 
                 student_template_data = {
                     "current_blog_count": profile.current_blog_count,
