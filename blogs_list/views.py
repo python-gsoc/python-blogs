@@ -9,12 +9,7 @@ from gsoc.settings import MEDIA_URL
 
 from cms.models import Page
 
-from django.views.decorators.vary import vary_on_cookie
-from django.views.decorators.cache import cache_page
 
-
-@cache_page(60 * 15)
-@vary_on_cookie
 def list_blogs(request):
     gsoc_years = GsocYear.objects.all().order_by("-gsoc_year")
 
