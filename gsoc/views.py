@@ -617,7 +617,7 @@ def authorize(request):
                 with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
                     token.write(creds.to_json())
                 return HttpResponse("Token refreshed successfully.")
-                
+           
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         CLIENT_SECRETS_FILE,
         scopes=SCOPES
