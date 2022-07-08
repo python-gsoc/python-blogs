@@ -4,7 +4,7 @@ import uuid
 from django.utils import timezone
 from django.conf import settings
 
-from gsoc.models import (Event, Timeline, UserProfile, GsocYear,
+from gsoc.models import (Event, GsocEndDate, Timeline, UserProfile, GsocYear,
                          BlogPostDueDate, Scheduler, ReaddUser)
 from gsoc.common.utils.tools import build_send_mail_json
 
@@ -255,7 +255,7 @@ def build_add_end_to_calendar(builder):
                 .insert(calendarId=cal_id, body=event)
                 .execute()
             )
-            item = BlogPostDueDate.objects.get(id=data["id"])
+            item = GsocEndDate.objects.get(id=data["id"])
             item.event_id = event.get("id")
             item.save()
         else:
