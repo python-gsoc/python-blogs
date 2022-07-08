@@ -21,7 +21,7 @@ from django.utils.translation import gettext as _
 from django.utils.html import mark_safe
 from django.core.validators import validate_email
 from django.utils import timezone
-from django.shortcuts import redirect, reverse
+from django.shortcuts import reverse
 from django.conf import settings
 
 from aldryn_apphooks_config.fields import AppHookConfigField
@@ -43,7 +43,6 @@ from gsoc.settings import PROPOSALS_PATH, BASE_DIR
 from settings_local import ADMINS
 
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import Flow
 from google.auth.transport.requests import Request
 
 

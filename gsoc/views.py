@@ -45,8 +45,6 @@ from pdfminer.pdfpage import PDFPage
 from profanityfilter import ProfanityFilter
 
 import google_auth_oauthlib.flow
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
 
 
 ROLES = {1: 'Admin', 2: 'Mentor', 3: 'Student'}
