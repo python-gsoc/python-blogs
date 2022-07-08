@@ -880,6 +880,41 @@ class BlogPostDueDate(models.Model):
 class GsocEndDate(models.Model):
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
+    event_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def add_to_calendar(self):
+        builder_data = json.dumps({
+            "id": self.id,
+            "title": "GSoC End",
+            "date": str(self.date.strftime('%Y-%m-%d')),
+            "event_id": self.event_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_end_to_calendar",
+                timeline=self.timeline,
+                event=self
+            )
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
+            builder.data = builder_data
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_end_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self.timeline,
+            )
+
+    def delete_from_calendar(self):
+        if self.event_id:
+            creds = getCreds()
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                service.events().delete(
+                    calendarId=self.timeline.calendar_id, eventId=self.event_id
+                ).execute()
 
     def save(self, *args, **kwargs):
         try:
