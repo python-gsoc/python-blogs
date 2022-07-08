@@ -925,7 +925,8 @@ class GsocEndDate(models.Model):
                 timeline=self.timeline,
                 category="build_revoke_student_perms",
             )
-            builder.activation_date = self.date
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
             builder.save()
         except Builder.DoesNotExist:
             Builder.objects.create(
