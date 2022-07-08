@@ -44,6 +44,7 @@ from settings_local import ADMINS
 
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
+from google.auth.transport.requests import Request
 
 
 # Util Functions
@@ -76,9 +77,12 @@ def getCreds():
         )
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            raise Exception(
-                "Please refresh the Access Token: " +
-                f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+            creds.refresh(Request())
+            with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
+                token.write(creds.to_json())
+            creds = Credentials.from_authorized_user_file(
+                os.path.join(BASE_DIR, 'token.json'),
+                SCOPES
             )
 
     return creds
