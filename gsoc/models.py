@@ -634,7 +634,8 @@ class Builder(models.Model):
         ("build_remove_user_details", "build_remove_user_details"),
         ("build_add_timeline_to_calendar", "build_add_timeline_to_calendar"),
         ("build_add_bpdd_to_calendar", "build_add_bpdd_to_calendar"),
-        ("build_add_event_to_calendar", "build_add_event_to_calendar")
+        ("build_add_event_to_calendar", "build_add_event_to_calendar"),
+        ("build_add_end_to_calendar", "build_add_end_to_calendar")
     )
 
     category = models.CharField(max_length=40, choices=categories)
@@ -883,6 +884,40 @@ class BlogPostDueDate(models.Model):
 class GsocEndDate(models.Model):
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
+    event_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def add_to_calendar(self):
+        builder_data = json.dumps({
+            "id": self.id,
+            "title": "GSoC End",
+            "date": str(self.date.strftime('%Y-%m-%d')),
+            "event_id": self.event_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_end_to_calendar",
+                timeline=self.timeline,
+            )
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
+            builder.data = builder_data
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_end_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self.timeline,
+            )
+
+    def delete_from_calendar(self):
+        if self.event_id:
+            creds = getCreds()
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                service.events().delete(
+                    calendarId=self.timeline.calendar_id, eventId=self.event_id
+                ).execute()
 
     def save(self, *args, **kwargs):
         try:
@@ -890,7 +925,8 @@ class GsocEndDate(models.Model):
                 timeline=self.timeline,
                 category="build_revoke_student_perms",
             )
-            builder.activation_date = self.date
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
             builder.save()
         except Builder.DoesNotExist:
             Builder.objects.create(
@@ -1540,6 +1576,12 @@ def create_schedulers_builders(sender, instance, **kwargs):
 
 # Add new BlogPostDueDate to Google Calendar
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
+# Add GSoCEndDate to Google Calendar
+@receiver(models.signals.post_save, sender=GsocEndDate)
 def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
