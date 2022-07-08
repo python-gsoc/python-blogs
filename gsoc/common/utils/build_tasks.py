@@ -238,6 +238,7 @@ def build_add_event_to_calendar(builder):
             f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
         )
 
+
 def build_add_end_to_calendar(builder):
     data = json.loads(builder.data)
     creds = getCreds()
@@ -267,4 +268,3 @@ def build_add_end_to_calendar(builder):
             f"Please get the Access Token: " +
             f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
         )
-
