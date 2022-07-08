@@ -1,5 +1,6 @@
 import csv
 from datetime import datetime
+
 from gsoc import settings
 
 from .forms import AcceptanceForm, ChangeInfoForm, ProposalUploadForm
@@ -44,6 +45,8 @@ from pdfminer.pdfpage import PDFPage
 from profanityfilter import ProfanityFilter
 
 import google_auth_oauthlib.flow
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 
 
 ROLES = {1: 'Admin', 2: 'Mentor', 3: 'Student'}
@@ -606,6 +609,15 @@ CLIENT_SECRETS_FILE = os.path.join(settings.BASE_DIR, 'credentials.json')
 @decorators.login_required
 @decorators.user_passes_test(is_superuser)
 def authorize(request):
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+                with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
+                    token.write(creds.to_json())
+                return HttpResponse("Token refreshed successfully.")
+
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         CLIENT_SECRETS_FILE,
         scopes=SCOPES
