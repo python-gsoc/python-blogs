@@ -631,7 +631,8 @@ class Builder(models.Model):
         ("build_remove_user_details", "build_remove_user_details"),
         ("build_add_timeline_to_calendar", "build_add_timeline_to_calendar"),
         ("build_add_bpdd_to_calendar", "build_add_bpdd_to_calendar"),
-        ("build_add_event_to_calendar", "build_add_event_to_calendar")
+        ("build_add_event_to_calendar", "build_add_event_to_calendar"),
+        ("build_add_end_to_calendar", "build_add_end_to_calendar")
     )
 
     category = models.CharField(max_length=40, choices=categories)
@@ -893,7 +894,6 @@ class GsocEndDate(models.Model):
             builder = Builder.objects.get(
                 category="build_add_end_to_calendar",
                 timeline=self.timeline,
-                event=self
             )
             builder.activation_date = datetime.datetime.now()
             builder.built = None
@@ -1572,6 +1572,12 @@ def create_schedulers_builders(sender, instance, **kwargs):
 
 # Add new BlogPostDueDate to Google Calendar
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
+# Add GSoCEndDate to Google Calendar
+@receiver(models.signals.post_save, sender=GsocEndDate)
 def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
