@@ -643,7 +643,7 @@ class Builder(models.Model):
     built = models.BooleanField(default=None, null=True)
     data = models.TextField()
     last_error = models.TextField(null=True, default=None, blank=True)
-    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, default=None)
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, null=True, blank=True)
     bpdd = models.ForeignKey(
         'BlogPostDueDate',
         on_delete=models.CASCADE,
