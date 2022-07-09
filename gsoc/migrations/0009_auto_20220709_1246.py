@@ -21,9 +21,4 @@ class Migration(migrations.Migration):
             name='category',
             field=models.CharField(choices=[('build_pre_blog_reminders', 'build_pre_blog_reminders'), ('build_post_blog_reminders', 'build_post_blog_reminders'), ('build_revoke_student_perms', 'build_revoke_student_perms'), ('build_remove_user_details', 'build_remove_user_details'), ('build_add_timeline_to_calendar', 'build_add_timeline_to_calendar'), ('build_add_bpdd_to_calendar', 'build_add_bpdd_to_calendar'), ('build_add_event_to_calendar', 'build_add_event_to_calendar'), ('build_add_end_to_calendar', 'build_add_end_to_calendar')], max_length=40),
         ),
-        migrations.AlterField(
-            model_name='builder',
-            name='timeline',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='gsoc.timeline'),
-        ),
     ]
