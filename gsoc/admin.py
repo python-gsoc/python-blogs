@@ -1,5 +1,6 @@
 from .models import *
 from .forms import (
+    GsocStartDateForm,
     UserProfileForm,
     UserDetailsForm,
     RegLinkForm,
@@ -579,10 +580,15 @@ class GsocEndDateInline(admin.TabularInline):
     form = GsocEndDateForm
 
 
+class GsocStartDateInline(admin.TabularInline):
+    model = GsocStartDate
+    form = GsocStartDateForm
+
+
 class TimelineAdmin(admin.ModelAdmin):
     list_display = ("gsoc_year",)
     exclude = ("calendar_id",)
-    inlines = (BlogPostDueDateInline, EventInline, GsocEndDateInline)
+    inlines = (EventInline, GsocStartDateInline,GsocEndDateInline)
 
 
 admin.site.register(Timeline, TimelineAdmin)

@@ -2,6 +2,7 @@ import re
 from PIL import Image
 
 from .models import (
+    GsocStartDate,
     UserDetails,
     UserProfile,
     RegLink,
@@ -64,6 +65,12 @@ class EventForm(forms.ModelForm):
 class GsocEndDateForm(forms.ModelForm):
     class Meta:
         model = GsocEndDate
+        fields = ("date",)
+
+
+class GsocStartDateForm(forms.ModelForm):
+    class Meta:
+        model = GsocStartDate
         fields = ("date",)
 
 
