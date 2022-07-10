@@ -1,6 +1,7 @@
 import os
 import re
 import datetime
+from unicodedata import category
 import uuid
 import json
 import bleach
@@ -479,6 +480,7 @@ class UserProfile(models.Model):
     current_blog_count = models.IntegerField(default=0)
     github_handle = models.TextField(null=True, blank=True, max_length=100)
     gsoc_invited = models.BooleanField(default=False)
+    gsoc_end = models.DateField(blank=True, null=True)
 
     objects = UserProfileManager()
     all_objects = models.Manager()
@@ -625,6 +627,11 @@ class Timeline(models.Model):
                 timeline=self
             )
 
+class Generator(models.Model):
+    categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
+    category = models.IntegerField(choices=categories, null=True, blank=True)
+    daysOffset = models.IntegerField()
+    
 
 class Builder(models.Model):
     categories = (
