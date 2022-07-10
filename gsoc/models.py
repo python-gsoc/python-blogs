@@ -631,7 +631,7 @@ class Generator(models.Model):
     categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
     category = models.IntegerField(choices=categories, null=True, blank=True)
     daysOffset = models.IntegerField()
-    
+
 
 class Builder(models.Model):
     categories = (
@@ -1633,6 +1633,12 @@ def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
 
+# Add GSoCStartDate to Google Calendar
+@receiver(models.signals.post_save, sender=GsocStartDate)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
 # Publish the duedate to Github pages
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def duedate_publish_to_github_pages(sender, instance, **kwargs):
@@ -1726,3 +1732,12 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
         scheduler.save()
     except Scheduler.DoesNotExist:
         pass
+
+
+# Add BlogPostDueDate on generating
+@receiver(models.signals.post_save, sender=Generator)
+def auto_bpdd(sender, instance, **kwargs):
+    category = instance.category
+    gsocStartDate = GsocStartDate.objects.latest('gsoc_year')
+    dates = [gsocStartDate + datetime.timedelta(days=i) for i in range(0, 155, 7)]
+    print(dates)
