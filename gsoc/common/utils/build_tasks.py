@@ -17,7 +17,11 @@ def build_pre_blog_reminders(builder):
         data = json.loads(builder.data)
         due_date = BlogPostDueDate.objects.get(pk=data["due_date_pk"])
         gsoc_year = GsocYear.objects.first()
-        profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+        profiles = UserProfile.objects.filter(
+            gsoc_year=gsoc_year,
+            role=3,
+            gsoc_end__lte=due_date.date
+        ).all()
         categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
         category = categories[due_date.category][1]
         for profile in profiles:
@@ -57,7 +61,11 @@ def build_post_blog_reminders(builder):
         category = categories[due_date.category][1]
 
         gsoc_year = GsocYear.objects.first()
-        profiles = UserProfile.objects.filter(gsoc_year=gsoc_year, role=3).all()
+        profiles = UserProfile.objects.filter(
+            gsoc_year=gsoc_year,
+            role=3,
+            gsoc_end__lte=due_date.date
+            ).all()
         for profile in profiles:
             if profile.current_blog_count > blogs_count and not (
                 profile.hidden or profile.reminder_disabled
