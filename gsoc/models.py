@@ -879,7 +879,7 @@ class BlogPostDueDate(models.Model):
             pass
 
         # update title
-        gsoc_year = GsocYear.objects.latest('gsoc_year')
+        gsoc_year = GsocYear.objects.get(gsoc_year=2021)
         timeline = Timeline.objects.get(gsoc_year=gsoc_year)
         items = BlogPostDueDate.objects.filter(timeline=timeline)
         if self.category == 0:
@@ -1742,11 +1742,11 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
 def auto_bpdd(sender, instance, **kwargs):
     category = instance.category
     gsocStartDate = GsocStartDate.objects.latest('id')
-    dates = [gsocStartDate.date + datetime.timedelta(days=i) for i in range(8, 155, 7)]
+    dates = [gsocStartDate.date + datetime.timedelta(days=i) for i in range(8, 162, 7)]
     
     for date in dates:
         BlogPostDueDate.objects.create(
-            title=category,
+            category=category,
             date=date,
-
+            timeline=instance.timeline
         )
