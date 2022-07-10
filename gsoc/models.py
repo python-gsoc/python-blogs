@@ -1742,7 +1742,11 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
 def auto_bpdd(sender, instance, **kwargs):
     category = instance.category
     gsocStartDate = GsocStartDate.objects.latest('id')
-    dates = [gsocStartDate.date + datetime.timedelta(days=i) for i in range(8, 162, 7)]
+    dates = [gsocStartDate.date + datetime.timedelta(days=i) for i in range(
+        8,
+        162,
+        7 + instance.DaysOffset
+    )]
     
     for date in dates:
         BlogPostDueDate.objects.create(
