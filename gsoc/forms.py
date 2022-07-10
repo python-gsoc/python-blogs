@@ -2,6 +2,7 @@ import re
 from PIL import Image
 
 from .models import (
+    Generator,
     GsocStartDate,
     UserDetails,
     UserProfile,
@@ -72,6 +73,12 @@ class GsocStartDateForm(forms.ModelForm):
     class Meta:
         model = GsocStartDate
         fields = ("date",)
+
+
+class GeneratorForm(forms.ModelForm):
+    class Meta:
+        model = Generator
+        fields = ("category", "daysOffset")
 
 
 class ChangeInfoForm(forms.ModelForm):

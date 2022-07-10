@@ -1,5 +1,6 @@
 from .models import *
 from .forms import (
+    GeneratorForm,
     GsocStartDateForm,
     UserProfileForm,
     UserDetailsForm,
@@ -567,12 +568,23 @@ admin.site.register(Builder, BuilderAdmin)
 
 class BlogPostDueDateInline(admin.TabularInline):
     model = BlogPostDueDate
-    form = BlogPostDueDateForm
+    fields = ("title", "category", "date")
+    readonly_fields = ("title", "category", "date")
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class EventInline(admin.TabularInline):
     model = Event
     form = EventForm
+    extra = 1
 
 
 class GsocEndDateInline(admin.TabularInline):
@@ -585,10 +597,22 @@ class GsocStartDateInline(admin.TabularInline):
     form = GsocStartDateForm
 
 
+class GeneratorInline(admin.TabularInline):
+    model = Generator
+    form = GeneratorForm
+    max_num = 2
+
+
 class TimelineAdmin(admin.ModelAdmin):
     list_display = ("gsoc_year",)
     exclude = ("calendar_id",)
-    inlines = (EventInline, GsocStartDateInline,GsocEndDateInline)
+    inlines = (
+        EventInline,
+        GsocStartDateInline,
+        GsocEndDateInline,
+        GeneratorInline,
+        BlogPostDueDateInline
+    )
 
 
 admin.site.register(Timeline, TimelineAdmin)
@@ -806,11 +830,3 @@ class DaysConfAdmin(admin.ModelAdmin):
 
 
 admin.site.register(DaysConf, DaysConfAdmin)
-
-
-class GeneratorAdmin(admin.ModelAdmin):
-    list_display = ("category", "daysOffset")
-
-
-admin.site.register(Generator, GeneratorAdmin)
-
