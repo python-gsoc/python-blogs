@@ -806,3 +806,11 @@ class DaysConfAdmin(admin.ModelAdmin):
 
 
 admin.site.register(DaysConf, DaysConfAdmin)
+
+
+class GeneratorAdmin(admin.ModelAdmin):
+    list_display = ("category", "daysOffset")
+
+
+admin.site.register(Generator, GeneratorAdmin)
+

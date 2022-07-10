@@ -1,7 +1,6 @@
 import os
 import re
 import datetime
-from unicodedata import category
 import uuid
 import json
 import bleach
@@ -606,6 +605,9 @@ class Timeline(models.Model):
         to_field = "gsoc_year")
     calendar_id = models.CharField(max_length=255, null=True, blank=True)
 
+    def __str__(self):
+        return "Timeline for " + str(self.gsoc_year.gsoc_year)
+
     def add_calendar(self):
         builder_data = json.dumps({
             "timeline_id": self.id,
@@ -630,7 +632,8 @@ class Timeline(models.Model):
 class Generator(models.Model):
     categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
     category = models.IntegerField(choices=categories, null=True, blank=True)
-    daysOffset = models.IntegerField()
+    daysOffset = models.IntegerField(default=0)
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Builder(models.Model):
@@ -1738,6 +1741,12 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Generator)
 def auto_bpdd(sender, instance, **kwargs):
     category = instance.category
-    gsocStartDate = GsocStartDate.objects.latest('gsoc_year')
-    dates = [gsocStartDate + datetime.timedelta(days=i) for i in range(0, 155, 7)]
-    print(dates)
+    gsocStartDate = GsocStartDate.objects.latest('id')
+    dates = [gsocStartDate.date + datetime.timedelta(days=i) for i in range(8, 155, 7)]
+    
+    for date in dates:
+        BlogPostDueDate.objects.create(
+            title=category,
+            date=date,
+
+        )
