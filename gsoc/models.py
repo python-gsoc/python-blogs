@@ -1142,6 +1142,7 @@ class RegLink(models.Model):
         null=True,
         blank=False
     )
+    gsoc_end_date = models.DateField(null=True, blank=True)
     gsoc_year = models.ForeignKey(
         GsocYear,
         name = "gsoc_year",
@@ -1239,6 +1240,7 @@ class RegLink(models.Model):
                 suborg_full_name=self.user_suborg,
                 reminder_disabled=reminder_disabled,
                 github_handle=github_handle,
+                gsoc_end=self.gsoc_end_date
             )
         except Exception:
             profile = None
