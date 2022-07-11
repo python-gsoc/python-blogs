@@ -632,7 +632,8 @@ class Timeline(models.Model):
 class Generator(models.Model):
     categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
     category = models.IntegerField(choices=categories, null=True, blank=True)
-    daysOffset = models.IntegerField(default=0)
+    recurDays = models.IntegerField(default=7)
+    start = models.DateField(blank=True, null=True)
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, blank=True, null=True)
 
 
@@ -752,6 +753,12 @@ class BlogPostDueDate(models.Model):
     date = models.DateField()
     timeline = models.ForeignKey(
         Timeline,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    generator = models.ForeignKey(
+        Generator,
         on_delete=models.CASCADE,
         null=True,
         blank=True
@@ -1741,16 +1748,16 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Generator)
 def auto_bpdd(sender, instance, **kwargs):
     category = instance.category
-    gsocStartDate = GsocStartDate.objects.latest('id')
-    dates = [gsocStartDate.date + datetime.timedelta(days=i) for i in range(
-        8,
-        162,
-        7 + instance.DaysOffset
+    dates = [instance.start + datetime.timedelta(days=i) for i in range(
+        0,
+        154,
+        instance.recurDays
     )]
     
     for date in dates:
         BlogPostDueDate.objects.create(
             category=category,
             date=date,
-            timeline=instance.timeline
+            timeline=instance.timeline,
+            generator=instance
         )

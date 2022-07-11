@@ -78,7 +78,7 @@ class GsocStartDateForm(forms.ModelForm):
 class GeneratorForm(forms.ModelForm):
     class Meta:
         model = Generator
-        fields = ("category", "daysOffset")
+        fields = ("category", "start", "recurDays")
 
 
 class ChangeInfoForm(forms.ModelForm):
