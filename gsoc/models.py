@@ -886,7 +886,7 @@ class BlogPostDueDate(models.Model):
             pass
 
         # update title
-        gsoc_year = GsocYear.objects.get(gsoc_year=2021)
+        gsoc_year = GsocYear.objects.latest('gsoc_year')
         timeline = Timeline.objects.get(gsoc_year=gsoc_year)
         items = BlogPostDueDate.objects.filter(timeline=timeline)
         if self.category == 0:
@@ -1744,7 +1744,7 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
         pass
 
 
-# Add BlogPostDueDate on generating
+# Add BlogPostDueDates on Invoking generator
 @receiver(models.signals.post_save, sender=Generator)
 def auto_bpdd(sender, instance, **kwargs):
     category = instance.category
@@ -1760,7 +1760,7 @@ def auto_bpdd(sender, instance, **kwargs):
         ).delete()
     except Exception:
         pass
-    
+
     for date in dates:
         BlogPostDueDate.objects.create(
             category=category,
