@@ -1753,6 +1753,13 @@ def auto_bpdd(sender, instance, **kwargs):
         154,
         instance.recurDays
     )]
+
+    try:
+        BlogPostDueDate.objects.filter(
+            generator=instance
+        ).delete()
+    except Exception:
+        pass
     
     for date in dates:
         BlogPostDueDate.objects.create(
