@@ -951,7 +951,7 @@ class GsocStartDate(models.Model):
 
 class GsocEndDate(models.Model):
     class Meta:
-        verbose_name="Gsoc end date Max"
+        verbose_name = "Gsoc end date Max"
 
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
