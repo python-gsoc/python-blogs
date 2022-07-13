@@ -637,11 +637,10 @@ class Generator(models.Model):
     start = models.DateField(blank=True, null=True)
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, blank=True, null=True)
 
-
     def save(self, *args, **kwargs):
         try:
             GsocEndDate.objects.latest('id')
-        except:
+        except Exception:
             return
         super(Generator, self).save(*args, **kwargs)
 
