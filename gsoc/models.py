@@ -639,7 +639,9 @@ class Generator(models.Model):
 
     def save(self, *args, **kwargs):
         try:
-            GsocEndDate.objects.latest('id')
+            current_year = datetime.datetime.now().year
+            GsocStartDate.objects.get(date__contains=current_year)
+            GsocEndDate.objects.get(date__contains=current_year)
         except Exception:
             return
         super(Generator, self).save(*args, **kwargs)
@@ -1799,9 +1801,14 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
 # Add BlogPostDueDates on Invoking generator
 @receiver(models.signals.post_save, sender=Generator)
 def auto_bpdd(sender, instance, **kwargs):
+    current_year = datetime.datetime.now().year
     category = instance.category
-    start_date = GsocStartDate.objects.latest('id')
-    end_date = GsocEndDate.objects.latest('id')
+    start_date = GsocStartDate.objects.get(
+        date__contains=current_year
+    )
+    end_date = GsocEndDate.objects.get(
+        date__contains=current_year
+    )
     dates = [instance.start + datetime.timedelta(days=i) for i in range(
         0,
         (end_date.date - start_date.date).days,
