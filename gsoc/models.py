@@ -638,6 +638,14 @@ class Generator(models.Model):
     timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, blank=True, null=True)
 
 
+    def save(self, *args, **kwargs):
+        try:
+            GsocEndDate.objects.latest('id')
+        except:
+            return
+        super(Generator, self).save(*args, **kwargs)
+
+
 class Builder(models.Model):
     categories = (
         ("build_pre_blog_reminders", "build_pre_blog_reminders"),
