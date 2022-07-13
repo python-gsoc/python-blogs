@@ -4,8 +4,17 @@ import uuid
 from django.utils import timezone
 from django.conf import settings
 
-from gsoc.models import (Event, GsocEndDate, GsocEndDateStandard, GsocStartDate, Timeline, UserProfile, GsocYear,
-                         BlogPostDueDate, Scheduler, ReaddUser)
+from gsoc.models import (
+    Event,
+    GsocEndDate,
+    GsocEndDateStandard,
+    GsocStartDate, Timeline,
+    UserProfile,
+    GsocYear,
+    BlogPostDueDate,
+    Scheduler,
+    ReaddUser
+)
 from gsoc.common.utils.tools import build_send_mail_json
 
 from googleapiclient.discovery import build

@@ -629,6 +629,7 @@ class Timeline(models.Model):
                 timeline=self
             )
 
+
 class Generator(models.Model):
     categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
     category = models.IntegerField(choices=categories, null=True, blank=True)
