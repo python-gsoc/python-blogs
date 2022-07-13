@@ -1399,6 +1399,8 @@ class RegLink(models.Model):
             self.create_scheduler()
 
     def save(self, *args, **kwargs):
+        if (self.gsoc_end_date is None):
+            self.gsoc_end_date = GsocEndDateStandard.objects.latest('id').date
         try:
             reglink = RegLink.objects.get(
                 user_role=self.user_role,

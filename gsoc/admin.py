@@ -1,6 +1,7 @@
 from .models import *
 from .forms import (
     GeneratorForm,
+    GsocEndDateStandardForm,
     GsocStartDateForm,
     UserProfileForm,
     UserDetailsForm,
@@ -605,6 +606,11 @@ class GsocStartDateInline(admin.TabularInline):
     form = GsocStartDateForm
 
 
+class GsocEndDateStandardInline(admin.TabularInline):
+    model = GsocEndDateStandard
+    form = GsocEndDateStandardForm
+
+
 class GeneratorInline(admin.TabularInline):
     model = Generator
     form = GeneratorForm
@@ -617,6 +623,7 @@ class TimelineAdmin(admin.ModelAdmin):
     inlines = (
         EventInline,
         GsocStartDateInline,
+        GsocEndDateStandardInline,
         GsocEndDateInline,
         GeneratorInline,
         BlogPostDueDateInline

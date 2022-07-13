@@ -3,6 +3,7 @@ from PIL import Image
 
 from .models import (
     Generator,
+    GsocEndDateStandard,
     GsocStartDate,
     UserDetails,
     UserProfile,
@@ -72,6 +73,12 @@ class GsocEndDateForm(forms.ModelForm):
 class GsocStartDateForm(forms.ModelForm):
     class Meta:
         model = GsocStartDate
+        fields = ("date",)
+
+
+class GsocEndDateStandardForm(forms.ModelForm):
+    class Meta:
+        model = GsocEndDateStandard
         fields = ("date",)
 
 
