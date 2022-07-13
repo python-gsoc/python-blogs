@@ -675,8 +675,8 @@ class Builder(models.Model):
 
 class Event(models.Model):
     title = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
+    start_date = models.DateField(verbose_name="Event Start")
+    end_date = models.DateField(null=True, blank=True, verbose_name="Event End")
     timeline = models.ForeignKey(
         Timeline, on_delete=models.CASCADE, null=True, blank=True
     )
