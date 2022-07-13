@@ -6,7 +6,6 @@ from .forms import (
     UserProfileForm,
     UserDetailsForm,
     RegLinkForm,
-    BlogPostDueDateForm,
     EventForm,
     GsocEndDateForm,
 )
@@ -607,7 +606,7 @@ class GsocStartDateInline(admin.TabularInline):
 
 
 class GsocEndDateStandardInline(admin.TabularInline):
-    model = GsocEndDateStandard
+    model = GsocEndDateDefault
     form = GsocEndDateStandardForm
 
 

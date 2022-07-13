@@ -7,7 +7,7 @@ from django.conf import settings
 from gsoc.models import (
     Event,
     GsocEndDate,
-    GsocEndDateStandard,
+    GsocEndDateDefault,
     GsocStartDate, Timeline,
     UserProfile,
     GsocYear,
@@ -335,7 +335,7 @@ def build_add_end_to_calendar(builder):
                 .insert(calendarId=cal_id, body=event)
                 .execute()
             )
-            item = GsocEndDateStandard.objects.get(id=data["id"])
+            item = GsocEndDateDefault.objects.get(id=data["id"])
             item.event_id = event.get("id")
             item.save()
         else:

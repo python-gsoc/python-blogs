@@ -950,6 +950,9 @@ class GsocStartDate(models.Model):
 
 
 class GsocEndDate(models.Model):
+    class Meta:
+        verbose_name="Gsoc end date Max"
+
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
     event_id = models.CharField(max_length=255, null=True, blank=True)
@@ -1017,7 +1020,7 @@ class GsocEndDate(models.Model):
         super(GsocEndDate, self).save(*args, **kwargs)
 
 
-class GsocEndDateStandard(models.Model):
+class GsocEndDateDefault(models.Model):
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
     event_id = models.CharField(max_length=255, null=True, blank=True)
@@ -1410,7 +1413,7 @@ class RegLink(models.Model):
 
     def save(self, *args, **kwargs):
         if (self.gsoc_end_date is None):
-            self.gsoc_end_date = GsocEndDateStandard.objects.latest('id').date
+            self.gsoc_end_date = GsocEndDateDefault.objects.latest('id').date
         try:
             reglink = RegLink.objects.get(
                 user_role=self.user_role,
