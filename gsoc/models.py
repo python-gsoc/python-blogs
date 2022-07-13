@@ -1750,9 +1750,11 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=Generator)
 def auto_bpdd(sender, instance, **kwargs):
     category = instance.category
+    start_date = GsocStartDate.objects.latest('id')
+    end_date = GsocEndDate.objects.latest('id')
     dates = [instance.start + datetime.timedelta(days=i) for i in range(
         0,
-        154,
+        (end_date.date - start_date.date).days,
         instance.recurDays
     )]
 
