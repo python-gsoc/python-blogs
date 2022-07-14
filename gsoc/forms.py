@@ -2,6 +2,7 @@ import re
 from PIL import Image
 
 from .models import (
+    ArticleReview,
     UserDetails,
     UserProfile,
     RegLink,
@@ -77,6 +78,12 @@ class AcceptanceForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
     reglink = forms.CharField(widget=forms.HiddenInput())
+
+
+class ArticleReviewForm(forms.ModelForm):
+    class Meta:
+        model: ArticleReview
+        fields = ("article", "is_reviewed", "last_reviewed_by")
 
 
 class SubOrgApplicationForm(forms.ModelForm):
