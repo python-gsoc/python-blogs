@@ -646,3 +646,7 @@ def oauth2callback(request):
         token.write(credentials.to_json())
 
     return HttpResponse("Token generated successfully!!")
+
+def mark_all_article_as_reviewed(request):
+    articles = Article.objects.filter(author=request.user)
+    print(articles)

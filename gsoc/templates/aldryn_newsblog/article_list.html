@@ -7,6 +7,12 @@
     <h2 class="content-head content-head">
         {% page_attribute "page_title" %}
         <a class="rss-icon" href="{{ feed_url }}"><i class="fa fa-rss-square"></i></a>
+
+        {% if article_list %}
+            <a href="{% url 'mark_all_reviewed' author_id=1 %}">{{article_list.0}}
+                <button>Mark All Reviewed</button> 
+            </a>
+        {% endif %}
     </h2>
     
     <div class="aldryn-newsblog-list">
