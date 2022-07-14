@@ -1,5 +1,6 @@
 {% extends "aldryn_newsblog/base.html" %}
 {% load i18n apphooks_config_tags cms_tags %}
+{% load app_tag %}
 
 {% block meta %}{% page_attribute "page_title" %} - {% endblock %}
 
@@ -8,11 +9,11 @@
         {% page_attribute "page_title" %}
         <a class="rss-icon" href="{{ feed_url }}"><i class="fa fa-rss-square"></i></a>
 
-        {% if article_list %}
-            <a href="{% url 'mark_all_reviewed' author_id=1 %}">{{article_list.0}}
+
+            <a href="{% url 'mark_all_reviewed' author_id=article_list|get_author %}">
                 <button>Mark All Reviewed</button> 
             </a>
-        {% endif %}
+
     </h2>
     
     <div class="aldryn-newsblog-list">
