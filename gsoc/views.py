@@ -1,5 +1,5 @@
 import csv
-from datetime import date, datetime
+from datetime import datetime
 
 from gsoc import settings
 
