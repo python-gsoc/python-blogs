@@ -658,12 +658,16 @@ def mark_all_article_as_reviewed(request, author_id):
         publishing_date__contains=current_year
     )
     for article in articles:
-        review = ArticleReview.objects.get(
-            article=article
-        )
-        review.is_reviewed = True
-        review.last_reviewed_by = request.user
-        review.save()
+        try:
+            review = ArticleReview.objects.get(
+                article=article,
+                is_reviewed=False
+            )
+            review.is_reviewed = True
+            review.last_reviewed_by = request.user
+            review.save()
+        except Exception:
+            pass
 
     messages.success(request, "All articles marked as reviewed!")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
