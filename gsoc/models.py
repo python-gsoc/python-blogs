@@ -76,16 +76,13 @@ def getCreds():
         )
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            try:
-                creds.refresh(Request())
-                with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
-                    token.write(creds.to_json())
-                creds = Credentials.from_authorized_user_file(
-                    os.path.join(BASE_DIR, 'token.json'),
-                    SCOPES
-                )
-            except Exception as e:
-                return str(e)
+            creds.refresh(Request())
+            with open(os.path.join(settings.BASE_DIR, 'token.json'), 'w') as token:
+                token.write(creds.to_json())
+            creds = Credentials.from_authorized_user_file(
+                os.path.join(BASE_DIR, 'token.json'),
+                SCOPES
+            )
 
     return creds
 
