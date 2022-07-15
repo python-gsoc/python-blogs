@@ -9,11 +9,11 @@
         {% page_attribute "page_title" %}
         <a class="rss-icon" href="{{ feed_url }}"><i class="fa fa-rss-square"></i></a>
 
-
+        {% if request.user.is_superuser and article_list %}
             <a href="{% url 'mark_all_reviewed' author_id=article_list|get_author %}">
                 <button>Mark All Reviewed</button> 
             </a>
-
+        {% endif %}
     </h2>
     
     <div class="aldryn-newsblog-list">

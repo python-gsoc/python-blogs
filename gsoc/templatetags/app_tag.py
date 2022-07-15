@@ -43,4 +43,4 @@ def time_zone(context, flag=0):
 
 @register.filter
 def get_author(value):
-    return value[0].article
+    return value[0].owner.id
