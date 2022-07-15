@@ -1,5 +1,5 @@
 import csv
-from datetime import datetime
+from datetime import date, datetime
 
 from gsoc import settings
 
@@ -647,6 +647,20 @@ def oauth2callback(request):
 
     return HttpResponse("Token generated successfully!!")
 
-def mark_all_article_as_reviewed(request):
-    articles = Article.objects.filter(author=request.user)
-    print(articles)
+
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def mark_all_article_as_reviewed(request, author_id):
+    user = User.objects.get(id=author_id)
+    current_year = datetime.now().year
+    articles = Article.objects.filter(
+        owner=user,
+        publishing_date__contains=current_year
+    )
+    for article in articles:
+        review = ArticleReview.objects.get(
+            article=article
+        )
+        review.is_reviewed = True
+        review.last_reviewed_by = request.user
+        review.save()
