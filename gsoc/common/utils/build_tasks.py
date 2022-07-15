@@ -211,7 +211,7 @@ def build_add_bpdd_to_calendar(builder):
                 f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
             )
     except Exception as e:
-            return str(e)
+        return str(e)
 
 
 def build_add_event_to_calendar(builder):
@@ -245,7 +245,7 @@ def build_add_event_to_calendar(builder):
                 f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
             )
     except Exception as e:
-            return str(e)
+        return str(e)
 
 
 def build_add_end_to_calendar(builder):
@@ -279,4 +279,4 @@ def build_add_end_to_calendar(builder):
                 f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
             )
     except Exception as e:
-            return str(e)
+        return str(e)
