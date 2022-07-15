@@ -664,3 +664,5 @@ def mark_all_article_as_reviewed(request, author_id):
         review.is_reviewed = True
         review.last_reviewed_by = request.user
         review.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
