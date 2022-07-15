@@ -665,4 +665,5 @@ def mark_all_article_as_reviewed(request, author_id):
         review.last_reviewed_by = request.user
         review.save()
 
+    messages.success(request, "All articles marked as reviewed!")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
