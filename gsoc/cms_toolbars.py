@@ -147,18 +147,6 @@ def add_admin_menu(self):
             )
             self._admin_menu.add_break(CLIPBOARD_BREAK)
 
-        # Disable toolbar
-        if user and user.is_superuser:
-            self._admin_menu.add_link_item(
-                _("Disable toolbar"),
-                url="?%s" % get_cms_setting("CMS_TOOLBAR_URL__DISABLE"),
-            )
-        self._admin_menu.add_break(TOOLBAR_DISABLE_BREAK)
-        self._admin_menu.add_link_item(
-            _("Shortcuts..."), url="#", extra_classes=("cms-show-shortcuts",)
-        )
-        self._admin_menu.add_break(SHORTCUTS_BREAK)
-
         # logout
         self.add_logout_button(self._admin_menu)
 
