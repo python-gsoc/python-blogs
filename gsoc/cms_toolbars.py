@@ -166,7 +166,6 @@ def populate(self):
         self.init_from_request()
         self.clipboard = self.request.toolbar.user_settings.clipboard
         self.add_admin_menu()
-        self.add_language_menu()
         self.add_goto_blog_button()
 
 
