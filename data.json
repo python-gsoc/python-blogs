@@ -6966,7 +6966,7 @@
     "pk": 2,
     "fields": {
       "title": "POST_BLOG_REMINDER_FIRST",
-      "days": -1,
+      "days": 1,
       "disabled": false
     }
   },
