@@ -207,25 +207,14 @@ class DaysConf(models.Model):
     disabled = models.BooleanField(default=False)
 
 
-# days for reminder
-try:
-    PRE_BLOG_REMINDER = DaysConf.objects.get(title="PRE_BLOG_REMINDER")
-    POST_BLOG_REMINDER_FIRST = DaysConf.objects.get(title="POST_BLOG_REMINDER_FIRST")
-    POST_BLOG_REMINDER_SECOND = DaysConf.objects.get(title="POST_BLOG_REMINDER_SECOND")
+PRE_BLOG_REMINDER = DaysConf.objects.get(title="PRE_BLOG_REMINDER")
+POST_BLOG_REMINDER_FIRST = DaysConf.objects.get(title="POST_BLOG_REMINDER_FIRST")
+POST_BLOG_REMINDER_SECOND = DaysConf.objects.get(title="POST_BLOG_REMINDER_SECOND")
 
-    BLOG_POST_DUE_REMINDER = DaysConf.objects.get(title="BLOG_POST_DUE_REMINDER")
-    UPDATE_BLOG_COUNTER = DaysConf.objects.get(title="UPDATE_BLOG_COUNTER")
+BLOG_POST_DUE_REMINDER = DaysConf.objects.get(title="BLOG_POST_DUE_REMINDER")
+UPDATE_BLOG_COUNTER = DaysConf.objects.get(title="UPDATE_BLOG_COUNTER")
 
-    REGLINK_REMINDER = DaysConf.objects.get(title="REGLINK_REMINDER")
-except Exception:
-    PRE_BLOG_REMINDER = -3
-    POST_BLOG_REMINDER_FIRST = -1
-    POST_BLOG_REMINDER_SECOND = 3
-
-    BLOG_POST_DUE_REMINDER = -6
-    UPDATE_BLOG_COUNTER = 6
-
-    REGLINK_REMINDER = 3
+REGLINK_REMINDER = DaysConf.objects.get(title="REGLINK_REMINDER")
 
 
 class SubOrg(models.Model):
@@ -849,7 +838,7 @@ class BlogPostDueDate(models.Model):
     def save(self, *args, **kwargs):
         try:
             pre = Builder.objects.get(id=self.pre_blog_reminder_builder.id)
-            pre.activation_date = self.date - datetime.timedelta(
+            pre.activation_date = self.date + datetime.timedelta(
                 days=PRE_BLOG_REMINDER.days
             )
             pre.save()
