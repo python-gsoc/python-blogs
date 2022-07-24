@@ -128,3 +128,12 @@ urlpatterns += [
     url("authorize", gsoc.views.authorize, name="auth"),
     url("oauth2callback", gsoc.views.oauth2callback, name="oauth2callback")
 ]
+
+# Review all articles at once
+urlpatterns += [
+    path(
+        "mark_all_reviewed/<int:author_id>",
+        gsoc.views.mark_all_article_as_reviewed,
+        name="mark_all_reviewed"
+    )
+]
