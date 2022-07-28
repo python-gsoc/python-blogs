@@ -646,3 +646,28 @@ def oauth2callback(request):
         token.write(credentials.to_json())
 
     return HttpResponse("Token generated successfully!!")
+
+
+@decorators.login_required
+@decorators.user_passes_test(is_superuser)
+def mark_all_article_as_reviewed(request, author_id):
+    user = User.objects.get(id=author_id)
+    current_year = datetime.now().year
+    articles = Article.objects.filter(
+        owner=user,
+        publishing_date__contains=current_year
+    )
+    for article in articles:
+        try:
+            review = ArticleReview.objects.get(
+                article=article,
+                is_reviewed=False
+            )
+            review.is_reviewed = True
+            review.last_reviewed_by = request.user
+            review.save()
+        except Exception:
+            pass
+
+    messages.success(request, "All articles marked as reviewed!")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

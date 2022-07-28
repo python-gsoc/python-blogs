@@ -232,8 +232,8 @@ def build_add_event_to_calendar(builder):
         service = build("calendar", "v3", credentials=creds, cache_discovery=False)
         event = {
             "summary": data["title"],
-            "start": {"date": data["date"]},
-            "end": {"date": data["date"]},
+            "start": {"date": data["start_date"]},
+            "end": {"date": data["end_date"]},
         }
         cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
         item = Event.objects.get(id=data["id"])

@@ -55,7 +55,7 @@ def add_admin_menu(self):
         if user and user.is_superuser:
             # Users button
             self._admin_menu.add_sideframe_item(
-                _("User Profiles"), url="admin/gsoc/userprofile"
+                _("User Profiles"), url=admin_reverse("gsoc_userprofile_changelist")
             )
 
         # sites menu

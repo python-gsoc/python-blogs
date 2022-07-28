@@ -3,6 +3,7 @@ from .forms import (
     GeneratorForm,
     GsocEndDateStandardForm,
     GsocStartDateForm,
+    ArticleReviewForm,
     UserProfileForm,
     UserDetailsForm,
     RegLinkForm,
@@ -643,13 +644,11 @@ class ArticleReviewAdmin(admin.ModelAdmin):
     list_filter = ("last_reviewed_by", "is_reviewed")
     fields = (
         "article",
-        "author",
-        "article_link",
-        "lead",
         "is_reviewed",
         "last_reviewed_by",
     )
-    change_form_template = "admin/article_review_change_form.html"
+
+    form = ArticleReviewForm
 
     def lead(self, obj):
         return obj.article.lead_in
@@ -665,9 +664,6 @@ class ArticleReviewAdmin(admin.ModelAdmin):
         return mark_safe('<a href="{}" target="_blank">Goto Article</a>'.format(url))
 
     def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
         return False
 
 

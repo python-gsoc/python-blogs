@@ -66,6 +66,7 @@ SITE_ID = 1
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
         "DIRS": [
             os.path.join(BASE_DIR, "gsoc", "templates"),
             os.path.join(BASE_DIR, "blogs_list", "templates"),
@@ -86,10 +87,6 @@ TEMPLATES = [
                 "cms.context_processors.cms_settings",
                 "gsoc.context_processors.recaptcha_site_key",
                 "gsoc.context_processors.blog_slug",
-            ],
-            "loaders": [
-                "django.template.loaders.filesystem.Loader",
-                "django.template.loaders.app_directories.Loader",
             ],
         },
     }
