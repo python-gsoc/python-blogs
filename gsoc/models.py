@@ -1829,13 +1829,46 @@ def auto_bpdd(sender, instance, **kwargs):
         )
 
 
-# Schedule midterm reminder when Timeline is created
-@receiver(models.signals.post_save, sender=Timeline)
-def schedule_midterm_reminder(sender, instance, **kwargs):
-    pass
+# build schedulers for midterm reminder when Timeline is created
+@receiver(models.signals.post_save, sender=GsocEndDate)
+def build_schedule_finalterm_reminder(sender, instance, **kwargs):
+    start_date = GsocStartDate.objects.latest('date')
+    end_date = GsocEndDate.objects.latest('date')
+
+    # notify mentors+students 4 days before due
+    notify_date = end_date.date - datetime.timedelta(days=4)
+    for i in range(0, 7):
+        builder_data = json.dumps({
+            "date": str(notify_date),
+            "title": "Final term evaluation reminder",
+            "admin": False
+        })
+        Builder.objects.create(
+            category="build_final_term_reminder",
+            activation_date=start_date.date,
+            data=builder_data
+        )
+        
+        notify_date -= datetime.timedelta(days=14)
+
+    # notify admins 2 days before due
+    notify_date = end_date.date - datetime.timedelta(days=2)
+    for i in range(0, 7):
+        builder_data = json.dumps({
+            "date": str(notify_date),
+            "title": "Final term evaluation reminder",
+            "admin": True
+        })
+        Builder.objects.create(
+            category="build_final_term_reminder",
+            activation_date=start_date.date,
+            data=builder_data
+        )
+        
+        notify_date -= datetime.timedelta(days=14)
 
 
-# Schedule final reminder when Timeline is created
+# build schedulers for final reminder when Timeline is created
 @receiver(models.signals.post_save, sender=Timeline)
-def schedule_final_reminder(sender, instance, **kwargs):
+def build_schedule_final_reminder(sender, instance, **kwargs):
     pass

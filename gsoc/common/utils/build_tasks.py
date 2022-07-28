@@ -347,3 +347,32 @@ def build_add_end_standard_to_calendar(builder):
             f"Please get the Access Token: " +
             f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
         )
+
+
+def build_final_term_reminder(builder):
+    try:
+        data = json.loads(builder.data)
+        end_date = data["date"]
+        gsoc_year = GsocYear.objects.latest('gsoc_year')
+        profiles = UserProfile.objects.filter(
+            gsoc_year=gsoc_year,
+            role__in=[1] if data["admin"] else [2,3],
+            gsoc_end=end_date
+        ).all()
+        for profile in profiles:
+            template_data = {
+                "exam": "final",
+                "date": end_date,
+            }
+
+            scheduler_data = build_send_mail_json(
+                profile.user.email,
+                template="exam_reminder.html",
+                subject=f"Final reminder",
+                template_data=template_data,
+            )
+
+            Scheduler.objects.create(command="send_email", data=scheduler_data)
+        return None
+    except Exception as e:
+        return str(e)
