@@ -1820,7 +1820,7 @@ def auto_bpdd(sender, instance, **kwargs):
     )
     dates = [instance.start + datetime.timedelta(days=i) for i in range(
         0,
-        (end_date.date - start_date.date).days,
+        (end_date.date - start_date.date).days - 14,
         instance.recurDays
     )]
 
