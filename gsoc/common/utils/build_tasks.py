@@ -349,7 +349,7 @@ def build_add_end_standard_to_calendar(builder):
         )
 
 
-def build_final_term_reminder(builder):
+def build_exam_reminder(builder):
     try:
         data = json.loads(builder.data)
         end_date = data["date"]

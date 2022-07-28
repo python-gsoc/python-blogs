@@ -1829,7 +1829,7 @@ def auto_bpdd(sender, instance, **kwargs):
         )
 
 
-# build schedulers for midterm reminder when Timeline is created
+# build schedulers for final reminder when Timeline is created
 @receiver(models.signals.post_save, sender=GsocEndDate)
 def build_schedule_finalterm_reminder(sender, instance, **kwargs):
     start_date = GsocStartDate.objects.latest('date')
@@ -1838,8 +1838,9 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
     # notify mentors+students 4 days before due
     notify_date = end_date.date - datetime.timedelta(days=4)
     for i in range(0, 7):
+
         builder_data = json.dumps({
-            "date": str(notify_date),
+            "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
             "title": "Final term evaluation reminder",
             "admin": False
         })
@@ -1855,7 +1856,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
     notify_date = end_date.date - datetime.timedelta(days=2)
     for i in range(0, 7):
         builder_data = json.dumps({
-            "date": str(notify_date),
+            "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
             "title": "Final term evaluation reminder",
             "admin": True
         })
@@ -1868,7 +1869,43 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         notify_date -= datetime.timedelta(days=14)
 
 
-# build schedulers for final reminder when Timeline is created
-@receiver(models.signals.post_save, sender=Timeline)
-def build_schedule_final_reminder(sender, instance, **kwargs):
-    pass
+# build schedulers for midterm reminder when Timeline is created
+@receiver(models.signals.post_save, sender=GsocEndDate)
+def build_schedule_midterm_reminder(sender, instance, **kwargs):
+    start_date = GsocStartDate.objects.latest('date')
+    end_date = GsocEndDate.objects.latest('date')
+
+    # notify mentors+students 4 days before due
+    gap = (end_date.date - datetime.timedelta(days=7) - start_date.date)
+    half_gap = gap.days // 2 - 4
+    notify_date = start_date.date + datetime.timedelta(days=half_gap)
+    for i in range(0, 7):
+        builder_data = json.dumps({
+            "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+            "title": "Mid term evaluation reminder",
+            "admin": False
+        })
+        Builder.objects.create(
+            category="build_exam_reminder",
+            activation_date=start_date.date,
+            data=builder_data
+        )
+        
+        notify_date -= datetime.timedelta(days=7)
+
+    # notify admins 2 days before due
+    half_gap = gap.days // 2 - 2
+    notify_date = start_date.date + datetime.timedelta(days=half_gap)
+    for i in range(0, 7):
+        builder_data = json.dumps({
+            "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+            "title": "Mid term evaluation reminder",
+            "admin": True
+        })
+        Builder.objects.create(
+            category="build_exam_reminder",
+            activation_date=start_date.date,
+            data=builder_data
+        )
+        
+        notify_date -= datetime.timedelta(days=7)
