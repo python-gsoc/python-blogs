@@ -318,7 +318,7 @@ def build_add_start_to_calendar(builder):
         )
 
 
-def build_add_end_to_calendar(builder):
+def build_add_end_standard_to_calendar(builder):
     data = json.loads(builder.data)
     creds = getCreds()
     if creds:

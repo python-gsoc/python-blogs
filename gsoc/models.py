@@ -1028,7 +1028,7 @@ class GsocEndDateDefault(models.Model):
     def add_to_calendar(self):
         builder_data = json.dumps({
             "id": self.id,
-            "title": "GSoC End (Standar)",
+            "title": "GSoC End (Standard)",
             "date": str(self.date.strftime('%Y-%m-%d')),
             "event_id": self.event_id
         })
@@ -1696,6 +1696,12 @@ def due_date_add_to_calendar(sender, instance, **kwargs):
 
 # Add GSoCEndDate to Google Calendar
 @receiver(models.signals.post_save, sender=GsocEndDate)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
+# Add GSoCEndDateDefault to Google Calendar
+@receiver(models.signals.post_save, sender=GsocEndDateDefault)
 def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
