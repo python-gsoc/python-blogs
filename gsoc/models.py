@@ -1838,3 +1838,15 @@ def auto_bpdd(sender, instance, **kwargs):
             timeline=instance.timeline,
             generator=instance
         )
+
+
+# Schedule midterm reminder when Timeline is created
+@receiver(models.signals.post_save, sender=Timeline)
+def schedule_midterm_reminder(sender, instance, **kwargs):
+    pass
+
+
+# Schedule final reminder when Timeline is created
+@receiver(models.signals.post_save, sender=Timeline)
+def schedule_final_reminder(sender, instance, **kwargs):
+    pass
