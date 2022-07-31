@@ -1,4 +1,6 @@
+from datetime import datetime, timedelta
 import json
+from tracemalloc import start
 import uuid
 
 from django.utils import timezone
@@ -349,26 +351,81 @@ def build_add_end_standard_to_calendar(builder):
         )
 
 
-def build_exam_reminder(builder):
+def build_final_term_reminder(builder):
     try:
         data = json.loads(builder.data)
-        end_date = data["date"]
+        date = data["date"]
         gsoc_year = GsocYear.objects.latest('gsoc_year')
-        profiles = UserProfile.objects.filter(
-            gsoc_year=gsoc_year,
-            role__in=[1] if data["admin"] else [2,3],
-            gsoc_end=end_date
-        ).all()
+        is_admin = data["admin"]
+
+        if is_admin:
+            end_date = date + timedelta(days=2)
+            profiles = UserProfile.objects.filter(
+                gsoc_year=gsoc_year,
+                role=1
+            ).all()
+        else:
+            end_date = date + timedelta(days=4)
+            profiles = UserProfile.objects.filter(
+                gsoc_year=gsoc_year,
+                role__in=[2, 3],
+                gsoc_end=end_date
+            ).all()
+
         for profile in profiles:
             template_data = {
-                "exam": "final",
+                "exam": "Final",
                 "date": end_date,
             }
 
             scheduler_data = build_send_mail_json(
                 profile.user.email,
                 template="exam_reminder.html",
-                subject=f"Final reminder",
+                subject=f"Final evaluation reminder",
+                template_data=template_data,
+            )
+
+            Scheduler.objects.create(command="send_email", data=scheduler_data)
+        return None
+    except Exception as e:
+        return str(e)
+
+
+def build_mid_term_reminder(builder):
+    try:
+        data = json.loads(builder.data)
+        date = data["date"]
+        start_date = GsocStartDate.objects.latest('date')
+        gsoc_year = GsocYear.objects.latest('gsoc_year')
+        is_admin = data["admin"]
+
+        if is_admin:
+            exam_date = date + timedelta(days=2)
+            gap = (date - start_date).days * 2 + 2 + 7
+            profiles = UserProfile.objects.filter(
+                gsoc_year=gsoc_year,
+                role=1
+            ).all()
+        else:
+            exam_date = date + timedelta(days=4)
+            gap = (date - start_date).days * 2 + 4 + 7
+            end_date = start_date + timedelta(days=gap)
+            profiles = UserProfile.objects.filter(
+                gsoc_year=gsoc_year,
+                role__in=[2, 3],
+                gsoc_end=end_date
+            ).all()
+
+        for profile in profiles:
+            template_data = {
+                "exam": "Midterm",
+                "date": exam_date,
+            }
+
+            scheduler_data = build_send_mail_json(
+                profile.user.email,
+                template="exam_reminder.html",
+                subject=f"Midterm evaluation reminder",
                 template_data=template_data,
             )
 

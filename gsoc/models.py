@@ -1886,7 +1886,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
             "admin": False
         })
         Builder.objects.create(
-            category="build_exam_reminder",
+            category="build_mid_term_reminder",
             activation_date=start_date.date,
             data=builder_data
         )
@@ -1903,7 +1903,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
             "admin": True
         })
         Builder.objects.create(
-            category="build_exam_reminder",
+            category="build_mid_term_reminder",
             activation_date=start_date.date,
             data=builder_data
         )
