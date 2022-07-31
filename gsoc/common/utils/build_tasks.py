@@ -359,13 +359,13 @@ def build_final_term_reminder(builder):
         is_admin = data["admin"]
 
         if is_admin:
-            end_date = date + timedelta(days=2)
+            end_date = datetime.fromisoformat(date) + timedelta(days=9)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role=1
             ).all()
         else:
-            end_date = date + timedelta(days=4)
+            end_date = datetime.fromisoformat(date) + timedelta(days=11)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role__in=[2, 3],
@@ -375,7 +375,7 @@ def build_final_term_reminder(builder):
         for profile in profiles:
             template_data = {
                 "exam": "Final",
-                "date": end_date,
+                "date": str(end_date),
             }
 
             scheduler_data = build_send_mail_json(
@@ -400,16 +400,16 @@ def build_mid_term_reminder(builder):
         is_admin = data["admin"]
 
         if is_admin:
-            exam_date = date + timedelta(days=2)
-            gap = (date - start_date).days * 2 + 2 + 7
+            exam_date = datetime.fromisoformat(date) + timedelta(days=2)
+            gap = (datetime.fromisoformat(date) - start_date.date).days * 2 + 2 + 7
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role=1
             ).all()
         else:
-            exam_date = date + timedelta(days=4)
-            gap = (date - start_date).days * 2 + 4 + 7
-            end_date = start_date + timedelta(days=gap)
+            exam_date = datetime.fromisoformat(date) + timedelta(days=4)
+            gap = (datetime.fromisoformat(date) - start_date.date).days * 2 + 4 + 7
+            end_date = start_date.date + timedelta(days=gap)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role__in=[2, 3],
@@ -419,7 +419,7 @@ def build_mid_term_reminder(builder):
         for profile in profiles:
             template_data = {
                 "exam": "Midterm",
-                "date": exam_date,
+                "date": str(exam_date),
             }
 
             scheduler_data = build_send_mail_json(

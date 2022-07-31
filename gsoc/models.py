@@ -1846,7 +1846,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data
         )
         
@@ -1862,7 +1862,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data
         )
         
@@ -1876,7 +1876,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
     end_date = GsocEndDate.objects.latest('date')
 
     # notify mentors+students 4 days before due
-    gap = (end_date.date - datetime.timedelta(days=7) - start_date.date)
+    gap = end_date.date - datetime.timedelta(days=7) - start_date.date
     half_gap = gap.days // 2 - 4
     notify_date = start_date.date + datetime.timedelta(days=half_gap)
     for i in range(0, 7):
@@ -1887,7 +1887,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data
         )
         
@@ -1904,7 +1904,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data
         )
         
