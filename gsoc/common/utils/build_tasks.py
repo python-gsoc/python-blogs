@@ -29,7 +29,7 @@ def build_pre_blog_reminders(builder):
         profiles = UserProfile.objects.filter(
             gsoc_year=gsoc_year,
             role=3,
-            gsoc_end__lte=due_date.date
+            gsoc_end__gte=due_date.date
         ).all()
         categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
         category = categories[due_date.category][1]
@@ -73,7 +73,7 @@ def build_post_blog_reminders(builder):
         profiles = UserProfile.objects.filter(
             gsoc_year=gsoc_year,
             role=3,
-            gsoc_end__lte=due_date.date
+            gsoc_end__gte=due_date.date
             ).all()
         for profile in profiles:
             if profile.current_blog_count > blogs_count and not (
