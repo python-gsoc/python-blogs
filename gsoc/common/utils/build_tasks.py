@@ -400,15 +400,15 @@ def build_mid_term_reminder(builder):
         is_admin = data["admin"]
 
         if is_admin:
-            exam_date = datetime.fromisoformat(date) + timedelta(days=2)
-            gap = (datetime.fromisoformat(date) - start_date.date).days * 2 + 2 + 7
+            exam_date = datetime.strptime(date, "%Y-%m-%d").date() + timedelta(days=2)
+            gap = (datetime.strptime(date, "%Y-%m-%d").date() - start_date.date).days * 2 + 2 + 7
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role=1
             ).all()
         else:
-            exam_date = datetime.fromisoformat(date) + timedelta(days=4)
-            gap = (datetime.fromisoformat(date) - start_date.date).days * 2 + 4 + 7
+            exam_date = datetime.strptime(date, "%Y-%m-%d").date() + timedelta(days=4)
+            gap = (datetime.strptime(date, "%Y-%m-%d").date() - start_date.date).days * 2 + 4 + 7
             end_date = start_date.date + timedelta(days=gap)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,

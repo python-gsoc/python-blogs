@@ -1836,7 +1836,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
     end_date = GsocEndDate.objects.latest('date')
 
     # notify mentors+students 4 days before due
-    notify_date = end_date.date - datetime.timedelta(days=4)
+    notify_date = end_date.date - datetime.timedelta(days=11)
     for i in range(0, 7):
 
         builder_data = json.dumps({
@@ -1853,7 +1853,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         notify_date -= datetime.timedelta(days=14)
 
     # notify admins 2 days before due
-    notify_date = end_date.date - datetime.timedelta(days=2)
+    notify_date = end_date.date - datetime.timedelta(days=9)
     for i in range(0, 7):
         builder_data = json.dumps({
             "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
