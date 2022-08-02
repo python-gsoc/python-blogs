@@ -400,9 +400,9 @@ def build_mid_term_reminder(builder):
         is_admin = data["admin"]
 
         if is_admin:
-            gap = datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date
-            half_gap = gap.days // 2 - 2
-            date = start_date.date + timedelta(days=half_gap)
+            date = start_date.date + (datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date) / 2
+            # half_gap = gap.days // 2 - 2
+            # date = start_date.date + timedelta(days=half_gap)
 
             exam_date = date + timedelta(days=2)
 
@@ -411,9 +411,9 @@ def build_mid_term_reminder(builder):
                 role=1
             ).all()
         else:
-            gap = datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date
-            half_gap = gap.days // 2 - 4
-            date = start_date.date + timedelta(days=half_gap)
+            date = start_date.date + (datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date) / 2
+            # half_gap = gap.days // 2 - 4
+            # date = start_date.date + timedelta(days=half_gap)
             
             exam_date = date + timedelta(days=4)
 
