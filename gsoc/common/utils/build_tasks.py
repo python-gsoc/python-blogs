@@ -433,3 +433,7 @@ def build_mid_term_reminder(builder):
         return None
     except Exception as e:
         return str(e)
+
+        # TODO: different reminder for mentor and student on final term
+        # TODO: fix midterm email not sending
+        # TODO: fix send_to not working
