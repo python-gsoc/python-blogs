@@ -1873,15 +1873,18 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
 @receiver(models.signals.post_save, sender=GsocEndDate)
 def build_schedule_midterm_reminder(sender, instance, **kwargs):
     start_date = GsocStartDate.objects.latest('date')
-    end_date = GsocEndDate.objects.latest('date')
+    end_date_max = GsocEndDate.objects.latest('date')
+    end_date = end_date_max.date
 
     # notify mentors+students 4 days before due
-    gap = end_date.date - datetime.timedelta(days=7) - start_date.date
-    half_gap = gap.days // 2 - 4
-    notify_date = start_date.date + datetime.timedelta(days=half_gap)
+    # gap = end_date.date - datetime.timedelta(days=7) - start_date.date
+    # half_gap = gap.days // 2 - 4
+    # notify_date = start_date.date + datetime.timedelta(days=half_gap)
+
     for i in range(0, 7):
         builder_data = json.dumps({
-            "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+            # "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+            "end_date": str(end_date),
             "title": "Mid term evaluation reminder",
             "admin": False
         })
@@ -1891,14 +1894,16 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
             data=builder_data
         )
         
-        notify_date -= datetime.timedelta(days=7)
+        end_date -= datetime.timedelta(days=14) if i != 0 else datetime.timedelta(days=13)
 
     # notify admins 2 days before due
-    half_gap = gap.days // 2 - 2
-    notify_date = start_date.date + datetime.timedelta(days=half_gap)
+    end_date = end_date_max.date
+    # half_gap = gap.days // 2 - 2
+    # notify_date = start_date.date + datetime.timedelta(days=half_gap)
     for i in range(0, 7):
         builder_data = json.dumps({
-            "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+            # "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+            "end_date": str(end_date),
             "title": "Mid term evaluation reminder",
             "admin": True
         })
@@ -1908,4 +1913,4 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
             data=builder_data
         )
         
-        notify_date -= datetime.timedelta(days=7)
+        end_date -= datetime.timedelta(days=14) if i != 0 else datetime.timedelta(days=13)

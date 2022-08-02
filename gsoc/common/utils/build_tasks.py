@@ -394,26 +394,33 @@ def build_final_term_reminder(builder):
 def build_mid_term_reminder(builder):
     try:
         data = json.loads(builder.data)
-        date = data["date"]
+        end_date = data["end_date"]
         start_date = GsocStartDate.objects.latest('date')
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
 
         if is_admin:
-            exam_date = datetime.strptime(date, "%Y-%m-%d").date() + timedelta(days=2)
-            gap = (datetime.strptime(date, "%Y-%m-%d").date() - start_date.date).days * 2 + 2 + 7
+            gap = datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date
+            half_gap = gap.days // 2 - 2
+            date = start_date.date + timedelta(days=half_gap)
+
+            exam_date = date + timedelta(days=2)
+
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role=1
             ).all()
         else:
-            exam_date = datetime.strptime(date, "%Y-%m-%d").date() + timedelta(days=4)
-            gap = (datetime.strptime(date, "%Y-%m-%d").date() - start_date.date).days * 2 + 4 + 7
-            end_date = start_date.date + timedelta(days=gap)
+            gap = datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date
+            half_gap = gap.days // 2 - 4
+            date = start_date.date + timedelta(days=half_gap)
+            
+            exam_date = date + timedelta(days=4)
+
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role__in=[2, 3],
-                gsoc_end=end_date
+                gsoc_end=datetime.strptime(end_date, "%Y-%m-%d").date()
             ).all()
 
         for profile in profiles:
