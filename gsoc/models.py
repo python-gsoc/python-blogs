@@ -1835,14 +1835,14 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
     start_date = GsocStartDate.objects.latest('date')
     end_date = GsocEndDate.objects.latest('date')
 
-    # notify mentors+students 4 days before due
-    notify_date = end_date.date - datetime.timedelta(days=11)
+    # notify mentors+admins 4 days before due
+    notify_date = end_date.date - datetime.timedelta(days=4)
     for i in range(0, 7):
 
         builder_data = json.dumps({
             "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
             "title": "Final term evaluation reminder",
-            "admin": False
+            "admin": True
         })
         Builder.objects.create(
             category="build_final_term_reminder",
@@ -1852,13 +1852,13 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         
         notify_date -= datetime.timedelta(days=14)
 
-    # notify admins 2 days before due
-    notify_date = end_date.date - datetime.timedelta(days=9)
+    # notify mentors 2 days before due
+    notify_date = end_date.date - datetime.timedelta(days=2)
     for i in range(0, 7):
         builder_data = json.dumps({
             "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
             "title": "Final term evaluation reminder",
-            "admin": True
+            "admin": False
         })
         Builder.objects.create(
             category="build_final_term_reminder",

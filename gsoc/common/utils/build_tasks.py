@@ -359,17 +359,16 @@ def build_final_term_reminder(builder):
         is_admin = data["admin"]
 
         if is_admin:
-            end_date = datetime.fromisoformat(date) + timedelta(days=9)
+            end_date = datetime.fromisoformat(date) + timedelta(days=2)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role=1
+                role__in=[1,2]
             ).all()
         else:
-            end_date = datetime.fromisoformat(date) + timedelta(days=11)
+            end_date = datetime.fromisoformat(date) + timedelta(days=4)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role__in=[2, 3],
-                gsoc_end=end_date
+                role=2
             ).all()
 
         for profile in profiles:
@@ -431,7 +430,3 @@ def build_mid_term_reminder(builder):
         return None
     except Exception as e:
         return str(e)
-
-        # TODO: different reminder for mentor and student on final term
-        # TODO: fix midterm email not sending
-        # TODO: fix send_to not working
