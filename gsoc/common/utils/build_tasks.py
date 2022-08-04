@@ -399,28 +399,19 @@ def build_mid_term_reminder(builder):
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
 
+        date = start_date.date + (datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date) / 2
+
         if is_admin:
-            date = start_date.date + (datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date) / 2
-            # half_gap = gap.days // 2 - 2
-            # date = start_date.date + timedelta(days=half_gap)
-
             exam_date = date + timedelta(days=2)
-
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role=1
+                role__in=[1,2]
             ).all()
         else:
-            date = start_date.date + (datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date) / 2
-            # half_gap = gap.days // 2 - 4
-            # date = start_date.date + timedelta(days=half_gap)
-            
             exam_date = date + timedelta(days=4)
-
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role__in=[2, 3],
-                gsoc_end=datetime.strptime(end_date, "%Y-%m-%d").date()
+                role=2,
             ).all()
 
         for profile in profiles:
