@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
 import json
-from tracemalloc import start
 import uuid
 
 from django.utils import timezone
-from django.conf import settings
+from gsoc.settings import ADMINS
 
 from gsoc.models import (
     Event,
@@ -364,6 +363,19 @@ def build_final_term_reminder(builder):
                 gsoc_year=gsoc_year,
                 role__in=[1,2]
             ).all()
+
+            template_data = {
+                "exam": "Final",
+                "date": str(end_date),
+            }
+
+            scheduler_data = build_send_mail_json(
+                ADMINS,
+                template="exam_reminder.html",
+                subject="Final evaluation reminder",
+                template_data=template_data,
+            )
+            Scheduler.objects.create(command="send_email", data=scheduler_data)
         else:
             end_date = datetime.fromisoformat(date) + timedelta(days=4)
             profiles = UserProfile.objects.filter(
@@ -406,6 +418,19 @@ def build_mid_term_reminder(builder):
                 gsoc_year=gsoc_year,
                 role__in=[1,2]
             ).all()
+
+            template_data = {
+                "exam": "Midterm",
+                "date": str(exam_date),
+            }
+
+            scheduler_data = build_send_mail_json(
+                ADMINS,
+                template="exam_reminder.html",
+                subject="Midterm evaluation reminder",
+                template_data=template_data,
+            )
+            Scheduler.objects.create(command="send_email", data=scheduler_data)
         else:
             exam_date = date + timedelta(days=4)
             profiles = UserProfile.objects.filter(
