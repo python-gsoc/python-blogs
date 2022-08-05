@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import json
 import uuid
+from django.conf import settings
 
 from django.utils import timezone
 from gsoc.settings import ADMINS
@@ -356,12 +357,13 @@ def build_final_term_reminder(builder):
         date = data["date"]
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
+        end_date = datetime.fromisoformat(date) + timedelta(days=4)
 
         if is_admin:
-            end_date = datetime.fromisoformat(date) + timedelta(days=2)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role__in=[1,2]
+                role__in=[1,2],
+                gsoc_end=end_date
             ).all()
 
             template_data = {
@@ -377,10 +379,10 @@ def build_final_term_reminder(builder):
             )
             Scheduler.objects.create(command="send_email", data=scheduler_data)
         else:
-            end_date = datetime.fromisoformat(date) + timedelta(days=4)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role=2
+                role=2,
+                gsoc_end=end_date
             ).all()
 
         for profile in profiles:
@@ -416,7 +418,8 @@ def build_mid_term_reminder(builder):
             exam_date = date + timedelta(days=2)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role__in=[1,2]
+                role__in=[1,2],
+                gsoc_end=end_date
             ).all()
 
             template_data = {
@@ -436,6 +439,7 @@ def build_mid_term_reminder(builder):
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role=2,
+                gsoc_end=end_date
             ).all()
 
         for profile in profiles:

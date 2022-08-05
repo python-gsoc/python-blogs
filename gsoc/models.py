@@ -1832,7 +1832,6 @@ def auto_bpdd(sender, instance, **kwargs):
 # build schedulers for final reminder when Timeline is created
 @receiver(models.signals.post_save, sender=GsocEndDate)
 def build_schedule_finalterm_reminder(sender, instance, **kwargs):
-    start_date = GsocStartDate.objects.latest('date')
     end_date = GsocEndDate.objects.latest('date')
 
     # notify mentors+admins 4 days before due
@@ -1885,7 +1884,8 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         Builder.objects.create(
             category="build_mid_term_reminder",
             activation_date=datetime.datetime.now(),
-            data=builder_data
+            data=builder_data,
+            timeline=instance.timeline
         )
 
         # notify mentors 2 days before due
@@ -1897,7 +1897,8 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         Builder.objects.create(
             category="build_mid_term_reminder",
             activation_date=datetime.datetime.now(),
-            data=builder_data
+            data=builder_data,
+            timeline=instance.timeline
         )
         
         end_date -= datetime.timedelta(days=14) if i != 0 else datetime.timedelta(days=13)
