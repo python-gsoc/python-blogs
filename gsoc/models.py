@@ -1837,7 +1837,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
     start_date = GsocStartDate.objects.latest('date')
     end_date = GsocEndDate.objects.latest('date')
 
-    # notify mentors+admins 4 days before due
+    # notify mentors + suborg admins 4 days before due
     notify_date = end_date.date - datetime.timedelta(days=4)
     for i in range(0, 7):
 
@@ -1848,13 +1848,13 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date.date,
             data=builder_data
         )
         
         notify_date -= datetime.timedelta(days=14)
 
-    # notify mentors 2 days before due
+    # notify mentors + suborg admins + PSF admins 2 days before due
     notify_date = end_date.date - datetime.timedelta(days=2)
     for i in range(0, 7):
         builder_data = json.dumps({
@@ -1864,7 +1864,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date.date,
             data=builder_data
         )
         
@@ -1879,7 +1879,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
     end_date = end_date_max.date
 
     for i in range(0, 7):
-        # notify mentors+admins 4 days before due
+        # notify mentors + suborg admins 2 days before due
         builder_data = json.dumps({
             "end_date": str(end_date),
             "title": "Mid term evaluation reminder",
@@ -1887,12 +1887,12 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date.date,
             data=builder_data,
             timeline=instance.timeline
         )
 
-        # notify mentors 2 days before due
+        # notify mentors + suborg admins + PSF admins 2 days before due
         builder_data = json.dumps({
             "end_date": str(end_date),
             "title": "Mid term evaluation reminder",
@@ -1900,7 +1900,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date.date,
             data=builder_data,
             timeline=instance.timeline
         )
