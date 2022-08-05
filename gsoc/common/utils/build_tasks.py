@@ -377,7 +377,11 @@ def build_final_term_reminder(builder):
                 subject="Final evaluation reminder",
                 template_data=template_data,
             )
-            # Scheduler.objects.create(command="send_email", data=scheduler_data)
+            Scheduler.objects.create(
+                command="send_email",
+                data=scheduler_data,
+                activation_date=date
+            )
         else:
             end_date = datetime.fromisoformat(date) + timedelta(days=2)
             profiles = UserProfile.objects.filter(
@@ -399,7 +403,11 @@ def build_final_term_reminder(builder):
                 template_data=template_data,
             )
 
-            Scheduler.objects.create(command="send_email", data=scheduler_data)
+            Scheduler.objects.create(
+                command="send_email",
+                data=scheduler_data,
+                activation_date=date
+            )
         return None
     except Exception as e:
         return str(e)
@@ -409,7 +417,6 @@ def build_mid_term_reminder(builder):
     try:
         data = json.loads(builder.data)
         end_date = data["end_date"]
-        end_date_max = GsocEndDate.objects.latest('date')
         start_date = GsocStartDate.objects.latest('date')
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
@@ -436,7 +443,11 @@ def build_mid_term_reminder(builder):
                 subject="Midterm evaluation reminder",
                 template_data=template_data,
             )
-            # Scheduler.objects.create(command="send_email", data=scheduler_data)
+            Scheduler.objects.create(
+                command="send_email",
+                data=scheduler_data,
+                activation_date=exam_date - timedelta(days=4)
+            )
         else:
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
@@ -457,7 +468,11 @@ def build_mid_term_reminder(builder):
                 template_data=template_data,
             )
 
-            Scheduler.objects.create(command="send_email", data=scheduler_data)
+            Scheduler.objects.create(
+                command="send_email",
+                data=scheduler_data,
+                activation_date=exam_date - timedelta(days=2)
+            )
         return None
     except Exception as e:
         return str(e)

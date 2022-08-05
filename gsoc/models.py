@@ -1832,6 +1832,7 @@ def auto_bpdd(sender, instance, **kwargs):
 # build schedulers for final reminder when Timeline is created
 @receiver(models.signals.post_save, sender=GsocEndDate)
 def build_schedule_finalterm_reminder(sender, instance, **kwargs):
+    start_date = GsocStartDate.objects.latest('date')
     end_date = GsocEndDate.objects.latest('date')
 
     # notify mentors+admins 4 days before due
@@ -1845,7 +1846,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date,
             data=builder_data
         )
         
@@ -1861,7 +1862,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date,
             data=builder_data
         )
         
@@ -1871,6 +1872,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
 # build schedulers for midterm reminder when Timeline is created
 @receiver(models.signals.post_save, sender=GsocEndDate)
 def build_schedule_midterm_reminder(sender, instance, **kwargs):
+    start_date = GsocStartDate.objects.latest('date')
     end_date_max = GsocEndDate.objects.latest('date')
     end_date = end_date_max.date
 
@@ -1883,7 +1885,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date,
             data=builder_data,
             timeline=instance.timeline
         )
@@ -1896,7 +1898,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=datetime.datetime.now(),
+            activation_date=start_date,
             data=builder_data,
             timeline=instance.timeline
         )
