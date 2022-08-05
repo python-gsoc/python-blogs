@@ -1848,7 +1848,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data
         )
         
@@ -1864,7 +1864,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data
         )
         
@@ -1887,7 +1887,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data,
             timeline=instance.timeline
         )
@@ -1900,7 +1900,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=start_date.date,
+            activation_date=datetime.datetime.now(),
             data=builder_data,
             timeline=instance.timeline
         )

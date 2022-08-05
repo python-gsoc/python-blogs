@@ -467,7 +467,7 @@ def build_mid_term_reminder(builder):
             Scheduler.objects.create(
                 command="send_email",
                 data=scheduler_data,
-                activation_date=exam_date - timedelta(days=4)
+                activation_date=exam_date - timedelta(days=2)
             )
         else:
             tl_users = UserProfile.objects.filter(
@@ -499,7 +499,7 @@ def build_mid_term_reminder(builder):
             Scheduler.objects.create(
                 command="send_email",
                 data=scheduler_data,
-                activation_date=exam_date - timedelta(days=2)
+                activation_date=exam_date - (timedelta(days=2) if is_admin else timedelta(days=4))
             )
         return None
     except Exception as e:
