@@ -440,11 +440,18 @@ def build_mid_term_reminder(builder):
         exam_date = date + timedelta(days=1)
             
         if is_admin:
-            profiles = UserProfile.objects.filter(
+            tl_users = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role__in=[1,2],
+                role=3,
                 gsoc_end=end_date
             ).all()
+
+            tl_suborg = [user.suborg_full_name for user in tl_users]
+
+            profiles = UserProfile.objects.filter(
+                suborg_full_name__in=tl_suborg,
+                role__in=[1,2]
+            )
 
             template_data = {
                 "exam": "Midterm",
@@ -463,11 +470,18 @@ def build_mid_term_reminder(builder):
                 activation_date=exam_date - timedelta(days=4)
             )
         else:
-            profiles = UserProfile.objects.filter(
+            tl_users = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role=2,
+                role=3,
                 gsoc_end=end_date
             ).all()
+
+            tl_suborg = [user.suborg_full_name for user in tl_users]
+
+            profiles = UserProfile.objects.filter(
+                suborg_full_name__in=tl_suborg,
+                role__in=[1,2]
+            )
 
         for profile in profiles:
             template_data = {
