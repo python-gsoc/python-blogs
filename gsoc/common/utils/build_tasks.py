@@ -359,12 +359,19 @@ def build_final_term_reminder(builder):
         is_admin = data["admin"]
         
         if is_admin:
-            end_date = datetime.fromisoformat(date) + timedelta(days=4)
-            profiles = UserProfile.objects.filter(
+            end_date = datetime.fromisoformat(date) + timedelta(days=2)
+            tl_users = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role__in=[1,2],
+                role=3,
                 gsoc_end=end_date
             ).all()
+
+            tl_suborg = [user.suborg_full_name for user in tl_users]
+
+            profiles = UserProfile.objects.filter(
+                suborg_full_name__in=tl_suborg,
+                role__in=[1,2]
+            )
 
             template_data = {
                 "exam": "Final",
@@ -383,12 +390,19 @@ def build_final_term_reminder(builder):
                 activation_date=date
             )
         else:
-            end_date = datetime.fromisoformat(date) + timedelta(days=2)
-            profiles = UserProfile.objects.filter(
+            end_date = datetime.fromisoformat(date) + timedelta(days=4)
+            tl_users = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
-                role=2,
+                role=3,
                 gsoc_end=end_date
             ).all()
+
+            tl_suborg = [user.suborg_full_name for user in tl_users]
+
+            profiles = UserProfile.objects.filter(
+                suborg_full_name__in=tl_suborg,
+                role__in=[1,2]
+            )
 
         for profile in profiles:
             template_data = {

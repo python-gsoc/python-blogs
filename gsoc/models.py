@@ -1844,7 +1844,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         builder_data = json.dumps({
             "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
             "title": "Final term evaluation reminder",
-            "admin": True
+            "admin": False
         })
         Builder.objects.create(
             category="build_final_term_reminder",
@@ -1860,7 +1860,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         builder_data = json.dumps({
             "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
             "title": "Final term evaluation reminder",
-            "admin": False
+            "admin": True
         })
         Builder.objects.create(
             category="build_final_term_reminder",
@@ -1883,7 +1883,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         builder_data = json.dumps({
             "end_date": str(end_date),
             "title": "Mid term evaluation reminder",
-            "admin": True
+            "admin": False
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
@@ -1896,7 +1896,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         builder_data = json.dumps({
             "end_date": str(end_date),
             "title": "Mid term evaluation reminder",
-            "admin": False
+            "admin": True
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
