@@ -1851,7 +1851,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
             activation_date=start_date.date,
             data=builder_data
         )
-        
+
         notify_date -= datetime.timedelta(days=14)
 
     # notify mentors + suborg admins + PSF admins 2 days before due
@@ -1867,7 +1867,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
             activation_date=start_date.date,
             data=builder_data
         )
-        
+
         notify_date -= datetime.timedelta(days=14)
 
 
@@ -1904,5 +1904,5 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
             data=builder_data,
             timeline=instance.timeline
         )
-        
+
         end_date -= datetime.timedelta(days=14) if i != 0 else datetime.timedelta(days=13)

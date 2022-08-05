@@ -357,7 +357,7 @@ def build_final_term_reminder(builder):
         date = data["date"]
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
-        
+
         if is_admin:
             end_date = datetime.fromisoformat(date) + timedelta(days=2)
             tl_users = UserProfile.objects.filter(
@@ -370,7 +370,7 @@ def build_final_term_reminder(builder):
 
             profiles = UserProfile.objects.filter(
                 suborg_full_name__in=tl_suborg,
-                role__in=[1,2]
+                role__in=[1, 2]
             )
 
             template_data = {
@@ -401,7 +401,7 @@ def build_final_term_reminder(builder):
 
             profiles = UserProfile.objects.filter(
                 suborg_full_name__in=tl_suborg,
-                role__in=[1,2]
+                role__in=[1, 2]
             )
 
         for profile in profiles:
@@ -435,10 +435,12 @@ def build_mid_term_reminder(builder):
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
 
-        date = start_date.date + (datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date) / 2
+        date = start_date.date + (
+            datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date
+        ) / 2
 
         exam_date = date + timedelta(days=1)
-            
+
         if is_admin:
             tl_users = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
@@ -450,7 +452,7 @@ def build_mid_term_reminder(builder):
 
             profiles = UserProfile.objects.filter(
                 suborg_full_name__in=tl_suborg,
-                role__in=[1,2]
+                role__in=[1, 2]
             )
 
             template_data = {
@@ -480,7 +482,7 @@ def build_mid_term_reminder(builder):
 
             profiles = UserProfile.objects.filter(
                 suborg_full_name__in=tl_suborg,
-                role__in=[1,2]
+                role__in=[1, 2]
             )
 
         for profile in profiles:
