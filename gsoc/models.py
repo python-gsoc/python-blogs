@@ -648,6 +648,8 @@ class Builder(models.Model):
         ("build_add_end_to_calendar", "build_add_end_to_calendar"),
         ("build_add_end_standard_to_calendar", "build_add_end_standard_to_calendar"),
         ("build_add_start_to_calendar", "build_add_start_to_calendar"),
+        ("build_mid_term_reminder", "build_mid_term_reminder"),
+        ("build_final_term_reminder", "build_final_term_reminder"),
     )
 
     category = models.CharField(max_length=40, choices=categories)
@@ -1846,7 +1848,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=start_date,
+            activation_date=start_date.date,
             data=builder_data
         )
         
@@ -1862,7 +1864,7 @@ def build_schedule_finalterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_final_term_reminder",
-            activation_date=start_date,
+            activation_date=start_date.date,
             data=builder_data
         )
         
@@ -1885,7 +1887,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=start_date,
+            activation_date=start_date.date,
             data=builder_data,
             timeline=instance.timeline
         )
@@ -1898,7 +1900,7 @@ def build_schedule_midterm_reminder(sender, instance, **kwargs):
         })
         Builder.objects.create(
             category="build_mid_term_reminder",
-            activation_date=start_date,
+            activation_date=start_date.date,
             data=builder_data,
             timeline=instance.timeline
         )
