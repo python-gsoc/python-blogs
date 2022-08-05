@@ -357,9 +357,9 @@ def build_final_term_reminder(builder):
         date = data["date"]
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
-        end_date = datetime.fromisoformat(date) + timedelta(days=4)
-
+        
         if is_admin:
+            end_date = datetime.fromisoformat(date) + timedelta(days=4)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role__in=[1,2],
@@ -377,8 +377,9 @@ def build_final_term_reminder(builder):
                 subject="Final evaluation reminder",
                 template_data=template_data,
             )
-            Scheduler.objects.create(command="send_email", data=scheduler_data)
+            # Scheduler.objects.create(command="send_email", data=scheduler_data)
         else:
+            end_date = datetime.fromisoformat(date) + timedelta(days=2)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role=2,
@@ -408,14 +409,16 @@ def build_mid_term_reminder(builder):
     try:
         data = json.loads(builder.data)
         end_date = data["end_date"]
+        end_date_max = GsocEndDate.objects.latest('date')
         start_date = GsocStartDate.objects.latest('date')
         gsoc_year = GsocYear.objects.latest('gsoc_year')
         is_admin = data["admin"]
 
         date = start_date.date + (datetime.strptime(end_date, "%Y-%m-%d").date() - timedelta(days=7) - start_date.date) / 2
 
+        exam_date = date + timedelta(days=1)
+            
         if is_admin:
-            exam_date = date + timedelta(days=2)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role__in=[1,2],
@@ -433,9 +436,8 @@ def build_mid_term_reminder(builder):
                 subject="Midterm evaluation reminder",
                 template_data=template_data,
             )
-            Scheduler.objects.create(command="send_email", data=scheduler_data)
+            # Scheduler.objects.create(command="send_email", data=scheduler_data)
         else:
-            exam_date = date + timedelta(days=4)
             profiles = UserProfile.objects.filter(
                 gsoc_year=gsoc_year,
                 role=2,
