@@ -648,8 +648,7 @@ class Builder(models.Model):
         ("build_add_end_to_calendar", "build_add_end_to_calendar"),
         ("build_add_end_standard_to_calendar", "build_add_end_standard_to_calendar"),
         ("build_add_start_to_calendar", "build_add_start_to_calendar"),
-        ("build_mid_term_reminder", "build_mid_term_reminder"),
-        ("build_final_term_reminder", "build_final_term_reminder"),
+        ("build_evaluation_reminder", "build_evaluation_reminder"),
     )
 
     category = models.CharField(max_length=40, choices=categories)

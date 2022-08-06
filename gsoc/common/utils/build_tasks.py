@@ -430,7 +430,7 @@ def build_evaluation_reminder(builder):
             data=scheduler_data,
             activation_date=notify_date
         )
-    
+
     template_data = {
         "date": str(exam_date),
     }
