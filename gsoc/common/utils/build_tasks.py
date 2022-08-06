@@ -361,7 +361,7 @@ def build_evaluation_reminder(builder):
 
     gsoc_end = exam_date
     if is_midterm:
-        gsoc_end = start_date + 2 * (exam_date - start_date + timedelta(days=1)) + timedelta(days=7)
+        gsoc_end = start_date + 2 * (exam_date - start_date) + timedelta(days=7-1)
 
     # 4 days before
     notify_date = exam_date - timedelta(days=4)
