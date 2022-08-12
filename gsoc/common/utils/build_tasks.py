@@ -7,6 +7,7 @@ from django.utils import timezone
 from gsoc.settings import ADMINS
 
 from gsoc.models import (
+    DaysConf,
     Event,
     GsocEndDate,
     GsocEndDateDefault,
@@ -86,13 +87,19 @@ def build_post_blog_reminders(builder):
                 suborg_admins = UserProfile.objects.filter(
                     suborg_full_name=suborg, role=1
                 )
+                POST_BLOG_REMINDER_FIRST = DaysConf.objects.get(title="POST_BLOG_REMINDER_FIRST")
+                POST_BLOG_REMINDER_SECOND = DaysConf.objects.get(title="POST_BLOG_REMINDER_SECOND")
 
                 activation_date = builder.activation_date.date()
 
-                if activation_date - due_date.date == timezone.timedelta(days=1):
+                if activation_date - due_date.date == timezone.timedelta(
+                    days=POST_BLOG_REMINDER_FIRST.days
+                ):
                     student_template = "first_post_blog_reminder_student.html"
 
-                elif activation_date - due_date.date == timezone.timedelta(days=3):
+                elif activation_date - due_date.date == timezone.timedelta(
+                    days=POST_BLOG_REMINDER_SECOND.days
+                ):
                     student_template = "second_post_blog_reminder_student.html"
 
                     mentors_emails = ["gsoc-admins@python.org"]
