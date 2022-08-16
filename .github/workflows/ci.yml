@@ -47,7 +47,7 @@ jobs:
     - name: Set up MySql
       run: |
         sudo /etc/init.d/mysql start
-        sudo mysql -u root
+        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'abcd1234';"
     - name: Run Migrations
       run: |
         python manage.py migrate
