@@ -18,8 +18,9 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: 
-          MYSQL_DATABASE: pythonblogs
+          DB_DATABASE: pythonblogs
+          DB_USER: root
+          DB_PASSWORD:
         ports: ['3306:3306']
 
     steps:
@@ -43,10 +44,10 @@ jobs:
       run: |
         cp settings_local.py.template settings_local.py
 
-    - name: Create test database
+    - name: Set up MySql
       run: |
         sudo /etc/init.d/mysql start
-        mysql -u root
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
     - name: Run Migrations
       run: |
         python manage.py migrate
