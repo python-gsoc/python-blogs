@@ -46,6 +46,8 @@ jobs:
 
     - name: Set up MySql
       run: |
+        sudo mkdir -p /var/run/mysqld
+        sudo chown mysql:mysql /var/run/mysqld
         sudo mysqld_safe --skip-grant-tables
         sudo mysql -u root
         sudo mysql -e 'FLUSH PRIVILEGES;'
