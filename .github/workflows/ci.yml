@@ -47,7 +47,7 @@ jobs:
     - name: Set up MySql
       run: |
         sudo /etc/init.d/mysql start
-        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'abcd1234';"
+        sudo mysql -e "ALTER USER 'root'@'127.0.0.1' IDENTIFIED WITH mysql_native_password BY 'abcd1234';"
     - name: Run Migrations
       run: |
         python manage.py migrate
@@ -57,7 +57,7 @@ jobs:
         DBNAME: python_blogs
         DBUSER: root
         DBPASSWORD: 
-        DBHOST: localhost
+        DBHOST: 127.0.0.1
         DBPORT: $
     - name: Run Tests
       run: |
@@ -67,5 +67,5 @@ jobs:
         DBNAME: python_blogs
         DBUSER: root
         DBPASSWORD: 
-        DBHOST: localhost
+        DBHOST: 127.0.0.1
         DBPORT: $
