@@ -22,6 +22,7 @@ jobs:
           DB_USER: root
           DB_PASSWORD:
         ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - uses: actions/checkout@v3
@@ -47,7 +48,7 @@ jobs:
     - name: Set up MySql
       run: |
         sudo /etc/init.d/mysql start
-        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot -e "SHOW GRANTS FOR 'root'@'localhost'"
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot
         mysql -u root
         mysql 'CREATE DATABASE python_blogs';
     - name: Run Migrations
