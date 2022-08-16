@@ -45,7 +45,8 @@ jobs:
 
     - name: Create test database
       run: |
-        **sudo systemctl start mysql** mysql -u root
+        sudo /etc/init.d/mysql start
+        mysql -u root
     - name: Run Migrations
       run: |
         python manage.py migrate
