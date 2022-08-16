@@ -47,8 +47,7 @@ jobs:
     - name: Set up MySql
       run: |
         sudo service mysql start
-        sudo mysql -uroot -proot
-        sudo mysql -e 'CREATE DATABASE python_blogs;'
+        sudo mysql -uroot -proot -e 'CREATE DATABASE python_blogs;'
     - name: Run Migrations
       run: |
         python manage.py migrate
