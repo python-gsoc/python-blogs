@@ -46,6 +46,7 @@ jobs:
 
     - name: Set up MySql
       run: |
+        sudo service mysql start
         sudo mysql -u root
     - name: Run Migrations
       run: |
