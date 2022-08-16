@@ -33,13 +33,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Copy settings
+      run: |
+        cp settings_local.py.template settings_local.py
     - name: Run Migrations
-      run: python manage.py migrate
+      run: |
+        python manage.py migrate
+        python manage.py loaddata data.json
       env: 
         DBENGINE: django.db.backends.mysql
-        DBNAME: mysql
+        DBNAME: pythonblogs
         DBUSER: root
-        DBPASSWORD: zergling
+        DBPASSWORD: 
         DBHOST: 127.0.0.1
         DBPORT: $
     - name: Run Tests
@@ -47,8 +52,8 @@ jobs:
         python manage.py test
       env: 
         DBENGINE: django.db.backends.mysql
-        DBNAME: mysql
+        DBNAME: pythonblogs
         DBUSER: root
-        DBPASSWORD: zergling
+        DBPASSWORD: 
         DBHOST: 127.0.0.1
         DBPORT: $
