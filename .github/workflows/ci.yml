@@ -46,11 +46,11 @@ jobs:
 
     - name: Set up MySql
       run: |
+        sudo mysqld_safe --skip-grant-tables
+        sudo mysql -u root
+        sudo mysql -e 'FLUSH PRIVILEGES;'
+        sudo mysql -e 'ALTER USER 'root'@'localhost' IDENTIFIED BY 'newpassword';'
         sudo /etc/init.d/mysql start
-        sudo mysql -u root --skip-password
-        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';""
-        sudo mysql -u root -p 123456
-        sudo mysql -e 'CREATE DATABASE python_blogs;''
     - name: Run Migrations
       run: |
         python manage.py migrate
