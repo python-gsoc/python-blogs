@@ -21,6 +21,27 @@ To setup settings copy settings_local.py.template to the root of the dir
 cp settings_local.py.template settings_local.py
 ```
 
+## Setup database
+- Download and install [XAMPP](https://www.apachefriends.org/download.html) or any other MySQL server
+- Open Xampp/MySql Shell
+- Login to MySql (default user:'root', default pass:'')
+```
+mysql -u root 
+```
+- Create a database
+```
+CREATE DATABASE python_blogs;
+```
+- Update username and password in the settings_local.py
+- Run migrate command
+```
+python manage.py migrate
+```
+- Run command to load data
+```
+python manage.py loaddata data.json
+```
+
 ## Usage
 
 ```python
@@ -35,6 +56,16 @@ Default student users are `student-1`, `student-2`, `student-3` and `student-4` 
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Google OAuth
+- Go to https://console.cloud.google.com/ and create a new project
+- Enable Google Calendar API and create an OAuth 2.0 client ID
+- add following on the Authorised redirect URIs of OAuth client ID
+```bash
+http://localhost/
+```
+- Download the JSON file and rename it to `credentials.json`
+- Move the file to the root folder of the project
 
 ## Virtualenv
 

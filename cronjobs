@@ -1,4 +1,4 @@
 0 0 * * 2 root /usr/bin/mysqldump -u root --databases blog_data | gzip > /tmp/database_$(date +\%m-\%d-\%H).sql.gz
-* * * * * apache /usr/bin/echo `date` &>> /var/www/python-blogs/python-blogs/logs/cron.log.$(date +\%Y-\%m-\%d);/var/www/python-blogs/venv/bin/python /var/www/python-blogs/python-blogs/manage.py runcron &>> /var/www/python-blogs/python-blogs/logs/cron.log.$(date +\%Y-\%m-\%d)
-* * * * * apache ( cd /var/www/python-blogs/python-blogs && /usr/bin/git pull && chown -R apache.apache /var/www/python-blogs ) > /dev/null 2>&1
+1 * * * * apache /usr/bin/echo `date` &>> /var/www/python-blogs/python-blogs/logs/cron.log.$(date +\%Y-\%m-\%d);/var/www/python-blogs/venv/bin/python /var/www/python-blogs/python-blogs/manage.py runcron &>> /var/www/python-blogs/python-blogs/logs/cron.log.$(date +\%Y-\%m-\%d)
+1 * * * * apache ( cd /var/www/python-blogs/python-blogs && /usr/bin/git pull && chown -R apache.apache /var/www/python-blogs ) > /dev/null 2>&1
 0 0 * * 2 root systemctl restart httpd > /dev/null

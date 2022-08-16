@@ -1,6 +1,8 @@
+import re
 from PIL import Image
 
 from .models import (
+    ArticleReview,
     UserDetails,
     UserProfile,
     RegLink,
@@ -51,7 +53,7 @@ class RegLinkForm(forms.ModelForm):
 class BlogPostDueDateForm(forms.ModelForm):
     class Meta:
         model = BlogPostDueDate
-        fields = ("title", "date", "category")
+        fields = ("category", "date", "title")
 
 
 class EventForm(forms.ModelForm):
@@ -76,6 +78,12 @@ class AcceptanceForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
     reglink = forms.CharField(widget=forms.HiddenInput())
+
+
+class ArticleReviewForm(forms.ModelForm):
+    class Meta:
+        model: ArticleReview
+        fields = ("article", "is_reviewed", "last_reviewed_by")
 
 
 class SubOrgApplicationForm(forms.ModelForm):
@@ -121,8 +129,12 @@ class SubOrgApplicationForm(forms.ModelForm):
 
         if not suborg and suborg_name:
             suborg = SubOrg.objects.filter(suborg_name=suborg_name)
-            if len(suborg) > 0:
+            if suborg:
                 cd["suborg"] = suborg.first()
+            else:
+                regex = r'^[ a-zA-Z\-]*$'
+                if not re.match(regex, suborg_name):
+                    raise ValidationError("Invalid suborg name.")
         elif suborg and not suborg_name:
             cd["suborg_name"] = suborg.suborg_name
         elif suborg and suborg_name:

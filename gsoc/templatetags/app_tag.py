@@ -39,3 +39,8 @@ def time_zone(context, flag=0):
         return gmtTime
     else:
         return TIME_ZONE
+
+
+@register.filter
+def get_author(value):
+    return value[0].owner.id

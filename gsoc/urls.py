@@ -122,3 +122,18 @@ urlpatterns += [
     url("admin/export", gsoc.views.export_mentors, name="export_mentors"),
     url("export", gsoc.views.export_view, name="export_view")
 ]
+
+# Google OAuth
+urlpatterns += [
+    url("authorize", gsoc.views.authorize, name="auth"),
+    url("oauth2callback", gsoc.views.oauth2callback, name="oauth2callback")
+]
+
+# Review all articles at once
+urlpatterns += [
+    path(
+        "mark_all_reviewed/<int:author_id>",
+        gsoc.views.mark_all_article_as_reviewed,
+        name="mark_all_reviewed"
+    )
+]

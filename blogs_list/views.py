@@ -49,6 +49,8 @@ def list_blogs(request):
                 )
 
         if flag:
+            ip_seed = int(request.META.get("REMOTE_ADDR").replace(".", ""))
+            random.seed(ip_seed)
             random.shuffle(blogset)
             blogsets.append((year.gsoc_year, blogset))
 

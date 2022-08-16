@@ -1,6 +1,6 @@
 The due date for the weekly blog ({{ due_date }}) has passed and you have not made a blog post yet.<br />
 <br />
-It looks like you have {{ current_blog_count -1 }} blog post(s) pending. Make sure to get your posts in as soon as possible. <br />
+It looks like you have {{ current_blog_count|add:"-1" }} blog post(s) pending. Make sure to get your posts in as soon as possible. <br />
 <br />
 <b>Blogging is recommended for Python Software Foundation GSoC Contributors, since that's how the org admin teams ensure that contributors are still active.  Inactive contributors will be given failing grades.</b><br />
 <br />
