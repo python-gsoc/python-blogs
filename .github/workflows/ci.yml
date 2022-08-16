@@ -42,6 +42,10 @@ jobs:
     - name: Copy settings
       run: |
         cp settings_local.py.template settings_local.py
+
+    - name: Create test database
+      run: |
+        **sudo systemctl start mysql** mysql -u root
     - name: Run Migrations
       run: |
         python manage.py migrate
