@@ -47,7 +47,7 @@ jobs:
     - name: Set up MySql
       run: |
         sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u ${{ env.DB_USER }}
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }}
     - name: Run Migrations
       run: |
         python manage.py migrate
