@@ -56,7 +56,7 @@ jobs:
         DBNAME: pythonblogs
         DBUSER: root
         DBPASSWORD: 
-        DBHOST: 127.0.0.1
+        DBHOST: localhost
         DBPORT: $
     - name: Run Tests
       run: |
@@ -66,5 +66,5 @@ jobs:
         DBNAME: pythonblogs
         DBUSER: root
         DBPASSWORD: 
-        DBHOST: 127.0.0.1
+        DBHOST: localhost
         DBPORT: $
