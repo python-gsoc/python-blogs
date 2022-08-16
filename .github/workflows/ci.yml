@@ -47,7 +47,8 @@ jobs:
     - name: Set up MySql
       run: |
         sudo /etc/init.d/mysql start
-        sudo mysql -h127.0.0.1 -uroot
+        sudo service mysql stop
+        sudo mysqld_safe --skip-grant-tables
     - name: Run Migrations
       run: |
         python manage.py migrate
