@@ -1640,7 +1640,7 @@ def decrease_blog_counter(sender, instance, **kwargs):
                 up.current_blog_count -= 1
                 print("Decreasing", up.current_blog_count)
                 up.save()
-        except:
+        except Exception:
             pass
 
 
