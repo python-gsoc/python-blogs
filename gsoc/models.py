@@ -1634,14 +1634,11 @@ def send_comment_notification(sender, instance, **kwargs):
 def decrease_blog_counter(sender, instance, **kwargs):
     if not instance.pk:
         section = instance.app_config
-        try:
-            up = UserProfile.objects.get(app_config=section)
-            if up.current_blog_count > 0:
-                up.current_blog_count -= 1
-                print("Decreasing", up.current_blog_count)
-                up.save()
-        except:
-            pass
+        up = UserProfile.objects.get(app_config=section)
+        if up.current_blog_count > 0:
+            up.current_blog_count -= 1
+            print("Decreasing", up.current_blog_count)
+            up.save()
 
 
 # Add ArticleReveiw object when new Article is created
