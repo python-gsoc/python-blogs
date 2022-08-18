@@ -1,0 +1,71 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7.5]
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          DB_DATABASE: python_blogs
+          DB_USER: root
+          DB_PASSWORD:
+        ports: ['3306:3306']
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Copy settings
+      run: |
+        cp settings_local.py.template settings_local.py
+
+    - name: Set up MySql
+      run: |
+        sudo service mysql start
+        sudo mysql -uroot -proot -e 'CREATE DATABASE python_blogs;'
+    - name: Run Migrations
+      run: |
+        python manage.py migrate
+        python manage.py loaddata data.json
+      env: 
+        DBENGINE: django.db.backends.mysql
+        DBNAME: python_blogs
+        DBUSER: root
+        DBPASSWORD: 
+        DBHOST: 127.0.0.1
+        DBPORT: $
+    - name: Run Tests
+      run: |
+        python manage.py test
+      env: 
+        DBENGINE: django.db.backends.mysql
+        DBNAME: python_blogs
+        DBUSER: root
+        DBPASSWORD: 
+        DBHOST: 127.0.0.1
+        DBPORT: $
