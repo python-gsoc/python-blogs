@@ -162,109 +162,121 @@ def build_remove_user_details(builder):
 def build_add_timeline_to_calendar(builder):
     data = json.loads(builder.data)
     if not data["calendar_id"]:
+        try:
+            creds = getCreds()
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
+                calendar = service.calendars().insert(body=calendar).execute()
+                timeline = Timeline.objects.get(id=data["timeline_id"])
+                timeline.calendar_id = calendar.get("id")
+                timeline.save()
+            else:
+                raise Exception(
+                    f"Please get the Access Token: " +
+                    f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+                )
+        except Exception as e:
+            return str(e)
+
+
+def build_add_bpdd_to_calendar(builder):
+    data = json.loads(builder.data)
+    try:
         creds = getCreds()
         if creds:
             service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-            calendar = {"summary": "GSoC @ PSF Calendar", "timezone": "UTC"}
-            calendar = service.calendars().insert(body=calendar).execute()
-            timeline = Timeline.objects.get(id=data["timeline_id"])
-            timeline.calendar_id = calendar.get("id")
-            timeline.save()
+            event = {
+                "summary": data["title"],
+                "start": {"date": data["date"]},
+                "end": {"date": data["date"]},
+            }
+            cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
+            if not data["event_id"]:
+                event = (
+                    service.events()
+                    .insert(calendarId=cal_id, body=event)
+                    .execute()
+                )
+                item = BlogPostDueDate.objects.get(id=data["id"])
+                item.event_id = event.get("id")
+                item.save()
+            else:
+                service.events().update(
+                    calendarId=cal_id, eventId=data["event_id"], body=event
+                ).execute()
         else:
             raise Exception(
                 f"Please get the Access Token: " +
                 f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
             )
-
-
-def build_add_bpdd_to_calendar(builder):
-    data = json.loads(builder.data)
-    creds = getCreds()
-    if creds:
-        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-        event = {
-            "summary": data["title"],
-            "start": {"date": data["date"]},
-            "end": {"date": data["date"]},
-        }
-        cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
-        if not data["event_id"]:
-            event = (
-                service.events()
-                .insert(calendarId=cal_id, body=event)
-                .execute()
-            )
-            item = BlogPostDueDate.objects.get(id=data["id"])
-            item.event_id = event.get("id")
-            item.save()
-        else:
-            service.events().update(
-                calendarId=cal_id, eventId=data["event_id"], body=event
-            ).execute()
-    else:
-        raise Exception(
-            f"Please get the Access Token: " +
-            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-        )
+    except Exception as e:
+        return str(e)
 
 
 def build_add_event_to_calendar(builder):
     data = json.loads(builder.data)
-    creds = getCreds()
-    if creds:
-        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-        event = {
-            "summary": data["title"],
-            "start": {"date": data["start_date"]},
-            "end": {"date": data["end_date"]},
-        }
-        cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
-        item = Event.objects.get(id=data["id"])
-        if not data["event_id"]:
-            event = (
-                service.events()
-                .insert(calendarId=cal_id, body=event)
-                .execute()
-            )
-            item.event_id = event.get("id")
-            item.save()
+    try:
+        creds = getCreds()
+        if creds:
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            event = {
+                "summary": data["title"],
+                "start": {"date": data["date"]},
+                "end": {"date": data["date"]},
+            }
+            cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
+            item = Event.objects.get(id=data["id"])
+            if not data["event_id"]:
+                event = (
+                    service.events()
+                    .insert(calendarId=cal_id, body=event)
+                    .execute()
+                )
+                item.event_id = event.get("id")
+                item.save()
+            else:
+                service.events().update(
+                    calendarId=cal_id, eventId=item.event_id, body=event
+                ).execute()
         else:
-            service.events().update(
-                calendarId=cal_id, eventId=item.event_id, body=event
-            ).execute()
-    else:
-        raise Exception(
-            f"Please get the Access Token: " +
-            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-        )
+            raise Exception(
+                f"Please get the Access Token: " +
+                f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+            )
+    except Exception as e:
+        return str(e)
 
 
 def build_add_end_to_calendar(builder):
     data = json.loads(builder.data)
-    creds = getCreds()
-    if creds:
-        service = build("calendar", "v3", credentials=creds, cache_discovery=False)
-        event = {
-            "summary": data["title"],
-            "start": {"date": data["date"]},
-            "end": {"date": data["date"]},
-        }
-        cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
-        if not data["event_id"]:
-            event = (
-                service.events()
-                .insert(calendarId=cal_id, body=event)
-                .execute()
-            )
-            item = GsocEndDate.objects.get(id=data["id"])
-            item.event_id = event.get("id")
-            item.save()
+    try:
+        creds = getCreds()
+        if creds:
+            service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+            event = {
+                "summary": data["title"],
+                "start": {"date": data["date"]},
+                "end": {"date": data["date"]},
+            }
+            cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
+            if not data["event_id"]:
+                event = (
+                    service.events()
+                    .insert(calendarId=cal_id, body=event)
+                    .execute()
+                )
+                item = GsocEndDate.objects.get(id=data["id"])
+                item.event_id = event.get("id")
+                item.save()
+            else:
+                service.events().update(
+                    calendarId=cal_id, eventId=data["event_id"], body=event
+                ).execute()
         else:
-            service.events().update(
-                calendarId=cal_id, eventId=data["event_id"], body=event
-            ).execute()
-    else:
-        raise Exception(
-            f"Please get the Access Token: " +
-            f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-        )
+            raise Exception(
+                f"Please get the Access Token: " +
+                f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
+            )
+    except Exception as e:
+        return str(e)
