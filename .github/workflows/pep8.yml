@@ -24,6 +24,7 @@ jobs:
 
       - name: Check style
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            pycodestyle --first $file
+          for file in ${{ steps.changed-files.outputs.all_changed_files }};
+          do if [[ $file == *.py ]];
+          then pycodestyle --first $file
           done
