@@ -149,5 +149,6 @@ class SubOrgApplicationForm(forms.ModelForm):
             raise ValidationError(
                 "At least one out of the five contact " "details should be entered"
             )
-
+        
         return cd
+     
