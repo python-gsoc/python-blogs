@@ -173,3 +173,12 @@ article > heading {
 form textarea {
     border-radius: 0 0 4px 4px !important;
 }
+
+.align-right {
+    display: block;
+    margin-left: auto;
+}
+
+.align-center {
+    text-align:center;
+}

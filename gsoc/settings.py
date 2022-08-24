@@ -411,6 +411,7 @@ CKEDITOR_SETTINGS = {
         {"name": "colors", "items": ["TextColor", "BGColor"]},
     ],
     "toolbarCanCollapse": False,
+    "image2_alignClasses": [ 'align-left', 'align-center', 'align-right' ],
 }
 
 TEXT_ADDITIONAL_TAGS = ("iframe",)
