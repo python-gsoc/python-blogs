@@ -171,7 +171,6 @@ def save(self, *args, **kwargs):
     tags = settings.BLEACH_ALLOWED_TAGS
     attrs = bleach.sanitizer.ALLOWED_ATTRIBUTES
     attrs.update(settings.BLEACH_ALLOWED_ATTRS)
-    styles = settings.BLEACH_ALLOWED_STYLES
     self.lead_in = bleach.clean(
         self.lead_in, tags=tags, attributes=attrs, css_sanitizer=css_sanitizer
     )
