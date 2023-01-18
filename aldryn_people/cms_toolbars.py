@@ -44,10 +44,12 @@ def get_obj_from_request(model, request,
         return None
 
 
-def get_admin_url(action, action_args=[], **url_args):
+def get_admin_url(action, action_args=None, **url_args):
     """
     Convenience method for constructing admin-urls with GET parameters.
     """
+    if action_args == None: 
+        action_args = [] 
     base_url = admin_reverse(action, args=action_args)
     # Converts [{key: value}, …] => ["key=value", …]
     url_arg_list = sorted(iteritems(url_args))
