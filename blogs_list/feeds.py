@@ -8,11 +8,11 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
 from django.template import RequestContext
-from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseNotFound
 
-from gsoc.models import UserProfile, GsocYear
+from django.core.exceptions import ObjectDoesNotExist
+
+
+
 
 from aldryn_newsblog.cms_appconfig import NewsBlogConfig
 from aldryn_newsblog.models import Article
@@ -112,8 +112,8 @@ class BlogsFeed(Feed):
         year_qs = GsocYear.objects.filter(gsoc_year=gsoc_year)
         if len(year_qs) == 0:
             raise ObjectDoesNotExist
-        else:
-            self.year = year_qs.first().gsoc_year
+        
+        
         self.title = f"GSoC {self.year} PSF Blogs"
         year_start = timezone.datetime(self.year, 1, 1)
         year_end = timezone.datetime(self.year, 12, 31)
@@ -138,15 +138,15 @@ class BlogsFeed(Feed):
         except ValueError:
             raise ObjectDoesNotExist
         count = len(articles_all)
-        self.last_page = count < self.page * 15 and count >= (self.page - 1) * 15
+        self.last_page = (self.page - 1) * 15 <=  count  < self.page * 15
         self.last_page = math.ceil(count / 15)
         start_index = (self.page - 1) * 15
         end_index = self.page * 15
         if self.page >= 1 and self.page <= self.last_page:
             articles = list(articles_all[start_index:end_index])
             return articles
-        else:
-            return []
+       
+       
 
     def feed_extra_kwargs(self, obj):
         return {
@@ -156,7 +156,7 @@ class BlogsFeed(Feed):
             "year": self.year,
         }
 
-    def feed_url(self, obj):
+    def feed_url(self):
         return f"{settings.INETLOCATION}/feed/?y={self.year}&p={self.page}"
 
     def items(self, obj):
@@ -183,19 +183,19 @@ class BlogsFeed(Feed):
         return item.publishing_date
 
     def item_guid(self, item):
-        site = Site.objects.first()
+        
         return self.item_link(item)
 
-    def item_guid_is_permalink(self, item):
+    def item_guid_is_permalink(self):
         return True
 
     def item_link(self, item):
-        site = Site.objects.first()
+        
         section = item.app_config
         p = Page.objects.get(
             application_namespace=section.namespace, publisher_is_draft=False
         )
-        url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug, "/")
+        url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug)
         return url
 
 
@@ -211,10 +211,10 @@ class ArticlesFeed(Feed):
     def description(self):
         return f"Updates on different articles published on {self.blog_title}"
 
-    def feed_url(self, obj):
+    def feed_url(self):
         return f"{settings.INETLOCATION}/en/feed/{self.blog_slug}/"
 
-    def get_object(self, request, blog_slug):
+    def get_object(self, blog_slug):
         self.blog_slug = blog_slug
         page = Title.objects.get(slug=blog_slug, publisher_is_draft=False).page
         section = NewsBlogConfig.objects.get(namespace=page.application_namespace)
@@ -246,17 +246,17 @@ class ArticlesFeed(Feed):
         return item.publishing_date
 
     def item_guid(self, item):
-        site = Site.objects.first()
+        
         return self.item_link(item)
 
-    def item_guid_is_permalink(self, item):
+    def item_guid_is_permalink(self):
         return True
 
     def item_link(self, item):
-        site = Site.objects.first()
+        
         section = item.app_config
         p = Page.objects.get(
             application_namespace=section.namespace, publisher_is_draft=False
         )
-        url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug, "/")
+        url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug)
         return url
