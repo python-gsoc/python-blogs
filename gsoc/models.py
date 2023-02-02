@@ -5,6 +5,7 @@ import uuid
 import json
 import bleach
 from urllib.parse import urljoin
+from bleach.css_sanitizer import CSSSanitizer
 
 from bs4 import BeautifulSoup
 from django.db.models.deletion import PROTECT
@@ -166,12 +167,12 @@ Article.add_to_class("get_root_comments", get_root_comments)
 
 
 def save(self, *args, **kwargs):
+    css_sanitizer = CSSSanitizer(allowed_css_properties=settings.BLEACH_ALLOWED_STYLES)
     tags = settings.BLEACH_ALLOWED_TAGS
     attrs = bleach.sanitizer.ALLOWED_ATTRIBUTES
     attrs.update(settings.BLEACH_ALLOWED_ATTRS)
-    styles = settings.BLEACH_ALLOWED_STYLES
     self.lead_in = bleach.clean(
-        self.lead_in, tags=tags, attributes=attrs
+        self.lead_in, tags=tags, attributes=attrs, css_sanitizer=css_sanitizer
     )
     soup = BeautifulSoup(self.lead_in, "html5lib")
     for iframe_tag in soup.find_all("iframe"):
