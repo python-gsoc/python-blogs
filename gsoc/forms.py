@@ -111,9 +111,15 @@ class SubOrgApplicationForm(forms.ModelForm):
         suborg = cd.get("suborg")
         logo = cd.get("logo")
 
-        im = Image.open(logo)
-        width, height = im.size
+        try:
+            im = Image.open(logo)
+            width, height = im.size
 
+            if width != 256 or height != 256:
+                raise ValidationError("The image should of size 256 x 256 pixels")
+        except:
+            raise ValidationError("You must have a logo")
+            
         contact = [
             cd.get("chat", None),
             cd.get("mailing_list", None),
@@ -123,9 +129,6 @@ class SubOrgApplicationForm(forms.ModelForm):
         ]
 
         contact = list(filter(lambda a: a is not None, contact))
-
-        if width != 256 or height != 256:
-            raise ValidationError("The image should of size 256 x 256 pixels")
 
         if not suborg and suborg_name:
             suborg = SubOrg.objects.filter(suborg_name=suborg_name)
