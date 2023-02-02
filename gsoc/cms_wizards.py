@@ -18,7 +18,7 @@ from aldryn_newsblog.cms_wizards import (
     NewsBlogArticleWizard,
     get_published_app_configs,
     newsblog_article_wizard,
-)
+    )
 
 from parler.forms import TranslatableModelForm
 
@@ -73,7 +73,7 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
         get_published_app_configs()
 
         gsoc_year = GsocYear.objects.first()
-        student_role = {i[1]:i[0] for i in UserProfile.ROLES}['Student']
+        student_role = {i[1]: i[0] for i in UserProfile.ROLES}['Student']
         userprofiles = self.user.userprofile_set.filter(gsoc_year=gsoc_year,
                                                         role=student_role)
 
@@ -84,11 +84,11 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
         for profile in userprofiles:
             app_config_choices.append(
                 (profile.app_config.pk, profile.app_config.get_app_title())
-            )
+                )
 
         self.fields["app_config"] = forms.ChoiceField(
             label=_("Section"), required=True, choices=app_config_choices
-        )
+            )
 
     def clean(self):
         cd = self.cleaned_data
@@ -111,6 +111,6 @@ newsblog_article_wizard = NewsBlogArticleWizard(
     weight=200,
     form=CreateNewsBlogArticleForm,
     description=_(u"Create a new news/blog article."),
-)
+    )
 
 wizard_pool.register(newsblog_article_wizard)

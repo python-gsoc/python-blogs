@@ -25,4 +25,4 @@ urlpatterns = [
 
     url(r'^$',
         GroupListView.as_view(), name='group-list'),
-]
+    ]

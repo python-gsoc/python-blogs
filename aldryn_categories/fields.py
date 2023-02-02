@@ -8,7 +8,7 @@ from django.db.models.fields.related import (
     ManyToManyField,
     OneToOneField,
     CASCADE
-)
+    )
 from django.forms.models import ModelChoiceField, ModelMultipleChoiceField
 from django.utils.html import escape
 from django.utils.safestring import mark_safe

@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from cms.admin.placeholderadmin import (
     FrontendEditableAdminMixin, PlaceholderAdminMixin,
-)
+    )
 
 from aldryn_apphooks_config.admin import BaseAppHookConfig, ModelAppHookConfig
 from aldryn_people.models import Person
@@ -68,7 +68,7 @@ class ArticleAdminForm(TranslatableModelForm):
             'slug',
             'tags',
             'title',
-        ]
+            ]
 
     def __init__(self, *args, **kwargs):
         super(ArticleAdminForm, self).__init__(*args, **kwargs)
@@ -99,23 +99,23 @@ class ArticleAdminForm(TranslatableModelForm):
 
 
 class ArticleAdmin(
-    AllTranslationsMixin,
-    PlaceholderAdminMixin,
-    FrontendEditableAdminMixin,
-    ModelAppHookConfig,
-    TranslatableAdmin
-):
+        AllTranslationsMixin,
+        PlaceholderAdminMixin,
+        FrontendEditableAdminMixin,
+        ModelAppHookConfig,
+        TranslatableAdmin
+        ):
     form = ArticleAdminForm
     list_display = ('title', 'app_config', 'slug', 'is_featured',
                     'is_published')
     list_filter = [
         'app_config',
         'categories',
-    ]
+        ]
     actions = (
         make_featured, make_not_featured,
         make_published, make_unpublished,
-    )
+        )
     fieldsets = (
         (None, {
             'fields': (
@@ -126,8 +126,8 @@ class ArticleAdmin(
                 'is_featured',
                 'featured_image',
                 'lead_in',
-            )
-        }),
+                )
+            }),
         (_('Meta Options'), {
             'classes': ('collapse',),
             'fields': (
@@ -135,8 +135,8 @@ class ArticleAdmin(
                 'meta_title',
                 'meta_description',
                 'meta_keywords',
-            )
-        }),
+                )
+            }),
         (_('Advanced Settings'), {
             'classes': ('collapse',),
             'fields': (
@@ -145,15 +145,15 @@ class ArticleAdmin(
                 'related',
                 'owner',
                 'app_config',
-            )
-        }),
-    )
+                )
+            }),
+        )
     filter_horizontal = [
         'categories',
-    ]
+        ]
     app_config_values = {
         'default_published': 'is_published'
-    }
+        }
     app_config_selection_title = ''
     app_config_selection_desc = ''
 
@@ -178,18 +178,18 @@ admin.site.register(models.Article, ArticleAdmin)
 
 
 class NewsBlogConfigAdmin(
-    AllTranslationsMixin,
-    PlaceholderAdminMixin,
-    BaseAppHookConfig,
-    TranslatableAdmin
-):
+        AllTranslationsMixin,
+        PlaceholderAdminMixin,
+        BaseAppHookConfig,
+        TranslatableAdmin
+        ):
     def get_config_fields(self):
         return (
             'app_title', 'permalink_type', 'non_permalink_handling',
             'template_prefix', 'paginate_by', 'pagination_pages_start',
             'pagination_pages_visible', 'exclude_featured',
             'create_authors', 'search_indexed', 'config.default_published',
-        )
+            )
 
 
 admin.site.register(models.NewsBlogConfig, NewsBlogConfigAdmin)

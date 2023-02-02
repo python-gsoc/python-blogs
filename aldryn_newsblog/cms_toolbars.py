@@ -13,7 +13,7 @@ from cms.toolbar_pool import toolbar_pool
 from aldryn_apphooks_config.utils import get_app_instance
 from aldryn_translation_tools.utils import (
     get_admin_url, get_object_from_request,
-)
+    )
 
 from .cms_appconfig import NewsBlogConfig
 from .models import Article

@@ -27,6 +27,7 @@ class LanguageChangerMixin(object):
     """
     Convenience mixin that adds CMS Language Changer support.
     """
+
     def get(self, request, *args, **kwargs):
         if not hasattr(self, 'object'):
             self.object = self.get_object()

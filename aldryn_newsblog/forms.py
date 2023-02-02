@@ -10,6 +10,7 @@ class AutoAppConfigFormMixin(object):
     """
     If there is only a single AppConfig to choose, automatically select it.
     """
+
     def __init__(self, *args, **kwargs):
         super(AutoAppConfigFormMixin, self).__init__(*args, **kwargs)
         if 'app_config' in self.fields:
@@ -56,7 +57,7 @@ class NewsBlogLatestArticlesPluginForm(AutoAppConfigFormMixin,
         fields = [
             'app_config', 'latest_articles', 'exclude_featured',
             'cache_duration'
-        ]
+            ]
 
 
 class NewsBlogTagsPluginForm(AutoAppConfigFormMixin, forms.ModelForm):

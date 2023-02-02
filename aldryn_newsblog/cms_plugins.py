@@ -25,7 +25,7 @@ class TemplatePrefixMixin(object):
             return add_prefix_to_path(
                 self.render_template,
                 instance.app_config.template_prefix
-            )
+                )
         return self.render_template
 
 
@@ -78,7 +78,7 @@ class NewsBlogArchivePlugin(AdjustableCacheMixin, NewsBlogPlugin):
         context['dates'] = queryset.get_months(
             request,
             namespace=instance.app_config.namespace
-        )
+            )
         return context
 
 

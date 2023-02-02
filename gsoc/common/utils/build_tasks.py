@@ -17,7 +17,7 @@ from gsoc.models import (
     BlogPostDueDate,
     Scheduler,
     ReaddUser
-)
+    )
 from gsoc.common.utils.tools import build_send_mail_json
 
 from googleapiclient.discovery import build
@@ -33,25 +33,25 @@ def build_pre_blog_reminders(builder):
             gsoc_year=gsoc_year,
             role=3,
             gsoc_end__gte=due_date.date
-        ).all()
+            ).all()
         categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
         category = categories[due_date.category][1]
         for profile in profiles:
             if profile.current_blog_count != 0 and not (
-                profile.hidden or profile.reminder_disabled
-            ):
+                    profile.hidden or profile.reminder_disabled
+                    ):
                 template_data = {
                     "current_blog_count": profile.current_blog_count,
                     "type": due_date.category,
                     "due_date": due_date.date.strftime("%d %B %Y"),
-                }
+                    }
 
                 scheduler_data = build_send_mail_json(
                     profile.user.email,
                     template="pre_blog_reminder.html",
                     subject=f"Reminder for {category}",
                     template_data=template_data,
-                )
+                    )
 
                 s = Scheduler.objects.create(command="send_email", data=scheduler_data)
         return None
@@ -80,26 +80,26 @@ def build_post_blog_reminders(builder):
             ).all()
         for profile in profiles:
             if profile.current_blog_count > blogs_count and not (
-                profile.hidden or profile.reminder_disabled
-            ):
+                    profile.hidden or profile.reminder_disabled
+                    ):
                 suborg = profile.suborg_full_name
                 mentors = UserProfile.objects.filter(suborg_full_name=suborg, role=2)
                 suborg_admins = UserProfile.objects.filter(
                     suborg_full_name=suborg, role=1
-                )
+                    )
                 POST_BLOG_REMINDER_FIRST = DaysConf.objects.get(title="POST_BLOG_REMINDER_FIRST")
                 POST_BLOG_REMINDER_SECOND = DaysConf.objects.get(title="POST_BLOG_REMINDER_SECOND")
 
                 activation_date = builder.activation_date.date()
 
                 if activation_date - due_date.date == timezone.timedelta(
-                    days=POST_BLOG_REMINDER_FIRST.days
-                ):
+                        days=POST_BLOG_REMINDER_FIRST.days
+                        ):
                     student_template = "first_post_blog_reminder_student.html"
 
                 elif activation_date - due_date.date == timezone.timedelta(
-                    days=POST_BLOG_REMINDER_SECOND.days
-                ):
+                        days=POST_BLOG_REMINDER_SECOND.days
+                        ):
                     student_template = "second_post_blog_reminder_student.html"
 
                     mentors_emails = ["gsoc-admins@python.org"]
@@ -112,34 +112,34 @@ def build_post_blog_reminders(builder):
                         "suborg_name": profile.suborg_full_name.suborg_name,
                         "due_date": due_date.date.strftime("%d %B %Y"),
                         "current_blog_count": profile.current_blog_count,
-                    }
+                        }
 
                     scheduler_data_mentors = build_send_mail_json(
                         mentors_emails,
                         template="post_blog_reminder_mentors.html",
                         subject=f"{category} missed by a Student of your Sub-Org",
                         template_data=mentors_template_data,
-                    )
+                        )
 
                     Scheduler.objects.create(
                         command="send_email", data=scheduler_data_mentors
-                    )
+                        )
 
                 student_template_data = {
                     "current_blog_count": profile.current_blog_count,
                     "due_date": due_date.date.strftime("%d %B %Y"),
-                }
+                    }
 
                 scheduler_data_student = build_send_mail_json(
                     profile.user.email,
                     template=student_template,
                     subject=f"Reminder for {category}",
                     template_data=student_template_data,
-                )
+                    )
 
                 Scheduler.objects.create(
                     command="send_email", data=scheduler_data_student
-                )
+                    )
         return None
     except Exception as e:
         return str(e)
@@ -152,7 +152,7 @@ def build_revoke_student_perms(builder):
         for profile in profiles:
             Scheduler.objects.create(
                 command="revoke_student_permissions", data=profile.user.id
-            )
+                )
     except Exception as e:
         return str(e)
 
@@ -162,7 +162,7 @@ def build_remove_user_details(builder):
         gsoc_year = GsocYear.objects.first()
         profiles = UserProfile.objects.filter(
             gsoc_year=gsoc_year, role__in=[1, 2, 3]
-        ).all()
+            ).all()
         for profile in profiles:
             email = profile.user.email
             profile.user.email = None
@@ -173,13 +173,13 @@ def build_remove_user_details(builder):
                 # TODO: change this after the view is created
                 "link": settings.INETLOCATION
                 + "use reverse here"
-            }
+                }
             scheduler_data = build_send_mail_json(
                 email,
                 template="readd_email.html",
                 subject="Your personal details have been removed from our database",
                 template_data=template_data,
-            )
+                )
             Scheduler.objects.create(command="send_email", data=scheduler_data)
     except Exception as e:
         return str(e)
@@ -201,7 +201,7 @@ def build_add_timeline_to_calendar(builder):
                 raise Exception(
                     f"Please get the Access Token: " +
                     f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-                )
+                    )
         except Exception as e:
             return str(e)
 
@@ -216,26 +216,26 @@ def build_add_bpdd_to_calendar(builder):
                 "summary": data["title"],
                 "start": {"date": data["date"]},
                 "end": {"date": data["date"]},
-            }
+                }
             cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
             if not data["event_id"]:
                 event = (
                     service.events()
                     .insert(calendarId=cal_id, body=event)
                     .execute()
-                )
+                    )
                 item = BlogPostDueDate.objects.get(id=data["id"])
                 item.event_id = event.get("id")
                 item.save()
             else:
                 service.events().update(
                     calendarId=cal_id, eventId=data["event_id"], body=event
-                ).execute()
+                    ).execute()
         else:
             raise Exception(
                 f"Please get the Access Token: " +
                 f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-            )
+                )
     except Exception as e:
         return str(e)
 
@@ -250,7 +250,7 @@ def build_add_event_to_calendar(builder):
                 "summary": data["title"],
                 "start": {"date": data["date"]},
                 "end": {"date": data["date"]},
-            }
+                }
             cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
             item = Event.objects.get(id=data["id"])
             if not data["event_id"]:
@@ -258,18 +258,18 @@ def build_add_event_to_calendar(builder):
                     service.events()
                     .insert(calendarId=cal_id, body=event)
                     .execute()
-                )
+                    )
                 item.event_id = event.get("id")
                 item.save()
             else:
                 service.events().update(
                     calendarId=cal_id, eventId=item.event_id, body=event
-                ).execute()
+                    ).execute()
         else:
             raise Exception(
                 f"Please get the Access Token: " +
                 f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-            )
+                )
     except Exception as e:
         return str(e)
 
@@ -283,26 +283,26 @@ def build_add_end_to_calendar(builder):
             "summary": data["title"],
             "start": {"date": data["date"]},
             "end": {"date": data["date"]},
-        }
+            }
         cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
         if not data["event_id"]:
             event = (
                 service.events()
                 .insert(calendarId=cal_id, body=event)
                 .execute()
-            )
+                )
             item = GsocEndDate.objects.get(id=data["id"])
             item.event_id = event.get("id")
             item.save()
         else:
             service.events().update(
                 calendarId=cal_id, eventId=data["event_id"], body=event
-            ).execute()
+                ).execute()
     else:
         raise Exception(
             f"Please get the Access Token: " +
             f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-        )
+            )
 
 
 def build_add_start_to_calendar(builder):
@@ -314,26 +314,26 @@ def build_add_start_to_calendar(builder):
             "summary": data["title"],
             "start": {"date": data["date"]},
             "end": {"date": data["date"]},
-        }
+            }
         cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
         if not data["event_id"]:
             event = (
                 service.events()
                 .insert(calendarId=cal_id, body=event)
                 .execute()
-            )
+                )
             item = GsocStartDate.objects.get(id=data["id"])
             item.event_id = event.get("id")
             item.save()
         else:
             service.events().update(
                 calendarId=cal_id, eventId=data["event_id"], body=event
-            ).execute()
+                ).execute()
     else:
         raise Exception(
             f"Please get the Access Token: " +
             f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-        )
+            )
 
 
 def build_add_end_standard_to_calendar(builder):
@@ -345,26 +345,26 @@ def build_add_end_standard_to_calendar(builder):
             "summary": data["title"],
             "start": {"date": data["date"]},
             "end": {"date": data["date"]},
-        }
+            }
         cal_id = builder.timeline.calendar_id if builder.timeline else "primary"
         if not data["event_id"]:
             event = (
                 service.events()
                 .insert(calendarId=cal_id, body=event)
                 .execute()
-            )
+                )
             item = GsocEndDateDefault.objects.get(id=data["id"])
             item.event_id = event.get("id")
             item.save()
         else:
             service.events().update(
                 calendarId=cal_id, eventId=data["event_id"], body=event
-            ).execute()
+                ).execute()
     else:
         raise Exception(
             f"Please get the Access Token: " +
             f"{settings.OAUTH_REDIRECT_URI + 'authorize'}"
-        )
+            )
 
 
 def build_evaluation_reminder(builder):
@@ -386,32 +386,32 @@ def build_evaluation_reminder(builder):
         gsoc_year=gsoc_year,
         role=3,
         gsoc_end=gsoc_end
-    ).all()
+        ).all()
 
     tl_suborg = [user.suborg_full_name for user in tl_users]
 
     profiles = UserProfile.objects.filter(
         suborg_full_name__in=tl_suborg,
         role__in=[1, 2]
-    )
+        )
 
     for profile in profiles:
         template_data = {
             "date": str(exam_date),
-        }
+            }
 
         scheduler_data = build_send_mail_json(
             profile.user.email,
             template="exam_reminder.html",
             subject=f"Evaluation Due Reminder",
             template_data=template_data,
-        )
+            )
 
         Scheduler.objects.create(
             command="send_email",
             data=scheduler_data,
             activation_date=notify_date
-        )
+            )
 
     # 2 days before
     notify_date = exam_date - timedelta(days=2)
@@ -420,45 +420,45 @@ def build_evaluation_reminder(builder):
         gsoc_year=gsoc_year,
         role=3,
         gsoc_end=gsoc_end
-    ).all()
+        ).all()
 
     tl_suborg = [user.suborg_full_name for user in tl_users]
 
     profiles = UserProfile.objects.filter(
         suborg_full_name__in=tl_suborg,
         role__in=[1, 2]
-    )
+        )
 
     for profile in profiles:
         template_data = {
             "date": str(exam_date),
-        }
+            }
 
         scheduler_data = build_send_mail_json(
             profile.user.email,
             template="exam_reminder.html",
             subject=f"Evaluation Due Reminder",
             template_data=template_data,
-        )
+            )
 
         Scheduler.objects.create(
             command="send_email",
             data=scheduler_data,
             activation_date=notify_date
-        )
+            )
 
     template_data = {
         "date": str(exam_date),
-    }
+        }
 
     scheduler_data = build_send_mail_json(
         ADMINS,
         template="exam_reminder.html",
         subject="Evaluation Due Reminder",
         template_data=template_data,
-    )
+        )
     Scheduler.objects.create(
         command="send_email",
         data=scheduler_data,
         activation_date=notify_date
-    )
+        )

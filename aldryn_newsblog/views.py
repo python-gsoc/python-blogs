@@ -7,7 +7,7 @@ from datetime import date, datetime
 from django.db.models import Q
 from django.http import (
     Http404, HttpResponsePermanentRedirect, HttpResponseRedirect,
-)
+    )
 from django.shortcuts import get_object_or_404
 from django.utils import translation
 from django.views.generic import ListView
@@ -63,6 +63,7 @@ class PreviewModeMixin(EditModeMixin):
     If content editor is logged-in, show all articles. Otherwise, only the
     published articles should be returned.
     """
+
     def get_queryset(self):
         qs = super(PreviewModeMixin, self).get_queryset()
         # check if user can see unpublished items. this will allow to switch
@@ -167,9 +168,9 @@ class ArticleDetail(AppConfigMixin, AppHookCheckMixin, PreviewModeMixin,
             object = self.get_object(self)
         prev_objs = queryset.filter(
             publishing_date__lt=object.publishing_date
-        ).order_by(
+            ).order_by(
             '-publishing_date'
-        )[:1]
+            )[:1]
         if prev_objs:
             return prev_objs[0]
         else:
@@ -182,9 +183,9 @@ class ArticleDetail(AppConfigMixin, AppHookCheckMixin, PreviewModeMixin,
             object = self.get_object(self)
         next_objs = queryset.filter(
             publishing_date__gt=object.publishing_date
-        ).order_by(
+            ).order_by(
             'publishing_date'
-        )[:1]
+            )[:1]
         if next_objs:
             return next_objs[0]
         else:
@@ -213,12 +214,12 @@ class ArticleListBase(AppConfigMixin, AppHookCheckMixin, TemplatePrefixMixin,
             options = {
                 'pages_start': self.config.pagination_pages_start,
                 'pages_visible': self.config.pagination_pages_visible,
-            }
+                }
         else:
             options = {
                 'pages_start': 10,
                 'pages_visible': 4,
-            }
+                }
 
         pages_visible_negative = -options['pages_visible']
         options['pages_visible_negative'] = pages_visible_negative
@@ -307,12 +308,13 @@ class ArticleSearchResultsList(ArticleListBase):
 
 class AuthorArticleList(ArticleListBase):
     """A list of articles written by a specific author."""
+
     def get_queryset(self):
         # Note: each Article.author is Person instance with guaranteed
         # presence of unique slug field, which allows to use it in URLs
         return super(AuthorArticleList, self).get_queryset().filter(
             author=self.author
-        )
+            )
 
     def get(self, request, author, *args, **kwargs):
         language = translation.get_language_from_request(
@@ -333,10 +335,11 @@ class AuthorArticleList(ArticleListBase):
 
 class CategoryArticleList(ArticleListBase):
     """A list of articles filtered by categories."""
+
     def get_queryset(self):
         return super(CategoryArticleList, self).get_queryset().filter(
             categories=self.category
-        )
+            )
 
     def get(self, request, category, *args, **kwargs):
         self.category = get_object_or_404(
@@ -355,10 +358,11 @@ class CategoryArticleList(ArticleListBase):
 
 class TagArticleList(ArticleListBase):
     """A list of articles filtered by tags."""
+
     def get_queryset(self):
         return super(TagArticleList, self).get_queryset().filter(
             tags=self.tag
-        )
+            )
 
     def get(self, request, tag, *args, **kwargs):
         self.tag = get_object_or_404(Tag, slug=tag)
@@ -374,11 +378,12 @@ class TagArticleList(ArticleListBase):
 
 class DateRangeArticleList(ArticleListBase):
     """A list of articles for a specific date range"""
+
     def get_queryset(self):
         return super(DateRangeArticleList, self).get_queryset().filter(
             publishing_date__gte=self.date_from,
             publishing_date__lt=self.date_to
-        )
+            )
 
     def _daterange_from_kwargs(self, kwargs):
         raise NotImplementedError('Subclasses of DateRangeArticleList need to'

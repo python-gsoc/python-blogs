@@ -37,7 +37,7 @@ class PersonMenu(CMSAttachMenu):
                         language_code=language),
                     url,
                     person.pk,
-                )
+                    )
                 nodes.append(node)
         return nodes
 
@@ -69,7 +69,7 @@ class GroupMenu(CMSAttachMenu):
                         language_code=language),
                     url,
                     group.pk,
-                )
+                    )
                 nodes.append(node)
         return nodes
 

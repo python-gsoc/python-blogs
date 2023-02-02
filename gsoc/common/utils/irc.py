@@ -42,7 +42,7 @@ def parse_data(data):
     chunks = [
         data["message"][i:i + chunk_size]
         for i in range(0, len(data["message"]), chunk_size)
-    ]
+        ]
     num_chunks = len(chunks)
     commands = []
     for i in range(num_chunks):
@@ -53,8 +53,8 @@ def parse_data(data):
     commands.append(
         '@messageparser add global "{}" [{} {}]'.format(
             data["command"], echo_text, msg_text
+            )
         )
-    )
 
     for i in range(num_chunks):
         commands.append("@aka remove m{}".format(i))

@@ -49,17 +49,17 @@ class CorrectMimeTypeFeed(DefaultFeed):
         if self.feed["page"] is not None:
             if not self.feed["show_all_articles"]:
                 if (
-                    self.feed["page"] >= 1
-                    and self.feed["page"] <= self.feed["last_page"]
-                ):
+                        self.feed["page"] >= 1
+                        and self.feed["page"] <= self.feed["last_page"]
+                        ):
                     handler.addQuickElement(
                         "link",
                         "",
                         {
                             "rel": "first",
                             "href": f"{self.feed['feed_url']}?y={self.feed['year']}&p=1",
-                        },
-                    )
+                            },
+                        )
                     handler.addQuickElement(
                         "link",
                         "",
@@ -68,9 +68,9 @@ class CorrectMimeTypeFeed(DefaultFeed):
                             "href": (
                                 f"{self.feed['feed_url']}?y={self.feed['year']}"
                                 f"&p={self.feed['last_page']}"
-                            ),
-                        },
-                    )
+                                ),
+                            },
+                        )
                     if self.feed["page"] > 1:
                         handler.addQuickElement(
                             "link",
@@ -80,9 +80,9 @@ class CorrectMimeTypeFeed(DefaultFeed):
                                 "href": (
                                     f"{self.feed['feed_url']}?y={self.feed['year']}"
                                     f"&p={self.feed['page'] - 1}"
-                                ),
-                            },
-                        )
+                                    ),
+                                },
+                            )
                     if self.feed["page"] < self.feed["last_page"]:
                         handler.addQuickElement(
                             "link",
@@ -92,9 +92,9 @@ class CorrectMimeTypeFeed(DefaultFeed):
                                 "href": (
                                     f"{self.feed['feed_url']}?y={self.feed['year']}"
                                     f"&p={self.feed['page'] + 1}"
-                                ),
-                            },
-                        )
+                                    ),
+                                },
+                            )
 
 
 class BlogsFeed(Feed):
@@ -120,10 +120,10 @@ class BlogsFeed(Feed):
         articles_all = list(
             Article.objects.filter(
                 publishing_date__gte=year_start, publishing_date__lte=year_end
-            )
+                )
             .order_by("-publishing_date")
             .all()
-        )
+            )
 
         page = request.GET.get("p", 1)
         if page == "all":
@@ -154,7 +154,7 @@ class BlogsFeed(Feed):
             "last_page": self.last_page,
             "show_all_articles": self.show_all_articles,
             "year": self.year,
-        }
+            }
 
     def feed_url(self, obj):
         return f"{settings.INETLOCATION}/feed/?y={self.year}&p={self.page}"
@@ -194,7 +194,7 @@ class BlogsFeed(Feed):
         section = item.app_config
         p = Page.objects.get(
             application_namespace=section.namespace, publisher_is_draft=False
-        )
+            )
         url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug, "/")
         return url
 
@@ -257,6 +257,6 @@ class ArticlesFeed(Feed):
         section = item.app_config
         p = Page.objects.get(
             application_namespace=section.namespace, publisher_is_draft=False
-        )
+            )
         url = "{}{}{}/".format(self.link, p.get_absolute_url(), item.slug, "/")
         return url

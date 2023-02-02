@@ -33,7 +33,7 @@ class MemcachedStats:
             key
             for id in self.slab_ids()
             for key in self._key_regex.findall(self.command(cmd % (id, limit)))
-        ]
+            ]
         if sort:
             return sorted(keys)
         else:

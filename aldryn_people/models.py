@@ -46,7 +46,7 @@ class Group(TranslationHelperMixin, TranslatedAutoSlugifyMixin,
             _('slug'), max_length=255, default='',
             blank=True,
             help_text=_("Leave blank to auto-generate a unique slug.")),
-    )
+        )
     address = models.TextField(
         verbose_name=_('address'), blank=True)
     postal_code = models.CharField(
@@ -67,7 +67,7 @@ class Group(TranslationHelperMixin, TranslatedAutoSlugifyMixin,
         warnings.warn(
             '"Group.company_name" has been refactored to "Group.name"',
             DeprecationWarning
-        )
+            )
         return self.safe_translation_getter('name')
 
     @property
@@ -76,7 +76,7 @@ class Group(TranslationHelperMixin, TranslatedAutoSlugifyMixin,
             '"Group.company_description" has been refactored to '
             '"Group.description"',
             DeprecationWarning
-        )
+            )
         return self.safe_translation_getter('description')
 
     class Meta:
@@ -115,7 +115,7 @@ class Person(TranslationHelperMixin, TranslatedAutoSlugifyMixin,
             help_text=_("Leave blank to auto-generate a unique slug.")),
         function=models.CharField(_('role'), max_length=255, blank=True, default=''),
         description=HTMLField(_('description'), blank=True, default='')
-    )
+        )
     phone = models.CharField(
         verbose_name=_('phone'), null=True, blank=True, max_length=100)
     mobile = models.CharField(
@@ -151,7 +151,7 @@ class Person(TranslationHelperMixin, TranslatedAutoSlugifyMixin,
             'name',
             default='',
             any_language=True
-        ).strip()
+            ).strip()
         return name if len(name) > 0 else pkstr
 
     @property
@@ -243,7 +243,7 @@ class Person(TranslationHelperMixin, TranslatedAutoSlugifyMixin,
                     None,
                     self.primary_group.postal_code,
                     None,
-                ), TYPE='WORK')
+                    ), TYPE='WORK')
 
             if self.primary_group.phone:
                 vcard.add_line('TEL', self.primary_group.phone, TYPE='WORK')
@@ -261,7 +261,7 @@ class BasePeoplePlugin(CMSPlugin):
     STYLE_CHOICES = [
         ('standard', _('Standard')),
         ('feature', _('Feature'))
-    ] + get_additional_styles()
+        ] + get_additional_styles()
 
     style = models.CharField(
         _('Style'), choices=STYLE_CHOICES,
@@ -271,7 +271,7 @@ class BasePeoplePlugin(CMSPlugin):
         Person, blank=True,
         help_text=_('Select and arrange specific people, or, leave blank to '
                     'select all.')
-    )
+        )
 
     # Add an app namespace to related_name to avoid field name clashes
     # with any other plugins that have a field with the same name as the
@@ -282,7 +282,7 @@ class BasePeoplePlugin(CMSPlugin):
         related_name='%(app_label)s_%(class)s',
         parent_link=True,
         on_delete=models.CASCADE,
-    )
+        )
 
     class Meta:
         abstract = True
@@ -303,12 +303,12 @@ class PeoplePlugin(BasePeoplePlugin):
         verbose_name=_('group by group'),
         default=True,
         help_text=_('Group people by their group.')
-    )
+        )
     show_ungrouped = models.BooleanField(
         verbose_name=_('show ungrouped'),
         default=False,
         help_text=_('When using "group by group", show ungrouped people too.')
-    )
+        )
     show_links = models.BooleanField(
         verbose_name=_('Show links to Detail Page'), default=False)
     show_vcard = models.BooleanField(

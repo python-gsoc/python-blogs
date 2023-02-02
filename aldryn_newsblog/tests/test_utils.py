@@ -61,14 +61,14 @@ class TestAddPrefixToPath(TestCase):
             1, 0,
             True, False,
             None, MyClass, MyClass(),
-        ]
+            ]
 
         for default in defaults:
             try:
                 self.assertEquals(
                     default_reverse(non_pattern, default=default),
                     default
-                )
+                    )
             except:  # noqa: E722
                 self.fail('default_reverse raised exception even though we '
                           'set a default value of: {0}.'.format(default))

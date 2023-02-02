@@ -36,7 +36,7 @@ class ArticleIndex(get_index_base()):
         kwargs = {
             'app_config__search_indexed': True,
             'translations__language_code': language,
-        }
+            }
         return kwargs
 
     def get_index_queryset(self, language):

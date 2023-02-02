@@ -18,15 +18,15 @@ class CategoryAdmin(TranslatableAdmin, TreeAdmin):
             'fields': (
                 'name',
                 'slug',
-            )
-        }),
+                )
+            }),
         (' ', {
             'fields': (
                 '_position',
                 '_ref_node_id',
-            )
-        }),
-    )
+                )
+            }),
+        )
 
     def get_form(self, request, obj=None, **kwargs):
         FormClass = super(CategoryAdmin, self).get_form(request, obj, **kwargs)

@@ -43,27 +43,27 @@ class NewsBlogTestsMixin(object):
                 'code': 'de',
                 'name': 'Deutsche',
                 'fallbacks': ['en', ]  # FOR TESTING DO NOT ADD 'fr' HERE
-            },
+                },
             {
                 'code': 'fr',
                 'name': 'Française',
                 'fallbacks': ['en', ]  # FOR TESTING DO NOT ADD 'de' HERE
-            },
+                },
             {
                 'code': 'en',
                 'name': 'English',
                 'fallbacks': ['de', 'fr', ]
-            },
+                },
             {
                 'code': 'it',
                 'name': 'Italiano',
                 'fallbacks': ['fr', ]  # FOR TESTING, LEAVE AS ONLY 'fr'
-            },
-        ],
+                },
+            ],
         'default': {
             'redirect_on_fallback': False,
+            }
         }
-    }
 
     @staticmethod
     def reload(node):
@@ -108,7 +108,7 @@ class NewsBlogTestsMixin(object):
             'app_config': self.app_config,
             'publishing_date': now(),
             'is_published': True,
-        }
+            }
 
         fields.update(kwargs)
 
@@ -191,7 +191,7 @@ class NewsBlogTestsMixin(object):
             self.template,
             self.language,
             published=True,
-        )
+            )
 
         try:
             # Django-cms 3.5 doesn't set is_home when create_page is called
@@ -203,7 +203,7 @@ class NewsBlogTestsMixin(object):
             app_title='news_blog',
             namespace='NBNS',
             paginate_by=15,
-        )
+            )
         self.page = api.create_page(
             'page', self.template, self.language, published=True,
             parent=self.root_page,
@@ -316,7 +316,7 @@ class CleanUpMixin(object):
             'cms.urls',
             '{0}.urls'.format(package),
             settings.ROOT_URLCONF
-        ]
+            ]
 
         for module in url_modules:
             if module in sys.modules:

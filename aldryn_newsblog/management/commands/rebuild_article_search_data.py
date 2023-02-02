@@ -17,7 +17,7 @@ class Command(BaseCommand):
             action='append',
             dest='languages',
             default=None,
-        )
+            )
 
     def handle(self, *args, **options):
         languages = options.get('languages')
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         for article in Article.objects.published():
             translations = article.translations.filter(
                 language_code__in=languages
-            )
+                )
 
             # build internal parler cache
             parler_cache = dict(

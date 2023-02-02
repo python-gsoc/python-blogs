@@ -20,7 +20,7 @@ class BlogListSitemap(Sitemap):
             try:
                 p = Page.objects.get(
                     application_namespace=blog.namespace, publisher_is_draft=False
-                )
+                    )
                 urls.append(p.get_absolute_url())
                 articles = Article.objects.filter(app_config=blog, is_published=True).all()
                 for i in range((len(articles)-1) // 5):

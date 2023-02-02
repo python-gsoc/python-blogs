@@ -11,10 +11,11 @@ from django.utils import timezone
 
 from gsoc.models import (
     Scheduler
-)
+    )
 
 import json
 from datetime import datetime
+
 
 def is_superuser(user):
     return user.is_superuser
@@ -34,7 +35,8 @@ def application_list(request):
     mentors_list = {}
     for a in applications:
         if hasattr(a.suborg, 'id'):
-            mentors_list[a.suborg.id] = UserProfile.objects.filter(role=2, suborg_full_name=a.suborg.id, gsoc_year=GsocYear.objects.first())
+            mentors_list[a.suborg.id] = UserProfile.objects.filter(
+                role=2, suborg_full_name=a.suborg.id, gsoc_year=GsocYear.objects.first())
     gsoc_year = GsocYear.objects.first()
     if len(applications) == 0:
         return redirect(reverse("suborg:register_suborg"))
@@ -50,7 +52,7 @@ def register_suborg(request):
     if request.method == "GET":
         form = SubOrgApplicationForm(
             initial={"gsoc_year": gsoc_year, "suborg_admin_email": email}
-        )
+            )
 
     elif request.method == "POST":
         form = SubOrgApplicationForm(request.POST, request.FILES)
@@ -91,21 +93,21 @@ def update_application(request, application_id):
                 command="update_site_template",
                 data=json.dumps({"template": "ideas.html"}),
                 success=None,
-            ).all()
+                ).all()
             if len(s) == 0:
-                time = timezone.now() 
+                time = timezone.now()
                 Scheduler.objects.create(
                     command="update_site_template",
                     data=json.dumps({"template": "ideas.html"}),
                     activation_date=time,
-                )
+                    )
             return redirect(reverse("suborg:post_register"))
 
     return render(
         request,
         "update_suborg.html",
         {"form": form, "message": message, "id": application_id},
-    )
+        )
 
 
 def post_register(request):
@@ -131,7 +133,7 @@ def accept_application(request, application_id):
             application.suborg_admin.email,
             application.suborg_admin_2_email,
             application.suborg_admin_3_email
-        ]
+            ]
         for email in emails:
             try:
                 admin = User.objects.get(email=email)
@@ -143,7 +145,7 @@ def accept_application(request, application_id):
                         suborg_full_name=suborg,
                         reminder_disabled=False,
                         github_handle=None,
-                    )
+                        )
                     user.save()
                 except Exception:
                     pass
@@ -153,7 +155,7 @@ def accept_application(request, application_id):
                     user_suborg=suborg,
                     gsoc_year=gsoc_year,
                     email=email
-                )
+                    )
 
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
@@ -177,7 +179,7 @@ def add_mentor(request, application_id):
     if application.suborg_admin_email != request.user.email:
         messages.error(
             request, "You are not authorized to add mentors for this suborg."
-        )
+            )
         return redirect(reverse("suborg:application_list"))
 
     MentorFormSet = modelformset_factory(RegLink, fields=("email",))
@@ -199,7 +201,7 @@ def add_mentor(request, application_id):
             gsoc_year=application.gsoc_year,
             user_suborg=application.suborg,
             user_role=2,
+            )
         )
-    )
 
     return render(request, "add_mentor.html", {"formset": formset})

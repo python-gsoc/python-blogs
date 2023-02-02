@@ -11,24 +11,24 @@ from github import Github
 
 
 def build_send_mail_json(
-    send_to, template: str, subject: str, template_data: dict = None
-):
+        send_to, template: str, subject: str, template_data: dict = None
+        ):
     if not isinstance(send_to, Sequence) and not isinstance(send_to, str):
         raise TypeError(
             "send_to must be a sequence of email addresses "
             "or one email address as str!"
-        )
+            )
     return json.dumps(locals())
 
 
 def build_send_reminder_json(
-    send_to, object_pk, template: str, subject: str, template_data: dict = None
-):
+        send_to, object_pk, template: str, subject: str, template_data: dict = None
+        ):
     if not isinstance(send_to, Sequence) and not isinstance(send_to, str):
         raise TypeError(
             "send_to must be a sequence of email addresses "
             "or one email address as str!"
-        )
+            )
     return json.dumps(locals())
 
 
@@ -49,7 +49,7 @@ def send_mail(send_to, subject, template, context={}):
         reply_to=settings.REPLY_EMAIL,
         to=settings.ADMINS,
         bcc=send_to,
-    )
+        )
     send_email.content_subtype = "html"
     send_email.send()
 
@@ -92,8 +92,8 @@ def is_year(file_name):
 
 
 def get_files(
-    repo, except_files=["CNAME", "LICENSE.md", "README.md", "favicon.ico", "robots.txt"]
-):
+        repo, except_files=["CNAME", "LICENSE.md", "README.md", "favicon.ico", "robots.txt"]
+        ):
     contents = repo.get_contents("")
     files = []
     while contents:
@@ -201,17 +201,17 @@ def archive_current_gsoc_files(current_year):
                 </script>
                 </body>
             """,
-            )
+                )
         try:
             repo.create_file(
                 f"{current_year}/{file.path}",
                 f"Archive GSoC {current_year} files",
                 decoded_content,
-            )
+                )
         except Exception as e:
             repo.update_file(
                 f"{current_year}/{file.path}",
                 f"Archive GSoC {current_year} files",
                 file.content,
                 decoded_content,
-            )
+                )

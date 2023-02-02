@@ -71,7 +71,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, "gsoc", "templates"),
             os.path.join(BASE_DIR, "blogs_list", "templates"),
             os.path.join(BASE_DIR, "suborg", "templates"),
-        ],
+            ],
         "OPTIONS": {
             "context_processors": [
                 "django.contrib.auth.context_processors.auth",
@@ -87,10 +87,10 @@ TEMPLATES = [
                 "cms.context_processors.cms_settings",
                 "gsoc.context_processors.recaptcha_site_key",
                 "gsoc.context_processors.blog_slug",
-            ],
-        },
-    }
-]
+                ],
+            },
+        }
+    ]
 
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -108,7 +108,7 @@ MIDDLEWARE = [
     "cms.middleware.toolbar.ToolbarMiddleware",
     "cms.middleware.language.LanguageCookieMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
-]
+    ]
 
 INSTALLED_APPS = [
     'djangocms_admin_style',
@@ -123,12 +123,12 @@ INSTALLED_APPS = [
     'cms',
     'menus',
     'sekizai',
-    'treebeard',    
+    'treebeard',
     'djangocms_text_ckeditor',
     'djangocms_history',
     'easy_thumbnails',
     'filer',
-    
+
     'djangocms_bootstrap4',
     'djangocms_bootstrap4.contrib.bootstrap4_alerts',
     'djangocms_bootstrap4.contrib.bootstrap4_badge',
@@ -143,16 +143,16 @@ INSTALLED_APPS = [
     'djangocms_bootstrap4.contrib.bootstrap4_media',
     'djangocms_bootstrap4.contrib.bootstrap4_picture',
     'djangocms_bootstrap4.contrib.bootstrap4_tabs',
-    'djangocms_bootstrap4.contrib.bootstrap4_utilities', 
+    'djangocms_bootstrap4.contrib.bootstrap4_utilities',
     'djangocms_file',
     'djangocms_icon',
     'djangocms_link',
-    'djangocms_picture',    
+    'djangocms_picture',
     'djangocms_style',
     'djangocms_snippet',
     'djangocms_googlemap',
     'djangocms_video',
-    
+
     'djangocms_audio',
     'aldryn_apphooks_config',
     'aldryn_categories',
@@ -168,18 +168,18 @@ INSTALLED_APPS = [
     'suborg',
     'debug_toolbar',
     'django_simple_cookie_consent',
-]
+    ]
 THUMBNAIL_PROCESSORS = (
-		'easy_thumbnails.processors.colorspace',
-		'easy_thumbnails.processors.autocrop',
-		'filer.thumbnail_processors.scale_and_crop_with_subject_location',
-		'easy_thumbnails.processors.filters'
-)
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters'
+    )
 
 LANGUAGES = (
     # Customize this
     ("en", gettext("en")),
-)
+    )
 
 CMS_LANGUAGES = {
     # Customize this
@@ -190,14 +190,14 @@ CMS_LANGUAGES = {
             "redirect_on_fallback": True,
             "public": True,
             "hide_untranslated": False,
-        }
-    ],
+            }
+        ],
     "default": {
         "redirect_on_fallback": True,
         "public": True,
         "hide_untranslated": False,
-    },
-}
+        },
+    }
 
 CMS_TEMPLATES = (
     # Customize this
@@ -205,7 +205,7 @@ CMS_TEMPLATES = (
     ("sidebar_left.html", "Sidebar Left"),
     ("sidebar_right.html", "Sidebar Right"),
     ("myprofile.html", "My Profile"),
-)
+    )
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
@@ -219,19 +219,19 @@ MIGRATION_MODULES = {}
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-	{
-		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-	},
-	{
-		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-	},
-	{
-		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-	},
-	{
-		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-	},
-]
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
 
 LOGIN_REDIRECT_URL = "/after-login/"
 
@@ -250,7 +250,7 @@ else:
     ERROR_LEVEL = "ERROR"
 
 # On production server:
-#ERROR_HANDLERS = ["file", "mail_admins"]
+# ERROR_HANDLERS = ["file", "mail_admins"]
 # But for local development and testing
 ERROR_HANDLERS = ["file"]
 
@@ -258,8 +258,8 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
         'EXCLUDED_INDEXES': ['thirdpartyapp.search_indexes.BarIndex'],
+        }
     }
-}
 
 LOGGING = {
     "version": 1,
@@ -270,17 +270,17 @@ LOGGING = {
                 "%(levelname)s %(asctime)s %(process)d "
                 "%(thread)d %(filename)s %(module)s %(funcName)s "
                 "%(lineno)d %(message)s"
-            )
-        },
+                )
+            },
         "simple": {"format": "%(levelname)s: %(message)s"},
-    },
+        },
     "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
-        },
+            },
         "file": {
             "level": "DEBUG",
             "class": "logging.handlers.TimedRotatingFileHandler",
@@ -289,7 +289,7 @@ LOGGING = {
             "when": "midnight",
             "backupCount": 5,
             "encoding": "utf-8",
-        },
+            },
         "access_logs": {
             "level": "INFO",
             "class": "logging.handlers.TimedRotatingFileHandler",
@@ -298,26 +298,26 @@ LOGGING = {
             "when": "midnight",
             "backupCount": 7,
             "encoding": "utf-8",
-        },
+            },
         "mail_admins": {
             "level": "ERROR",
             "class": "django.utils.log.AdminEmailHandler",
             "include_html": True,
+            },
         },
-    },
     "loggers": {
         "django": {"handlers": ["file"], "level": "INFO", "propagate": True},
         "django.server": {
             "handlers": ["console"],
             "level": "DEBUG",
             "propagate": False,
-        },
+            },
         "django.db": {"handlers": ["file"], "level": "WARNING", "propagate": False},
         "django.security.DisallowedHost": {"handlers": ["file"], "propagate": False},
         # Catch All Logger -- Captures any other logging
         "": {"handlers": ERROR_HANDLERS, "level": ERROR_LEVEL},
-    },
-}
+        },
+    }
 logging.config.dictConfig(LOGGING)
 
 # Runcron settings
@@ -337,7 +337,7 @@ CKEDITOR_SETTINGS = {
         "button,clipboard,dialog,dialogui,image2,lineutils,notification,"
         "toolbar,widget,widgetselection,youtube,codesnippet,notificationaggregator,"
         "filetools,uploadwidget,uploadfile,uploadimage"
-    ),
+        ),
     "uploadUrl": "/upload/",
     "toolbar": [
         {
@@ -351,12 +351,12 @@ CKEDITOR_SETTINGS = {
                 "-",
                 "Undo",
                 "Redo",
-            ],
-        },
+                ],
+            },
         {
             "name": "editing",
             "items": ["Find", "Replace", "-", "SelectAll", "-", "Scayt"],
-        },
+            },
         # ['cmsplugins', 'cmswidget'],
         {"name": "settings", "items": ["Source", "ShowBlocks", "Maximize"]},
         "/",
@@ -372,8 +372,8 @@ CKEDITOR_SETTINGS = {
                 "-",
                 "CopyFormatting",
                 "RemoveFormat",
-            ],
-        },
+                ],
+            },
         {
             "name": "paragraph",
             "items": [
@@ -390,8 +390,8 @@ CKEDITOR_SETTINGS = {
                 "JustifyCenter",
                 "JustifyRight",
                 "JustifyBlock",
-            ],
-        },
+                ],
+            },
         {"name": "links", "items": ["Link", "Unlink", "Anchor"]},
         {
             "name": "insert",
@@ -404,14 +404,14 @@ CKEDITOR_SETTINGS = {
                 "Image",
                 "Youtube",
                 "CodeSnippet",
-            ],
-        },
+                ],
+            },
         "/",
         {"name": "styles", "items": ["Styles", "Format", "Font", "FontSize"]},
         {"name": "colors", "items": ["TextColor", "BGColor"]},
-    ],
+        ],
     "toolbarCanCollapse": False,
-}
+    }
 
 TEXT_ADDITIONAL_TAGS = ("iframe",)
 
@@ -480,15 +480,15 @@ BLEACH_ALLOWED_TAGS = [
     "tt",
     "u",
     "ul",
-]
+    ]
 
 BLEACH_ALLOWED_ATTRS = {
-    "iframe" : ["src", "frameborder", "allow", "allowfullscreen", "width",
-                "height"],
-    "img" : ["src", "alt", "width", "height"],
-    "meta" : ["charset"],
-    "*" : ["class", "style"],
-}
+    "iframe": ["src", "frameborder", "allow", "allowfullscreen", "width",
+               "height"],
+    "img": ["src", "alt", "width", "height"],
+    "meta": ["charset"],
+    "*": ["class", "style"],
+    }
 
 BLEACH_ALLOWED_STYLES = [
     "background",
@@ -563,7 +563,7 @@ BLEACH_ALLOWED_STYLES = [
     "visibility",
     "width",
     "z-index",
-]
+    ]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
@@ -571,9 +571,9 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         "LOCATION": "mem_cache",
+        }
     }
-}
 
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CSRF_FAILURE_VIEW = 'gsoc.views.csrf_failure'

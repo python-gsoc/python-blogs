@@ -17,7 +17,7 @@ def blog_slug(request):
         try:
             page = Page.objects.get(
                 application_namespace=namespace, publisher_is_draft=False
-            )
+                )
             slug = Title.objects.get(page=page).slug
             feed_url = reverse("blogs_list:blog_feed", kwargs={"blog_slug": slug})
             return {"feed_url": feed_url}

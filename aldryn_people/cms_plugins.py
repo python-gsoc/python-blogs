@@ -17,7 +17,7 @@ from .utils import get_valid_languages
 NAMESPACE_ERROR = _(
     "Seems that there is no valid application hook for aldryn-people."
     "Links can't be rendered without an app hook."
-)
+    )
 
 
 class PeoplePlugin(CMSPluginBase):
@@ -32,23 +32,23 @@ class PeoplePlugin(CMSPluginBase):
         (None, {
             'fields': (
                 'style',
-            ),
-        }),
+                ),
+            }),
         (_('People'), {
             'description': _('Select and arrange specific people, or leave '
                              'blank to use all.'),
             'fields': (
                 'people',
-            )
-        }),
+                )
+            }),
         (_('Options'), {
             'fields': (
                 ('group_by_group', 'show_ungrouped', ),
                 'show_links',
                 'show_vcard',
-            )
-        })
-    )
+                )
+            })
+        )
 
     def group_people(self, people):
         groups = defaultdict(list)

@@ -153,7 +153,7 @@ class TestCategoryParler(CategoryTestCaseMixin, TestCase):
             ('en', "Cheese Omelette", "cheese-omelette"),
             ('de', "Käseomelett", "kaseomelett"),
             ('fr', "Omelette au Fromage", "omelette-au-fromage"),
-        ]
+            ]
 
         node = None
 

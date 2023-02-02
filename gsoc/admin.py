@@ -9,7 +9,7 @@ from .forms import (
     RegLinkForm,
     EventForm,
     GsocEndDateForm,
-)
+    )
 
 from datetime import datetime
 from django.contrib.auth.models import User
@@ -79,17 +79,17 @@ def article_get_form():
                             "featured_image",
                             "lead_in",
                             "is_published",
-                        )
-                    },
-                ),
+                            )
+                        },
+                    ),
                 # (_('Meta Options'),
                 #  {'classes': ('collapse',),
                 #   'fields':()}),
                 (
                     _("Advanced Settings"),
                     {"classes": ("collapse",), "fields": ("app_config",)},
-                ),
-            )
+                    ),
+                )
             self.readonly_fields = (
                 "author",
                 "publishing_date",
@@ -100,7 +100,7 @@ def article_get_form():
                 "meta_description",
                 "meta_keywords",
                 "owner",
-            )
+                )
         return form
 
     return return_func
@@ -115,7 +115,7 @@ def Article_change_view(self, request, object_id, *args, **kwargs):
     except Article.DoesNotExist:
         return super(ArticleAdmin, self).change_view(
             request, object_id, *args, **kwargs
-        )
+            )
     if is_student_request:
         timenow = original_article.publishing_date
         try:
@@ -127,19 +127,19 @@ def Article_change_view(self, request, object_id, *args, **kwargs):
         post_data["publishing_date_0"] = (
             f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
             f"{str(timenow.day).zfill(2)}"
-        )
+            )
         post_data["initial-publishing_date_0"] = (
             f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
             f"{str(timenow.day).zfill(2)}"
-        )
+            )
         post_data["publishing_date_1"] = (
             f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
             f"{str(timenow.second).zfill(2)}"
-        )
+            )
         post_data["initial-publishing_date_1"] = (
             f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
             f"{str(timenow.second).zfill(2)}"
-        )
+            )
         post_data["owner"] = request.user.pk
     request.GET = data
     request.POST = post_data
@@ -167,19 +167,19 @@ def Article_add_view(self, request, *args, **kwargs):
         post_data["publishing_date_0"] = (
             f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
             f"{str(timenow.day).zfill(2)}"
-        )
+            )
         post_data["initial-publishing_date_0"] = (
             f"{str(timenow.year)}-{str(timenow.month).zfill(2)}-"
             f"{str(timenow.day).zfill(2)}"
-        )
+            )
         post_data["publishing_date_1"] = (
             f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
             f"{str(timenow.second).zfill(2)}"
-        )
+            )
         post_data["initial-publishing_date_1"] = (
             f"{str(timenow.hour).zfill(2)}:{str(timenow.minute).zfill(2)}:"
             f"{str(timenow.second).zfill(2)}"
-        )
+            )
         post_data["owner"] = request.user.pk
         post_data["slug"] = ""
         post_data["meta_title"] = ""
@@ -287,14 +287,14 @@ class RegLinkAdmin(admin.ModelAdmin):
                     "adduserlog",
                     "has_scheduler",
                     "has_reminder",
-                )
-            },
-        ),
+                    )
+                },
+            ),
         (
             "Configure user to be registered",
             {"fields": ("user_role", "user_suborg", "gsoc_year", "email")},
-        ),
-    )
+            ),
+        )
     readonly_fields = (
         "url",
         "adduserlog",
@@ -302,7 +302,7 @@ class RegLinkAdmin(admin.ModelAdmin):
         "adduserlog",
         "has_scheduler",
         "has_reminder",
-    )
+        )
     list_display = (
         "reglink_id",
         "email",
@@ -310,7 +310,7 @@ class RegLinkAdmin(admin.ModelAdmin):
         "is_sent",
         "has_reminder",
         "created_at",
-    )
+        )
     list_filter = ["is_used", "created_at"]
     actions = [send_reminder]
 
@@ -354,14 +354,14 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "role",
         "github_handle",
         "gsoc_end"
-    )
+        )
     list_filter = (
         "role",
         "gsoc_invited",
         "suborg_full_name",
         "gsoc_end",
         "gsoc_year"
-    )
+        )
     readonly_fields = (
         "user",
         "role",
@@ -370,7 +370,7 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "blog_link",
         "proposal_confirmed",
         "github_handle",
-    )
+        )
     fieldsets = (
         ("Unhide", {"fields": ("hidden", "reminder_disabled")}),
         (
@@ -387,10 +387,10 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
                     "current_blog_count",
                     "github_handle",
                     "gsoc_invited",
-                )
-            },
-        ),
-    )
+                    )
+                },
+            ),
+        )
 
     def blog_link(self, obj):
         ns = obj.app_config.namespace
@@ -435,6 +435,7 @@ admin.site.register(SuborgProfile, SuborgProfilesAdmin)
 def mark_invited(self, request, queryset):
     queryset.update(gsoc_invited=True)
 
+
 class HiddenGSOCInviteAdmin(admin.ModelAdmin):
     actions = [mark_invited]
     list_display = (
@@ -442,7 +443,7 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
         "email",
         "suborg_full_name",
         "gsoc_invited",
-    )
+        )
     list_filter = ("gsoc_invited",)
     readonly_fields = (
         "user",
@@ -452,7 +453,7 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
         "blog_link",
         "proposal_confirmed",
         "github_handle",
-    )
+        )
     fieldsets = (
         ("Unhide", {"fields": ("hidden", "reminder_disabled")}),
         (
@@ -468,10 +469,10 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
                     "current_blog_count",
                     "github_handle",
                     "gsoc_invited",
-                )
-            },
-        ),
-    )
+                    )
+                },
+            ),
+        )
 
     def blog_link(self, obj):
         ns = obj.app_config.namespace
@@ -486,6 +487,7 @@ class HiddenGSOCInviteAdmin(admin.ModelAdmin):
         return UserProfile.all_objects.all().\
             filter(gsoc_year=datetime.now().year).\
             exclude(role="3").exclude(suborg_full_name=None).distinct()
+
 
 admin.site.register(AdminGSOCInvites, HiddenGSOCInviteAdmin)
 
@@ -540,10 +542,10 @@ class AddUserLogAdmin(admin.ModelAdmin):
             (1, "Suborg Admin"),
             (2, "Mentor"),
             (3, "Student"),
-        ]
+            ]
         return super().changeform_view(
             request, object_id, form_url, extra_context=extra_context
-        )
+            )
 
     def used_stat(self, obj):
         _all = len(RegLink.objects.filter(adduserlog=obj))
@@ -627,7 +629,7 @@ class TimelineAdmin(admin.ModelAdmin):
         GsocEndDateInline,
         GeneratorInline,
         BlogPostDueDateInline
-    )
+        )
 
 
 admin.site.register(Timeline, TimelineAdmin)
@@ -640,13 +642,13 @@ class ArticleReviewAdmin(admin.ModelAdmin):
         "article_link",
         "is_reviewed",
         "last_reviewed_by",
-    )
+        )
     list_filter = ("last_reviewed_by", "is_reviewed")
     fields = (
         "article",
         "is_reviewed",
         "last_reviewed_by",
-    )
+        )
 
     form = ArticleReviewForm
 
@@ -660,7 +662,7 @@ class ArticleReviewAdmin(admin.ModelAdmin):
         url = reverse(
             "{}:article-detail".format(obj.article.app_config.namespace),
             args=[obj.article.slug],
-        )
+            )
         return mark_safe('<a href="{}" target="_blank">Goto Article</a>'.format(url))
 
     def has_add_permission(self, request, obj=None):
@@ -715,7 +717,7 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
         "last_reviewed_by",
         "created_at",
         "updated_at",
-    )
+        )
     fieldsets = (
         (
             "Details",
@@ -745,11 +747,11 @@ class SubOrgDetailsAdmin(admin.ModelAdmin):
                     "last_reviewed_by",
                     "created_at",
                     "updated_at",
-                )
-            },
-        ),
+                    )
+                },
+            ),
         ("Review", {"fields": ("last_message",)}),
-    )
+        )
     change_form_template = "admin/suborg_details_change_form.html"
 
     def save_model(self, request, obj, form, change):

@@ -15,7 +15,7 @@ from .models import (
     SubOrg,
     GsocEndDate,
     User
-)
+    )
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -31,7 +31,7 @@ class UserProfileForm(forms.ModelForm):
             "accepted_proposal_pdf",
             "app_config",
             "hidden",
-        )
+            )
         widgets = {"app_config": forms.Select()}
 
 
@@ -118,12 +118,12 @@ class SubOrgApplicationForm(forms.ModelForm):
             "last_reviewed_by",
             "created_at",
             "updated_at",
-        )
+            )
         widgets = {
             "suborg_admin": forms.HiddenInput(),
             "suborg_admin_email": forms.HiddenInput(),
             "gsoc_year": forms.HiddenInput(),
-        }
+            }
 
     def clean(self):
         cd = self.cleaned_data
@@ -140,14 +140,14 @@ class SubOrgApplicationForm(forms.ModelForm):
                 raise ValidationError("The image should of size 256 x 256 pixels")
         except:
             raise ValidationError("You must have a logo")
-            
+
         contact = [
             cd.get("chat", None),
             cd.get("mailing_list", None),
             cd.get("twitter_url", None),
             cd.get("blog_url", None),
             cd.get("homepage", None),
-        ]
+            ]
 
         contact = list(filter(lambda a: a is not None, contact))
 
@@ -167,11 +167,11 @@ class SubOrgApplicationForm(forms.ModelForm):
         else:
             raise ValidationError(
                 "Either suborg should be selected or " "the suborg name"
-            )
+                )
 
         if len(contact) < 1:
             raise ValidationError(
                 "At least one out of the five contact " "details should be entered"
-            )
+                )
 
         return cd

@@ -5,7 +5,7 @@ from aldryn_newsblog.views import (
     ArticleDetail, ArticleList, ArticleSearchResultsList, AuthorArticleList,
     CategoryArticleList, DayArticleList, MonthArticleList, TagArticleList,
     YearArticleList,
-)
+    )
 
 
 urlpatterns = [
@@ -54,4 +54,4 @@ urlpatterns = [
     url(r'^tag/(?P<tag>\w[-\w]*)/feed/$',
         TagFeed(), name='article-list-by-tag-feed'),
 
-]
+    ]

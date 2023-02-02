@@ -12,7 +12,7 @@ class Vcard(object):
         key_and_params = ';'.join(chain(
             (key,),
             ('{0}={1}'.format(k, v) for k, v in iteritems(params)),
-        ))
+            ))
 
         if isinstance(value, string_types):
             value = self.__escape(value)

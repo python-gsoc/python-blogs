@@ -69,8 +69,8 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
         help_text=_(
             "Optional. If provided, it will be added to the main body of "
             "the article as a text plugin, that can be formatted."
+            )
         )
-    )
 
     class Meta:
         model = Article
@@ -102,7 +102,7 @@ class CreateNewsBlogArticleForm(BaseFormMixin, TranslatableModelForm):
                 plugin_type='TextPlugin',
                 language=self.language_code,
                 body=content,
-            )
+                )
 
         return article
 
@@ -112,6 +112,6 @@ newsblog_article_wizard = NewsBlogArticleWizard(
     weight=200,
     form=CreateNewsBlogArticleForm,
     description=_(u"Create a new news/blog article.")
-)
+    )
 
 wizard_pool.register(newsblog_article_wizard)

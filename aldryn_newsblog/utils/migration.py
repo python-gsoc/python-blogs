@@ -23,7 +23,7 @@ default_cms_plugin_table_mapping = (
     ('cmsplugin_newsblogrelatedplugin',
         'aldryn_newsblog_newsblogrelatedplugin'),
     ('cmsplugin_newsblogtagsplugin', 'aldryn_newsblog_newsblogtagsplugin'),
-)
+    )
 
 
 def rename_tables(db, table_mapping=None, reverse=False):

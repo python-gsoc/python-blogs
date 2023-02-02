@@ -25,17 +25,17 @@ def list_blogs(request):
                 ns = profile.app_config.namespace
                 page = Page.objects.get(
                     application_namespace=ns, publisher_is_draft=False
-                )
+                    )
                 student_name = profile.user.get_full_name()
                 student_username = profile.user.username
                 proposal_name = (
                     profile.accepted_proposal_pdf.name
                     if profile.proposal_confirmed
                     else None
-                )
+                    )
                 proposal_path = (
                     os.path.join(MEDIA_URL, proposal_name) if proposal_name else None
-                )
+                    )
 
                 blogset.append(
                     {
@@ -45,8 +45,8 @@ def list_blogs(request):
                         "suborg": profile.suborg_full_name.suborg_name,
                         "color": random.choice(["umber", "khaki", "wine", "straw"]),
                         "proposal": proposal_path if proposal_name else None,
-                    }
-                )
+                        }
+                    )
 
         if flag:
             ip_seed = int(request.META.get("REMOTE_ADDR").replace(".", ""))
@@ -57,6 +57,6 @@ def list_blogs(request):
     if not blogsets:
         messages.add_message(
             request, messages.ERROR, "No blogs currently! Please visit again later."
-        )
+            )
 
     return render(request, "list_view.html", {"blogsets": blogsets})

@@ -28,7 +28,7 @@ class CategoryManager(TranslatableManager, NS_NodeManager):
         return self.queryset_class(
             self.model,
             using=self._db
-        ).order_by('tree_id', 'lft')
+            ).order_by('tree_id', 'lft')
 
 
 #
@@ -55,7 +55,7 @@ class Category(TranslatedAutoSlugifyMixin, TranslationHelperMixin,
             blank=False,
             default='',
             max_length=255,
-        ),
+            ),
         slug=models.SlugField(
             _('slug'),
             blank=True,
@@ -63,9 +63,9 @@ class Category(TranslatedAutoSlugifyMixin, TranslationHelperMixin,
             help_text=_('Provide a “slug” or leave blank for an automatically '
                         'generated one.'),
             max_length=255,
-        ),
+            ),
         meta={'unique_together': (('language_code', 'slug', ), )}
-    )
+        )
 
     class Meta:
         verbose_name = _('category')

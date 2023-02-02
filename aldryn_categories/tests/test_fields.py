@@ -14,7 +14,7 @@ from aldryn_categories.fields import (
     CategoryModelChoiceField,
     CategoryMultipleChoiceField,
     CategoryOneToOneField,
-)
+    )
 
 from .base import CategoryTestCaseMixin
 
@@ -34,16 +34,16 @@ class TestCategoryField(CategoryTestCaseMixin, TestCase):
         self.assertEqual(
             field.label_from_instance(child2),
             "&nbsp;&nbsp;child2",
-        )
+            )
         self.assertEqual(
             field.label_from_instance(grandchild1),
             "&nbsp;&nbsp;&nbsp;&nbsp;grandchild1",
-        )
+            )
         self.assertEqual(
             field.label_from_instance(bad_grandchild),
             '&nbsp;&nbsp;&nbsp;&nbsp;bad grandchild&lt;script&gt;alert'
             '(&quot;bad stuff&quot;);&lt;/script&gt;',
-        )
+            )
 
         # Tests that the field correctly throws an ImproperlyConfigured
         # exception if the given object is not a Category (or something that
@@ -73,16 +73,16 @@ class TestCategoryField(CategoryTestCaseMixin, TestCase):
         self.assertEqual(
             field.label_from_instance(child2),
             "&nbsp;&nbsp;child2",
-        )
+            )
         self.assertEqual(
             field.label_from_instance(grandchild1),
             "&nbsp;&nbsp;&nbsp;&nbsp;grandchild1",
-        )
+            )
         self.assertEqual(
             field.label_from_instance(bad_grandchild),
             '&nbsp;&nbsp;&nbsp;&nbsp;bad grandchild&lt;script&gt;alert'
             '(&quot;bad stuff&quot;);&lt;/script&gt;',
-        )
+            )
 
         # Tests that the field correctly throws an ImproperlyConfigured
         # exception if the given object is not a Category (or something that

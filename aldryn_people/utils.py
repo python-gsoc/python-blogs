@@ -40,14 +40,14 @@ def is_valid_namespace_for_language(namespace, language_code):
 
 
 def get_valid_languages(namespace, language_code, site_id=None):
-        langs = [language_code]
-        if site_id is None:
-            site_id = getattr(Site.objects.get_current(), 'pk', None)
-        current_language = get_language_object(language_code, site_id)
-        fallbacks = current_language.get('fallbacks', None)
-        if fallbacks:
-            langs += list(fallbacks)
-        valid_translations = [
-            lang_code for lang_code in langs
-            if is_valid_namespace_for_language(namespace, lang_code)]
-        return valid_translations
+    langs = [language_code]
+    if site_id is None:
+        site_id = getattr(Site.objects.get_current(), 'pk', None)
+    current_language = get_language_object(language_code, site_id)
+    fallbacks = current_language.get('fallbacks', None)
+    if fallbacks:
+        langs += list(fallbacks)
+    valid_translations = [
+        lang_code for lang_code in langs
+        if is_valid_namespace_for_language(namespace, lang_code)]
+    return valid_translations

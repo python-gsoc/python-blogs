@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 import csv
 from datetime import datetime
 
@@ -12,7 +13,7 @@ from .models import (
     GsocYear,
     ReaddUser,
     UserProfile,
-)
+    )
 
 import io
 import os
@@ -96,8 +97,8 @@ def convert_pdf_to_txt(f):
     interpreter = PDFPageInterpreter(rsrcmgr, device)
     pagenos = set()
     for page in PDFPage.get_pages(
-        f, pagenos, maxpages=0, caching=True, check_extractable=True
-    ):
+            f, pagenos, maxpages=0, caching=True, check_extractable=True
+            ):
         interpreter.process_page(page)
     text = retstr.getvalue()
     f.close()
@@ -143,7 +144,7 @@ def upload_proposal_view(request):
         "private_data": {"emails": [], "possible_phone_numbers": [], "locations": []},
         "file_type_valid": False,
         "file_not_too_large": False,
-    }
+        }
     if request.method == "POST":
         file = request.FILES.get("accepted_proposal_pdf")
         resp["file_type_valid"] = file and file.name.endswith(".pdf")
@@ -188,7 +189,7 @@ def new_account_view(request):
             RegLink.objects.create(user_role=0, gsoc_year=gsoc_year, email=email)
             messages.success(
                 request, "You will get the registration link sent to your email soon"
-            )
+                )
         else:
             messages.error(request, "An error occured, try again!")
         return shortcuts.redirect("/")
@@ -210,19 +211,19 @@ def register_view(request):
         "warning": "",
         "reglink_id": reglink_id,
         "email": getattr(reglink, "email", "EMPTY"),
-    }
+        }
 
     if request.user.is_authenticated:
         try:
             profile = UserProfile.objects.get(
                 user=request.user,
                 gsoc_year=datetime.now().year,
-            )
+                )
             messages.info(
                 request,
                 f"Registered as {ROLES.get(profile.role)} with " +
                 f"{profile.suborg_full_name} x please login again"
-            )
+                )
         except UserProfile.DoesNotExist:
             messages.info(request, "You have been logged out.")
         logout(request)
@@ -240,7 +241,7 @@ def register_view(request):
                     f"Please enter your credentials " +
                     f"to accept invitation " +
                     f"of {ROLES.get(reglink.user_role)} to {reglink.user_suborg}.",
-                )
+                    )
                 form = AcceptanceForm(initial={
                     'email': reglink.email,
                     })
@@ -251,13 +252,13 @@ def register_view(request):
                 context["can_register"] = False
                 context[
                     "warning"
-                ] = "Your registration link is invalid! Please check again!"
+                    ] = "Your registration link is invalid! Please check again!"
             return shortcuts.render(request, "registration/register.html", context)
     except IntegrityError:
         context["can_register"] = False
         context[
             "warning"
-        ] = "Your registration link has already been used!"
+            ] = "Your registration link has already been used!"
         return shortcuts.render(request, "registration/register.html", context)
     if request.method == "POST":
         username = request.POST.get("username", "")
@@ -296,7 +297,7 @@ def register_view(request):
                     username=username,
                     reminder_disabled=reminder_disabled,
                     github_handle=github_handle,
-                )
+                    )
                 user.set_password(password)
                 user.save()
             except Exception:
@@ -361,7 +362,7 @@ def change_password(request):
 
     return shortcuts.render(
         request, "registration/change_password.html", {"form": form}
-    )
+        )
 
 
 @decorators.login_required
@@ -379,7 +380,8 @@ def change_info(request):
 
     return shortcuts.render(
         request, "registration/change_info.html", {"form": form}
-    )
+        )
+
 
 @never_cache
 def new_comment(request):
@@ -395,7 +397,7 @@ def new_comment(request):
             payload = {
                 "secret": settings.RECAPTCHA_PRIVATE_KEY,
                 "response": recaptcha_response,
-            }
+                }
             data = urllib.parse.urlencode(payload).encode()
             req = urllib.request.Request(url, data=data)
 
@@ -432,7 +434,7 @@ def new_comment(request):
                     user=user,
                     article=article,
                     parent=parent,
-                )
+                    )
                 c.save()
             else:
                 messages.add_message(
@@ -440,11 +442,11 @@ def new_comment(request):
                     messages.ERROR,
                     "Abusive content detected! Please refrain\
                                       from using any indecent words while commenting.",
-                )
+                    )
         else:
             messages.add_message(
                 request, messages.ERROR, "reCAPTCHA verification failed."
-            )
+                )
 
         redirect_path = request.POST.get("redirect")
 
@@ -495,7 +497,7 @@ def review_article(request, article_id):
             return redirect(reverse("admin:gsoc_articlereview_change", args=[ar.id]))
     return redirect(
         reverse("{}:article-detail".format(a.app_config.namespace), args=[a.slug])
-    )
+        )
 
 
 @decorators.login_required
@@ -508,10 +510,10 @@ def unpublish_article(request, article_id):
         else:
             messages.error(
                 request, "User does not have permission to unpublish article"
-            )
+                )
     return redirect(
         reverse("{}:article-detail".format(a.app_config.namespace), args=[a.slug])
-    )
+        )
 
 
 @decorators.login_required
@@ -525,7 +527,7 @@ def publish_article(request, article_id):
             messages.error(request, "User does not have permission to publish article")
     return redirect(
         reverse("{}:article-detail".format(a.app_config.namespace), args=[a.slug])
-    )
+        )
 
 
 def readd_users(request, uuid):
@@ -563,7 +565,7 @@ def export_view(request):
             "<h1>Mentors data exported successfully!!</h1>" +
             "<a href='admin/export'>Click here to download</a>" +
             "</div>"
-        )
+            )
 
 
 @decorators.login_required
@@ -592,9 +594,6 @@ def export_mentors(request):
     return response
 
 
-from django.http import HttpResponse
-
-
 def test(request):
     return HttpResponse("{}".format(request.META["REMOTE_ADDR"]))
 
@@ -610,14 +609,14 @@ def authorize(request):
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         CLIENT_SECRETS_FILE,
         scopes=SCOPES
-    )
+        )
 
     flow.redirect_uri = settings.OAUTH_REDIRECT_URI + "oauth2callback"
 
     authorization_url, state = flow.authorization_url(
         access_type='offline',
         include_granted_scopes='true'
-    )
+        )
 
     request.session['state'] = state
 
@@ -635,7 +634,7 @@ def oauth2callback(request):
         CLIENT_SECRETS_FILE,
         scopes=SCOPES,
         state=state
-    )
+        )
     flow.redirect_uri = settings.OAUTH_REDIRECT_URI + "oauth2callback"
 
     authorization_response = request.get_full_path()
@@ -656,13 +655,13 @@ def mark_all_article_as_reviewed(request, author_id):
     articles = Article.objects.filter(
         owner=user,
         publishing_date__contains=current_year
-    )
+        )
     for article in articles:
         try:
             review = ArticleReview.objects.get(
                 article=article,
                 is_reviewed=False
-            )
+                )
             review.is_reviewed = True
             review.last_reviewed_by = request.user
             review.save()

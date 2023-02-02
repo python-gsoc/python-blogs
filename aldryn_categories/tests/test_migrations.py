@@ -17,7 +17,7 @@ class MigrationTestCase(TestCase):
             'dry_run': True,
             'stdout': output,
             'check_changes': True,
-        }
+            }
 
         try:
             call_command('makemigrations', **options)

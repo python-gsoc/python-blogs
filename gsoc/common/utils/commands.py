@@ -5,7 +5,7 @@ from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.utils import timezone
 
-#from .irc import send_message
+# from .irc import send_message
 
 from gsoc.models import (
     Scheduler,
@@ -15,14 +15,14 @@ from gsoc.models import (
     Event,
     BlogPostDueDate,
     SubOrgDetails,
-)
+    )
 from .tools import (
     send_mail,
     render_site_template,
     push_site_template,
     archive_current_gsoc_files,
     push_images,
-)
+    )
 
 
 def send_email(scheduler: Scheduler):
@@ -30,7 +30,7 @@ def send_email(scheduler: Scheduler):
     try:
         send_mail(
             data["send_to"], data["subject"], data["template"], data["template_data"]
-        )
+            )
     except SMTPSenderRefused as e:
         last_error = json.dumps({"message": str(e), "smtp_code": e.smtp_code})
         scheduler.last_error = last_error
@@ -81,13 +81,13 @@ def send_irc_msgs(schedulers):
     sends the irc messages from `send_irc_msg` `Scheduler` objects
     and returns any error encountered
     """
-    #try:
+    # try:
     #    send_message([_.data for _ in schedulers])
     #    for s in schedulers:
     #        s.success = True
     #        s.save()
     #    return None
-    #except Exception as e:
+    # except Exception as e:
     #    return str(e)
 
 
@@ -132,14 +132,14 @@ def update_site_template(scheduler: Scheduler):
                 "events": Event.objects.filter(timeline__gsoc_year=gsoc_year).all(),
                 "duedates": BlogPostDueDate.objects.filter(
                     timeline__gsoc_year=gsoc_year
-                ).all(),
-            }
+                    ).all(),
+                }
         elif template == "ideas.html":
             # change this if the number of contact fields increase
             contact_fields = ("chat", "mailing_list", "twitter_url", "blog_url", "homepage")
             suborgs = SubOrgDetails.objects.filter(
                 gsoc_year=gsoc_year, accepted=True
-            ).all().order_by('suborg_name')
+                ).all().order_by('suborg_name')
             suborg_list = []
             for suborg in suborgs:
                 f = open(suborg.logo.path, "rb")
@@ -155,14 +155,14 @@ def update_site_template(scheduler: Scheduler):
                     "ideas_list": suborg.ideas_list,
                     "contact": [],
                     "source_code": suborg.source_code,
-                }
+                    }
                 contact_count = 0
                 for field in contact_fields:
                     if getattr(suborg, field):
                         contact_count += 1
                         _["contact"].append(
                             (field.title().replace("_", " "), getattr(suborg, field))
-                        )
+                            )
                 _["count"] = (contact_count // 2) + 1
                 suborg_list.append(_)
             context = {"suborgs": suborg_list}

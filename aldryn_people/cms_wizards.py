@@ -30,6 +30,7 @@ class BasePeopleWizard(Wizard):
     """
     Only return a success URL if we can actually use it.
     """
+
     def get_success_url(self, **kwargs):
         if has_published_apphook():
             return super(BasePeopleWizard, self).get_success_url(**kwargs)
@@ -84,7 +85,7 @@ people_person_wizard = PeoplePersonWizard(
     weight=300,
     form=CreatePeoplePersonForm,
     description=_("Create a new person.")
-)
+    )
 
 wizard_pool.register(people_person_wizard)
 
@@ -94,7 +95,7 @@ people_group_wizard = PeopleGroupWizard(
     weight=300,
     form=CreatePeopleGroupForm,
     description=_("Create a new group.")
-)
+    )
 
 # Disabling the group wizard by default. To enable, create a file
 # cms_wizards.py in your project and add the following lines:

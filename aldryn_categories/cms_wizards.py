@@ -37,6 +37,6 @@ aldryn_category_wizard = CategoryWizard(
     weight=290,
     form=movenodeform_factory(Category, form=CreateCategoryForm),
     description=_('Create a new category.')
-)
+    )
 
 wizard_pool.register(aldryn_category_wizard)

@@ -7,12 +7,12 @@ from cms.cms_toolbars import (
     TOOLBAR_DISABLE_BREAK,
     SHORTCUTS_BREAK,
     CLIPBOARD_BREAK,
-)
+    )
 from cms.utils.page_permissions import (
     user_can_change_page,
     user_can_delete_page,
     user_can_publish_page,
-)
+    )
 from cms.constants import TEMPLATE_INHERITANCE_MAGIC
 from cms.utils.conf import get_cms_setting
 from cms.utils.urlutils import add_url_parameters, admin_reverse
@@ -48,7 +48,7 @@ def add_admin_menu(self):
     if not self._admin_menu:
         self._admin_menu = self.toolbar.get_or_create_menu(
             ADMIN_MENU_IDENTIFIER, self.current_site.name
-        )
+            )
 
         user = getattr(self.request, "user", None)
 
@@ -56,7 +56,7 @@ def add_admin_menu(self):
             # Users button
             self._admin_menu.add_sideframe_item(
                 _("User Profiles"), url=admin_reverse("gsoc_userprofile_changelist")
-            )
+                )
 
         # sites menu
         sites_queryset = Site.objects.order_by("name")
@@ -65,68 +65,68 @@ def add_admin_menu(self):
             sites_menu = self._admin_menu.get_or_create_menu("sites", _("Sites"))
             sites_menu.add_sideframe_item(
                 _("Admin Sites"), url=admin_reverse("sites_site_changelist")
-            )
+                )
             sites_menu.add_break(ADMINISTRATION_BREAK)
             for site in sites_queryset:
                 sites_menu.add_link_item(
                     site.name,
                     url="http://%s" % site.domain,
                     active=site.pk == self.current_site.pk,
-                )
+                    )
 
         # admin
         if user and user.is_superuser:
             self._admin_menu.add_sideframe_item(
                 _("Administration"), url=admin_reverse("index")
-            )
+                )
 
         # scheduler
         if user and user.is_superuser:
             self._admin_menu.add_sideframe_item(
                 _("Schedulers"), url=admin_reverse("gsoc_scheduler_changelist")
-            )
+                )
             self._admin_menu.add_sideframe_item(
                 _("Builders"), url=admin_reverse("gsoc_builder_changelist")
-            )
+                )
             self._admin_menu.add_sideframe_item(
                 _("Review Article"), url=admin_reverse("gsoc_articlereview_changelist")
-            )
+                )
             self._admin_menu.add_sideframe_item(
                 _("Timeline"), url=admin_reverse("gsoc_timeline_changelist")
-            )
+                )
             self._admin_menu.add_sideframe_item(
                 _("Send Email"), url=admin_reverse("gsoc_sendemail_add")
-            )
+                )
             self._admin_menu.add_sideframe_item(
                 _("Suborg Applications"),
                 url=admin_reverse("gsoc_suborgdetails_changelist"),
-            )
+                )
             self._admin_menu.add_modal_item(
                 name="Add Users",
                 url=admin_reverse("gsoc_adduserlog_add"),
                 on_close=None,
-            )
+                )
 
         if user and not user.is_current_year_student():
             self._admin_menu.add_link_item(
                 _("New Suborg Application"), reverse("suborg:register_suborg")
-            )
+                )
             self._admin_menu.add_link_item(
                 _("Manage Suborg Application"), reverse("suborg:application_list")
-            )
+                )
 
         if user and user.is_superuser:
             # Export button
             self._admin_menu.add_sideframe_item(
                 _("Export Mentors"), reverse("export_view")
-            )
+                )
 
         self._admin_menu.add_break(ADMINISTRATION_BREAK)
 
         # cms users settings
         self._admin_menu.add_sideframe_item(
             _("User settings"), url=admin_reverse("cms_usersettings_change")
-        )
+            )
         self._admin_menu.add_break(USER_SETTINGS_BREAK)
         # clipboard
         if user and user.is_superuser and self.toolbar.edit_mode_active:
@@ -138,13 +138,13 @@ def add_admin_menu(self):
                 url="#",
                 extra_classes=["cms-clipboard-trigger"],
                 disabled=not clipboard_is_bound,
-            )
+                )
             self._admin_menu.add_link_item(
                 _("Clear clipboard"),
                 url="#",
                 extra_classes=["cms-clipboard-empty"],
                 disabled=not clipboard_is_bound,
-            )
+                )
             self._admin_menu.add_break(CLIPBOARD_BREAK)
 
         # logout
@@ -218,7 +218,7 @@ def populate(self):
                 if profile.app_config == config:
                     change_perm = Permission.objects.filter(
                         codename="change_article"
-                    ).first()
+                        ).first()
                     if change_perm in user.user_permissions.all():
                         change_article_perm = True
                         break
@@ -234,7 +234,7 @@ def populate(self):
                 url_args = {"language": language}
             url = get_admin_url(
                 "aldryn_newsblog_newsblogconfig_change", [config.pk], **url_args
-            )
+                )
             menu.add_modal_item(_("Configure addon"), url=url)
 
         if any(config_perms) and any(article_perms):
@@ -260,7 +260,7 @@ def populate(self):
                 url_args = {"language": language}
             url = get_admin_url(
                 "aldryn_newsblog_article_change", [article.pk], **url_args
-            )
+                )
             menu.add_modal_item(_("Edit this article"), url=url, active=True)
 
         if change_article_perm and article:
@@ -278,7 +278,7 @@ def populate(self):
             url = get_admin_url("aldryn_newsblog_article_delete", [article.pk])
             menu.add_modal_item(
                 _("Delete this article"), url=url, on_close=redirect_url
-            )
+                )
 
         try:
             article_review = ArticleReview.objects.get(article=article)
@@ -286,7 +286,7 @@ def populate(self):
                 url = reverse("review_article", args=[article.id])
                 self.toolbar.add_button(
                     _("Mark Reviewed"), url=url, side=self.toolbar.RIGHT
-                )
+                    )
         except ArticleReview.DoesNotExist:
             pass
 
@@ -295,7 +295,7 @@ def populate(self):
                 url = (
                     f"{admin_reverse('gsoc_blogposthistory_changelist')}"
                     f"?article__id__exact={article.id}"
-                )
+                    )
                 self.toolbar.add_sideframe_item(_("View History"), url=url)
         except Exception as e:
             pass

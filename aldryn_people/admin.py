@@ -47,20 +47,20 @@ class PersonAdmin(PlaceholderAdminMixin,
                 'name',
                 'slug',
                 'function', 'description',
-            ),
-        }),
+                ),
+            }),
         (_('Contact (untranslated)'), {
             'fields': (
                 'visual', 'phone', 'mobile', 'fax', 'email', 'website',
                 'user', 'vcard_enabled'
-            ),
-        }),
+                ),
+            }),
         (None, {
             'fields': (
                 'groups',
-            ),
-        }),
-    )
+                ),
+            }),
+        )
 
     def get_queryset(self, request):
         qs = super(PersonAdmin, self).get_queryset(request)
@@ -85,15 +85,15 @@ class GroupAdmin(PlaceholderAdminMixin,
                 'name',
                 'slug',
                 'description',
-            ),
-        }),
+                ),
+            }),
         (_('Contact (untranslated)'), {
             'fields': (
                 'phone', 'fax', 'email', 'website',
                 'address', 'postal_code', 'city'
-            )
-        }),
-    )
+                )
+            }),
+        )
 
     def get_queryset(self, request):
         qs = super(GroupAdmin, self).get_queryset(request)
