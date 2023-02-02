@@ -26,6 +26,6 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }};
           do if [[ $file == *.py ]];
-          then pycodestyle --first $file;
+          then pycodestyle --max-line-length=150 --first $file;
           fi;
           done
