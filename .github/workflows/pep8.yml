@@ -1,0 +1,31 @@
+name: PEP8 Style Checker
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Test PEP8 Style
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v27
+
+      - name: Setup pycodestyle
+        run: pip install pycodestyle
+
+      - name: Check style
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }};
+          do if [[ $file == *.py ]];
+          then pycodestyle --first $file;
+          fi;
+          done
