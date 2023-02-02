@@ -2,6 +2,9 @@ import re
 from PIL import Image
 
 from .models import (
+    Generator,
+    GsocEndDateDefault,
+    GsocStartDate,
     ArticleReview,
     UserDetails,
     UserProfile,
@@ -47,7 +50,7 @@ class UserDetailsForm(forms.ModelForm):
 class RegLinkForm(forms.ModelForm):
     class Meta:
         model = RegLink
-        fields = ("email", "user_role", "user_suborg", "gsoc_year")
+        fields = ("email", "user_role", "user_suborg", "gsoc_end_date", "gsoc_year")
 
 
 class BlogPostDueDateForm(forms.ModelForm):
@@ -66,6 +69,24 @@ class GsocEndDateForm(forms.ModelForm):
     class Meta:
         model = GsocEndDate
         fields = ("date",)
+
+
+class GsocStartDateForm(forms.ModelForm):
+    class Meta:
+        model = GsocStartDate
+        fields = ("date",)
+
+
+class GsocEndDateStandardForm(forms.ModelForm):
+    class Meta:
+        model = GsocEndDateDefault
+        fields = ("date",)
+
+
+class GeneratorForm(forms.ModelForm):
+    class Meta:
+        model = Generator
+        fields = ("category", "start", "recurDays")
 
 
 class ChangeInfoForm(forms.ModelForm):

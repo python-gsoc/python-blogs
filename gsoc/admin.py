@@ -1,10 +1,12 @@
 from .models import *
 from .forms import (
+    GeneratorForm,
+    GsocEndDateStandardForm,
+    GsocStartDateForm,
     ArticleReviewForm,
     UserProfileForm,
     UserDetailsForm,
     RegLinkForm,
-    BlogPostDueDateForm,
     EventForm,
     GsocEndDateForm,
 )
@@ -351,8 +353,15 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
         "gsoc_year",
         "role",
         "github_handle",
+        "gsoc_end"
     )
-    list_filter = ("role", "gsoc_invited", "suborg_full_name", "gsoc_year")
+    list_filter = (
+        "role",
+        "gsoc_invited",
+        "suborg_full_name",
+        "gsoc_end",
+        "gsoc_year"
+    )
     readonly_fields = (
         "user",
         "role",
@@ -371,6 +380,7 @@ class HiddenUserProfileAdmin(admin.ModelAdmin):
                     "user",
                     "role",
                     "gsoc_year",
+                    "gsoc_end",
                     "accepted_proposal_pdf",
                     "proposal_confirmed",
                     "blog_link",
@@ -567,12 +577,23 @@ admin.site.register(Builder, BuilderAdmin)
 
 class BlogPostDueDateInline(admin.TabularInline):
     model = BlogPostDueDate
-    form = BlogPostDueDateForm
+    fields = ("title", "category", "date")
+    readonly_fields = ("title", "category", "date")
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class EventInline(admin.TabularInline):
     model = Event
     form = EventForm
+    extra = 1
 
 
 class GsocEndDateInline(admin.TabularInline):
@@ -580,10 +601,33 @@ class GsocEndDateInline(admin.TabularInline):
     form = GsocEndDateForm
 
 
+class GsocStartDateInline(admin.TabularInline):
+    model = GsocStartDate
+    form = GsocStartDateForm
+
+
+class GsocEndDateStandardInline(admin.TabularInline):
+    model = GsocEndDateDefault
+    form = GsocEndDateStandardForm
+
+
+class GeneratorInline(admin.TabularInline):
+    model = Generator
+    form = GeneratorForm
+    max_num = 2
+
+
 class TimelineAdmin(admin.ModelAdmin):
     list_display = ("gsoc_year",)
     exclude = ("calendar_id",)
-    inlines = (BlogPostDueDateInline, EventInline, GsocEndDateInline)
+    inlines = (
+        EventInline,
+        GsocStartDateInline,
+        GsocEndDateStandardInline,
+        GsocEndDateInline,
+        GeneratorInline,
+        BlogPostDueDateInline
+    )
 
 
 admin.site.register(Timeline, TimelineAdmin)

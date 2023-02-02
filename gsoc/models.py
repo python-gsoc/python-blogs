@@ -479,6 +479,7 @@ class UserProfile(models.Model):
     current_blog_count = models.IntegerField(default=0)
     github_handle = models.TextField(null=True, blank=True, max_length=100)
     gsoc_invited = models.BooleanField(default=False)
+    gsoc_end = models.DateField(blank=True, null=True)
 
     objects = UserProfileManager()
     all_objects = models.Manager()
@@ -604,6 +605,9 @@ class Timeline(models.Model):
         to_field = "gsoc_year")
     calendar_id = models.CharField(max_length=255, null=True, blank=True)
 
+    def __str__(self):
+        return "Timeline for " + str(self.gsoc_year.gsoc_year)
+
     def add_calendar(self):
         builder_data = json.dumps({
             "timeline_id": self.id,
@@ -626,6 +630,23 @@ class Timeline(models.Model):
             )
 
 
+class Generator(models.Model):
+    categories = ((0, "Weekly Check-In"), (1, "Blog Post"))
+    category = models.IntegerField(choices=categories, null=True, blank=True)
+    recurDays = models.IntegerField(default=7)
+    start = models.DateField(blank=True, null=True)
+    timeline = models.ForeignKey(Timeline, on_delete=models.CASCADE, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        try:
+            current_year = datetime.datetime.now().year
+            GsocStartDate.objects.get(date__contains=current_year)
+            GsocEndDate.objects.get(date__contains=current_year)
+        except Exception:
+            return
+        super(Generator, self).save(*args, **kwargs)
+
+
 class Builder(models.Model):
     categories = (
         ("build_pre_blog_reminders", "build_pre_blog_reminders"),
@@ -635,7 +656,10 @@ class Builder(models.Model):
         ("build_add_timeline_to_calendar", "build_add_timeline_to_calendar"),
         ("build_add_bpdd_to_calendar", "build_add_bpdd_to_calendar"),
         ("build_add_event_to_calendar", "build_add_event_to_calendar"),
-        ("build_add_end_to_calendar", "build_add_end_to_calendar")
+        ("build_add_end_to_calendar", "build_add_end_to_calendar"),
+        ("build_add_end_standard_to_calendar", "build_add_end_standard_to_calendar"),
+        ("build_add_start_to_calendar", "build_add_start_to_calendar"),
+        ("build_evaluation_reminder", "build_evaluation_reminder"),
     )
 
     category = models.CharField(max_length=40, choices=categories)
@@ -663,8 +687,8 @@ class Builder(models.Model):
 
 class Event(models.Model):
     title = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
+    start_date = models.DateField(verbose_name="Event Start")
+    end_date = models.DateField(null=True, blank=True, verbose_name="Event End")
     timeline = models.ForeignKey(
         Timeline, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -741,6 +765,12 @@ class BlogPostDueDate(models.Model):
     date = models.DateField()
     timeline = models.ForeignKey(
         Timeline,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    generator = models.ForeignKey(
+        Generator,
         on_delete=models.CASCADE,
         null=True,
         blank=True
@@ -881,7 +911,49 @@ class BlogPostDueDate(models.Model):
         super(BlogPostDueDate, self).save(*args, **kwargs)
 
 
+class GsocStartDate(models.Model):
+    timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
+    date = models.DateField()
+    event_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def add_to_calendar(self):
+        builder_data = json.dumps({
+            "id": self.id,
+            "title": "GSoC Start",
+            "date": str(self.date.strftime('%Y-%m-%d')),
+            "event_id": self.event_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_start_to_calendar",
+                timeline=self.timeline,
+            )
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
+            builder.data = builder_data
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_start_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self.timeline,
+            )
+
+    def delete_from_calendar(self):
+        if self.event_id:
+            creds = getCreds()
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                service.events().delete(
+                    calendarId=self.timeline.calendar_id, eventId=self.event_id
+                ).execute()
+
+
 class GsocEndDate(models.Model):
+    class Meta:
+        verbose_name = "Gsoc end date Max"
+
     timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
     date = models.DateField()
     event_id = models.CharField(max_length=255, null=True, blank=True)
@@ -947,6 +1019,45 @@ class GsocEndDate(models.Model):
                 command="archive_gsoc_pages", activation_date=self.date, data="{}"
             )
         super(GsocEndDate, self).save(*args, **kwargs)
+
+
+class GsocEndDateDefault(models.Model):
+    timeline = models.OneToOneField(Timeline, on_delete=models.CASCADE)
+    date = models.DateField()
+    event_id = models.CharField(max_length=255, null=True, blank=True)
+
+    def add_to_calendar(self):
+        builder_data = json.dumps({
+            "id": self.id,
+            "title": "GSoC End (Standard)",
+            "date": str(self.date.strftime('%Y-%m-%d')),
+            "event_id": self.event_id
+        })
+        try:
+            builder = Builder.objects.get(
+                category="build_add_end_standard_to_calendar",
+                timeline=self.timeline,
+            )
+            builder.activation_date = datetime.datetime.now()
+            builder.built = None
+            builder.data = builder_data
+            builder.save()
+        except Builder.DoesNotExist:
+            Builder.objects.create(
+                category="build_add_end_standard_to_calendar",
+                activation_date=datetime.datetime.now(),
+                data=builder_data,
+                timeline=self.timeline,
+            )
+
+    def delete_from_calendar(self):
+        if self.event_id:
+            creds = getCreds()
+            if creds:
+                service = build("calendar", "v3", credentials=creds, cache_discovery=False)
+                service.events().delete(
+                    calendarId=self.timeline.calendar_id, eventId=self.event_id
+                ).execute()
 
 
 class PageNotification(models.Model):
@@ -1085,6 +1196,7 @@ class RegLink(models.Model):
         null=True,
         blank=False
     )
+    gsoc_end_date = models.DateField(null=True, blank=True)
     gsoc_year = models.ForeignKey(
         GsocYear,
         name = "gsoc_year",
@@ -1182,6 +1294,7 @@ class RegLink(models.Model):
                 suborg_full_name=self.user_suborg,
                 reminder_disabled=reminder_disabled,
                 github_handle=github_handle,
+                gsoc_end=self.gsoc_end_date
             )
         except Exception:
             profile = None
@@ -1300,6 +1413,8 @@ class RegLink(models.Model):
             self.create_scheduler()
 
     def save(self, *args, **kwargs):
+        if (self.gsoc_end_date is None):
+            self.gsoc_end_date = GsocEndDateDefault.objects.latest('id').date
         try:
             reglink = RegLink.objects.get(
                 user_role=self.user_role,
@@ -1586,6 +1701,18 @@ def due_date_add_to_calendar(sender, instance, **kwargs):
     instance.add_to_calendar()
 
 
+# Add GSoCEndDateDefault to Google Calendar
+@receiver(models.signals.post_save, sender=GsocEndDateDefault)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
+# Add GSoCStartDate to Google Calendar
+@receiver(models.signals.post_save, sender=GsocStartDate)
+def due_date_add_to_calendar(sender, instance, **kwargs):
+    instance.add_to_calendar()
+
+
 # Publish the duedate to Github pages
 @receiver(models.signals.post_save, sender=BlogPostDueDate)
 def duedate_publish_to_github_pages(sender, instance, **kwargs):
@@ -1682,3 +1809,149 @@ def update_add_blog_counter_scheduler(sender, instance, **kwargs):
         scheduler.save()
     except Scheduler.DoesNotExist:
         pass
+
+
+# Add BlogPostDueDates on Invoking generator
+@receiver(models.signals.post_save, sender=Generator)
+def auto_bpdd(sender, instance, **kwargs):
+    current_year = datetime.datetime.now().year
+    category = instance.category
+    start_date = GsocStartDate.objects.get(
+        date__contains=current_year
+    )
+    end_date = GsocEndDate.objects.get(
+        date__contains=current_year
+    )
+    dates = [instance.start + datetime.timedelta(days=i) for i in range(
+        0,
+        (end_date.date - start_date.date).days - 14,
+        instance.recurDays
+    )]
+
+    try:
+        BlogPostDueDate.objects.filter(
+            generator=instance
+        ).delete()
+    except Exception:
+        pass
+
+    for date in dates:
+        BlogPostDueDate.objects.create(
+            category=category,
+            date=date,
+            timeline=instance.timeline,
+            generator=instance
+        )
+
+
+# # build schedulers for final reminder when Timeline is created
+# @receiver(models.signals.post_save, sender=GsocEndDate)
+# def build_schedule_finalterm_reminder(sender, instance, **kwargs):
+#     start_date = GsocStartDate.objects.latest('date')
+#     end_date = GsocEndDate.objects.latest('date')
+
+#     # notify mentors + suborg admins 4 days before due
+#     notify_date = end_date.date - datetime.timedelta(days=4)
+#     for i in range(0, 7):
+
+#         builder_data = json.dumps({
+#             "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+#             "title": "Final term evaluation reminder",
+#             "admin": False
+#         })
+#         Builder.objects.create(
+#             category="build_final_term_reminder",
+#             activation_date=start_date.date,
+#             data=builder_data
+#         )
+
+#         notify_date -= datetime.timedelta(days=14)
+
+#     # notify mentors + suborg admins + PSF admins 2 days before due
+#     notify_date = end_date.date - datetime.timedelta(days=2)
+#     for i in range(0, 7):
+#         builder_data = json.dumps({
+#             "date": str(notify_date + datetime.timedelta(days=1)) if i != 0 else str(notify_date),
+#             "title": "Final term evaluation reminder",
+#             "admin": True
+#         })
+#         Builder.objects.create(
+#             category="build_final_term_reminder",
+#             activation_date=start_date.date,
+#             data=builder_data
+#         )
+
+#         notify_date -= datetime.timedelta(days=14)
+
+
+# # build schedulers for midterm reminder when Timeline is created
+# @receiver(models.signals.post_save, sender=GsocEndDate)
+# def build_schedule_midterm_reminder(sender, instance, **kwargs):
+#     start_date = GsocStartDate.objects.latest('date')
+#     end_date_max = GsocEndDate.objects.latest('date')
+#     end_date = end_date_max.date
+
+#     for i in range(0, 7):
+#         # notify mentors + suborg admins 2 days before due
+#         builder_data = json.dumps({
+#             "end_date": str(end_date),
+#             "title": "Mid term evaluation reminder",
+#             "admin": False
+#         })
+#         Builder.objects.create(
+#             category="build_mid_term_reminder",
+#             activation_date=start_date.date,
+#             data=builder_data,
+#             timeline=instance.timeline
+#         )
+
+#         # notify mentors + suborg admins + PSF admins 2 days before due
+#         builder_data = json.dumps({
+#             "end_date": str(end_date),
+#             "title": "Mid term evaluation reminder",
+#             "admin": True
+#         })
+#         Builder.objects.create(
+#             category="build_mid_term_reminder",
+#             activation_date=start_date.date,
+#             data=builder_data,
+#             timeline=instance.timeline
+#         )
+
+#         end_date -= datetime.timedelta(days=14) if i != 0 else datetime.timedelta(days=13)
+
+
+# build evaluation reminder generator
+@receiver(models.signals.post_save, sender=GsocEndDate)
+def build_eval_reminder(sender, instance, **kwargs):
+    start_date = GsocStartDate.objects.latest('date')
+    end_date_max = GsocEndDate.objects.latest('date')
+    end_date = end_date_max.date
+
+    exam_dates = []
+    for i in range(0, 7):
+        exam_dates.append(end_date)
+        midterm_date = start_date.date + (
+            end_date - datetime.timedelta(days=7) - start_date.date
+        ) / 2 + datetime.timedelta(days=1)
+        exam_dates.append(midterm_date)
+        end_date -= datetime.timedelta(days=14) if i != 0 else datetime.timedelta(days=13)
+
+    for i, date in enumerate(exam_dates):
+        if i % 2 == 0:
+            builder_data = json.dumps({
+                "Midterm": False,
+                "exam_date": str(date)
+            })
+        else:
+            builder_data = json.dumps({
+                "Midterm": True,
+                "exam_date": str(date)
+            })
+
+        Builder.objects.create(
+                category="build_evaluation_reminder",
+                activation_date=date - datetime.timedelta(days=7),
+                data=builder_data,
+                timeline=instance.timeline
+            )
