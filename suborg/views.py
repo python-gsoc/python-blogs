@@ -150,12 +150,13 @@ def accept_application(request, application_id):
                 except Exception:
                     pass
             except User.DoesNotExist:
-                RegLink.objects.create(
-                    user_role=1,
-                    user_suborg=suborg,
-                    gsoc_year=gsoc_year,
-                    email=email
-                    )
+                if email is not None:
+                     RegLink.objects.create(
+                        user_role=1,
+                        user_suborg=suborg,
+                        gsoc_year=gsoc_year,
+                        email=email
+                        )
 
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
