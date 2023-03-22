@@ -158,6 +158,26 @@ def accept_application(request, application_id):
                         email=email
                         )
 
+        form = SubOrgApplicationForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            suborg_details = form.save()
+            suborg_details.changed = True
+            suborg_details.updated_at = timezone.now()
+            suborg_details.save()
+            suborg_details.send_update_notification()
+            s = Scheduler.objects.filter(
+                command="update_site_template",
+                data=json.dumps({"template": "ideas.html"}),
+                success=None,
+            ).all()
+            if len(s) == 0:
+                time = timezone.now() 
+                Scheduler.objects.create(
+                    command="update_site_template",
+                    data=json.dumps({"template": "ideas.html"}),
+                    activation_date=time,
+                )
+
     return redirect(reverse("admin:gsoc_suborgdetails_change", args=[application_id]))
 
 
