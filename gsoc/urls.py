@@ -37,7 +37,8 @@ urlpatterns = [
 # Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [
     url("accounts/", include("django.contrib.auth.urls")),
-    url("accounts/new", gsoc.views.new_account_view, name="new_account"),
+#   remove accounts/new url so people cant register themselfs...
+#    url("accounts/new", gsoc.views.new_account_view, name="new_account"),
     url("accounts/register", gsoc.views.register_view, name="register"),
     url("accounts/change_password", gsoc.views.change_password, name="change_password"),
     url("accounts/change_info", gsoc.views.change_info, name="change_info"),
