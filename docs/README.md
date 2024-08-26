@@ -1,6 +1,6 @@
 # Python-GSoC Blogging platform
 
-Blog and management platform for PSF for running GSoC
+Blog and management platform for PSF for running GSoC.  This system was in use until 2024 but will no longer be maintained.
 
 ## Build Status
 
